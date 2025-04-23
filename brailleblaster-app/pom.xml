@@ -40,6 +40,12 @@
         </dependency>
         <dependency>
             <groupId>org.brailleblaster</groupId>
+            <artifactId>brailleblaster-ebraille</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.brailleblaster</groupId>
             <artifactId>utils</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>

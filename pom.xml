@@ -19,6 +19,7 @@
         <module>brailleblaster-exceptions</module>
         <module>brailleblaster-update-checker</module>
         <module>brailleblaster-java-checker</module>
+        <module>brailleblaster-ebraille</module>
     </modules>
 
     <properties>

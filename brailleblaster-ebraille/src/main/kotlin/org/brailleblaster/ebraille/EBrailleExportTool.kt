@@ -1,0 +1,33 @@
+/*
+ * Copyright (C) 2025 American Printing House for the Blind
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+package org.brailleblaster.ebraille
+
+import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
+import org.brailleblaster.perspectives.mvc.menu.TopMenu
+import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.wordprocessor.BBFileDialog
+import org.eclipse.swt.SWT
+import java.io.File
+
+object EBrailleExportTool : MenuToolListener {
+    override val topMenu = TopMenu.FILE
+    override val title = "Export to eBraille"
+    override fun onRun(bbData: BBSelectionData) {
+        BBFileDialog(bbData.wpManager.shell, SWT.SAVE,  suggestedFileName = null, filterNames = arrayOf("eBraille files"), filterExtensions = arrayOf("*.ebrl")).open()?.let { f ->
+            EBrailleBundle(File(f)).close()
+        }
+    }
+}
