@@ -101,12 +101,6 @@ object TableExceptions {
                 }
             }
             log.debug("BB Exceptions Table {}", exceptionsTableFile.absolutePath)
-            //Stream this whole file to the console for debugging
-            try {
-                exceptionsTableFile.forEachLine { line -> println(line) }
-            } catch (e: Exception) {
-                log.error("Can't read file {}", exceptionsTableFile, e)
-            }
 
             // Add to UTD's mainTranslationTable
             brailleSettings.mainTranslationTable = "${brailleSettings.mainTranslationTable},$exceptionsTableFile"

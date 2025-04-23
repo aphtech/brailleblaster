@@ -132,11 +132,6 @@
             <artifactId>jeuclid-core</artifactId>
             <version>${jeuclid.version}</version>
             <exclusions>
-                <!-- Use jcl-over-slf4j -->
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
                 <exclusion>
                     <artifactId>commons-io</artifactId>
                     <groupId>commons-io</groupId>
@@ -204,25 +199,6 @@
                     </properties>
                     <excludedGroups>${bb.excludedTests}</excludedGroups>
                     <trimStackTrace>false</trimStackTrace>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>${buildnumbermavenplugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>create-brailleblaster-build-props</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>create-metadata</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <addOutputDirectoryToResources>true</addOutputDirectoryToResources>
-                    <outputName>brailleblaster-build.properties</outputName>
                 </configuration>
             </plugin>
         </plugins>

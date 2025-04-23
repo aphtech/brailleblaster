@@ -416,9 +416,6 @@ public class CorrectTranslationDialog extends Dialog implements MenuToolListener
             // This should have been created in SettingsManager
             throw new RuntimeException("User exceptions table not found: " + (file != null ? file.getAbsolutePath() : null));
 
-        System.out.println("Corrections File:");
-        System.out.println(file);
-
         try (OutputStreamWriter f = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
             f.append(TableExceptions.UNIVERSAL_EXCEPTION_FILE_HEADING);
             f.append(System.lineSeparator());

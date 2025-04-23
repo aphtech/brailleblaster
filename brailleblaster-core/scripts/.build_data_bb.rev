@@ -1,9 +1,0 @@
-Last repository revision on branch development
-commit 8930aacb5c8d7041ece896d772595bea86170568
-Author: mstewart <mstewart@aph.org>
-Date:   Mon Dec 19 09:39:04 2022 -0500
-
-    Ascii Math Editor:
-    -Removed "Clear" button from symbol search (redundant)
-    -Fixed text for bar x and vector x (translation still an issue)
-    -Changed subscript example to log base 2, as it was getting mixed up with the subscript symbol

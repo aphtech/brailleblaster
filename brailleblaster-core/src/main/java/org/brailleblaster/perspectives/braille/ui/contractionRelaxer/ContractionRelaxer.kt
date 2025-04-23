@@ -173,8 +173,6 @@ class ContractionRelaxer(parent: Shell) : Dialog(parent, SWT.NONE), MenuToolList
     //println("UnitToggle saved. Attempting to refresh document and translator.")
     bbData.manager.document.engine.brailleTranslator.close()
     bbData.manager.refresh()
-    //println("File saved, document refreshed. File now reads: ")
-    println(file.readText(StandardCharsets.UTF_8))
   }
 
   fun viewContractions() {

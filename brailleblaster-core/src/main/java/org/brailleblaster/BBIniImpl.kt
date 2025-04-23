@@ -24,8 +24,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.nio.file.Path
-import java.util.*
-import kotlin.io.path.bufferedReader
 import kotlin.io.path.createDirectories
 import kotlin.io.path.createFile
 import kotlin.io.path.exists
@@ -66,15 +64,8 @@ class BBIniImpl(val bbDistPath: Path, bbUserPath: Path, propManager: PropertyFil
     val recentSaves: Path = autoSavePath.resolve("recent_saves.txt").also {
         FileUtils.create(it.toString())
     }
-    val aboutPropertiesPath: Path = programDataPath.resolve(Path("settings", "about.properties"))
-    val releaseBuild: Boolean = Properties().let {
-        try {
-            it.load(aboutPropertiesPath.bufferedReader())
-        } catch (e: IOException) {
-            throw RuntimeException("Unable to load about file at $aboutPropertiesPath", e)
-        }
-        it.getProperty("releaseBuild", "false") == "true"
-    }
+    // TODO: work it out from version information.
+    val releaseBuild: Boolean = false
     val helpDocsPath: Path = bbDistPath.resolve("docs")
     val logFilesPath: Path = bbUserPath.resolve("log").also {
         if (!it.exists()) {

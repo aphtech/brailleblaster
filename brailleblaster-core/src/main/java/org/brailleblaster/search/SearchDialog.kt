@@ -654,7 +654,6 @@ class SearchDialog(parent: Shell?, style: Int) : Dialog(parent, style),
         val state = ViewState(index, section, tme)
         click = Click(sc, state, true)
         if (!isValidClick(click!!)) {
-            println("Click is not valid; returning")
             return
         }
 

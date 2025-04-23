@@ -15,13 +15,13 @@
  */
 package org.brailleblaster.javaChecker
 
+import org.brailleblaster.AppProperties
 import org.brailleblaster.BBIni
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.mvc.BBSimpleManager.SimpleListener
 import org.brailleblaster.perspectives.mvc.SimpleEvent
 import org.brailleblaster.perspectives.mvc.events.AppStartedEvent
 import org.brailleblaster.spi.ModuleFactory
-import org.brailleblaster.userHelp.VersionInfo
 import org.eclipse.jface.dialogs.MessageDialogWithToggle
 import org.eclipse.swt.widgets.Display
 
@@ -33,7 +33,7 @@ object JavaCheckerModule : SimpleListener {
             val propManager = BBIni.propertyFileManager
             val warnVersion = maxOf(jvmVersion, Runtime.Version.parse(propManager.getProperty("javaChecker.warn.version", "11")))
             if (warnVersion < minVersion) {
-                val result = MessageDialogWithToggle.openWarning(Display.getCurrent()?.activeShell, "Outdated Java", "Your Java runtime is no longer supported by ${VersionInfo.Project.BB.displayName} and may in the future fail to run this software. Please update to at least Java ${minVersion}.", "Do not show this warning again", false, null, null)
+                val result = MessageDialogWithToggle.openWarning(Display.getCurrent()?.activeShell, "Outdated Java", "Your Java runtime is no longer supported by ${AppProperties.displayName} and may in the future fail to run this software. Please update to at least Java ${minVersion}.", "Do not show this warning again", false, null, null)
                 if (result.toggleState) {
                     propManager.save("javaChecker.warn.version", minVersion.toString())
                 }

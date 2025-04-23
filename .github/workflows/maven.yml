@@ -15,8 +15,8 @@ on:
     branches: [ "main" ]
 
 env:
-  BB_VERSION: '2.1.10'
-  BB_CHANGELIST: '-SNAPSHOT'
+  BB_VERSION: '3.0.1'
+  BB_CHANGELIST: ''
 
 jobs:
   build:
@@ -31,8 +31,7 @@ jobs:
         java-version: '17'
         distribution: 'corretto'
         cache: maven
-    - name: Add build data
-      run: brailleblaster-core/scripts/add-build-data.sh "BrailleBlaster" "${{ env.BB_VERSION }}" "${{ github.sha }}" "brailleblaster-core"
+
     - name: Build with Maven
       run: |
         mvn -B install --file pom.xml -DskipTests -Drevision=${{ env.BB_VERSION }} -Dsha1=-${{ github.sha }} -Dchangelist=${{ env.BB_CHANGELIST }}

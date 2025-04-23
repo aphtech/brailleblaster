@@ -31,38 +31,20 @@ class BBFileDialog @JvmOverloads constructor(
     suggestedFileName: String?,
     filterNames: Array<String>,
     filterExtensions: Array<String>,
-    filterIndex: Int = 0
+    filterIndex: Int = 0,
+    filterPath: String = getDefaultFilterPath()
 ) {
-    val widget: FileDialog = FileDialog(shell, type)
-
-    init {
-        val updates = BBIni.propertyFileManager.getProperty(LAST)
-        val filterPath: String = updates
-            ?: if (Platform.isWindows()) {
-                System.getProperty("user.home", "c:\\")
-            } else {
-                "/"
-            }
+    val widget: FileDialog = FileDialog(shell, type).also { w ->
         log.debug("Path {} Names {} Extensions {}", filterPath, filterNames, filterExtensions)
         log.debug("suggested file name: $suggestedFileName")
         if (suggestedFileName != null) {
-            widget.fileName = suggestedFileName
+            w.fileName = suggestedFileName
         }
-        widget.filterPath = filterPath
-        widget.filterNames = filterNames
-        widget.filterExtensions = filterExtensions
-        widget.overwrite = true
-    }
-
-    constructor(
-        shell: Shell?,
-        type: Int,
-        suggestedFileName: String?,
-        filterPath: String?,
-        filterNames: Array<String>,
-        filterExtensions: Array<String>
-    ) : this(shell, type, suggestedFileName, filterNames, filterExtensions) {
-        widget.filterPath = filterPath
+        w.filterPath = filterPath
+        w.filterNames = filterNames
+        w.filterExtensions = filterExtensions
+        w.overwrite = true
+        w.filterPath = filterPath
     }
 
     fun open(): String? {
@@ -128,5 +110,11 @@ class BBFileDialog @JvmOverloads constructor(
         private val localeHandler = getDefault()
         private val log = LoggerFactory.getLogger(BBFileDialog::class.java)
         private const val LAST = "lastFileLocation"
+        private fun getDefaultFilterPath(): String = (BBIni.propertyFileManager.getProperty(LAST)
+            ?: if (Platform.isWindows()) {
+                System.getProperty("user.home", "c:\\")
+            } else {
+                "/"
+            })
     }
 }

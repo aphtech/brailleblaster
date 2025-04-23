@@ -16,7 +16,7 @@
 package org.brailleblaster.usage
 
 import org.brailleblaster.BBIni
-import org.brailleblaster.userHelp.VersionInfo
+import org.brailleblaster.userHelp.Project
 import org.brailleblaster.util.InstallId
 import org.brailleblaster.utils.PropertyFileManager
 import org.brailleblaster.util.Utils
@@ -92,7 +92,7 @@ class BBUsageManager(
                         mapOf(
                             "uid" to InstallId.id.toString(),
                             "records" to json.toString(),
-                            "version" to VersionInfo.Project.BB.version
+                            "version" to Project.BB.version
                         )
                     )
                     sqlLogger.clearTo(lastRecordTime)

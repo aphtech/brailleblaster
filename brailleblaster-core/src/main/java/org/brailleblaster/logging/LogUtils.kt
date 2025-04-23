@@ -29,12 +29,8 @@ private var loggingInitted = false
 /** Point logback to its configuration file in programData/settings  */
 fun initLogback(logbackConf: File) {
     val configFile = System.getProperty("logback.configurationFile")
-    if (configFile != null) {
-        // User passed explicit config, logback will pick it up automatically
-        println("Given explicit logback config at $configFile")
-    } else {
+    if (configFile == null) {
         System.setProperty("logback.configurationFile", logbackConf.path)
-        println("Logback config: " + logbackConf.path)
     }
     loggingInitted = true
 }

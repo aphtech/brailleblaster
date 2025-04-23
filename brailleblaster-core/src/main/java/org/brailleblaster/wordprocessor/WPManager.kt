@@ -17,6 +17,7 @@ package org.brailleblaster.wordprocessor
 
 import nu.xom.XPathException
 import org.apache.commons.lang3.exception.ExceptionUtils
+import org.brailleblaster.AppProperties
 import org.brailleblaster.BBIni
 import org.brailleblaster.Main.deleteExceptionFiles
 import org.brailleblaster.Main.handleFatalException
@@ -112,7 +113,7 @@ class WPManager private constructor(val usageManager: UsageManager) {
 
         list = LinkedList()
         shell = Shell(display, SWT.SHELL_TRIM)
-        shell.text = "BrailleBlaster"
+        shell.text = AppProperties.displayName
         shell.images = newShellIcons()
 
         //		ViewManager.colorizeShell(shell);

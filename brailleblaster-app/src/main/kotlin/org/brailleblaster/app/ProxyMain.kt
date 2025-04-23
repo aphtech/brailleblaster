@@ -27,13 +27,7 @@ import java.nio.file.Path
 import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory
 import java.util.concurrent.ForkJoinWorkerThread
-import kotlin.getValue
-import kotlin.io.path.Path
-import kotlin.io.path.exists
-import kotlin.io.path.extension
-import kotlin.io.path.isDirectory
-import kotlin.io.path.isRegularFile
-import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.*
 
 /**
  * A launcher to get the app running in a ClassLoader which can be modified.
@@ -51,7 +45,8 @@ object ProxyMain {
             "java.util.concurrent.ForkJoinPool.common.threadFactory",
             "org.brailleblaster.app.BBForkJoinWorkerThreadFactory"
         )
-        System.setProperty("app.dir", brailleblasterPath.canonicalPath)
+
+        System.setProperty("app.dir", brailleblasterPath)
         Thread.currentThread().contextClassLoader = proxyClassLoader
         try {
             val mainClass = Class.forName("org.brailleblaster.Main", true, proxyClassLoader)
@@ -86,9 +81,9 @@ private val Path.isJarFile: Boolean
 
 private val proxyClassLoader: ClassLoader by lazy {
         val appClasspath: Array<URL> = (
-            System.getProperty("java.class.path").split(File.pathSeparatorChar).map { Path(it) }
-                    + Path(brailleblasterPath.canonicalPath, "lib").listJars()
-                    + Path(brailleblasterPath.canonicalPath, "native", "${os.name}-${arch.name}".lowercase(), "lib").listJars()
+            System.getProperty("java.class.path").split(File.pathSeparatorChar).mapNotNull { if (it.isNotBlank()) Path(it) else null }
+                    + Path(brailleblasterPath, "lib").listJars()
+                    + Path(brailleblasterPath, "native", "${os.name}-${arch.name}".lowercase(), "lib").listJars()
             ).mapNotNull { p ->
                 try {
                     p.takeIf { it.exists() }?.toUri()?.toURL()
@@ -96,7 +91,6 @@ private val proxyClassLoader: ClassLoader by lazy {
                     null
                 }
         }.toTypedArray()
-    URLClassLoader("BBClassLoader", appClasspath, ClassLoader.getPlatformClassLoader())
     URLClassLoader("BBClassLoader", appClasspath, ClassLoader.getPlatformClassLoader())
 }
 
@@ -113,7 +107,7 @@ private class BBForkJoinWorkerThread(pool: ForkJoinPool, classLoader: ClassLoade
     }
 }
 
-val brailleblasterPath: File =
+val brailleblasterPath: String =
     (System.getenv("BBLASTER_WORK") ?: System.getProperty("org.brailleblaster.  distdir") ?: System.getProperty(
         "app.dir",
         ""
@@ -124,4 +118,4 @@ val brailleblasterPath: File =
             val jarFile = File(ProxyMain::class.java.protectionDomain.codeSource.location.toURI()).absoluteFile
             if (!jarFile.isDirectory) jarFile.parentFile else jarFile
         }
-    }
+    }.absolutePath

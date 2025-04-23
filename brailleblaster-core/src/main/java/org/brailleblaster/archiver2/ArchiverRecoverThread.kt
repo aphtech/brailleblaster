@@ -58,7 +58,6 @@ class ArchiverRecoverThread(private val m: Manager) {
         }
 
         if (m.text.hasChanged && m.lastCopiedDoc != null && !BBIni.debugging) {
-            //println("Text has changed, saving file.")
             saveFile(fileName)
         }
     }

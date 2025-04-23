@@ -20,9 +20,9 @@ import com.google.common.util.concurrent.MoreExecutors
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.brailleblaster.BBIni
-import org.brailleblaster.userHelp.VersionInfo
-import org.brailleblaster.userHelp.VersionInfo.javaVersion
-import org.brailleblaster.userHelp.VersionInfo.oSVersion
+import org.brailleblaster.userHelp.Project
+import org.brailleblaster.userHelp.javaVersion
+import org.brailleblaster.userHelp.oSVersion
 import org.brailleblaster.util.Utils.httpPost
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -193,11 +193,12 @@ object ExceptionReportingModule /*implements SimpleListener*/ {
             ImmutableMap.builder<String, String>()
                 .put("exception", ExceptionUtils.getStackTrace(exception))
                 .put("description", description ?: "")
-                .put("versionBb", VersionInfo.Project.BB.version)
+                .put("versionBb", Project.BB.version)
+                .put("versionUtd", "Unknown")
                 .put("versionJLouis", "Unknown")
                 .put(
                     "versionLibLouis",
-                    VersionInfo.Project.LIBLOUIS.versionWithRev.split("]".toRegex(), limit = 2)
+                    Project.LIBLOUIS.versionWithRev.split("]".toRegex(), limit = 2)
                         .toTypedArray()[0] + "]"
                 )
                 .put("versionOs", oSVersion)

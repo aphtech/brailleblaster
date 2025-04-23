@@ -22,7 +22,7 @@ import org.brailleblaster.firstrun.runFirstRunWizard
 import org.brailleblaster.logging.initLogback
 import org.brailleblaster.logging.preLog
 import org.brailleblaster.usage.*
-import org.brailleblaster.userHelp.VersionInfo
+import org.brailleblaster.userHelp.Project
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.util.Notify
 import org.brailleblaster.util.NotifyUtils
@@ -97,8 +97,13 @@ object Main {
             WPManager.display
             if (runFirstRunWizard(usageManager = usageManager, userSettings = BBIni.propertyFileManager)) {
                 val runId = UUID.randomUUID()
-                usageManager.logger.log(UsageRecord(tool = BB_TOOL, event = "product", message = VersionInfo.Project.BB.displayName))
-                usageManager.logger.log(UsageRecord(tool = BB_TOOL, event = "version", message = VersionInfo.Project.BB.version))
+                usageManager.logger.log(UsageRecord(tool = BB_TOOL, event = "product", message = Project.BB.displayName))
+                usageManager.logger.log(
+                    UsageRecord(
+                        tool = BB_TOOL,
+                        event = "version",
+                        message = Project.BB.version
+                    ))
                 usageManager.logger.log(UsageRecord(tool = BB_TOOL, event = "os", message = System.getProperty("os.name")))
                 usageManager.logger.log(UsageRecord(tool = BB_TOOL, event = "os-version", message = System.getProperty("os.version")))
                 usageManager.startPeriodicDataReporting(0, 5, units = TimeUnit.MINUTES)

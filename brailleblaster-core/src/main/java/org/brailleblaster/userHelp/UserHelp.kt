@@ -16,11 +16,11 @@
 package org.brailleblaster.userHelp
 
 import org.apache.commons.io.FileUtils
+import org.brailleblaster.AppProperties
 import org.brailleblaster.BBIni
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.tools.MenuToolListener
-import org.brailleblaster.userHelp.VersionInfo.versionsSimple
 import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.util.Notify.notify
 import org.brailleblaster.utils.BBData.getBrailleblasterPath
@@ -39,14 +39,14 @@ import java.nio.file.Paths
 
 object GoToWebsiteTool : MenuToolListener {
     override val topMenu: TopMenu = TopMenu.HELP
-    override val title: String = "BrailleBlaster Website"
+    override val title: String = "${AppProperties.displayName} Website"
     override fun onRun(bbData: BBSelectionData) {
         showHelp(HelpOptions.GoToSite)
     }
 }
 object UserGuideTool : MenuToolListener {
     override val topMenu: TopMenu = TopMenu.HELP
-    override val title: String = "BrailleBlaster User Guide"
+    override val title: String = "${AppProperties.displayName} User Guide"
     override val accelerator: Int = SWT.F1
     override fun onRun(bbData: BBSelectionData) {
         showHelp(HelpOptions.UserGuide)
@@ -54,7 +54,7 @@ object UserGuideTool : MenuToolListener {
 }
 object AboutTool : MenuToolListener {
     override val topMenu: TopMenu = TopMenu.HELP
-    override val title: String = "About BrailleBlaster"
+    override val title: String = "About ${AppProperties.displayName}"
     override fun onRun(bbData: BBSelectionData) {
         showHelp(HelpOptions.AboutBB)
     }
@@ -67,14 +67,14 @@ private enum class HelpOptions {
 private val helpPath = BBIni.helpDocsPath.toString() + FileSystems.getDefault().separator
 private fun showHelp(helpChoice: HelpOptions) {
     when (helpChoice) {
-        HelpOptions.GoToSite -> Program.launch("www.brailleblaster.org")
+        HelpOptions.GoToSite -> Program.launch(AppProperties.websiteUrl)
         HelpOptions.UserGuide -> showHelp("manualV2_1.html")
         HelpOptions.AboutBB -> showAbout()
     }
 }
 private fun showAbout() {
     val shell = Shell(SWT.DIALOG_TRIM or SWT.SYSTEM_MODAL)
-    shell.text = "About BrailleBlaster"
+    shell.text = "About ${AppProperties.displayName}"
     shell.layout = GridLayout(2, false)
     run {
         val img: Image = try {
@@ -95,7 +95,7 @@ private fun showAbout() {
     sidePanel.layout = GridLayout()
     FormUIUtils.newLabel(
         sidePanel,
-        "For more information or to report bugs visit http://www.brailleblaster.org"
+        "For more information or to report bugs visit ${AppProperties.websiteUrl}"
     )
     run {
         val text = StyledText(sidePanel, SWT.BORDER or SWT.READ_ONLY)

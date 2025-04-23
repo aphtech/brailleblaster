@@ -14,7 +14,7 @@
     <properties>
         <findbugsXML>false</findbugsXML>
         <!-- Versioning -->
-        <graalvm.version>24.1.2</graalvm.version>
+        <graalvm.version>24.2.0</graalvm.version>
         <assertjcore.version>3.24.2</assertjcore.version>
         <equalsverifier.version>3.15.2</equalsverifier.version>
         <xmlunitmatchers.version>2.10.0</xmlunitmatchers.version>
