@@ -18,6 +18,7 @@ package org.brailleblaster.utd.internal.elements
 import nu.xom.Attribute
 import nu.xom.Element
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 
 class TableDivider() : Element(PROTOTYPE) {
     enum class DividerTypes(var attrValue: String, var value: String?) {
@@ -37,7 +38,7 @@ class TableDivider() : Element(PROTOTYPE) {
     }
 
     companion object {
-        private val PROTOTYPE = Element(UTDElements.TABLE_DIVIDER.qName, UTDElements.UTD_NAMESPACE)
+        private val PROTOTYPE = Element(UTDElements.TABLE_DIVIDER.qName, UTD_NS)
         private const val ATTR_NAME = "class"
     }
 }

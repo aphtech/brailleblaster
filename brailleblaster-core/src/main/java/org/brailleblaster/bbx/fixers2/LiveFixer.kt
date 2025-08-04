@@ -19,7 +19,6 @@ import nu.xom.Element
 import nu.xom.Node
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.bbx.fixers2.ImportFixerCommon.ApplyToDescendantBlocks
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 
@@ -33,28 +32,28 @@ object LiveFixer {
 	fun fix(root: Element) {
         ImportFixerCommon.applyToDescendantBlocks(
             root,
-            ApplyToDescendantBlocks { obj: Element, block: MutableList<Text>, descendantTextNodes: MutableList<Node> ->
+            { obj: Element, block: MutableList<Text>, descendantTextNodes: MutableList<Node> ->
                 detachEmptyBlocks(
                     obj,
                     block,
                     descendantTextNodes
                 )
             },
-            ApplyToDescendantBlocks { obj: Element, block: MutableList<Text>, descendantTextNodes: MutableList<Node> ->
+            { obj: Element, block: MutableList<Text>, descendantTextNodes: MutableList<Node> ->
                 trimBlockText(
                     obj,
                     block,
                     descendantTextNodes
                 )
             },
-            ApplyToDescendantBlocks { obj: Element, block: List<Text>, descendantTextNodes: List<Node> ->
+            { obj: Element, block: List<Text>, descendantTextNodes: List<Node> ->
                 cleanupNewPagePlaceholder(
                     obj,
                     block,
                     descendantTextNodes
                 )
             },
-            ApplyToDescendantBlocks { obj: Element, block: MutableList<Text>, descendantTextNodes: MutableList<Node> ->
+            { obj: Element, block: MutableList<Text>, descendantTextNodes: MutableList<Node> ->
                 detachEmptyTextNodes(
                     obj,
                     block,

@@ -26,6 +26,7 @@ import org.brailleblaster.utd.actions.SkipAction
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.BrailleTableType
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 import java.io.StringReader
 
 object UTDTestUtils {
@@ -42,7 +43,7 @@ object UTDTestUtils {
                 + "  'http://www.daisy.org/z3986/2005/dtbook-2005-3.dtd'>"
                 + "<dtbook version='2005-3' "
                 + "xmlns='http://www.daisy.org/z3986/2005/dtbook/' "
-                + "xmlns:utd='" + UTDElements.UTD_NAMESPACE + "' "
+                + "xmlns:utd='" + UTD_NS + "' "
                 + "xmlns:m='" + "http://www.w3.org/1998/Math/MathML" + "' "
                 + ">"
                 + "<head>"
@@ -111,7 +112,7 @@ object UTDTestUtils {
             override fun findValue(node: Node): IAction {
                 return if ((node is Element) && node.localName == BLOCK_NAME) {
                     TestGenericBlockAction()
-                } else if (node is Element && UTDElements.UTD_NAMESPACE == node.namespaceURI) {
+                } else if (node is Element && UTD_NS == node.namespaceURI) {
                     SkipAction()
                 } else {
                     GenericAction()

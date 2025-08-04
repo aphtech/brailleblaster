@@ -16,11 +16,9 @@
 package org.brailleblaster.perspectives.mvc.modules.views
 
 import com.google.common.base.Suppliers
-import com.google.common.collect.Lists
 import nu.xom.Element
 import nu.xom.Node
 import nu.xom.Text
-import org.apache.commons.lang3.tuple.Pair
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.TextMapElement
@@ -35,7 +33,8 @@ import org.brailleblaster.perspectives.mvc.events.XMLCaretEvent
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.BB_NS
+import org.brailleblaster.utils.UTD_NS
 import org.eclipse.swt.custom.StyledText
 import org.slf4j.LoggerFactory
 import java.util.function.Supplier
@@ -167,7 +166,7 @@ class TextViewModule(private val manager: Manager) : AbstractModule(), SimpleLis
             for (curDescendant in descendants.get()) {
                 if (XMLHandler.ancestorElementIs(
                         curDescendant
-                    ) { curAncestor: Element -> curAncestor.namespaceURI == UTDElements.UTD_NAMESPACE }
+                    ) { curAncestor: Element -> curAncestor.namespaceURI == UTD_NS }
                 ) {
                     continue
                 }
@@ -202,10 +201,10 @@ class TextViewModule(private val manager: Manager) : AbstractModule(), SimpleLis
         if (preFilter != null) {
             return preFilter
         } else {
-            for (curDescendant in Lists.reverse(descendants.get())) {
+            for (curDescendant in descendants.get().reversed()) {
                 if (XMLHandler.ancestorElementIs(
                         curDescendant
-                    ) { curAncestor: Element -> curAncestor.namespaceURI == UTDElements.UTD_NAMESPACE }
+                    ) { curAncestor: Element -> curAncestor.namespaceURI == UTD_NS }
                 ) {
                     continue
                 }
@@ -242,7 +241,7 @@ class TextViewModule(private val manager: Manager) : AbstractModule(), SimpleLis
                     return curTME
                 }
             }
-        } else if (node is Element && node.namespaceURI != BBX.BB_NAMESPACE) {
+        } else if (node is Element && node.namespaceURI != BB_NS) {
             // Accept utd linebreak elements
             return getTMEOfElement(node)
         }
@@ -260,11 +259,11 @@ class TextViewModule(private val manager: Manager) : AbstractModule(), SimpleLis
             //TODO: Used to throw NPE, this is at least more useful
             //If still formatting wait for formatting and find TME again
             //TODO: What if this section has already been formatted?
-            if (!manager.viewInitializer.sectionList[result.left!!].isVisible && manager.needsMapListUpdate()) {
+            if (!manager.viewInitializer.sectionList[result.first].isVisible && manager.needsMapListUpdate()) {
                 manager.waitForFormatting(true)
                 result = manager.viewInitializer.findSection(text)  ?: throw NodeException("Node is not in maplist", text)
             }
-            tme = manager.viewInitializer.sectionList[result.left!!].list[result.right!!]
+            tme = manager.viewInitializer.sectionList[result.first].list[result.second]
         }
         return tme
     }

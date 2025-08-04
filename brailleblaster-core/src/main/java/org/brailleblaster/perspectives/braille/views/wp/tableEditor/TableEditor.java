@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.views.wp.tableEditor;
 
+import kotlin.Pair;
 import net.miginfocom.swt.MigLayout;
 import nu.xom.*;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +23,7 @@ import org.brailleblaster.bbx.BBX;
 import org.brailleblaster.bbx.BBX.TableRowType;
 import org.brailleblaster.bbx.BBXUtils;
 import org.brailleblaster.exceptions.EditingException;
+import org.brailleblaster.utd.exceptions.NodeException;
 import org.brailleblaster.util.FormUIUtils;
 import org.brailleblaster.util.Notify;
 import org.brailleblaster.utils.gui.PickerDialog;
@@ -131,7 +133,7 @@ public class TableEditor extends Dialog {
         public void open(Shell parent, Element table, int columns, List<TableUtils.SimpleTableOptions> options, UTDManager m) {
             int pageWidth =
                     m.getEngine().getBrailleSettings().getCellType().getCellsForWidth(
-                        BigDecimal.valueOf(m.getEngine().getPageSettings().getDrawableWidth()));
+                            BigDecimal.valueOf(m.getEngine().getPageSettings().getDrawableWidth()));
 
             Shell dialog = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
             dialog.setText("Simple Table Options");
@@ -703,6 +705,9 @@ public class TableEditor extends Dialog {
         EasySWT.buildGridData().setAlign(SWT.CENTER, SWT.BEGINNING).applyTo(leftTableLabel);
         //Use the left-page table to create text boxes
         List<CellText> leftBoxes = createTexts(leftSC, leftRows, ((InternalFacingTable) state).split, state.getRows(), new ArrayList<>(), null, false);
+        if (leftBoxes == null) {
+            return;
+        }
 
         Label border = new Label(tableContainer, SWT.BORDER);
         border.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
@@ -714,6 +719,9 @@ public class TableEditor extends Dialog {
         rightSC.setLayout(new GridLayout(1, false));
         //Use the right page table to create text boxes
         List<CellText> rightBoxes = createTexts(rightSC, rightRows, state.getCols() - ((InternalFacingTable) state).split, state.getRows(), new ArrayList<>(), null, false);
+        if (rightBoxes == null) {
+            return;
+        }
 
         rightBoxes.forEach((ct) -> ct.col = ct.col + ((InternalFacingTable) state).split);
 
@@ -1011,10 +1019,13 @@ public class TableEditor extends Dialog {
                         }
                         Element tnContainer = createTNContainer(tNote, firstRow);
                         state.setTNContainer(tnContainer);
-                        updateRowColTexts();
-                        deleteTexts(parent, textBoxes);
-                        recreateTexts(parent, textBoxes, formatSpecificButton);
-                        checkFormatSpecificOption(parent, formatSpecificButton, textBoxes);
+                        if (!shell.isDisposed()) {
+                            //Possibility for the shell to be closed if the table is too big in createTNContainer.
+                            updateRowColTexts();
+                            deleteTexts(parent, textBoxes);
+                            recreateTexts(parent, textBoxes, formatSpecificButton);
+                            checkFormatSpecificOption(parent, formatSpecificButton, textBoxes);
+                        }
                     } else {
                         removeTNContainerFromState(parent, textBoxes, formatSpecificButton);
                     }
@@ -1139,7 +1150,13 @@ public class TableEditor extends Dialog {
                     CellText newText = new CellText(textComp, -1, i);
                     EasySWT.buildGridData().setHint(200, 150).applyTo(newText.getWidget());
                     if (i + 1 < containerCopy.getChildCount()) {
-                        newText.text.setXML((Element) containerCopy.getChild(i + 1));
+                        try {
+                            newText.text.setXML((Element) containerCopy.getChild(i + 1));
+                        } catch (NodeException ne) {
+                            Notify.showMessage("Error setting TN text. Table may be too long:\n" + ne.getMessage());
+                            closeShell();
+                            return null;
+                        }
                     }
                     newText.setTN(true);
                     returnList.add(newText);
@@ -1464,11 +1481,16 @@ public class TableEditor extends Dialog {
     private Element createTNContainer(Element note, List<CellText> firstRow) {
         Element container = BBX.CONTAINER.TABLETN.create();
         container.appendChild(BBXUtils.wrapAsTransNote(note));
-
         switch (state.getType()) {
             case STAIRSTEP:
                 for (int i = 0; i < firstRow.size(); i++) {
                     int margin = (i * 2) + 1;
+                    //TODO: This can create styles that go out of range if they get big enough; max allowed is 11-11; indent level 10
+                    if (margin > 10) {
+                        Notify.showMessage("Cannot add transcriber notes to a stairstep table of this size.");
+                        closeShell();
+                        return null;
+                    }
                     Element block = firstRow.get(i).text.getXML(BBX.BLOCK.STYLE.create(margin + "-" + margin));
                     container.appendChild(block);
                 }
@@ -1491,6 +1513,7 @@ public class TableEditor extends Dialog {
             case LISTED:
                 break;
             case SIMPLE:
+                //Do nothing
             default:
                 return null;
         }
@@ -1741,12 +1764,11 @@ public class TableEditor extends Dialog {
                 styles.stream().map(s -> new String[]{banaStyles.get(s.getName())}).collect(Collectors.toList());
         //Really wish they were sorted. Comparators aren't cooperating though.
         List<Style> newStyles = new ArrayList<>();
-        Integer shellX = null;
-        Integer shellY = null;
+        Pair<Integer, Integer> shellLoc = null;
 
         for (CellText text : textBoxes) {
             PickerDialog pd = new PickerDialog();
-            pd.setHeadings(new String[] {"Style"});
+            pd.setHeadings(new String[]{"Style"});
             pd.setContents(styleNames);
             pd.setMessage("Select the style for cell:\n\n" + StringUtils.abbreviate(text.getWidget().getText(), 100));
             final Shell pdShell = pd.open(shell, (i) -> {
@@ -1756,11 +1778,10 @@ public class TableEditor extends Dialog {
                     newStyles.add(null);
                 }
             });
-            if (shellX == null && shellY == null) {
-                shellX = pdShell.getLocation().x;
-                shellY = pdShell.getLocation().y;
+            if (shellLoc == null) {
+                shellLoc = new Pair<>(pdShell.getLocation().x, pdShell.getLocation().y);
             } else {
-                pdShell.setLocation(shellX, shellY);
+                pdShell.setLocation(shellLoc.getFirst(), shellLoc.getSecond());
             }
 
             while (!pdShell.isDisposed()) {
@@ -1823,7 +1844,7 @@ public class TableEditor extends Dialog {
                 styles.stream().map(s -> new String[]{banaStyles.get(s.getName())}).collect(Collectors.toList());
 
         PickerDialog pd = new PickerDialog();
-        pd.setHeadings(new String[] {"Style"});
+        pd.setHeadings(new String[]{"Style"});
         pd.setContents(styleNames);
         pd.setMessage("Select the style that should be applied to each table cell:");
         pd.open(shell, (i) -> {

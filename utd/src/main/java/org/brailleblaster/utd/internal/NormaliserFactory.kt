@@ -15,9 +15,7 @@
  */
 package org.brailleblaster.utd.internal
 
-import com.google.common.collect.ImmutableList
 import nu.xom.*
-import org.apache.commons.lang3.StringUtils
 import org.brailleblaster.utd.config.DocumentUTDConfig
 import org.brailleblaster.utd.utils.UTDHelper.Companion.endsWithWhitespace
 import org.brailleblaster.utd.utils.UTDHelper.Companion.startsWithWhitespace
@@ -43,7 +41,7 @@ class NormaliserFactory : NodeFactory() {
             val value = curText.value
             val newValue = normaliseSpace(value)
             //In all real textbooks indentations is outside the element and contains newlines
-            if (StringUtils.isBlank(newValue) && StringUtils.containsAny(value, '\r', '\n')) {
+            if (newValue.isBlank() && value.any { it in "\r\n" }) {
                 curText.detach()
                 continue
             }
@@ -61,13 +59,13 @@ class NormaliserFactory : NodeFactory() {
             for (i in 0 until childCount) {
                 val child = element.getChild(i)
                 if (previousChild != null) {
-                    if (previousChild is Text && child is Element && StringUtils.isWhitespace(previousChild.value) && blockElementNames.contains(
+                    if (previousChild is Text && child is Element && previousChild.value.isBlank() && blockElementNames.contains(
                             child.localName
                         )
                     ) {
                         // block element preceded by whitespace
                         whitespaceTexts.add(previousChild)
-                    } else if (child is Text && previousChild is Element && StringUtils.isWhitespace(child.value) && blockElementNames.contains(
+                    } else if (child is Text && previousChild is Element && child.value.isBlank() && blockElementNames.contains(
                             previousChild.localName
                         )
                     ) {
@@ -132,19 +130,19 @@ class NormaliserFactory : NodeFactory() {
                 curText.detach()
             }
 
-            if (StringUtils.isBlank(value)) {
+            if (value.isBlank()) {
                 //Not next to an image, but this is intended as it made it past makeText()
                 continue
             }
 
             //XML formatters will put elements after a text node on a new line
             charsToTrim = startsWithWhitespace(value)
-            if (charsToTrim > 0 && StringUtils.containsAny(value.substring(0, charsToTrim), "\n", "\r")) {
+            if (charsToTrim > 0 && value.substring(0, charsToTrim).any { it in "\n\r" }) {
                 value = " " + value.substring(charsToTrim)
             }
 
             charsToTrim = endsWithWhitespace(value)
-            if (charsToTrim > 0 && StringUtils.containsAny(value.substring(value.length - charsToTrim), "\n", "\r")) {
+            if (charsToTrim > 0 && value.substring(value.length - charsToTrim).any { it in "\n\r" }) {
                 value = value.substring(0, value.length - charsToTrim) + " "
             }
 
@@ -217,8 +215,8 @@ class NormaliserFactory : NodeFactory() {
     companion object {
         private val log: Logger = LoggerFactory.getLogger(NormaliserFactory::class.java)
         const val IS_NORMALISED_KEY: String = "isNormalised"
-        private val REMOVE_ADJACENT_SPACE_ELEMENTS: ImmutableList<String> = ImmutableList.of("img", "imggroup", "td")
-        private val HTML_BLOCK_ELEMENTS: ImmutableList<String> = ImmutableList.of(
+        private val REMOVE_ADJACENT_SPACE_ELEMENTS: List<String> = listOf("img", "imggroup", "td")
+        private val HTML_BLOCK_ELEMENTS: List<String> = listOf(
             "html",
             "body",
             "h1",
@@ -240,7 +238,7 @@ class NormaliserFactory : NodeFactory() {
             "td",
             "th"
         )
-        private val DTBOOK_BLOCK_ELEMENTS: ImmutableList<String> = ImmutableList.of(
+        private val DTBOOK_BLOCK_ELEMENTS: List<String> = listOf(
             "dtbook",
             "book",
             "frontmatter",
@@ -269,6 +267,6 @@ class NormaliserFactory : NodeFactory() {
             "td",
             "th"
         )
-        private val DEFAULT_BLOCK_ELEMENTS: ImmutableList<String> = ImmutableList.of()
+        private val DEFAULT_BLOCK_ELEMENTS: List<String> = listOf()
     }
 }

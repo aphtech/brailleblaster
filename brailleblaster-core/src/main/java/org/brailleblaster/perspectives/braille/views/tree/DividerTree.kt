@@ -21,7 +21,7 @@ import org.brailleblaster.bbx.BBX
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.TextMapElement
 import org.brailleblaster.settings.UTDManager.Companion.getNextPageNum
-import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.SashForm
 import org.eclipse.swt.events.SelectionAdapter
@@ -175,7 +175,7 @@ class DividerTree(dm: Manager?, sash: SashForm?) : TreeView(dm!!, sash!!) {
     }
 
     private fun isHeading(e: Element): Boolean {
-        val atr = e.getAttribute("overrideStyle", UTDElements.UTD_NAMESPACE)
+        val atr = e.getAttribute("overrideStyle", UTD_NS)
         if (atr != null) {
             return headings!!.contains(atr.value)
         }

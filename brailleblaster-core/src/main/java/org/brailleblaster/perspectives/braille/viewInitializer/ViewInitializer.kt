@@ -17,7 +17,6 @@ package org.brailleblaster.perspectives.braille.viewInitializer
 
 import nu.xom.Element
 import nu.xom.Node
-import org.apache.commons.lang3.tuple.Pair
 import org.brailleblaster.math.mathml.MathMLTableElement
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.document.BrailleDocument

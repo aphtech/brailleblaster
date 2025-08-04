@@ -18,8 +18,6 @@ package org.brailleblaster.perspectives.braille.views.wp
 import nu.xom.Element
 import nu.xom.Node
 import nu.xom.Text
-import org.apache.commons.lang3.tuple.MutablePair
-import org.apache.commons.lang3.tuple.Pair
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.math.mathml.MathMLElement
 import org.brailleblaster.math.mathml.MathMLTableElement
@@ -95,18 +93,30 @@ class TextRenderer(manager: Manager, private val textView: TextView) : Renderer(
         val n = t.node
         var brl = getBrlNode(n)
         if (brl == null) {
-            brl = if (t is BoxLineTextMapElement && UTDElements.BRL.isA(t.node)) {
-                t.node as Element
-            } else if (t is GuideDotsTextMapElement && UTDElements.BRLONLY.isA(t.node)) {
-                t.getNodeParent()
-            } else if (t is MathMLElement) {
-                MathModule.getBrl(n) as Element
-            } else if (t is PageIndicatorTextMapElement) {
-                t.node.childNodes.filterIsInstance<Element>().first { UTDElements.BRL.isA(it) }
-            } else if (t is UncontractedWordTextMapElement && UTDElements.BRLONLY.isA(t.node)) {
-                t.getNodeParent()
-            } else {
-                throw NullPointerException("No brl found")
+            brl = when (t) {
+                is BoxLineTextMapElement if UTDElements.BRL.isA(t.node) -> {
+                    t.node as Element
+                }
+
+                is GuideDotsTextMapElement if UTDElements.BRLONLY.isA(t.node) -> {
+                    t.getNodeParent()
+                }
+
+                is MathMLElement -> {
+                    MathModule.getBrl(n) as Element
+                }
+
+                is PageIndicatorTextMapElement -> {
+                    t.node.childNodes.filterIsInstance<Element>().first { UTDElements.BRL.isA(it) }
+                }
+
+                is UncontractedWordTextMapElement if UTDElements.BRLONLY.isA(t.node) -> {
+                    t.getNodeParent()
+                }
+
+                else -> {
+                    throw NullPointerException("No brl found")
+                }
             }
         }
         brl?.let { renderBrailleList(t, it, list) }
@@ -376,7 +386,7 @@ class TextRenderer(manager: Manager, private val textView: TextView) : Renderer(
     private fun handleBrlOnlyMapElement(tme: TextMapElement, bme: BrailleMapElement) {
         if (bme is LineNumberBrlMapElement) {
             //This is a line number that should be painted onto the view
-            lineNumberList.add(MutablePair(state.charCount, bme))
+            lineNumberList.add((state.charCount) to bme)
         } else if (bme is GuideWordBrlMapElement || bme is RunningHeadBrlMapElement) {
             //Skip guide words and running heads, they are painted on by PageIndicator
         } else if (bme is BoxLineBrlMapElement || bme is PageIndicatorBrlMapElement) {
@@ -495,13 +505,13 @@ class TextRenderer(manager: Manager, private val textView: TextView) : Renderer(
     private fun renderNewPages() {
         val newPages = state.newPages
         for (pair in newPages) {
-            handleNewPageElement(pair.left, pair.right, textView)
+            handleNewPageElement(pair.first, pair.second, textView)
         }
     }
 
     private fun renderLineNumbers() {
         for (lineNumber in lineNumberList) {
-            handleLineNumber(lineNumber.right, lineNumber.left)
+            handleLineNumber(lineNumber.second, lineNumber.first)
         }
     }
 

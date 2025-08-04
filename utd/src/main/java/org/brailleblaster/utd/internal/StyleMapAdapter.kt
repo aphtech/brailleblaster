@@ -15,14 +15,12 @@
  */
 package org.brailleblaster.utd.internal
 
-import org.apache.commons.collections4.MapIterator
+import jakarta.xml.bind.annotation.adapters.XmlAdapter
 import org.brailleblaster.utd.IStyle
+import org.brailleblaster.utd.NamespaceMap
 import org.brailleblaster.utd.Style
 import org.brailleblaster.utd.StyleMap
 import org.brailleblaster.utd.config.StyleDefinitions
-import org.brailleblaster.utd.matchers.INodeMatcher
-import jakarta.xml.bind.annotation.adapters.XmlAdapter
-import org.brailleblaster.utd.NamespaceMap
 
 class StyleMapAdapter : XmlAdapter<AdaptedStyleMap?, StyleMap?> {
     private val styleDefs: StyleDefinitions?
@@ -40,26 +38,23 @@ class StyleMapAdapter : XmlAdapter<AdaptedStyleMap?, StyleMap?> {
         this.saveStyleObject = saveStyleObject
     }
 
-    override fun marshal(actions: StyleMap?): AdaptedStyleMap? {
-        if (actions == null) {
-            return null
+    override fun marshal(actions: StyleMap?): AdaptedStyleMap? = if (actions == null) {
+        null
+    } else {
+        AdaptedStyleMap().apply {
+            semanticEntries.addAll(actions.map { (matcher, style) ->
+                if (saveStyleObject) {
+                    AdaptedStyleMap.Entry(
+                        matcher,
+                        null,
+                        style as Style
+                    )
+                } else {
+                    AdaptedStyleMap.Entry(matcher, style.name, null)
+                }
+            })
+            namespaces = actions.namespaces
         }
-        val adaptedStyleMap = AdaptedStyleMap()
-        val defaultNamespaces = actions.namespaces
-        val it: MapIterator<INodeMatcher, IStyle> = actions.mapIterator()
-        while (it.hasNext()) {
-            val matcher = it.next()
-            val styleName = it.value.name
-            if (saveStyleObject) adaptedStyleMap.semanticEntries.add(
-                AdaptedStyleMap.Entry(
-                    matcher,
-                    null,
-                    it.value as Style
-                )
-            ) else adaptedStyleMap.semanticEntries.add(AdaptedStyleMap.Entry(matcher, styleName, null))
-        }
-        adaptedStyleMap.namespaces = defaultNamespaces
-        return adaptedStyleMap
     }
 
     override fun unmarshal(adaptedStyleMap: AdaptedStyleMap?): StyleMap? {

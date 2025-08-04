@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.utd.utils
 
-import com.google.common.collect.ImmutableMap
 import org.xml.sax.InputSource
 import java.io.StringReader
 
@@ -24,20 +23,20 @@ class EntityMap private constructor(
     private val systemIdMap: Map<String, IEntitySource>
 ) {
     class Builder {
-        private var publicIdBuilder = ImmutableMap.builder<String, IEntitySource>()
-        private var systemIdBuilder = ImmutableMap.builder<String, IEntitySource>()
+        private var publicIdBuilder = mutableMapOf<String, IEntitySource>()
+        private var systemIdBuilder = mutableMapOf<String, IEntitySource>()
         fun put(publicId: String?, systemId: String?, source: IEntitySource): Builder {
             if (publicId != null) {
-                publicIdBuilder = publicIdBuilder.put(publicId, source)
+                publicIdBuilder.put(publicId, source)
             }
             if (systemId != null) {
-                systemIdBuilder = systemIdBuilder.put(systemId, source)
+                systemIdBuilder.put(systemId, source)
             }
             return this
         }
 
         fun build(): EntityMap {
-            return EntityMap(publicIdBuilder.build(), systemIdBuilder.build())
+            return EntityMap(publicIdBuilder.toMap(), systemIdBuilder.toMap())
         }
     }
 

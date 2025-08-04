@@ -26,8 +26,8 @@ import org.brailleblaster.perspectives.braille.searcher.Searcher
 import org.brailleblaster.perspectives.mvc.XMLTextCaret
 import org.brailleblaster.perspectives.mvc.events.XMLCaretEvent
 import org.brailleblaster.utd.internal.xml.FastXPath
-import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.util.Notify.showMessage
+import org.brailleblaster.utils.UTD_NS
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.KeyAdapter
 import org.eclipse.swt.events.KeyEvent
@@ -155,7 +155,7 @@ class BookTree2(val manager: Manager, val dialog: BookTreeDialog) {
     }
 
     private fun isHeading(e: Element): Boolean {
-        val atr = e.getAttribute("overrideStyle", UTDElements.UTD_NAMESPACE)
+        val atr = e.getAttribute("overrideStyle", UTD_NS)
         if (atr != null) {
             return headings!!.contains(atr.value)
         }

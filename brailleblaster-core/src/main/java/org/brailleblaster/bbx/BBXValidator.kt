@@ -21,9 +21,11 @@ import org.brailleblaster.bbx.BBX.CoreType
 import org.brailleblaster.utd.config.StyleDefinitions
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.XMLHandler2
-import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utils.xom.childNodes
 import org.brailleblaster.util.Utils
+import org.brailleblaster.utils.BB_NS
+import org.brailleblaster.utils.MATHML_NS
+import org.brailleblaster.utils.UTD_NS
 import org.slf4j.LoggerFactory
 import java.util.*
 
@@ -68,10 +70,10 @@ object BBXValidator {
         while (!itrStack.isEmpty()) {
             val curElem = itrStack.pop()
             when (curElem.namespaceURI) {
-                UTDElements.UTD_NAMESPACE, BBX.MATHML_NAMESPACE ->                    //do not try to validate
+                UTD_NS, MATHML_NS ->                    //do not try to validate
                     continue
 
-                BBX.BB_NAMESPACE -> {}
+                BB_NS -> {}
                 else -> throw ValidateException(curElem, "Unexpected namspace " + curElem.namespaceURI)
             }
             val curType = BBX.getType(curElem)

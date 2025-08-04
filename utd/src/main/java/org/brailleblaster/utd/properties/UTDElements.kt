@@ -19,6 +19,7 @@ import nu.xom.Element
 import nu.xom.Node
 import nu.xom.XPathContext
 import org.brailleblaster.utd.internal.elements.*
+import org.brailleblaster.utils.UTD_NS
 
 enum class UTDElements(val elementName: String) {
     NEW_PAGE("newPage"),
@@ -46,14 +47,14 @@ enum class UTDElements(val elementName: String) {
             META -> Meta()
             TAB -> Tab()
             TABLE_DIVIDER -> TableDivider()
-            else -> Element(String.format("utd:%s", elementName), UTD_NAMESPACE)
+            else -> Element(String.format("utd:%s", elementName), UTD_NS)
         }
     }
 
     fun isA(node: Node?): Boolean {
         var result = false
         if (node is Element) {
-            if (UTD_NAMESPACE == node.namespaceURI && elementName == node.localName) {
+            if (UTD_NS == node.namespaceURI && elementName == node.localName) {
                 result = true
             }
         }
@@ -61,10 +62,9 @@ enum class UTDElements(val elementName: String) {
     }
 
     companion object {
-        const val UTD_NAMESPACE = "http://brailleblaster.org/ns/utd"
         const val UTD_PREFIX = "utd"
         @JvmField
-        val UTD_XPATH_CONTEXT = XPathContext("utd", UTD_NAMESPACE)
+        val UTD_XPATH_CONTEXT = XPathContext("utd", UTD_NS)
         const val UTD_ACTION_ATTRIB = "utd-action"
         const val UTD_STYLE_ATTRIB = "utd-style"
         const val UTD_SKIP_LINES_ATTRIB = "skipLines"
@@ -79,7 +79,7 @@ enum class UTDElements(val elementName: String) {
 
         @JvmStatic
         fun findType(e: Element): UTDElements? {
-            if (UTD_NAMESPACE == e.namespaceURI) {
+            if (UTD_NS == e.namespaceURI) {
                 for (curType in entries) {
                     if (curType.elementName == e.localName) {
                         return curType

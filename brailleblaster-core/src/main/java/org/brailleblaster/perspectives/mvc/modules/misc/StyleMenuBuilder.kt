@@ -329,13 +329,11 @@ class StyleMenuBuilder(shell: Shell, manager: Manager) : StylesBuilder(shell, ma
         get() {
             val label = StringBuilder()
             val currentLoadout = BBIni.propertyFileManager.getProperty("currentStyleLoadout")
-            var styleCategory = ""
-            var styleSubCategory = ""
             if (!currentLoadout.isNullOrEmpty()) {
                 label.append(localeHandler["loadedStyle"]).append(": ")
                 if (currentLoadout.contains("/")) {
-                    styleCategory = currentLoadout.substring(0, currentLoadout.indexOf("/"))
-                    styleSubCategory = currentLoadout.substring(currentLoadout.indexOf("/") + 1)
+                    val styleCategory = currentLoadout.substring(0, currentLoadout.indexOf("/"))
+                    val styleSubCategory = currentLoadout.substring(currentLoadout.indexOf("/") + 1)
                     label.append(localeHandler[styleCategory]).append("/").append(
                         localeHandler[styleSubCategory]
                     )
@@ -357,7 +355,7 @@ class StyleMenuBuilder(shell: Shell, manager: Manager) : StylesBuilder(shell, ma
 
     private fun getShortcut(accelerator: Int): Shortcut? {
         var curKeyCombination: String
-        var curAcc = 0
+        var curAcc: Int
         for (curShortcut in shortcutDefinitions.shortcuts) {
             curKeyCombination = curShortcut.keyCombination //.toLowerCase();
             curAcc = getStyleAccelerator(curKeyCombination)

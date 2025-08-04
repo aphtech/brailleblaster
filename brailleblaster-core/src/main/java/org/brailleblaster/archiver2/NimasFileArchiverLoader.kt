@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.archiver2
 
-import com.google.common.collect.ImmutableMap
 import org.brailleblaster.archiver2.ArchiverFactory.FileLoader.Companion.convert
 import org.slf4j.LoggerFactory
 import java.nio.file.Path
@@ -23,10 +22,9 @@ import java.nio.file.Paths
 import java.util.*
 
 object NimasFileArchiverLoader : ArchiverFactory.FileLoader {
-    override val extensionsAndDescription: ImmutableMap<String, String>
-        get() = ImmutableMap.of(
-            "*.xml", "Nimas XML (*.xml)"
-        )
+    override val extensionsAndDescription: Map<String, String> = mapOf(
+        "*.xml" to "Nimas XML (*.xml)"
+    )
 
     @Throws(Exception::class)
     override fun tryLoad(file: Path, fileData: ArchiverFactory.ParseData): Archiver2? {

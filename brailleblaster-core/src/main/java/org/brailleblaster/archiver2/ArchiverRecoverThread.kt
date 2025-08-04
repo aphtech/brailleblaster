@@ -15,8 +15,6 @@
  */
 package org.brailleblaster.archiver2
 
-import com.google.common.io.Files.getFileExtension
-import com.google.common.io.Files.getNameWithoutExtension
 import org.brailleblaster.BBIni
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.util.Notify.showException
@@ -27,12 +25,14 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.InvalidPathException
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
+import kotlin.io.path.Path
+import kotlin.io.path.extension
+import kotlin.io.path.nameWithoutExtension
 
 
 /**
@@ -44,13 +44,13 @@ class ArchiverRecoverThread(private val m: Manager) {
 
     //Add file to autoSave
     private fun addFile() {
-        val fileName = m.archiver.path.fileName.toString()
+        val fileName = m.archiver.path.fileName
         //println("Adding $fileName (ID $currentId) to Autosave")
         if (firstOpen) {
             val oldAutoSavePath = m.archiver.path.toString()
             if (oldAutoSavePath.contains(BBIni.autoSavePath.toString())) {
                 saveAutoSaveFile(fileName)
-                removeSavedFile(oldAutoSavePath)
+                removeSavedFile(Path(oldAutoSavePath))
                 firstOpen = false
                 return
             }
@@ -62,7 +62,7 @@ class ArchiverRecoverThread(private val m: Manager) {
         }
     }
 
-    private fun saveFile(path: String) {
+    private fun saveFile(path: Path) {
         //println("Saving File $fileName")
         val fileName = fileReName(path)
         val arch = m.archiver
@@ -71,7 +71,7 @@ class ArchiverRecoverThread(private val m: Manager) {
         addRecentSave(BBIni.autoSavePath.resolve(fileName))
     }
 
-    private fun saveAutoSaveFile(path: String) {
+    private fun saveAutoSaveFile(path: Path) {
         //println("Saving autosaved file $fileName - NOT renaming!")
         val fileName = fileReName(path)
         val arch = m.archiver
@@ -82,7 +82,7 @@ class ArchiverRecoverThread(private val m: Manager) {
 
     fun removeFile() {
         //Remove recovery information from disk
-        removeFile(m.archiver.path.fileName.toString())
+        removeFile(m.archiver.path.fileName)
     }
 
     //start the auto save process
@@ -111,19 +111,18 @@ class ArchiverRecoverThread(private val m: Manager) {
 
         private val scheduler = Executors.newSingleThreadScheduledExecutor()
 
-        fun removeFile(path: String) {
+        fun removeFile(path: Path) {
             //Remove recovery information from disk
             //println("Removing file (override method) $fileName (ID $currentId)")
             val fileName = fileReName(path)
-            removeSavedFile(BBIni.autoSavePath.resolve(fileName).toString())
+            removeSavedFile(Path(BBIni.autoSavePath.resolve(fileName).toString()))
         }
 
-        // for delete previous file auto saved
-        private fun removeSavedFile(savedPath: String) {
+        private fun removeSavedFile(savedPath: Path) {
             //Remove recovery information from disk
             //println("Removing saved file for $savedPath")
             try {
-                val path = Paths.get(savedPath)
+                val path = savedPath
                 Files.deleteIfExists(path)
                 deleteRecentSave(path)
             } catch (e: IOException) {
@@ -132,14 +131,12 @@ class ArchiverRecoverThread(private val m: Manager) {
             }
         }
 
-        private fun fileReName(path: String): String {
+        private fun fileReName(path: Path): String {
             //I dislike this system; why not append the datetime to the doc name?
-            val ext = getFileExtension(path)
-            val fName = getNameWithoutExtension(path)
             //Not necessarily pretty, but it'll be unique every time.
             val cal = Calendar.getInstance().time
             val dateTimeString = dateFormatter.format(cal)
-            return "$fName $dateTimeString.$ext"
+            return "${path.nameWithoutExtension} $dateTimeString.${path.extension}"
         }
 
         @JvmStatic
@@ -152,7 +149,7 @@ class ArchiverRecoverThread(private val m: Manager) {
                 return Files.readAllLines(BBIni.recentSaves, BBIni.charset)
                     .mapNotNull { strPath: String ->
                         try {
-                            Paths.get(strPath)
+                            Path(strPath)
                         } catch (e: InvalidPathException) {
                             // Issue #6844: Do not catastrophically fail on corrupt File
                             log.error("Recent Saves file corrupted at " + BBIni.recentSaves, e)

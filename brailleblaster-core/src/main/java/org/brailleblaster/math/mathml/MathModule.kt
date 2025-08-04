@@ -16,10 +16,8 @@
 package org.brailleblaster.math.mathml
 
 import nu.xom.*
-import org.apache.commons.lang3.StringUtils
 import org.apache.commons.text.StringEscapeUtils
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.math.ascii.ASCII2MathML.translate
 import org.brailleblaster.math.mathml.MathUtils.removeMathInSelectedRange
 import org.brailleblaster.math.numberLine.NumberLine
@@ -50,6 +48,7 @@ import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.properties.BrailleTableType
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.TextTranslator.translateText
+import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.wordprocessor.WPManager.Companion.getInstance
 import org.eclipse.swt.SWT
 import org.mwhapples.jlouis.Louis
@@ -171,7 +170,7 @@ class MathModule : SimpleListener {
         const val SPATIAL_MATH_BBX_VERSION: String = "2"
 
         fun toggleMath(m: Manager) {
-            if (m.textView.selectionCount < 1 || StringUtils.isBlank(m.textView.selectionText)) {
+            if (m.textView.selectionCount < 1 || m.textView.selectionText.isBlank()) {
                 return
             }
             if (selectionContainsMath(m)) {

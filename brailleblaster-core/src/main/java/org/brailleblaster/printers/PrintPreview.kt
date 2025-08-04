@@ -16,55 +16,53 @@
 package org.brailleblaster.printers
 
 import com.google.common.collect.Range
-    import nu.xom.Document
-    import org.apache.commons.io.IOUtils
-    import org.brailleblaster.BBIni
-    import org.brailleblaster.embossers.EmbossingUtils.emboss
-    import org.brailleblaster.embossers.EmbossingUtils.embossBrf
-    import org.brailleblaster.perspectives.braille.Manager
-    import org.brailleblaster.perspectives.braille.views.wp.SixKeyHandler
-    import org.brailleblaster.perspectives.mvc.menu.MenuManager.menuItemAcceleratorSuffix
-    import org.brailleblaster.perspectives.mvc.modules.misc.FontSizeModule
-    import org.brailleblaster.printers.DocumentData.BBDocumentData
-    import org.brailleblaster.printers.DocumentData.BrfDocumentData
-    import org.brailleblaster.settings.UTDManager
-    import org.brailleblaster.settings.ui.BrailleSettingsDialog
-    import org.brailleblaster.settings.ui.EmbosserSettingsTab
-    import org.brailleblaster.utd.BRFWriter
-    import org.brailleblaster.utd.BRFWriter.PageListener
-    import org.brailleblaster.utils.braille.BrailleUnicodeConverter
-    import org.brailleblaster.utils.braille.BrailleUnicodeConverter.unicodeToAsciiLouis
-    import org.brailleblaster.utils.braille.BrailleUnicodeConverter.unicodeToAsciiUppercase
-    import org.brailleblaster.utils.swt.AccessibilityUtils.setName
-    import org.brailleblaster.exceptions.BBNotifyException
-    import org.brailleblaster.util.FormUIUtils
-    import org.brailleblaster.util.Notify.showMessage
-    import org.brailleblaster.util.WorkingDialog
-    import org.brailleblaster.wordprocessor.FontManager
-    import org.brailleblaster.wordprocessor.FontManager.Companion.decreaseFontSetting
-    import org.brailleblaster.wordprocessor.FontManager.Companion.increaseFontSetting
-    import org.brailleblaster.wordprocessor.FontManager.Companion.isShowBraille
-    import org.brailleblaster.wordprocessor.FontManager.Companion.newBrailleFont
-    import org.brailleblaster.wordprocessor.FontManager.Companion.newTextFont
-    import org.brailleblaster.wordprocessor.WPManager
-    import org.eclipse.swt.SWT
-    import org.eclipse.swt.custom.StyledText
-    import org.eclipse.swt.events.*
-    import org.eclipse.swt.graphics.Color
-    import org.eclipse.swt.layout.GridData
-    import org.eclipse.swt.layout.GridLayout
-    import org.eclipse.swt.layout.RowLayout
-    import org.eclipse.swt.widgets.*
-    import org.slf4j.Logger
-    import org.slf4j.LoggerFactory
-    import java.io.IOException
-    import java.math.BigDecimal
-    import java.math.RoundingMode
-    import java.nio.charset.StandardCharsets
-    import java.nio.file.Files
-    import java.nio.file.Path
-    import java.util.function.BiFunction
-    import kotlin.math.max
+import nu.xom.Document
+import org.brailleblaster.BBIni
+import org.brailleblaster.embossers.EmbossingUtils.emboss
+import org.brailleblaster.embossers.EmbossingUtils.embossBrf
+import org.brailleblaster.exceptions.BBNotifyException
+import org.brailleblaster.perspectives.braille.Manager
+import org.brailleblaster.perspectives.braille.views.wp.SixKeyHandler
+import org.brailleblaster.perspectives.mvc.menu.MenuManager.menuItemAcceleratorSuffix
+import org.brailleblaster.perspectives.mvc.modules.misc.FontSizeModule
+import org.brailleblaster.printers.DocumentData.BBDocumentData
+import org.brailleblaster.printers.DocumentData.BrfDocumentData
+import org.brailleblaster.settings.UTDManager
+import org.brailleblaster.settings.ui.BrailleSettingsDialog
+import org.brailleblaster.settings.ui.EmbosserSettingsTab
+import org.brailleblaster.utd.BRFWriter
+import org.brailleblaster.utd.BRFWriter.PageListener
+import org.brailleblaster.util.FormUIUtils
+import org.brailleblaster.util.Notify.showMessage
+import org.brailleblaster.util.WorkingDialog
+import org.brailleblaster.utils.braille.BrailleUnicodeConverter
+import org.brailleblaster.utils.braille.BrailleUnicodeConverter.unicodeToAsciiLouis
+import org.brailleblaster.utils.braille.BrailleUnicodeConverter.unicodeToAsciiUppercase
+import org.brailleblaster.utils.swt.AccessibilityUtils.setName
+import org.brailleblaster.wordprocessor.FontManager
+import org.brailleblaster.wordprocessor.FontManager.Companion.decreaseFontSetting
+import org.brailleblaster.wordprocessor.FontManager.Companion.increaseFontSetting
+import org.brailleblaster.wordprocessor.FontManager.Companion.isShowBraille
+import org.brailleblaster.wordprocessor.FontManager.Companion.newBrailleFont
+import org.brailleblaster.wordprocessor.FontManager.Companion.newTextFont
+import org.brailleblaster.wordprocessor.WPManager
+import org.eclipse.swt.SWT
+import org.eclipse.swt.custom.StyledText
+import org.eclipse.swt.events.*
+import org.eclipse.swt.graphics.Color
+import org.eclipse.swt.layout.GridData
+import org.eclipse.swt.layout.GridLayout
+import org.eclipse.swt.layout.RowLayout
+import org.eclipse.swt.widgets.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import java.io.IOException
+import java.math.BigDecimal
+import java.math.RoundingMode
+import java.nio.file.Path
+import java.util.function.BiFunction
+import kotlin.io.path.readText
+import kotlin.math.max
 
 class PrintPreview private constructor(
     parent: Shell, private val fontManager: FontManager?, private val docData: DocumentData,
@@ -258,7 +256,7 @@ class PrintPreview private constructor(
                     val requestedPage: Int
                     try {
                         requestedPage = raw.toInt()
-                    } catch (ex: NumberFormatException) {
+                    } catch (_: NumberFormatException) {
                         showMessage("$raw is not a number")
                         return@addTraverseListener
                     }
@@ -270,7 +268,8 @@ class PrintPreview private constructor(
                     // Get the line and scroll to it (requested page is 1 based)
                     offset = pageStartOffsets[requestedPage - 1]
                 } else if (brlPageButton.selection) {
-                    val result = brlPageOffsets.filterKeys { key -> key.equals(raw, ignoreCase = true) }.values.firstOrNull()
+                    val result =
+                        brlPageOffsets.filterKeys { key -> key.equals(raw, ignoreCase = true) }.values.firstOrNull()
                     if (result == null) {
                         showMessage("Braille page {} does not exist", raw)
                         return@addTraverseListener
@@ -278,7 +277,8 @@ class PrintPreview private constructor(
                     offset = result
                 } else {
                     // Print page
-                    val result = printPageOffsets.filterKeys { key -> key.equals(raw, ignoreCase = true) }.values.firstOrNull()
+                    val result =
+                        printPageOffsets.filterKeys { key -> key.equals(raw, ignoreCase = true) }.values.firstOrNull()
                     if (result == null) {
                         showMessage("Print page {} does not exist", raw)
                         return@addTraverseListener
@@ -780,23 +780,24 @@ class PrintPreview private constructor(
         // Lambdas...
         val output = StringBuilder()
         //		uncomment the lines below to add margin to printpreview on bbx file
-        docData.utdManager.engine.toBRF(docData.document, { onChar: Char ->
-            if (onChar == BRFWriter.PAGE_SEPARATOR) {
-                val lastPageStart = pageStartOffsets[pageStartOffsets.size - 1]
-                // Don't include page seperator text in ranges so dual view doesn't have to
-                // strip them out
-                val lastPageEnd = output.length
-                pageRanges.add(Range.closed(lastPageStart, lastPageEnd))
-                pageStartOffsets.add(output.length)
-                //				setMarginTopLines(output, addMargin);
+        docData.utdManager.engine.toBRF(
+            docData.document, { onChar: Char ->
+                if (onChar == BRFWriter.PAGE_SEPARATOR) {
+                    val lastPageStart = pageStartOffsets[pageStartOffsets.size - 1]
+                    // Don't include page seperator text in ranges so dual view doesn't have to
+                    // strip them out
+                    val lastPageEnd = output.length
+                    pageRanges.add(Range.closed(lastPageStart, lastPageEnd))
+                    pageStartOffsets.add(output.length)
+                    //				setMarginTopLines(output, addMargin);
 //				setMarginLeftCells(output, addMargin);
 //			} else if (onChar == BRFWriter.NEWLINE) {
 //				output.append(BRFWriter.NEWLINE);
 //				setMarginLeftCells(output, addMargin);
-            } else {
-                output.append(onChar)
-            }
-        }, if (unicodeMenuItem.selection) BRFWriter.OPTS_OUTPUT_UNICODE else BRFWriter.OPTS_DEFAULT,
+                } else {
+                    output.append(onChar)
+                }
+            }, if (unicodeMenuItem.selection) BRFWriter.OPTS_OUTPUT_UNICODE else BRFWriter.OPTS_DEFAULT,
             object : PageListener {
                 override fun onBrlPageNum(brlPageBraille: String, brlPageOrig: String) {
                     log.trace("At length {} braille page {}", output.length, brlPageOrig)
@@ -831,9 +832,7 @@ class PrintPreview private constructor(
         printPageOffsets.clear()
         pageRanges.clear()
 
-        Files.newInputStream(docData.brfFile).use { `in` ->
-            brfOutput = IOUtils.toString(`in`, StandardCharsets.UTF_8)
-        }
+        brfOutput = docData.brfFile.readText(Charsets.UTF_8)
         //		uncomment the two lines below to add margin to printpreview on brf file
         var pageStart = 0
         var pageEnd: Int
@@ -980,8 +979,10 @@ class PrintPreview private constructor(
             //Now what multipliers do we need to get the paper size based on char sizes?
             //Now use the current braille cell size to get the paper size - have to rely on user settings here.
             val cellType = m.document.engine.brailleSettings.cellType
-            val minPaperHeight = (BigDecimal.valueOf(linesPerPage.toDouble()) * cellType.height).setScale(2, RoundingMode.HALF_UP)
-            val minPaperWidth = (BigDecimal.valueOf(cellsPerLine.toDouble()) * cellType.width).setScale(2, RoundingMode.HALF_UP)
+            val minPaperHeight =
+                (BigDecimal.valueOf(linesPerPage.toDouble()) * cellType.height).setScale(2, RoundingMode.HALF_UP)
+            val minPaperWidth =
+                (BigDecimal.valueOf(cellsPerLine.toDouble()) * cellType.width).setScale(2, RoundingMode.HALF_UP)
             //Ta-da, we have the paper size for the document, though without any margins factored in.
             //Really should have additional embossing options for those.
             log.info("BRF minimum paper size (mm): $minPaperWidth x $minPaperHeight")

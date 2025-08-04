@@ -22,13 +22,9 @@ import org.eclipse.swt.widgets.MenuItem
 /**
  * Tracks horizontal lines added under menus
  */
-class BBSeparator internal constructor(override val menu: TopMenu?) : IBBMenu {
+class BBSeparator internal constructor(override val topMenu: TopMenu?) : IBBMenu {
 
-    override fun build(parentMenu: Menu): MenuItem {
-        return MenuItem(parentMenu, SWT.SEPARATOR)
-    }
+    override fun build(parentMenu: Menu): MenuItem = MenuItem(parentMenu, SWT.SEPARATOR)
 
-    override fun copy(): BBSeparator {
-        return BBSeparator(menu)
-    }
+    override fun copy(): BBSeparator = this
 }

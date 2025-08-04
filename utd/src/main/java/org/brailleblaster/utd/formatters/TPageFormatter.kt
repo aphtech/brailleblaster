@@ -30,6 +30,7 @@ import org.brailleblaster.utd.utils.PageBuilderHelper.setPageNumberType
 import org.brailleblaster.utd.utils.UTDHelper.Companion.containsBrl
 import org.brailleblaster.utd.utils.UTDHelper.Companion.getDescendantBrlFast
 import org.brailleblaster.libembosser.spi.BrlCell
+import org.brailleblaster.utils.UTD_NS
 import java.util.*
 import kotlin.math.max
 
@@ -79,7 +80,7 @@ class TPageFormatter : LiteraryFormatter() {
         if (titlePage != null && titlePage.childCount > 0) {
             insertPages = true
             val centered =
-                CENTERED_ATTR.value == titlePage.getAttributeValue(CENTERED_ATTR.localName, UTDElements.UTD_NAMESPACE)
+                CENTERED_ATTR.value == titlePage.getAttributeValue(CENTERED_ATTR.localName, UTD_NS)
             if (centered) {
                 //LiteraryFormatter uses the StyleStack to set PageBuilder's alignment, so we can't just use pageBuilder.setAlign
                 //Push a centered style onto the StyleStack instead
@@ -270,6 +271,6 @@ class TPageFormatter : LiteraryFormatter() {
 
     companion object {
         val CENTERED_ATTR: Attribute =
-            Attribute(UTDElements.UTD_PREFIX + ":centered", UTDElements.UTD_NAMESPACE, "true")
+            Attribute(UTDElements.UTD_PREFIX + ":centered", UTD_NS, "true")
     }
 }

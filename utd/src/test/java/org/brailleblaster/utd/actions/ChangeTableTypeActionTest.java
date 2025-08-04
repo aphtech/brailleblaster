@@ -31,6 +31,7 @@ import org.brailleblaster.utd.TextSpan;
 import org.brailleblaster.utd.properties.BrailleTableType;
 import org.brailleblaster.utd.properties.UTDElements;
 import org.brailleblaster.utd.testutils.MockTranslatorFactory;
+import org.brailleblaster.utils.NamespacesKt;
 import org.mwhapples.jlouis.Louis;
 import org.mwhapples.jlouis.TranslationException;
 import org.mwhapples.jlouis.TranslationResult;
@@ -64,7 +65,7 @@ public class ChangeTableTypeActionTest {
 		List<TextSpan> result = action.applyTo(node, mockEngine);
 		
 		assertTrue(result.isEmpty());
-		String expectedXML = String.format("<p>Some text<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 0 0 4 5 6 7 8\">,\"s text</utd:brl></p>", UTDElements.UTD_NAMESPACE);
+		String expectedXML = String.format("<p>Some text<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 0 0 4 5 6 7 8\">,\"s text</utd:brl></p>", NamespacesKt.UTD_NS);
 		assertEquals(expectedXML, node.toXML());
 	}
 }

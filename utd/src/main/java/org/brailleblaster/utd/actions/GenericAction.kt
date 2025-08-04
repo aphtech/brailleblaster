@@ -23,6 +23,7 @@ import org.brailleblaster.utd.ITranslationEngine
 import org.brailleblaster.utd.TextSpan
 import org.brailleblaster.utd.exceptions.UTDTranslateException
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 import org.brailleblaster.utils.xom.NodeContext
 import org.brailleblaster.utils.xom.nodeCache
 import java.util.*
@@ -57,13 +58,13 @@ open class GenericAction : IAction {
                 // String midInsert = ((InsertAction)nodeAction).getMidInsert();//TODO
                 val postInsert = nodeAction.postInsert
                 if (preInsert != null) {
-                    val span = Element("span", UTDElements.UTD_NAMESPACE)
+                    val span = Element("span", UTD_NS)
                     span.addAttribute(Attribute("table", "DIRECT"))
                     span.appendChild(preInsert)
                     node.insertChild(span, 0)
                 }
                 if (postInsert != null) {
-                    val span = Element("span", UTDElements.UTD_NAMESPACE)
+                    val span = Element("span", UTD_NS)
                     span.addAttribute(Attribute("table", "DIRECT"))
                     span.appendChild(postInsert)
                     node.appendChild(span)

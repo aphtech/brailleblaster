@@ -35,6 +35,7 @@ import org.brailleblaster.utd.matchers.NodeNameMatcher;
 import org.brailleblaster.utd.matchers.XPathMatcher;
 import org.brailleblaster.utd.properties.PageNumberPosition;
 import org.brailleblaster.utd.properties.UTDElements;
+import org.brailleblaster.utils.NamespacesKt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static org.testng.Assert.*;
@@ -166,8 +167,8 @@ public class DocumentUTDConfigTest {
 		saveConfig.accept(docTest, expected);
 		
 		log.debug("size of docTest {} size of orig {}", 
-				docTest.getRootElement().getChildElements("head", docTest.getRootElement().getNamespaceURI()).get(0).getChildElements("styleMap", UTDElements.UTD_NAMESPACE).size(),
-				docOrig.getRootElement().getChildElements("head", docTest.getRootElement().getNamespaceURI()).get(0).getChildElements("styleMap", UTDElements.UTD_NAMESPACE).size()
+				docTest.getRootElement().getChildElements("head", docTest.getRootElement().getNamespaceURI()).get(0).getChildElements("styleMap", NamespacesKt.UTD_NS).size(),
+				docOrig.getRootElement().getChildElements("head", docTest.getRootElement().getNamespaceURI()).get(0).getChildElements("styleMap", NamespacesKt.UTD_NS).size()
 		);
 		
 
@@ -183,7 +184,7 @@ public class DocumentUTDConfigTest {
 		String xmlName = StringUtils.uncapitalize(settingsClass.getSimpleName());
         return root.getChildElements("head", root.getNamespaceURI())
 				.get(0)
-				.getChildElements(xmlName, UTDElements.UTD_NAMESPACE)
+				.getChildElements(xmlName, NamespacesKt.UTD_NS)
 				.get(0);
 	}
 	
@@ -205,7 +206,7 @@ public class DocumentUTDConfigTest {
 		StyleMap styleMap = new StyleMap();
 		styleMap.put(new NodeNameMatcher("something"), newStyle);
 		//JAXB code needs a NamespaceMap to load
-		styleMap.setNamespaces(new NamespaceMap(UTDElements.UTD_PREFIX, UTDElements.UTD_NAMESPACE));
+		styleMap.setNamespaces(new NamespaceMap(UTDElements.UTD_PREFIX, NamespacesKt.UTD_NS));
 		
 		//Dummy document to save styleMap into
 		Document doc;

@@ -1009,16 +1009,21 @@ class TextVerifyKeyListener(
     }
 
     private fun atDocumentBoundary(keyCode: Int, currentElement: TextMapElement): Boolean {
-        return if (keyCode == SWT.ARROW_UP && isBeginningOfDocument(currentElement)) {
-            true
-        } else if (keyCode == SWT.ARROW_LEFT && textView.view.caretOffset == 0 && isBeginningOfDocument(currentElement)) {
-            true
-        } else if (keyCode == SWT.ARROW_DOWN && isEndOfDocument(currentElement)) {
-            true
-        } else {
-            keyCode == SWT.ARROW_RIGHT && textView.view.caretOffset == textView.view.charCount && isEndOfDocument(
-                currentElement
-            )
+        return when (keyCode) {
+            SWT.ARROW_UP if isBeginningOfDocument(currentElement) -> {
+                true
+            }
+            SWT.ARROW_LEFT if textView.view.caretOffset == 0 && isBeginningOfDocument(currentElement) -> {
+                true
+            }
+            SWT.ARROW_DOWN if isEndOfDocument(currentElement) -> {
+                true
+            }
+            else -> {
+                keyCode == SWT.ARROW_RIGHT && textView.view.caretOffset == textView.view.charCount && isEndOfDocument(
+                    currentElement
+                )
+            }
         }
     }
 

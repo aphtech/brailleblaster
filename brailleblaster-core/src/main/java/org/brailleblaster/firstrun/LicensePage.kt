@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.firstrun
 
-import org.apache.commons.io.FileUtils
 import org.brailleblaster.BBIni
 import org.brailleblaster.utils.BBData.getBrailleblasterPath
 import org.brailleblaster.utils.PropertyFileManager
@@ -29,7 +28,6 @@ import org.eclipse.swt.SWT
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Composite
 import java.io.IOException
-import java.nio.charset.StandardCharsets
 
 const val LICENSE_ACCEPTED_SETTING = "licenseAccepted"
 const val CURRENT_LICENSE_ID = "GPL-3.0-only"
@@ -48,7 +46,7 @@ class LicencePage(private val userSettings: PropertyFileManager = BBIni.property
         //This code taken from UserHelp
         val licensePath = getBrailleblasterPath("LICENSE.txt")
         val licenseText: String = try {
-          FileUtils.readFileToString(licensePath, StandardCharsets.UTF_8)
+          licensePath.readText(Charsets.UTF_8)
         } catch (ex: IOException) {
           throw RuntimeException("Unable to open license at " + licensePath.absolutePath, ex)
         }

@@ -16,7 +16,6 @@
 package org.brailleblaster.perspectives.braille.viewInitializer
 
 import nu.xom.Node
-import org.apache.commons.lang3.tuple.Pair
 import org.brailleblaster.perspectives.braille.mapping.elements.SectionElement
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -83,7 +82,7 @@ class SectionMapSearcher(private val sectionList: ArrayList<SectionElement>) {
             for (i in start until end) {
                 if (!sectionList[i].isVisible) {
                     val index = sectionList[i].list.findNodeIndex(n, 0)
-                    if (index != -1) return Pair.of(i, index)
+                    if (index != -1) return i to index
                 }
             }
 

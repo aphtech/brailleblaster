@@ -31,8 +31,9 @@ import kotlin.io.path.Path
 
 class BBIniImpl(val bbDistPath: Path, bbUserPath: Path, propManager: PropertyFileManager?, debugArgs: List<String>) {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
-    val nativeBinPath: Path = bbDistPath.resolve(Path("native", "$os-$arch", "bin"))
-    val nativeLibraryPath: Path = bbDistPath.resolve(Path("native", "${os}-${arch}", "lib"))
+    private val nativePath: Path = bbDistPath.resolve(Path("native", "$os-$arch".lowercase()))
+    val nativeBinPath: Path = nativePath.resolve("bin")
+    val nativeLibraryPath: Path = nativePath.resolve("lib")
     val nativeLibrarySuffix = when(os) {
         OS.Windows -> ".dll"
         OS.Mac -> ".dylib"

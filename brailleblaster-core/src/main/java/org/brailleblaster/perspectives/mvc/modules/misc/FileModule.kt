@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.perspectives.mvc.modules.misc
 
-import com.google.common.collect.ImmutableSet
 import org.brailleblaster.BBIni
 import org.brailleblaster.archiver2.Archiver2
 import org.brailleblaster.archiver2.ArchiverFactory
@@ -32,15 +31,15 @@ import org.brailleblaster.perspectives.mvc.menu.SubMenuBuilder
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.tools.*
 import org.brailleblaster.wordprocessor.BBFileDialog
+import org.brailleblaster.wordprocessor.RecentDocs
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
 import org.slf4j.LoggerFactory
-import java.io.IOException
-import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
-import java.util.function.Consumer
-import java.util.stream.Collectors
+import kotlin.io.path.Path
+import kotlin.io.path.exists
+import kotlin.io.path.isDirectory
+import kotlin.io.path.nameWithoutExtension
 
 class FileModule : SimpleListener {
     override fun onEvent(event: SimpleEvent) {
@@ -84,14 +83,11 @@ class FileModule : SimpleListener {
             TopMenu.FILE,
             "Recent Document"
         )
-        val recentDocs: List<Path> = readRecentFiles()
-        recentDocs.forEach(Consumer { curPath: Path ->
-            val fileName = curPath.fileName.toString()
-            val itemText = "$fileName  [$curPath]"
-            if (Files.exists(curPath) && !Files.isDirectory(curPath)) {
-                smb.addItem(itemText, 0) { WPManager.getInstance().addDocumentManager(curPath) }
-            }
-        })
+        val recentDocs: List<Path> = RecentDocs.defaultRecentDocs.recentDocs
+        recentDocs.forEach { curPath: Path ->
+            val itemText = "${curPath.fileName}  [$curPath]"
+            smb.addItem(itemText, 0) { WPManager.getInstance().addDocumentManager(curPath) }
+        }
         return smb
     }
 
@@ -101,19 +97,18 @@ class FileModule : SimpleListener {
             "Recent Auto Saves"
         )
         val recentSaves = ArchiverRecoverThread.recentSaves
-        recentSaves.forEach(Consumer { curPath: Path ->
+        recentSaves.forEach { curPath: Path ->
             val fileName = curPath.fileName.toString()
             val itemText = "$fileName  [$curPath]"
-            if (Files.exists(curPath) && !Files.isDirectory(curPath)) {
+            if (curPath.exists() && !curPath.isDirectory()) {
                 smb.addItem(itemText, 0) { WPManager.getInstance().addDocumentManager(curPath) }
             }
-        })
+        }
         return smb
     }
 
     companion object {
         private val log = LoggerFactory.getLogger(FileModule::class.java)
-        private const val MAX_RECENT_FILES = 20
 
         fun fileSave(m: Manager): Boolean {
             log.debug("Saving file")
@@ -142,11 +137,12 @@ class FileModule : SimpleListener {
                 success
             } else {
                 save(m, arch, arch.path)
-                ArchiverRecoverThread.removeFile(pathToRemove)
+                ArchiverRecoverThread.Companion.removeFile(Path(pathToRemove))
                 log.debug("Saved file")
                 true
             }
         }
+
         /**
          * Open the Save As dialog
          * @return false if Cancel was pressed
@@ -158,14 +154,13 @@ class FileModule : SimpleListener {
             val pathToRemove = arch.path.fileName.toString()
             val filePath: String?
             if (!BBIni.debugging) {
-                var fileName: String = (arch.newPath ?: arch.path).fileName.toString()
-                fileName = com.google.common.io.Files.getNameWithoutExtension(fileName)
+                val fileName: String = (arch.newPath ?: arch.path).fileName.nameWithoutExtension
                 val dialog = BBFileDialog(
                     m.wpManager.shell,
                     SWT.SAVE,
                     fileName,
-                    ArchiverFactory.INSTANCE.getSupportedDescriptions(arch),
-                    ArchiverFactory.INSTANCE.getSupportedExtensions(arch)
+                    ArchiverFactory.getSupportedDescriptions(arch).toTypedArray(),
+                    ArchiverFactory.getSupportedExtensions(arch).toTypedArray()
                 )
                 filePath = dialog.open()
             } else {
@@ -176,8 +171,8 @@ class FileModule : SimpleListener {
                 log.debug("User cancelled save as")
                 return false
             }
-            save(m, arch, Paths.get(filePath))
-            ArchiverRecoverThread.removeFile(pathToRemove)
+            save(m, arch, Path(filePath))
+            ArchiverRecoverThread.Companion.removeFile(Path(pathToRemove))
             arch.setNotImported()
             log.debug("File saved")
             return true
@@ -191,49 +186,21 @@ class FileModule : SimpleListener {
                     filePath,
                     arch.bbxDocument,
                     engine,
-                    ImmutableSet.of<SaveOptions>(BBZSaveOptions.IncludeBRF, BBZSaveOptions.IncludePEF)
+                    setOf<SaveOptions>(BBZSaveOptions.IncludeBRF, BBZSaveOptions.IncludePEF)
                 )
             } else {
                 arch.saveAs(
                     filePath,
                     arch.bbxDocument,
                     engine,
-                    ImmutableSet.of<SaveOptions>(BBZSaveOptions.IncludeBRF, BBZSaveOptions.IncludePEF)
+                    setOf<SaveOptions>(BBZSaveOptions.IncludeBRF, BBZSaveOptions.IncludePEF)
                 )
                 m.setTabTitle(filePath.fileName.toString())
-                addRecentDoc(arch.path)
+                RecentDocs.defaultRecentDocs.addRecentDoc(arch.path)
             }
             m.text.hasChanged = false
             m.braille.hasChanged = false
             m.isDocumentEdited = false
-        }
-
-        fun readRecentFiles(): MutableList<Path> {
-            return try {
-                Files.readAllLines(BBIni.recentDocs, BBIni.charset)
-                    .map { first -> Paths.get(first) }.toMutableList()
-            } catch (ex: IOException) {
-                throw RuntimeException("Unable to load recent docs at " + BBIni.recentDocs, ex)
-            }
-        }
-
-        @JvmStatic
-        fun addRecentDoc(path: Path) {
-            val recentDocs = readRecentFiles()
-            recentDocs.remove(path)
-            while (recentDocs.size >= MAX_RECENT_FILES) {
-                recentDocs.removeAt(recentDocs.size - 1)
-            }
-            recentDocs.add(0, path)
-            try {
-                Files.write(
-                    BBIni.recentDocs,
-                    recentDocs.stream().map { curPath: Path -> curPath.toAbsolutePath().toString() }
-                        .collect(Collectors.toList())
-                )
-            } catch (e: IOException) {
-                throw RuntimeException("Unable to save recent docs file", e)
-            }
         }
     }
 }

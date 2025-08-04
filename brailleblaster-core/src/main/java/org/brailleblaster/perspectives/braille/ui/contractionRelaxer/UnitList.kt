@@ -55,14 +55,12 @@ class UnitList() {
     val Unit2 = Unit(
       "Unit 2: Alphabetic Wordsigns", listOf(
         """multind 56-6 nocontractsign capsletter""",
-        //Had to ditch sequence delimiters. No idea why they don't work despite coming straight from ueb-g2.
-        /*
+        //punctuation
         """seqdelimiter -—""",
         """seqdelimiter ‑""",
         """seqdelimiter –""",
         """seqdelimiter —""",
         """seqdelimiter ―""",
-        //Also ditching all these, since they seem to cause a fatal 128-character limit crash.
         """seqbeforechars ([{"“'‘""",
         """seqafterchars  )]}"”'’.,;:.!?…""",
         """seqafterpattern 'd""",
@@ -77,6 +75,9 @@ class UnitList() {
         """seqafterpattern ’s""",
         """seqafterpattern ’t""",
         """seqafterpattern ’ve""",
+        /*
+        //These guys cause the 128 char limit problem, wtf?
+        //Maybe because the prior ones already cover these? Is LibLouis case-sensitive or not?
         """seqafterpattern 'D""",
         """seqafterpattern 'LL""",
         """seqafterpattern 'RE""",
@@ -92,7 +93,6 @@ class UnitList() {
          */
         """seqafterexpression '([DSTdst]|ll|[rv]e|LL|[RV]E)""",
         """seqafterexpression ’([DSTdst]|ll|[rv]e|LL|[RV]E)""",
-        //punctuation
         """match %[^_]|%[^_~]%<*[([{] ; %[^_]|[)}\\]]%>*%[^_~] 56-23""",
         """match %[^_~]%<* . %a 56-256""",
         """match %[^_~]%<* : %a 56-25""",
@@ -245,6 +245,32 @@ class UnitList() {
       )
     )
 
+    val Unit2Pretty = listOf<String>(
+      "but -> ⠃",
+      "can -> ⠉",
+      "do -> ⠙",
+      "every -> ⠑",
+      "from -> ⠋",
+      "go -> ⠛",
+      "have -> ⠓",
+      "just -> ⠚",
+      "knowledge -> ⠅",
+      "like -> ⠇",
+      "more -> ⠍",
+      "not -> ⠝",
+      "people -> ⠏",
+      "quite -> ⠟",
+      "rather -> ⠗",
+      "so -> ⠎",
+      "that -> ⠞",
+      "us -> ⠥",
+      "very -> ⠧",
+      "will -> ⠺",
+      "it -> ⠭",
+      "you -> ⠽",
+      "as -> ⠵"
+    )
+
     //Strong contractions
     //and, for, of, the, with
     val Unit3 = Unit(
@@ -340,6 +366,14 @@ class UnitList() {
       )
     )
 
+    val Unit3Pretty = listOf<String>(
+      "and -> ⠯",
+      "for -> ⠿",
+      "of -> ⠷",
+      "the -> ⠮",
+      "with -> ⠾"
+    )
+
     //Shortform words and single-cell punctuation
     //ab, ac, af, ag, al, bl, ei, fr, ll
     val Unit5 = Unit(
@@ -369,6 +403,25 @@ class UnitList() {
         "nofor always ! 56-235",
         "nofor always ? 56-236"
       )
+    )
+
+    val Unit5Pretty = listOf<String>(
+      ", -> ⠂",
+      "“ -> ⠦",
+      "” -> ⠴",
+      "; -> ⠆",
+      ": -> ⠒",
+      "- -> ⠤",
+      "... -> ⠲⠲⠲",
+      "about -> ⠁⠃",
+      "according -> ⠁⠉",
+      "after -> ⠁⠋",
+      "again -> ⠁⠛",
+      "also -> ⠁⠇",
+      "blind -> ⠃⠇",
+      "either -> ⠑⠊",
+      "friend -> ⠋⠗",
+      "little -> ⠇⠇"
     )
 
     //Strong groupsigns, wordsigns and shortform words
@@ -570,6 +623,37 @@ class UnitList() {
       )
     )
 
+    val Unit6Pretty = listOf<String>(
+      "ch -> ⠡",
+      "sh -> ⠩",
+      "th -> ⠹",
+      "wh -> ⠱",
+      "ou -> ⠳",
+      "st -> ⠌",
+      "child -> ⠡",
+      "shall -> ⠩",
+      "this -> ⠹",
+      "which -> ⠱",
+      "out -> ⠳",
+      "still -> ⠌",
+      "children -> ⠡⠝",
+      "first -> ⠋⠌",
+      "good -> ⠛⠙",
+      "letter -> ⠇⠗",
+      "must -> ⠍⠌",
+      "quick -> ⠟⠅",
+      "paid -> ⠏⠙",
+      "said -> ⠎⠙",
+      "could -> ⠉⠙",
+      "would -> ⠺⠙",
+      "should -> ⠩⠙",
+      "its -> ⠭⠎",
+      "your -> ⠽⠗",
+      "him -> ⠓⠍",
+      "much -> ⠍⠡",
+      "such -> ⠎⠡",
+    )
+
     //Strong groupsigns and shortform words
     //ar, ed, er, gh, ow, ing
     val Unit7 = Unit(
@@ -734,6 +818,32 @@ class UnitList() {
         "word perh =        perhaps",
         "contraction tgr    together"
       )
+    )
+
+    val Unit7Pretty = listOf<String>(
+      "ar -> ⠜",
+      "ed -> ⠫",
+      "er -> ⠻",
+      "gh -> ⠣",
+      "ow -> ⠪",
+      "ing -> ⠬",
+      "above -> ⠁⠃⠧",
+      "across -> ⠁⠉⠗",
+      "afternoon - > ⠁⠋⠝",
+      "afterward -> ⠁⠋⠺",
+      "against -> ⠁⠛⠌",
+      "almost -> ⠁⠇⠍",
+      "already -> ⠁⠇⠗",
+      "although -> ⠁⠇⠹",
+      "altogether -> ⠁⠇⠞",
+      "always -> ⠁⠇⠺",
+      "braille -> ⠃⠗⠇",
+      "great -> ⠛⠗⠞",
+      "neither -> ⠝⠑⠊",
+      "perhaps -> ⠏⠻⠓",
+      "together -> ⠞⠛⠗",
+      "immediate -> ⠊⠍⠍",
+      "necessary -> ⠝⠑⠉",
     )
 
     //Dot 5 initial-letter contractions
@@ -1089,6 +1199,31 @@ class UnitList() {
       )
     )
 
+    val Unit9Pretty = listOf<String>(
+      "day -> ⠐⠙",
+      "ever -> ⠐⠑",
+      "father -> ⠐⠋",
+      "here -> ⠐⠓",
+      "know -> ⠐⠅",
+      "lord -> ⠐⠇",
+      "mother -> ⠐⠍",
+      "name -> ⠐⠝",
+      "one -> ⠐⠕",
+      "part -> ⠐⠏",
+      "question -> ⠐⠟",
+      "right -> ⠐⠗",
+      "some -> ⠐⠎",
+      "time -> ⠐⠞",
+      "under -> ⠐⠥",
+      "work -> ⠐⠺",
+      "young -> ⠐⠽",
+      "there -> ⠐⠮",
+      "character -> ⠐⠡",
+      "through -> ⠐⠹",
+      "where -> ⠐⠱",
+      "ought -> ⠐⠳",
+    )
+
     //Two-cell punctuation and shortform words
     //Are the various symbols translated correctly by default? No sign of them in the grade 2 table.
     val Unit11 = Unit(
@@ -1146,6 +1281,32 @@ class UnitList() {
       )
     )
 
+    val Unit11Pretty = listOf<String>(
+      /*
+      //Symbols are not actually listed in the table.
+      "$ -> ⠈⠎",
+      "¢ -> ⠈⠉",
+      "& -> ⠈⠯",
+      "@ -> ⠈⠁",
+      "* -> ⠐⠔",
+      "% -> ⠨⠴",
+      "° -> ⠘⠚",
+      "• -> ⠸⠲",
+      "# -> ⠸⠹",
+      "– -> ⠠⠤"
+      */
+      "itself -> ⠭⠋",
+      "himself -> ⠓⠍⠋",
+      "yourself -> ⠽⠗⠋",
+      "herself -> ⠓⠻⠋",
+      "myself -> ⠍⠽⠋",
+      "oneself -> ⠐⠕⠋",
+      "thyself -> ⠹⠽⠋",
+      "yourselves -> ⠽⠗⠧⠎",
+      "ourselves -> ⠳⠗⠧⠎",
+      "themselves -> ⠮⠍⠧⠎",
+    )
+
     //Initial letter contractions for dots 4-5 and 4-5-6
     val Unit12 = Unit(
       "Unit 12: Initial letter contractions for dots 4-5, 4-5-6", listOf(
@@ -1190,6 +1351,20 @@ class UnitList() {
         "nofor word afterworlds  1-124-456-2456-234",
         "nofor word afterworld's  1-124-456-2456-3-234"
       )
+    )
+
+    val Unit12Pretty = listOf<String>(
+      "upon -> ⠘⠥",
+      "word -> ⠘⠺",
+      "these -> ⠘⠮",
+      "those -> ⠘⠹",
+      "whose -> ⠘⠱",
+      "cannot -> ⠸⠉",
+      "had -> ⠸⠓",
+      "many -> ⠸⠍",
+      "spirit -> ⠸⠎",
+      "their -> ⠸⠮",
+      "world -> ⠸⠺",
     )
 
     //Lower wordsigns
@@ -1273,6 +1448,26 @@ class UnitList() {
         "contraction tm     tomorrow",
         "contraction tn     tonight"
       )
+    )
+
+    val Unit14Pretty = listOf<String>(
+      "enough -> ⠢",
+      "his -> ⠦",
+      "was -> ⠴",
+      "were -> ⠶",
+      "be -> ⠆",
+      "in -> ⠔",
+      "because -> ⠆⠉",
+      "before -> ⠆⠋",
+      "behind -> ⠆⠓",
+      "below -> ⠆⠇",
+      "beneath -> ⠆⠝",
+      "beside -> ⠆⠎",
+      "between -> ⠆⠞",
+      "beyond -> ⠆⠽",
+      "today -> ⠞⠙",
+      "tomorrow -> ⠞⠍",
+      "tonight -> ⠞⠝"
     )
 
     //Lower groupsigns (beginning, middle, end)
@@ -1618,6 +1813,31 @@ class UnitList() {
       )
     )
 
+    val Unit15Pretty = listOf<String>(
+      "in -> ⠔",
+      "en -> ⠑",
+      "be -> ⠆",
+      "con -> ⠒",
+      "dis -> ⠲",
+      "ea -> ⠂",
+      "bb -> ⠆",
+      "cc -> ⠒",
+      "ff -> ⠖",
+      "gg -> ⠶",
+      "declare -> ⠙⠉⠇",
+      "rejoice -> ⠗⠚⠉",
+      "conceive -> ⠒⠉⠧",
+      "deceive -> ⠙⠉⠧",
+      "perceive -> ⠏⠻⠉⠧",
+      "receive -> ⠗⠉⠧",
+      "declaring -> ⠙⠉⠇⠛",
+      "rejoicing -> ⠗⠚⠉⠛",
+      "conceiving -> ⠒⠉⠧⠛",
+      "deceiving -> ⠙⠉⠧⠛",
+      "perceiving -> ⠏⠻⠉⠧⠛",
+      "receiving -> ⠗⠉⠧⠛",
+    )
+
     //Sub and superscripts aren't listed in LibLouis
     val Unit16 = Unit(
       "Unit 16: Shapes and Omissions", listOf(
@@ -1629,6 +1849,10 @@ class UnitList() {
         """contraction \x25cb ○""", //circle
         """contraction \x25cd ◍""", //shaded circle
       )
+    )
+
+    //Placeholder. Math symbols are all included in UEB-Chardefs, which is part of Grade 1.
+    val Unit16Pretty = listOf<String>(
     )
 
     //Final letter groupsigns
@@ -1734,6 +1958,23 @@ class UnitList() {
       )
     )
 
+    val Unit17Pretty = listOf<String>(
+      "ance -> ⠨⠑",
+      "ound -> ⠨⠙",
+      "less -> ⠨⠎",
+      "sion -> ⠨⠝",
+      "ount -> ⠨⠞",
+      "ence -> ⠰⠑",
+      "ong -> ⠰⠛",
+      "ful -> ⠰⠇",
+      "tion -> ⠰⠝",
+      "ness -> ⠰⠎",
+      "ment -> ⠰⠞",
+      "ity -> ⠰⠽"
+    )
+
+    val EmptyUnit = listOf<String>()
+
     val FullContracted = Unit(
       "Fully Contracted (Grade 2 UEB)", listOf()
     )
@@ -1754,6 +1995,22 @@ class UnitList() {
       Unit15,
       Unit17,
       FullContracted
+    )
+
+    val allPrettyUnits = listOf(
+      EmptyUnit,
+      Unit2Pretty,
+      Unit3Pretty,
+      Unit5Pretty,
+      Unit6Pretty,
+      Unit7Pretty,
+      Unit9Pretty,
+      Unit11Pretty,
+      Unit12Pretty,
+      Unit14Pretty,
+      Unit15Pretty,
+      Unit17Pretty,
+      EmptyUnit
     )
 
   }

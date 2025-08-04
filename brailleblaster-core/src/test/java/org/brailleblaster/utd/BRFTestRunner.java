@@ -24,6 +24,7 @@ import java.util.Objects;
 import org.brailleblaster.settings.UTDManager;
 import org.brailleblaster.utd.internal.xml.XMLHandler;
 import org.brailleblaster.utd.internal.xml.XMLHandler2;
+import org.brailleblaster.utils.NamespacesKt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,7 +125,7 @@ public class BRFTestRunner {
                 Element root = (Element) doc.query("descendant::*[@bbtestroot]").get(0);
                 root.detach();
                 Document wrapperDoc = new Document(root);
-                wrapperDoc.getRootElement().addNamespaceDeclaration(UTDElements.UTD_PREFIX, UTDElements.UTD_NAMESPACE);
+                wrapperDoc.getRootElement().addNamespaceDeclaration(UTDElements.UTD_PREFIX, NamespacesKt.UTD_NS);
 
                 serializer.write(wrapperDoc);
                 fullXML = sw.toString();

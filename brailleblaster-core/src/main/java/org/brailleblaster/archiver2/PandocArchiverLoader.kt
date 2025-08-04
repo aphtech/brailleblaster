@@ -15,13 +15,12 @@
  */
 package org.brailleblaster.archiver2
 
-import com.google.common.collect.ImmutableMap
 import org.brailleblaster.BBIni
 import org.brailleblaster.pandoc.FixImage
 import org.brailleblaster.pandoc.FixMathML
 import org.brailleblaster.pandoc.FixNestedList
 import org.brailleblaster.pandoc.Fixer
-import org.brailleblaster.utils.OS
+import org.brailleblaster.util.PANDOC_CMD
 import org.slf4j.LoggerFactory
 import java.io.*
 import java.nio.charset.StandardCharsets
@@ -50,7 +49,7 @@ object PandocArchiverLoader : ArchiverFactory.FileLoader {
         val newFilePath = FileSystems.getDefault().getPath(bbxFile)
 
         // attempt to load file
-        archiver = ArchiverFactory.INSTANCE.load(newFilePath)
+        archiver = ArchiverFactory.load(newFilePath)
         // set new file name to be set in window tab
         archiver.newPath = Paths.get(fileTabName)
         // Set where the document was really imported from, not the temp bbx.
@@ -58,19 +57,16 @@ object PandocArchiverLoader : ArchiverFactory.FileLoader {
         return archiver
     }
 
-    override val extensionsAndDescription: ImmutableMap<String, String>
-        get() {
-        return ImmutableMap.Builder<String, String>()
-            .put("*.docx", "Microsoft Word Files (*.docx)")
-            .put("*.epub", "Epub Books (*.epub)")
-            .put("*.htm", "HTML Files (*.htm)")
-            .put("*.html", "HTML Files (*.html)")
-            .put("*.xhtml;*.xhtm;*.xht", "XHTML Files (*.xhtml;*.xhtm;*.xht)")
-            .put("*.md", "Markdown Files (*.md)")
-            .put("*.odt", "Open Document Files (*.odt)")
-            .put("*.tex", "LaTeX files (*.tex)")
-            .build()
-    }
+    override val extensionsAndDescription: Map<String, String> = mapOf(
+        "*.docx" to "Microsoft Word Files (*.docx)",
+        "*.epub" to "Epub Books (*.epub)",
+        "*.htm" to "HTML Files (*.htm)",
+        "*.html" to "HTML Files (*.html)",
+        "*.xhtml;*.xhtm;*.xht" to "XHTML Files (*.xhtml;*.xhtm;*.xht)",
+        "*.md" to "Markdown Files (*.md)",
+        "*.odt" to "Open Document Files (*.odt)",
+        "*.tex" to "LaTeX files (*.tex)"
+    )
 
     @Throws(Exception::class)
     private fun pandocImport(filename: String, fromFormat: String?): Pair<String, String> {
@@ -93,23 +89,18 @@ object PandocArchiverLoader : ArchiverFactory.FileLoader {
         val fileTabName = "$newFilename.bbz"
         newFilename = "$newFilename-"
 
-        // determine the os and executable to use
-        val cmd = BBIni.nativeBinPath.resolve(when(org.brailleblaster.utils.os) {
-            OS.Windows -> "pandoc.exe"
-                else -> "pandoc"
-        }).absolutePathString()
 
         // set the working dir and execute
         try {
             wrkDir = File(PANDOCLUA)
-            env[0] = "PANDOCCMD=$cmd"
+            env[0] = "PANDOCCMD=$PANDOC_CMD"
             val outFile = File.createTempFile("bb-$outFilename-pandoc-err-", ".txt")
             outFile.deleteOnExit()
             val bbFile = File.createTempFile(newFilename, ".bbx")
             bbFile.deleteOnExit()
             newFilename = bbFile.absolutePath
             val pb = ProcessBuilder(
-                cmd, "--from=$fromFormat",
+                PANDOC_CMD, "--from=$fromFormat",
                 "--to=bbx.lua",
                 "--output=" + bbFile.absolutePath,
                 filename
@@ -118,7 +109,7 @@ object PandocArchiverLoader : ArchiverFactory.FileLoader {
                 .redirectError(ProcessBuilder.Redirect.INHERIT)
                 .redirectErrorStream(true)
                 .redirectOutput(outFile)
-            pb.environment()["PANDOCCMD"] = cmd
+            pb.environment()["PANDOCCMD"] = PANDOC_CMD
             var logStr = "\n***** PandocArchiverLoader *****\n"
             logStr = """
                 $logStr${pb.command()}

@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.userHelp
 
-import org.apache.commons.io.FileUtils
 import org.brailleblaster.AppProperties
 import org.brailleblaster.BBIni
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
@@ -32,7 +31,6 @@ import org.eclipse.swt.layout.RowLayout
 import org.eclipse.swt.program.Program
 import org.eclipse.swt.widgets.*
 import java.io.IOException
-import java.nio.charset.StandardCharsets
 import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -119,7 +117,7 @@ private fun showAbout() {
     FormUIUtils.addSelectionListener(license) {
         val licensePath = getBrailleblasterPath("LICENSE.txt")
         val text: String = try {
-            FileUtils.readFileToString(licensePath, StandardCharsets.UTF_8)
+            licensePath.readText(Charsets.UTF_8)
         } catch (ex: IOException) {
             throw RuntimeException("Unable to open license at " + licensePath.absolutePath, ex)
         }
@@ -128,7 +126,7 @@ private fun showAbout() {
     FormUIUtils.addSelectionListener(privacyPolicy) {
         val licensePath = getBrailleblasterPath("APH_Privacy_Policy.txt")
         val text: String = try {
-            FileUtils.readFileToString(licensePath, StandardCharsets.UTF_8)
+            licensePath.readText(Charsets.UTF_8)
         } catch (ex: IOException) {
             throw RuntimeException("Unable to open license at " + licensePath.absolutePath, ex)
         }

@@ -20,11 +20,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Streams;
 import nu.xom.*;
-import org.apache.commons.collections4.iterators.ArrayIterator;
 import org.apache.commons.lang3.StringUtils;
 import org.brailleblaster.utd.exceptions.NodeException;
 import org.brailleblaster.utd.exceptions.UTDException;
 import org.brailleblaster.utd.properties.UTDElements;
+import org.brailleblaster.utils.NamespacesKt;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,7 +114,7 @@ public class XMLHandler2 {
     public static Text findFirstText(@NotNull Element someElement) {
         return queryStream(someElement, "descendant::text()[not(ancestor::utd:brl)]")
                 .map(n -> (Text) n)
-                .filter(t -> StringUtils.isNotBlank(t.getValue()))
+                .filter(t -> !t.getValue().isBlank())
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Couldn't find text in " + someElement.toXML()));
     }
@@ -166,7 +166,7 @@ public class XMLHandler2 {
             }
             wrapperDoc
                     .getRootElement()
-                    .addNamespaceDeclaration(UTDElements.UTD_PREFIX, UTDElements.UTD_NAMESPACE);
+                    .addNamespaceDeclaration(UTDElements.UTD_PREFIX, NamespacesKt.UTD_NS);
 
             serializer.write(wrapperDoc);
             return out.toString(StandardCharsets.UTF_8);
@@ -202,7 +202,7 @@ public class XMLHandler2 {
         }
 
         // Add utd specific namespace
-        context.addNamespace(UTDElements.UTD_PREFIX, UTDElements.UTD_NAMESPACE);
+        context.addNamespace(UTDElements.UTD_PREFIX, NamespacesKt.UTD_NS);
 
         context.addNamespace("m", "http://www.w3.org/1998/Math/MathML");
 
@@ -235,7 +235,7 @@ public class XMLHandler2 {
         String text = textNode.getValue();
         int lastStart = 0;
         int insertIndex = textNode.getParent().indexOf(textNode);
-        Iterator<Integer> splitPosItr = new ArrayIterator<>(splitPos);
+        Iterator<Integer> splitPosItr = Arrays.stream(splitPos).iterator();
         while (lastStart != text.length()) {
             boolean finished = false;
             String textPart;

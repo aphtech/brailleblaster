@@ -25,6 +25,7 @@ import org.brailleblaster.utd.actions.IAction
 import org.brailleblaster.utd.actions.SkipAction
 import org.brailleblaster.utd.internal.ActionMapAdapter
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 import kotlin.jvm.Throws
 
 @XmlJavaTypeAdapter(ActionMapAdapter::class)
@@ -37,7 +38,7 @@ open class ActionMap : NodeMatcherMap<IAction>, IActionMap {
     override fun findValue(node: Node): IAction {
         if (node is Text) {
             return textAction
-        } else if ((node is Element) && UTDElements.UTD_NAMESPACE == node.namespaceURI) {
+        } else if ((node is Element) && UTD_NS == node.namespaceURI) {
             return skipAction
         } else if (UTDElements.BRL.isA(node)) {
             return skipAction

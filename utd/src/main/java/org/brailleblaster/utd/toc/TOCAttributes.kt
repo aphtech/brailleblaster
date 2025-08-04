@@ -18,6 +18,7 @@ package org.brailleblaster.utd.toc
 import nu.xom.Attribute
 import nu.xom.Element
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 
 enum class TOCAttributes(@JvmField val origName: String) {
     TYPE("toc-type");
@@ -30,7 +31,7 @@ enum class TOCAttributes(@JvmField val origName: String) {
 
     fun add(elem: Element, value: String?) {
         if (inElement(elem)) throw RuntimeException("Element already has attribute " + tagName + " xml " + elem.toXML())
-        elem.addAttribute(Attribute(tagName, UTDElements.UTD_NAMESPACE, value))
+        elem.addAttribute(Attribute(tagName, UTD_NS, value))
     }
 
     fun remove(elem: Element) {
@@ -60,7 +61,7 @@ enum class TOCAttributes(@JvmField val origName: String) {
     }
 
     fun getAttribute(elem: Element): Attribute? {
-        return elem.getAttribute(origName, UTDElements.UTD_NAMESPACE)
+        return elem.getAttribute(origName, UTD_NS)
     }
 
     companion object {

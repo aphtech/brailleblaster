@@ -30,6 +30,7 @@ import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.PageBuilderHelper
 import org.brailleblaster.utd.utils.TableUtils
 import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utils.UTD_NS
 import org.brailleblaster.utils.xom.detachAll
 import org.slf4j.LoggerFactory
 import kotlin.math.max
@@ -711,11 +712,11 @@ open class SimpleTableFormatter : Formatter() {
         element.addAttribute(
             Attribute(
                 UTDElements.UTD_PREFIX + ":" + TableUtils.FALLBACK_ATTRIB_NAME,
-                UTDElements.UTD_NAMESPACE,
+                UTD_NS,
                 TableUtils.FALLBACK_ATTRIB_VALUE
             )
         )
-        element.getAttribute(TableUtils.ATTRIB_TABLE_COPY, UTDElements.UTD_NAMESPACE)?.detach()
+        element.getAttribute(TableUtils.ATTRIB_TABLE_COPY, UTD_NS)?.detach()
         return ListedTableFormatter().format(element, style, pageBuilders, formatSelector)
     }
 

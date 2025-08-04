@@ -211,7 +211,7 @@ class UndoRedoModule(m: Manager) : SimpleListener {
                         doneWaiting = waitForWork.await(10, TimeUnit.SECONDS)
                         if (close) return
                     }
-                } catch (e: InterruptedException) {
+                } catch (_: InterruptedException) {
                     return
                 }
                 waitForWork = CountDownLatch(1)

@@ -28,6 +28,7 @@ import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.util.ColorManager
 import org.brailleblaster.util.FormUIUtils
+import org.brailleblaster.utils.UTD_NS
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.StyleRange
 import org.eclipse.swt.custom.StyledText
@@ -207,7 +208,7 @@ class XMLDebugger(private val parent: Shell, private val simpleManager: BBSimple
                 .filter { it.value.isEmpty() }
                 .forEach { it.value = "[!!!! EMPTY TEXT NODE !!!!]" }
         }
-        activeDocument!!.rootElement.addNamespaceDeclaration(UTDElements.UTD_PREFIX, UTDElements.UTD_NAMESPACE)
+        activeDocument!!.rootElement.addNamespaceDeclaration(UTDElements.UTD_PREFIX, UTD_NS)
         var newText: String
         newText = try {
             serial.write(activeDocument)

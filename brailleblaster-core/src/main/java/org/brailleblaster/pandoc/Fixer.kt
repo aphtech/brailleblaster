@@ -19,6 +19,7 @@ import nu.xom.Builder
 import nu.xom.Document
 import nu.xom.Element
 import nu.xom.Node
+import org.brailleblaster.utils.BB_NS
 import java.io.*
 import java.nio.charset.StandardCharsets
 
@@ -45,7 +46,7 @@ class Fixer(filename: String) {
         fixers.add(f)
     }
 
-    val bbUri: String = "http://brailleblaster.org/ns/bb"
+    val bbUri: String = BB_NS
 
     @Throws(Exception::class)
     fun processFixers() {

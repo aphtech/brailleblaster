@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.utd.asciimath
 
-import com.google.common.collect.ImmutableList
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
 import nu.xom.*
 import nu.xom.converters.DOMConverter
@@ -45,7 +44,7 @@ object AsciiMathConverter : AutoCloseable {
     private const val ASCII_MATH_XSLT_PATH: String = "/org/brailleblaster/utd/xslt/MathML2AsciiMath.xsl"
     private const val ASCII_MATH_PARSER_JS: String = "/org/brailleblaster/utd/js/ASCIIMathML.js"
     private const val MATHML_NS = "http://www.w3.org/1998/Math/MathML"
-    private val MATHML_ATTRS_LIST: List<String> = ImmutableList.of(
+    private val MATHML_ATTRS_LIST: List<String> = listOf(
         "accent",
         "accentunder",
         "actiontype",

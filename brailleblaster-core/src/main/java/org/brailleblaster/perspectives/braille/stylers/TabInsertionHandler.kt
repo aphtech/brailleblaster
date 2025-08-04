@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.perspectives.braille.stylers
 
-import com.google.common.collect.Lists
 import nu.xom.Element
 import nu.xom.ParentNode
 import org.brailleblaster.bbx.BBX
@@ -75,7 +74,7 @@ class TabInsertionHandler(manager: Manager?, vi: ViewInitializer?, list: MapList
 
 
             //only translate element, then refresh for performance
-            manager.simpleManager.dispatchEvent(ModifyEvent(Sender.TAB, Lists.newArrayList(e), true))
+            manager.simpleManager.dispatchEvent(ModifyEvent(Sender.TAB, listOf(e), true))
         }
     }
 

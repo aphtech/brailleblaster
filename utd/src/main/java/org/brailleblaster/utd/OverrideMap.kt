@@ -22,7 +22,7 @@ import org.brailleblaster.utd.actions.IAction
 import org.brailleblaster.utd.config.StyleDefinitions
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.matchers.INodeMatcher
-import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 import kotlin.jvm.Throws
 
 /**
@@ -128,7 +128,7 @@ object OverrideMap {
                 throw NoSuchElementException("No value found")
             }
 
-            val attribValue: String = node.getAttributeValue(matcherAttributeName, UTDElements.UTD_NAMESPACE)
+            val attribValue: String = node.getAttributeValue(matcherAttributeName, UTD_NS)
                 ?: throw NoSuchElementException("No value found")
             val matchingValue = stringToValueMap[attribValue]
                 ?: throw NodeException("Node has unknown $matcherAttributeName value $attribValue", node)

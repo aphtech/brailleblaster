@@ -265,7 +265,7 @@
                     <!-- Copy all SWT platform jars to dist/lib/$os-$arch to be autoloaded by BBBootsrap -->
                     <execution>
                         <id>copy-native-dependencies</id>
-                        <phase>generate-resources</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy</goal>
                         </goals>
@@ -309,7 +309,7 @@
                     <!-- Copy dependencies to the dist -->
                     <execution>
                         <id>copy-dependencies-to-lib</id>
-                        <phase>generate-resources</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>

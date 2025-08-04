@@ -19,7 +19,6 @@ import nu.xom.Attribute
 import nu.xom.Element
 import nu.xom.Node
 import nu.xom.Text
-import org.apache.commons.lang3.StringUtils
 import org.brailleblaster.bbx.BBX.ListType
 import org.brailleblaster.bbx.BBX.MarginType
 import org.brailleblaster.bbx.fixers.to3.ImageBlockToContainerImportFixer.Companion.convertImageBlockToContainer
@@ -187,7 +186,7 @@ object BBXUtils {
             }
         }
 
-        val args = StringUtils.split(styleName, "-", 2)
+        val args = styleName.split("-", limit=2)
         if (args.size != 2) {
             return null
         }

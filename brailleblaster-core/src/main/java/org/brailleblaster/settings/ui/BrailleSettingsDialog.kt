@@ -16,7 +16,6 @@
 package org.brailleblaster.settings.ui
 
 import org.brailleblaster.BBIni
-import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.settings.UTDManager
 import org.brailleblaster.settings.UTDManager.Companion.userPageSettingsFile
@@ -27,11 +26,11 @@ import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.util.Notify
 import org.brailleblaster.util.Notify.notify
 import org.brailleblaster.util.Notify.showMessage
-import org.brailleblaster.utils.swt.EasySWT.addSwtBotKey
 import org.brailleblaster.util.WorkingDialog
+import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
+import org.brailleblaster.utils.swt.EasySWT.addSwtBotKey
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.TraverseEvent
-import org.eclipse.swt.events.TraverseListener
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.layout.RowLayout
@@ -102,10 +101,10 @@ class BrailleSettingsDialog(parent: Shell?, m: Manager?, tabToOpen: Class<out Se
             cancelButton.text = "Cancel"
 
             //--------------- Listeners -------------
-            shell.addTraverseListener(TraverseListener { e: TraverseEvent ->
+            shell.addTraverseListener { e: TraverseEvent ->
                 if (e.keyCode == SWT.ESC.code) shell.close()
-            })
-            shell.addListener(SWT.Close, Listener { close() })
+            }
+            shell.addListener(SWT.Close) { close() }
 
             okButton.addSelectionListener(FormUIUtils.makeSelectedListener { saveConfig(false) })
             okDefaultButton.addSelectionListener(FormUIUtils.makeSelectedListener { saveConfig(true) })

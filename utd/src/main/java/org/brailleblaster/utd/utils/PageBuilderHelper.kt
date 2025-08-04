@@ -26,6 +26,7 @@ import org.brailleblaster.utd.properties.PageNumberPosition
 import org.brailleblaster.utd.properties.PageNumberType
 import org.brailleblaster.utd.properties.PageNumberType.Companion.equivalentPage
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -312,7 +313,7 @@ object PageBuilderHelper {
     fun isSkipLinesNode(node: Node?): Boolean {
         return node is Element && node.getAttributeValue(
             UTDElements.UTD_SKIP_LINES_ATTRIB,
-            UTDElements.UTD_NAMESPACE
+            UTD_NS
         ) != null
     }
 

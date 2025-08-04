@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.utils
 
-import org.apache.commons.io.FileUtils
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
@@ -84,7 +83,7 @@ object BBData {
         if (!settingsDir.exists()) {
             settingsDir.mkdir()
             val defaultUserSettings = getBrailleblasterPath("programData", "settings", "user_settings.properties")
-            FileUtils.copyFileToDirectory(defaultUserSettings, settingsDir)
+            defaultUserSettings.copyTo(settingsDir.resolve("usr_settings.properties"))
         }
         if (!versionFile.exists()) {
             FileWriter(versionFile).use {

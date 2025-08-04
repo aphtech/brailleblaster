@@ -32,6 +32,7 @@ import org.brailleblaster.perspectives.braille.mapping.maps.MapList
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.UTDHelper.Companion.getAssociatedBrlElement
+import org.brailleblaster.utils.UTD_NS
 import org.brailleblaster.utils.xom.childNodes
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -354,13 +355,7 @@ open class Initializer {
      */
     private fun initializeGuideDots(m: Manager, t: TextMapElement, brlonly: Element): Boolean {
         val brl = brlonly.parent as Element
-        var isFirstText = true
-        for (bme in t.brailleList) {
-            if (bme !is PageNumberBrlMapElement && bme.node != null && bme.node.value.trim { it <= ' ' }.isNotEmpty()) {
-                isFirstText = false
-                break
-            }
-        }
+        val isFirstText = t.brailleList.none { bme -> bme !is PageNumberBrlMapElement && bme.node != null && bme.node.value.trim { it <= ' ' }.isNotEmpty() }
 
         if (getAssociatedBrlElement(t.node) === brl && isFirstText) {
             val tme = GuideDotsTextMapElement(brlonly)
@@ -545,7 +540,7 @@ open class Initializer {
     }
 
     private fun isPlaceholder(e: Element): Boolean {
-        return e.getAttribute("skipLines", UTDElements.UTD_NAMESPACE) != null
+        return e.getAttribute("skipLines", UTD_NS) != null
     }
 
     private fun isNotSimpleTable(e: Element): Boolean {

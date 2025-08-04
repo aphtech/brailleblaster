@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.brailleblaster.utils.NamespacesKt;
 import org.jetbrains.annotations.Nullable;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
@@ -116,12 +117,10 @@ import nu.xom.XPathContext;
  */
 public class BBX {
     private static final Logger log = LoggerFactory.getLogger(BBX.class);
-    public static final String BB_NAMESPACE = "http://brailleblaster.org/ns/bb";
     /**
      * Element and attribute prefix, eg bb:type="OTHER"
      */
     public static final String BB_PREFIX = "bb";
-    public static final String MATHML_NAMESPACE = "http://www.w3.org/1998/Math/MathML";
     /**
      * XML Root
      */
@@ -149,12 +148,12 @@ public class BBX {
      * UTD action
      */
     public static final StringAttribute _ATTRIB_OVERRIDE_ACTION = new StringAttribute(
-            OverrideMap.OVERRIDE_ATTRIB_ACTION, UTDElements.UTD_PREFIX, UTDElements.UTD_NAMESPACE);
+            OverrideMap.OVERRIDE_ATTRIB_ACTION, UTDElements.UTD_PREFIX, NamespacesKt.UTD_NS);
     /**
      * UTD style
      */
     public static final StringAttribute _ATTRIB_OVERRIDE_STYLE = new StringAttribute(OverrideMap.OVERRIDE_ATTRIB_STYLE,
-            UTDElements.UTD_PREFIX, UTDElements.UTD_NAMESPACE);
+            UTDElements.UTD_PREFIX, NamespacesKt.UTD_NS);
     /**
      * BB subtype of whatever coretype the element is
      */
@@ -166,9 +165,9 @@ public class BBX {
 
     static {
         XPATH_CONTEXT = new XPathContext();
-        XPATH_CONTEXT.addNamespace("bb", BB_NAMESPACE);
-        XPATH_CONTEXT.addNamespace("utd", UTDElements.UTD_NAMESPACE);
-        XPATH_CONTEXT.addNamespace("m", MATHML_NAMESPACE);
+        XPATH_CONTEXT.addNamespace("bb", NamespacesKt.BB_NS);
+        XPATH_CONTEXT.addNamespace("utd", NamespacesKt.UTD_NS);
+        XPATH_CONTEXT.addNamespace("m", NamespacesKt.MATHML_NS);
     }
 
     // Don't make instances
@@ -176,14 +175,14 @@ public class BBX {
     }
 
     public static Element newElement(String name) {
-        return new Element(name, BB_NAMESPACE);
+        return new Element(name, NamespacesKt.BB_NS);
     }
 
     public static Document newDocument() {
         Element root = newElement(DOCUMENT_ROOT_NAME);
-        root.addNamespaceDeclaration("bb", BB_NAMESPACE);
-        root.addNamespaceDeclaration("utd", UTDElements.UTD_NAMESPACE);
-        root.addNamespaceDeclaration("m", MATHML_NAMESPACE);
+        root.addNamespaceDeclaration("bb", NamespacesKt.BB_NS);
+        root.addNamespaceDeclaration("utd", NamespacesKt.UTD_NS);
+        root.addNamespaceDeclaration("m", NamespacesKt.MATHML_NS);
 
         Element headElem = newElement("head");
         root.appendChild(headElem);
@@ -196,9 +195,9 @@ public class BBX {
     }
 
     public static Element getHead(Document doc) {
-        Element head = doc.getRootElement().getFirstChildElement("head", BB_NAMESPACE);
+        Element head = doc.getRootElement().getFirstChildElement("head", NamespacesKt.BB_NS);
         if (head == null) {
-            head = new Element("head", BB_NAMESPACE);
+            head = new Element("head", NamespacesKt.BB_NS);
             doc.getRootElement().insertChild(head, 0);
         }
         return head;
@@ -206,7 +205,7 @@ public class BBX {
 
     public static int getFormatVersion(Document doc) {
         Element head = getHead(doc);
-        Element versionElem = head.getFirstChildElement("version", BB_NAMESPACE);
+        Element versionElem = head.getFirstChildElement("version", NamespacesKt.BB_NS);
         if (versionElem == null) {
             throw new NodeException("No bb version attribute found", head);
         }
@@ -215,9 +214,9 @@ public class BBX {
 
     public static void setFormatVersion(Document doc, int version) {
         Element head = getHead(doc);
-        Element versionElem = head.getFirstChildElement("version", BB_NAMESPACE);
+        Element versionElem = head.getFirstChildElement("version", NamespacesKt.BB_NS);
         if (versionElem == null) {
-            versionElem = new Element("version", BB_NAMESPACE);
+            versionElem = new Element("version", NamespacesKt.BB_NS);
             head.appendChild(versionElem);
         }
         versionElem.removeChildren();
@@ -969,9 +968,9 @@ public class BBX {
 
         public static class ImagePlaceholderType extends BlockSubType {
             public final IntAttribute ATTRIB_SKIP_LINES = new IntAttribute("skipLines", UTDElements.UTD_PREFIX,
-                    UTDElements.UTD_NAMESPACE);
+                    NamespacesKt.UTD_NS);
             public final StringAttribute ATTRIB_IMG_PATH = new StringAttribute("src", UTDElements.UTD_PREFIX,
-                    UTDElements.UTD_NAMESPACE);
+                    NamespacesKt.UTD_NS);
 
             private ImagePlaceholderType(BlockElement coreType, String name) {
                 super(coreType, name);
@@ -1109,7 +1108,7 @@ public class BBX {
                 }
 
                 List<Element> nonMathMl = FastXPath.descendant(node).stream().filter(n -> n instanceof Element)
-                        .map(n -> (Element) n).filter(e -> !e.getNamespaceURI().equals(MATHML_NAMESPACE)).toList();
+                        .map(n -> (Element) n).filter(e -> !e.getNamespaceURI().equals(NamespacesKt.MATHML_NS)).toList();
                 if (!nonMathMl.isEmpty()) {
                     throw new NodeException("Unexpected non-mathml elements " + StringUtils.join(nonMathMl, ", "),
                             node);
@@ -1380,7 +1379,7 @@ public class BBX {
             }
             Element element = (Element) node;
 
-            if (!BB_NAMESPACE.equals(element.getNamespaceURI())) {
+            if (!NamespacesKt.BB_NS.equals(element.getNamespaceURI())) {
                 return "Not in BB namespace";
             }
 
@@ -1496,7 +1495,7 @@ public class BBX {
         public BaseAttribute(String name) {
             this.name = name;
             this.nsPrefix = "bb";
-            this.nsUrl = BB_NAMESPACE;
+            this.nsUrl = NamespacesKt.BB_NS;
         }
 
         public BaseAttribute(String name, String nsPrefix, String nsUrl) {

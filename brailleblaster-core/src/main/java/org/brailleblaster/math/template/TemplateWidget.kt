@@ -149,7 +149,7 @@ class TemplateWidget : ISpatialMathWidget {
             makeIdentifier(g5)
             val g4 = makeOperatorOperandGroup(parent, 2)
             val g1 = makeOperatorGroup(g4, 1)
-            val g2 = makeOperandGroup(g4, 2)
+            makeOperandGroup(g4, 2)
             makeOperator(g1)
             //Simplify the Operands
             template!!.ui.operandBoxes.clear()

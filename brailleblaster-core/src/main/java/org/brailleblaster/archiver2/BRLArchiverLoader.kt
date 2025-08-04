@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.archiver2
 
-import com.google.common.collect.ImmutableMap
 import nu.xom.Element
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
@@ -45,8 +44,7 @@ class BRLArchiverLoader : TextArchiveLoader() {
         return block
     }
 
-    override val extensionsAndDescription: ImmutableMap<String, String>
-        get() = ImmutableMap.of("*.brl", "Braille Text (*.brl)")
+    override val extensionsAndDescription: Map<String, String> = mapOf("*.brl" to "Braille Text (*.brl)")
 
     companion object {
         val INSTANCE = BRLArchiverLoader()

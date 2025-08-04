@@ -15,27 +15,15 @@
  */
 package org.brailleblaster.utd.internal
 
-import org.apache.commons.collections4.MapIterator
-import org.brailleblaster.utd.ActionMap
-import org.brailleblaster.utd.actions.IAction
-import org.brailleblaster.utd.matchers.INodeMatcher
 import jakarta.xml.bind.annotation.adapters.XmlAdapter
+import org.brailleblaster.utd.ActionMap
 
 class ActionMapAdapter : XmlAdapter<AdaptedActionMap?, ActionMap?>() {
-    override fun marshal(actions: ActionMap?): AdaptedActionMap? {
-        if (actions == null) {
-            return null
+    override fun marshal(actions: ActionMap?): AdaptedActionMap? = actions?.let {
+        AdaptedActionMap().apply {
+            semanticEntries.addAll(it.map { (matcher, action) -> AdaptedActionMap.Entry(matcher, action) })
+            namespaces = it.namespaces
         }
-        val actionList = AdaptedActionMap()
-        val defaultNamespaces = actions.namespaces
-        val it: MapIterator<INodeMatcher, IAction> = actions.mapIterator()
-        while (it.hasNext()) {
-            val matcher = it.next()
-            val action = it.value
-            actionList.semanticEntries.add(AdaptedActionMap.Entry(matcher, action))
-        }
-        actionList.namespaces = defaultNamespaces
-        return actionList
     }
 
     override fun unmarshal(actionList: AdaptedActionMap?): ActionMap? {

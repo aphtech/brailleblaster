@@ -24,6 +24,8 @@ import org.brailleblaster.perspectives.mvc.menu.SharedItem
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.perspectives.mvc.SimpleEvent
 import org.brailleblaster.perspectives.mvc.events.BuildMenuEvent
+import org.brailleblaster.perspectives.mvc.menu.IBBCheckMenuItem
+import org.brailleblaster.perspectives.mvc.menu.IBBMenuItem
 import org.brailleblaster.perspectives.mvc.modules.views.DebugModule
 import org.brailleblaster.perspectives.mvc.modules.views.EmphasisModule
 import org.brailleblaster.usage.logEnd
@@ -52,21 +54,26 @@ interface ToggleTool : Tool {
     val active: Boolean
 }
 
-interface MenuTool : Tool {
-    val topMenu: TopMenu
-    val title: String
-    val accelerator: Int
+interface MenuTool : Tool, IBBMenuItem {
+    override val topMenu: TopMenu
+    override val title: String
+    override val accelerator: Int
         get() = 0
-    val swtOpts: Int
-        get() = SWT.NONE
-    val enabled: Boolean
+    override val swtOpts: Int
+        get() = SWT.PUSH
+    override val enabled: Boolean
         get() = true
-    val enableListener: EnableListener?
+    override val enableListener: EnableListener?
         get() = null
-    val sharedItem: SharedItem?
+    override val sharedItem: SharedItem?
         get() = null
+    override val onActivated: (BBSelectionData) -> Unit
+        get() = ::run
 }
-interface CheckMenuTool : ToggleTool, MenuTool
+interface CheckMenuTool : ToggleTool, MenuTool, IBBCheckMenuItem {
+    override val swtOpts: Int
+        get() = SWT.CHECK
+}
 
 interface MenuToolListener : MenuTool, SimpleListener {
     override fun onEvent(event: SimpleEvent) {

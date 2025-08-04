@@ -22,6 +22,7 @@ import org.brailleblaster.utd.IStyle
 import org.brailleblaster.utd.PageBuilder
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.PageBuilderHelper
+import org.brailleblaster.utils.UTD_NS
 import kotlin.math.max
 
 /**
@@ -39,7 +40,7 @@ class SkipLinesFormatter : Formatter() {
         if (node !is Element) {
             return mutPageBuilders
         }
-        val skipLinesAttr = node.getAttributeValue(UTDElements.UTD_SKIP_LINES_ATTRIB, UTDElements.UTD_NAMESPACE)
+        val skipLinesAttr = node.getAttributeValue(UTDElements.UTD_SKIP_LINES_ATTRIB, UTD_NS)
             ?: return mutPageBuilders
         var reserveLines: Int = try {
             skipLinesAttr.toInt()

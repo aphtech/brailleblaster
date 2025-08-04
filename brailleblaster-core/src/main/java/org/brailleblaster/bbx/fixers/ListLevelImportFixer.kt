@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.bbx.fixers
 
-import com.google.common.collect.Iterables
 import nu.xom.Element
 import nu.xom.Node
 import org.brailleblaster.bbx.BBX
@@ -33,12 +32,12 @@ class ListLevelImportFixer : AbstractFixer() {
         BBX.CONTAINER.LIST.assertIsA(matchedNode)
         val listContainer = matchedNode as Element
         val childrenToProcess: Deque<Node> = ArrayDeque()
-        Iterables.addAll(childrenToProcess, listContainer.childNodes)
+        childrenToProcess.addAll(listContainer.childNodes)
         var maxLevel = 0
         while (!childrenToProcess.isEmpty()) {
             val curChildNode = childrenToProcess.pop() as? Element ?: continue
             if (BBX.CONTAINER.isA(curChildNode)) {
-                Iterables.addAll(childrenToProcess, curChildNode.childNodes)
+                childrenToProcess.addAll(curChildNode.childNodes)
             } else if (BBX.BLOCK.isA(curChildNode)) {
                 var curLevel: Int
                 if (BBX.BLOCK.LIST_ITEM.isA(curChildNode)) {

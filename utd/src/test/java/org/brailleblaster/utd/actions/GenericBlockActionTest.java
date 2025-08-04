@@ -40,6 +40,7 @@ import org.brailleblaster.utd.properties.BrailleTableType;
 import org.brailleblaster.utd.properties.EmphasisType;
 import org.brailleblaster.utd.properties.UTDElements;
 import org.brailleblaster.utd.testutils.MockTranslatorFactory;
+import org.brailleblaster.utils.NamespacesKt;
 import org.mockito.Mockito;
 import org.mwhapples.jlouis.Louis;
 import org.mwhapples.jlouis.Louis.TypeForms;
@@ -70,7 +71,7 @@ public class GenericBlockActionTest {
 		String index = "0 0 0 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21";
 		String indexOut = "0 0 0 0 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20";
 		ITranslationEngine engineMock = MockTranslatorFactory.createTranslationEngine(str, brlStr, index, indexOut, emphasisArr);
-		String expectedXML = String.format("<p>Some text<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 0 0 4 5 6 7 8\">,\"s text</utd:brl><br />a bold phrase<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 1 2 3 4 5 6 7 8 9 10 11 12\">a bold phrase</utd:brl></p>", UTDElements.UTD_NAMESPACE, UTDElements.UTD_NAMESPACE);
+		String expectedXML = String.format("<p>Some text<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 0 0 4 5 6 7 8\">,\"s text</utd:brl><br />a bold phrase<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 1 2 3 4 5 6 7 8 9 10 11 12\">a bold phrase</utd:brl></p>", NamespacesKt.UTD_NS, NamespacesKt.UTD_NS);
 		dataList.add(new Object[] {p, expectedXML, engineMock});
 		
 		// Test index handling where contraction occurs at the end of a brl element
@@ -85,7 +86,7 @@ public class GenericBlockActionTest {
 		p = new Element("p");
 		p.appendChild("Action");
 		p.appendChild("Test");
-		expectedXML = String.format("<p>Action<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 0 1 2 2\">,ac;n</utd:brl>Test<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 0 1 2\">,te/</utd:brl></p>", UTDElements.UTD_NAMESPACE, UTDElements.UTD_NAMESPACE);
+		expectedXML = String.format("<p>Action<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 0 1 2 2\">,ac;n</utd:brl>Test<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 0 1 2\">,te/</utd:brl></p>", NamespacesKt.UTD_NS, NamespacesKt.UTD_NS);
 		dataList.add(new Object[] {p, expectedXML, engineMock});
 		return dataList.iterator();
 	}
@@ -131,7 +132,7 @@ public class GenericBlockActionTest {
 		span.addEmphasis(EmphasisType.ITALICS);
 		action.translateString(textList, BrailleTableType.LITERARY, contextMock);
 		
-		String xmlResult = String.format("<p>Some text<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 0 0 4 5 6 7 8\">,\"s text</utd:brl></p>", UTDElements.UTD_NAMESPACE);
+		String xmlResult = String.format("<p>Some text<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 0 0 4 5 6 7 8\">,\"s text</utd:brl></p>", NamespacesKt.UTD_NS);
 		assertEquals(p.toXML(), xmlResult);
 	}
 
@@ -164,7 +165,7 @@ public class GenericBlockActionTest {
 		GenericBlockAction action = new GenericBlockAction();
 		action.translateString(textList, BrailleTableType.LITERARY, contextMock);
 
-		String xmlResult = String.format("<p>Some text<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 0 0 4 5 6 7 8\">,\"s text</utd:brl>a bold phrase<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 1 2 3 4 5 6 7 8 9 10 11 12\">a bold phrase</utd:brl></p>", UTDElements.UTD_NAMESPACE, UTDElements.UTD_NAMESPACE);
+		String xmlResult = String.format("<p>Some text<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 0 0 4 5 6 7 8\">,\"s text</utd:brl>a bold phrase<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 1 2 3 4 5 6 7 8 9 10 11 12\">a bold phrase</utd:brl></p>", NamespacesKt.UTD_NS, NamespacesKt.UTD_NS);
 		assertEquals(p.toXML(), xmlResult);
 	}
 
@@ -189,7 +190,7 @@ public class GenericBlockActionTest {
 		String indexOut = "0 0 0 1 1 1 1 1";
 		
 		ITranslationEngine engineMock = MockTranslatorFactory.createTranslationEngine(str, brlStr, index, indexOut, typeForms);
-		String expectedXML = String.format("<p><strong>to<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0\">6</utd:brl></strong> their<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"1 1\">_!</utd:brl></p>", UTDElements.UTD_NAMESPACE, UTDElements.UTD_NAMESPACE);
+		String expectedXML = String.format("<p><strong>to<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0\">6</utd:brl></strong> their<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"1 1\">_!</utd:brl></p>", NamespacesKt.UTD_NS, NamespacesKt.UTD_NS);
 		dataList.add(new Object[] {p, expectedXML, engineMock});
 		
 		// Ensure multi-cell translation at the beginning does not lead to index errors
@@ -210,7 +211,7 @@ public class GenericBlockActionTest {
 		indexOut = "0 3 4 5 6 6 6 6 8";
 		ITranslationEngine contextMock = MockTranslatorFactory.createTranslationEngine(str, brlStr, index, indexOut, typeForms);
 		
-		expectedXML = String.format("<p><sup>*<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 0\">99</utd:brl></sup>Advanced<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 0 1 2 3 3 4\">,adv.ed</utd:brl></p>", UTDElements.UTD_NAMESPACE, UTDElements.UTD_NAMESPACE);
+		expectedXML = String.format("<p><sup>*<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 0\">99</utd:brl></sup>Advanced<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 0 1 2 3 3 4\">,adv.ed</utd:brl></p>", NamespacesKt.UTD_NS, NamespacesKt.UTD_NS);
 		dataList.add(new Object[] {p, expectedXML, contextMock});
 		
 		p = new Element("p");
@@ -223,7 +224,7 @@ public class GenericBlockActionTest {
 		index = "0 1 2 3 4 5";
 		indexOut = "0 8 9 10 11 12";
 		contextMock = MockTranslatorFactory.createTranslationEngine(str, brlStr, index, indexOut, typeForms);
-		expectedXML = String.format("<p>a data<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"%s\">a data</utd:brl></p>", UTDElements.UTD_NAMESPACE, index);
+		expectedXML = String.format("<p>a data<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"%s\">a data</utd:brl></p>", NamespacesKt.UTD_NS, index);
 		dataList.add(new Object[] {p, expectedXML, contextMock});
 		
 		return dataList.iterator();
@@ -264,7 +265,7 @@ public class GenericBlockActionTest {
 		transResult = MockTranslatorFactory.createMockTranslationResult("dry", "0 1 2");
 		doReturn(transResult).when(louisMock).translate("en-us-g2.ctb", "dry", typeForms, 0, 0);
 		ITranslationEngine contextMock = MockTranslatorFactory.createTranslationEngine(louisMock, brailleSettings, new PageSettings());
-		String expectedXML = String.format("<p>became<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 2 3 4 5\">2came</utd:brl><br /><utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" utd-action=\"SkipAction\" />dry<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 1 2\">dry</utd:brl></p>", UTDElements.UTD_NAMESPACE, UTDElements.UTD_NAMESPACE, UTDElements.UTD_NAMESPACE);
+		String expectedXML = String.format("<p>became<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 2 3 4 5\">2came</utd:brl><br /><utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" utd-action=\"SkipAction\" />dry<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 1 2\">dry</utd:brl></p>", NamespacesKt.UTD_NS, NamespacesKt.UTD_NS, NamespacesKt.UTD_NS);
 		dataList.add(new Object[] {p, expectedXML, contextMock});
 		
 //		short[] typeForms = new short[9];
@@ -302,7 +303,7 @@ public class GenericBlockActionTest {
 		p.appendChild(br2);
 		p.appendChild("dry");
 
-		expectedXML = String.format("<p>my throat<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 1 2 3 5 6 7 8\">my ?roat</utd:brl><br /><utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" utd-action=\"SkipAction\" />became<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 2 3 4 5\">2came</utd:brl><br /><utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" utd-action=\"SkipAction\" />dry<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 1 2\">dry</utd:brl></p>", UTDElements.UTD_NAMESPACE, UTDElements.UTD_NAMESPACE, UTDElements.UTD_NAMESPACE, UTDElements.UTD_NAMESPACE, UTDElements.UTD_NAMESPACE);
+		expectedXML = String.format("<p>my throat<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 1 2 3 5 6 7 8\">my ?roat</utd:brl><br /><utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" utd-action=\"SkipAction\" />became<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 2 3 4 5\">2came</utd:brl><br /><utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" utd-action=\"SkipAction\" />dry<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" index=\"0 1 2\">dry</utd:brl></p>", NamespacesKt.UTD_NS, NamespacesKt.UTD_NS, NamespacesKt.UTD_NS, NamespacesKt.UTD_NS, NamespacesKt.UTD_NS);
 
 		dataList.add(new Object[] {p, expectedXML, contextMock});
 		

@@ -15,7 +15,7 @@ on:
     branches: [ "main" ]
 
 env:
-  BB_VERSION: '3.0.1'
+  BB_VERSION: '3.1.0'
   BB_CHANGELIST: ''
 
 jobs:
@@ -37,13 +37,16 @@ jobs:
         mvn -B install --file pom.xml -DskipTests -Drevision=${{ env.BB_VERSION }} -Dsha1=-${{ github.sha }} -Dchangelist=${{ env.BB_CHANGELIST }}
     - name: Get docs
       run: brailleblaster-app/scripts/get-docs.sh brailleblaster-app/target/dist/docs
-
+    - name: Zip distribution
+      run: |
+        mkdir brailleblaster-continuous
+        cp -a -t brailleblaster-continuous brailleblaster-app/target/dist/*
+        zip -r brailleblaster-continuous.zip brailleblaster-continuous
     - name: Upload dist
       uses: actions/upload-artifact@v4
       with:
         name: brailleblaster
-        path: brailleblaster-app/target/dist
-
+        path: brailleblaster-continuous.zip
       # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
       if: github.ref == 'ref/heads/main' && github.event_name != 'pull_request'
@@ -61,10 +64,6 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: brailleblaster
-        path: brailleblaster-continuous
-    - name: Zip distribution
-      run: |
-        zip -r brailleblaster-continuous.zip brailleblaster-continuous
     - name: Update continuous tag
       uses: actions/github-script@v7
       with:

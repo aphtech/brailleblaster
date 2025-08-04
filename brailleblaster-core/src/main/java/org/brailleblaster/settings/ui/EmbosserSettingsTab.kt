@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.settings.ui
 
-import com.google.common.collect.ImmutableSet
 import org.brailleblaster.embossers.EmbosserConfig
 import org.brailleblaster.embossers.EmbosserConfigList
 import org.brailleblaster.embossers.EmbosserEditDialog
@@ -93,13 +92,7 @@ class EmbosserSettingsTab(folder: TabFolder?) : SettingsUITab {
     private fun editEmbosser() {
         val selIndex = defaultEmbosserCombo.selectionIndex
         var embosser = embosserList[selIndex - 1]
-        var builder = ImmutableSet.builder<String?>()
-        for (e in embosserList) {
-            if (e != embosser) {
-                builder = builder.add(e.name)
-            }
-        }
-        val existingNames = builder.build()
+        val existingNames = embosserList.filter { it != embosser }.map { it.name }.toSet()
         val d = EmbosserEditDialog(defaultEmbosserCombo.shell, existingNames)
         d.embosser = embosser
         val result = d.open()
@@ -127,11 +120,7 @@ class EmbosserSettingsTab(folder: TabFolder?) : SettingsUITab {
     }
 
     private fun addEmbosser() {
-        var builder = ImmutableSet.builder<String?>()
-        for (e in embosserList) {
-            builder = builder.add(e.name)
-        }
-        val existingNames = builder.build()
+        val existingNames = embosserList.map { it.name }.toSet()
         val d = EmbosserEditDialog(defaultEmbosserCombo.shell, existingNames)
         val result = d.open()
         if (result == Window.OK) {

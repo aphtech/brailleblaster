@@ -331,7 +331,6 @@ class PageNumberDialog(parent: Shell?) : Dialog(parent, SWT.NONE), MenuToolListe
                         PageNumberType.P_PAGE -> combo.add("P-page")
                         PageNumberType.T_PAGE -> combo.add("T-page")
                         PageNumberType.NORMAL -> combo.add("Normal")
-                        else -> combo.add(type.name)
                     }
                 }
                 combo.addSelectionListener(object : SelectionAdapter() {
@@ -747,7 +746,7 @@ class PageNumberDialog(parent: Shell?) : Dialog(parent, SWT.NONE), MenuToolListe
                     val pageFound: Boolean = try {
                         val pageMapElement = goToPage.findPage(newPage)
                         if (pageMapElement != null) {
-                            goToPage.scrollToTextAfterNode(pageMapElement.value.node)
+                            goToPage.scrollToTextAfterNode(pageMapElement.second.node)
                             true
                         } else {
                             false

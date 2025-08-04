@@ -20,7 +20,7 @@ import org.testng.Assert
 import org.testng.annotations.Test
 
 class DocumentTraversalTest {
-    private class TestHandler : DocumentTraversal() {
+    private class TestHandler : DocumentTraversal.Handler {
         private val sb = StringBuilder()
 
         val result: String
@@ -86,7 +86,7 @@ class DocumentTraversalTest {
         root.appendChild(e)
         val doc = Document(root)
         val handler = TestHandler()
-        handler.traverseDocument(doc)
+        DocumentTraversal.traverseDocument(doc, handler)
         val expected = """
                 Start of document
                 Start of element: descend

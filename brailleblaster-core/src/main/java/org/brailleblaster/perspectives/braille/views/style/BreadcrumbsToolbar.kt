@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.perspectives.braille.views.style
 
-import com.google.common.collect.Lists
 import jakarta.xml.bind.JAXBElement
 import nu.xom.Element
 import nu.xom.Node
@@ -39,6 +38,8 @@ import org.brailleblaster.utd.properties.EmphasisType
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.util.Utils.runtimeToString
+import org.brailleblaster.utils.BB_NS
+import org.brailleblaster.utils.UTD_NS
 import org.brailleblaster.utils.swt.AccessibilityUtils.prependName
 import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getBanaStyles
@@ -92,9 +93,10 @@ class BreadcrumbsToolbar(private val manager: Manager) : SimpleListener {
         val crumbsBuilder = StringBuilder()
         val caret = manager.simpleManager.currentCaret.node
 
-        val ancestors = Lists.reverse(FastXPath.ancestor(caret).list())
-        if ((caret is Element) && caret.namespaceURI == BBX.BB_NAMESPACE) {
-            ancestors.add(caret)
+        val ancestors = FastXPath.ancestor(caret).reversed().also {
+            if ((caret is Element) && caret.namespaceURI == BB_NS) {
+                it + caret
+            }
         }
         var running = false
         var counter = 0
@@ -261,7 +263,7 @@ class BreadcrumbsToolbar(private val manager: Manager) : SimpleListener {
             }
         }
 
-        if (block.getAttribute("skipLines", UTDElements.UTD_NAMESPACE) != null) {
+        if (block.getAttribute("skipLines", UTD_NS) != null) {
             styleName.append(" Skip Lines = ").append(BBX.BLOCK.IMAGE_PLACEHOLDER.ATTRIB_SKIP_LINES[block])
         }
 

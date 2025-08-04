@@ -18,7 +18,6 @@ package org.brailleblaster.bbx.fixers
 import jakarta.xml.bind.JAXBContext
 import jakarta.xml.bind.annotation.*
 import jakarta.xml.bind.annotation.adapters.XmlAdapter
-import org.apache.commons.collections4.MapIterator
 import org.brailleblaster.utd.NamespaceMap
 import org.brailleblaster.utd.NodeMatcherMap
 import org.brailleblaster.utd.config.UTDConfig
@@ -55,26 +54,17 @@ class ImportFixerMap(defaultValue: ImportFixer? = null) : NodeMatcherMap<ImportF
     }
 
     private class FixerMapAdapter : XmlAdapter<AdaptedFixerMap?, ImportFixerMap?>() {
-        override fun marshal(actions: ImportFixerMap?): AdaptedFixerMap? {
-            if (actions == null) {
-                return null
+        override fun marshal(actions: ImportFixerMap?): AdaptedFixerMap? = if (actions == null) {
+            null
+        } else {
+            AdaptedFixerMap().apply {
+                semanticEntries.addAll(actions.map { (matcher, wrapper) ->
+                    requireNotNull(matcher)
+                    requireNotNull(wrapper)
+                    AdaptedFixerMap.Entry(matcher, wrapper)
+                })
+                namespaces = actions.namespaces
             }
-            val actionList = AdaptedFixerMap()
-            val defaultNamespaces = actions.namespaces
-            val it: MapIterator<INodeMatcher, ImportFixer?> = actions.mapIterator()
-            while (it.hasNext()) {
-                val matcher = it.next()
-                val wrapper = it.value
-                if (matcher == null) {
-                    throw NullPointerException("Unexpected null matcher for fixer $wrapper")
-                } else if (wrapper == null) {
-                    throw NullPointerException("Unexpected null fixer for matcher $matcher")
-                }
-
-                actionList.semanticEntries.add(AdaptedFixerMap.Entry(matcher, wrapper))
-            }
-            actionList.namespaces = defaultNamespaces
-            return actionList
         }
 
         override fun unmarshal(actionList: AdaptedFixerMap?): ImportFixerMap? {

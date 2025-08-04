@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.util
 
-import com.google.common.collect.ImmutableSet
 import nu.xom.Document
 import nu.xom.Element
 import nu.xom.Node
@@ -175,7 +174,7 @@ class BookSplitter(private var volList: ArrayList<Element>, var manager: Manager
 
     private fun saveDoc(d: Document, newDocPath: Path) {
         val arch = BBXArchiver(newDocPath, d, null)
-        arch.saveAs(newDocPath, d, UTDTranslationEngine(), ImmutableSet.of())
+        arch.saveAs(newDocPath, d, UTDTranslationEngine(), setOf())
     }
 
     private fun outputManifest() {

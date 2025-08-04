@@ -17,10 +17,11 @@ package org.brailleblaster.utd.internal.elements
 
 import nu.xom.Element
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 
 class BrlOnly : Element(PROTOTYPE) {
     companion object {
         @JvmStatic
-        private val PROTOTYPE = Element(UTDElements.BRLONLY.qName, UTDElements.UTD_NAMESPACE)
+        private val PROTOTYPE = Element(UTDElements.BRLONLY.qName, UTD_NS)
     }
 }

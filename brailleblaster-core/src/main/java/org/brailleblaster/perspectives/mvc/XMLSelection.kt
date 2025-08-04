@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.perspectives.mvc
 
-import com.google.common.collect.Lists
 import nu.xom.Element
 import nu.xom.Node
 import nu.xom.Text
@@ -25,8 +24,8 @@ import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.internal.xml.XMLHandler2
-import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.TableUtils.isTableCopy
+import org.brailleblaster.utils.UTD_NS
 import org.brailleblaster.utils.xom.childNodes
 
 class XMLSelection(@JvmField val start: XMLNodeCaret, @JvmField val end: XMLNodeCaret) {
@@ -131,7 +130,7 @@ class XMLSelection(@JvmField val start: XMLNodeCaret, @JvmField val end: XMLNode
 		@JvmStatic
 		fun isValidTreeSelection(start: Node, end: Node): List<Node>? {
             val commonParent = XMLHandler.findCommonParent(
-                Lists.newArrayList(
+                listOf(
                     XMLHandler2.nodeToElementOrParentOrDocRoot(
                         start
                     ),
@@ -149,7 +148,7 @@ class XMLSelection(@JvmField val start: XMLNodeCaret, @JvmField val end: XMLNode
                 if (FastXPath.descendant(startElement)
                         .stream()
                         .filter { node: Node? -> node is Text }
-                        .filter { node: Node -> (node.parent as Element).namespaceURI != UTDElements.UTD_NAMESPACE }
+                        .filter { node: Node -> (node.parent as Element).namespaceURI != UTD_NS }
                         .findFirst()
                         .get() !== start
                 ) {
@@ -187,7 +186,7 @@ class XMLSelection(@JvmField val start: XMLNodeCaret, @JvmField val end: XMLNode
                 //Initial check if start is first in it's own parent
                 if (FastXPath.descendant(endElement)
                         .filterIsInstance<Text>()
-                        .lastOrNull { node -> (node.parent as Element).namespaceURI != UTDElements.UTD_NAMESPACE } !== end
+                        .lastOrNull { node -> (node.parent as Element).namespaceURI != UTD_NS } !== end
                 ) {
                     return null
                 }
@@ -199,7 +198,7 @@ class XMLSelection(@JvmField val start: XMLNodeCaret, @JvmField val end: XMLNode
                 if (ancestor === commonParent) {
                     break
                 }
-                for (ancestorChild in Lists.reverse(ancestor.childNodes)) {
+                for (ancestorChild in ancestor.childNodes.reversed()) {
                     if (ancestorChild is Text) {
                         //not first
                         return null

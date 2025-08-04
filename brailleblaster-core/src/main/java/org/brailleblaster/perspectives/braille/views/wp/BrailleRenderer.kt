@@ -102,7 +102,7 @@ class BrailleRenderer(manager: Manager, private val brailleView: BrailleView) : 
     private fun renderNewPages() {
         val newPages = state.newPages
         for (pair in newPages) {
-            handleNewPageElement(pair.left, pair.right, brailleView)
+            handleNewPageElement(pair.first, pair.second, brailleView)
         }
     }
 

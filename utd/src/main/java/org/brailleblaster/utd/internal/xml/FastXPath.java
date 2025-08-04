@@ -17,6 +17,7 @@ package org.brailleblaster.utd.internal.xml;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -30,7 +31,6 @@ import nu.xom.Element;
 
 import nu.xom.Node;
 import nu.xom.ParentNode;
-import org.apache.commons.lang3.mutable.MutableObject;
 import org.brailleblaster.utd.exceptions.NodeException;
 import org.brailleblaster.utils.xom.NodeUtilsKt;
 import org.jetbrains.annotations.NotNull;
@@ -63,14 +63,14 @@ public class FastXPath {
 		} else if (matcher == null) {
 			throw new NullPointerException("matcher cannot be null");
 		}
-		MutableObject<Node> mutableObject = new MutableObject<>();
+		AtomicReference<Node> mutableObject = new AtomicReference<>();
 		return (N) descendantFindFirst(startNode, (curNode) -> {
 			if (matcher.test(curNode)) {
-				if (mutableObject.getValue() != null) {
+				if (mutableObject.get() != null) {
 					XMLHandler2.nodeToElementOrParentOrDocRoot(startNode).addAttribute(new Attribute("first", "match"));
 					throw new NodeException("Already matched element with first=match attrib, matched again: ", startNode);
 				}
-				mutableObject.setValue(startNode);
+				mutableObject.set(startNode);
 			}
 			return true;
 		});

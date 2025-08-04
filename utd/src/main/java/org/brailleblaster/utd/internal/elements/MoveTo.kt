@@ -18,6 +18,7 @@ package org.brailleblaster.utd.internal.elements
 import nu.xom.Attribute
 import nu.xom.Element
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 import org.brailleblaster.utils.UnitConverter.Companion.newDecimalFormatUS
 import java.math.BigDecimal
 
@@ -53,7 +54,7 @@ class MoveTo @JvmOverloads constructor(hPos: BigDecimal = BigDecimal.ZERO, vPos:
     }
 
     companion object {
-        private val PROTOTYPE = Element(UTDElements.MOVE_TO.qName, UTDElements.UTD_NAMESPACE)
+        private val PROTOTYPE = Element(UTDElements.MOVE_TO.qName, UTD_NS)
         private val posFormatter = newDecimalFormatUS("0.##")
         private fun newBigDecimal(text: String): BigDecimal {
             return try {

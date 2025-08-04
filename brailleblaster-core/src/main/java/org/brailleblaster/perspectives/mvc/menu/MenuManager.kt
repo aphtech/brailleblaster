@@ -17,7 +17,6 @@ package org.brailleblaster.perspectives.mvc.menu
 
 import org.brailleblaster.settings.ui.BrailleSettingsDialog
 import org.brailleblaster.settings.ui.PagePropertiesTab
-import org.brailleblaster.tools.CheckMenuTool
 import org.brailleblaster.tools.EmphasisMenuTool
 import org.brailleblaster.tools.MenuTool
 import org.brailleblaster.userHelp.AboutTool
@@ -37,7 +36,7 @@ object MenuManager {
      */
     //Welcome to hashmap hell
 	@JvmField
-	val sharedItems: HashMap<SharedItem, BBMenuItem> = LinkedHashMap()
+	val sharedItems: HashMap<SharedItem, IBBMenuItem> = LinkedHashMap()
 
     /**
      * Map to link menu items with submenus across the menu, toolbar, and context menu
@@ -64,7 +63,7 @@ object MenuManager {
     /**
      * Internal map to handle emphasis buttons
      */
-    private val emphasisHandlers: HashMap<EmphasisItem, Consumer<BBSelectionData>> = LinkedHashMap()
+    private val emphasisHandlers: HashMap<EmphasisItem, (BBSelectionData) -> Unit> = LinkedHashMap()
 
     /**
      * Internal map to handle style buttons
@@ -82,7 +81,6 @@ object MenuManager {
      * after this method is called will have no effect on the menu.
      * @param shellMenu
      */
-	@JvmStatic
 	fun buildMenu(shellMenu: Menu) {
         //RT#4377: Unit tests dispose the Display, so clear the state on dispose
         if (disposeDisplayListener == null) {
@@ -104,7 +102,7 @@ object MenuManager {
             newMenuItem.text = menu.menuName
             val newMenu = Menu(shellMenu.shell, SWT.DROP_DOWN)
             newMenuItem.menu = newMenu
-            items.filter { it.menu == menu }.forEach { it.build(newMenu) }
+            items.filter { it.topMenu == menu }.forEach { it.build(newMenu) }
         }
         val existingAccelerators = HashMap<Int, String>()
         checkMenuAcceleratorsForDuplicates(shellMenu, existingAccelerators)
@@ -113,7 +111,8 @@ object MenuManager {
 		 * Check alt hotkeys of top level menu items against global hotkeys.
 		 * Submenu hotkey's do not need to be checked as when they are enabled 
 		 * focus is on the submenu, not the shell.
-		 */for (curItem in shellMenu.items) {
+		 */
+        for (curItem in shellMenu.items) {
             val altHotkeyStart = curItem.text.indexOf("&")
             if (altHotkeyStart != -1) {
                 val altChar = curItem.text.substring(altHotkeyStart + 1, altHotkeyStart + 2)[0]
@@ -142,9 +141,6 @@ object MenuManager {
             shellMenu.display, SWT.ID_ABOUT
         ) { e: Event -> AboutTool.run(BBSelectionData(e.widget, WPManager.getInstance())) }
         addSystemMenuItem(
-            shellMenu.display, SWT.ID_QUIT
-        ) { WPManager.getInstance().close() }
-        addSystemMenuItem(
             shellMenu.display, SWT.ID_PREFERENCES
         ) { BrailleSettingsDialog(WPManager.getInstance().controller, PagePropertiesTab::class.java) }
     }
@@ -171,39 +167,14 @@ object MenuManager {
 
     @JvmStatic
 	fun addMenuItem(tool: MenuTool) {
-        val menu = tool.topMenu
-        val name = tool.title
-        val accelerator = tool.accelerator
-        val enabled = tool.enabled
-        val enableListener = tool.enableListener
-        val onSelect = Consumer { bbData: BBSelectionData ->
-            tool.run(
-                bbData
-            )
+        if (tool is EmphasisMenuTool) {
+            val emphasis = tool.emphasis
+            emphasisHandlers[emphasis] = tool::run
         }
-        val sharedItem = tool.sharedItem
-        val newItem: BBMenuItem = when (tool) {
-            is CheckMenuTool -> {
-                val selected = tool.active
-                BBCheckMenuItem(menu, name, accelerator, selected, onSelect, sharedItem)
-            }
-
-            is EmphasisMenuTool -> {
-                val emphasis = tool.emphasis
-                emphasisHandlers[emphasis] = onSelect
-                BBMenuItem(menu, name, accelerator, enabled, onSelect, sharedItem).apply {
-                }
-            }
-
-            else -> {
-                BBMenuItem(menu, name, accelerator, enabled, onSelect, sharedItem)
-            }
+        items.add(tool)
+        tool.sharedItem?.let {
+            sharedItems[it] = tool
         }
-        items.add(newItem)
-        if (sharedItem != null) {
-            sharedItems[sharedItem] = newItem
-        }
-        if (enableListener != null) newItem.listener = enableListener
     }
 
     /**
@@ -301,14 +272,14 @@ object MenuManager {
      * @return Selection behavior assigned to that item
      */
 	@JvmStatic
-	fun getSharedSelection(item: SharedItem): Consumer<BBSelectionData> {
-        return Consumer { e: BBSelectionData -> lookupSelection(item).accept(e) }
+    fun getSharedSelection(item: SharedItem): (BBSelectionData) -> Unit {
+        return { e -> lookupSelection(item)(e) }
     }
 
-    private fun lookupSelection(item: SharedItem): Consumer<BBSelectionData> {
+    private fun lookupSelection(item: SharedItem): (BBSelectionData) -> Unit {
         return if (sharedItems.containsKey(item)) {
-            sharedItems[item]!!.onSelect
-        } else Consumer {
+            sharedItems[item]!!.onActivated
+        } else {
             throw UnsupportedOperationException(
                 "Operation $item not yet supported"
             )
@@ -322,13 +293,13 @@ object MenuManager {
      */
 	@JvmStatic
 	fun getEmphasisSelection(item: EmphasisItem): Consumer<BBSelectionData> {
-        return Consumer { e: BBSelectionData -> lookupEmphasis(item).accept(e) }
+        return Consumer { e: BBSelectionData -> lookupEmphasis(item)(e) }
     }
 
-    private fun lookupEmphasis(item: EmphasisItem): Consumer<BBSelectionData> {
+    private fun lookupEmphasis(item: EmphasisItem): (BBSelectionData) -> Unit {
         return if (emphasisHandlers.containsKey(item)) {
             emphasisHandlers[item]!!
-        } else Consumer {
+        } else {
             throw UnsupportedOperationException(
                 "Operation $item not yet supported"
             )

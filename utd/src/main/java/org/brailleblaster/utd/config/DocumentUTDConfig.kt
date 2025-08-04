@@ -26,6 +26,7 @@ import org.brailleblaster.utd.exceptions.UTDException
 import org.brailleblaster.utd.internal.*
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.xml.sax.Attributes
@@ -182,13 +183,13 @@ class DocumentUTDConfig(private val rootElement: String, private val rootNamespa
             //Changing the JAXB namespace either requires a package annotation for every
             //class that might be stored here or oracle-jvm specific classes. Its easier
             //to do it from XOM
-            XMLHandler.setNamespaceRecursive(xomConfig, UTDElements.UTD_NAMESPACE)
+            XMLHandler.setNamespaceRecursive(xomConfig, UTD_NS)
 
             //Now can take the XOM JAXB and save it to the XOM doc
             //Remove the old config if it exists
             val headElem = getOrCreateHeadElement(xomDoc)
             val valueName = jaxbClassToElementName(headClass)
-            for (curElem in headElem.getChildElements(valueName, UTDElements.UTD_NAMESPACE)) {
+            for (curElem in headElem.getChildElements(valueName, UTD_NS)) {
                 curElem.detach()
             }
 
@@ -214,7 +215,7 @@ class DocumentUTDConfig(private val rootElement: String, private val rootNamespa
             val unmarshallerHandler = unmarshaller.unmarshallerHandler
             //Use a SAXConverter, the handler used will ignore the UTD namespace
             //The UTD namespace needs to be ignored due to the hack in saveToDoc which avoids correct JAXB definitions
-            val converter = SAXConverter(IgnoreNamespaceHandler(unmarshallerHandler, UTDElements.UTD_NAMESPACE))
+            val converter = SAXConverter(IgnoreNamespaceHandler(unmarshallerHandler, UTD_NS))
             converter.convert(parsableXomDoc)
             val result = unmarshallerHandler.result
             if (jaxbClass.isInstance(result)) {
@@ -250,7 +251,7 @@ class DocumentUTDConfig(private val rootElement: String, private val rootNamespa
     }
 
     fun getRootNamespace(doc: Document): String {
-        return StringUtils.defaultIfBlank(rootNamespace, doc.rootElement.namespaceURI)
+        return rootNamespace.ifBlank { doc.rootElement.namespaceURI }
     }
 
     fun getConfigElement(doc: Document, tagClass: Class<*>): Element? {
@@ -265,7 +266,7 @@ class DocumentUTDConfig(private val rootElement: String, private val rootNamespa
             return null
         }
 
-        val headValueResults = headElem.getChildElements(elementName, UTDElements.UTD_NAMESPACE)
+        val headValueResults = headElem.getChildElements(elementName, UTD_NS)
         if (headValueResults.size() == 0) {
             log.debug("Failed to find Element {} in document head", elementName)
             return null
@@ -277,7 +278,7 @@ class DocumentUTDConfig(private val rootElement: String, private val rootNamespa
     fun setSetting(doc: Document, key: String, value: String?) {
         var settingElem = getConfigElement(doc, key)
         if (settingElem == null) {
-            settingElem = Element(UTDElements.UTD_PREFIX + ":" + key, UTDElements.UTD_NAMESPACE)
+            settingElem = Element(UTDElements.UTD_PREFIX + ":" + key, UTD_NS)
             getOrCreateHeadElement(doc).appendChild(settingElem)
         }
         settingElem.removeChildren()

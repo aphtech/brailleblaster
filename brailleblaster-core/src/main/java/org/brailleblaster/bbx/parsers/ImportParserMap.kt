@@ -18,7 +18,6 @@ package org.brailleblaster.bbx.parsers
 import jakarta.xml.bind.JAXBContext
 import jakarta.xml.bind.annotation.*
 import jakarta.xml.bind.annotation.adapters.XmlAdapter
-import org.apache.commons.collections4.MapIterator
 import org.brailleblaster.utd.NamespaceMap
 import org.brailleblaster.utd.NodeMatcherMap
 import org.brailleblaster.utd.config.UTDConfig
@@ -58,26 +57,17 @@ class ImportParserMap : NodeMatcherMap<ImportParser?>(null as ImportParser?) {
     }
 
     private class ParserMapAdapter : XmlAdapter<AdaptedParserMap?, ImportParserMap?>() {
-        override fun marshal(actions: ImportParserMap?): AdaptedParserMap? {
-            if (actions == null) {
-                return null
+        override fun marshal(actions: ImportParserMap?): AdaptedParserMap? = if (actions == null) {
+            null
+        } else {
+            AdaptedParserMap().apply {
+                semanticEntries.addAll(actions.map { (matcher, parser) ->
+                    requireNotNull(matcher)
+                    requireNotNull(parser)
+                    AdaptedParserMap.Entry(matcher, parser)
+                })
+                namespaces = actions.namespaces
             }
-            val actionList = AdaptedParserMap()
-            val defaultNamespaces = actions.namespaces
-            val it: MapIterator<INodeMatcher, ImportParser?> = actions.mapIterator()
-            while (it.hasNext()) {
-                val matcher = it.next()
-                val parser = it.value
-                if (matcher == null) {
-                    throw NullPointerException("Unexpected null matcher for parser $parser")
-                } else if (parser == null) {
-                    throw NullPointerException("Unexpected null parser for matcher $matcher")
-                }
-
-                actionList.semanticEntries.add(AdaptedParserMap.Entry(matcher, parser))
-            }
-            actionList.namespaces = defaultNamespaces
-            return actionList
         }
 
         override fun unmarshal(actionList: AdaptedParserMap?): ImportParserMap? {

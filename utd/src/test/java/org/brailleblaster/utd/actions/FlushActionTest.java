@@ -26,6 +26,7 @@ import org.brailleblaster.utd.ITranslationEngine;
 import org.brailleblaster.utd.UTDTranslationEngine;
 import org.brailleblaster.utd.TextSpan;
 import org.brailleblaster.utd.properties.UTDElements;
+import org.brailleblaster.utils.NamespacesKt;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
@@ -61,7 +62,7 @@ public class FlushActionTest {
 		ITranslationEngine context = new UTDTranslationEngine();
 		result = action.applyTo(flush, context);
 		
-		String newXML = String.format("<p>Some text<br /><utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" />a bold phrase</p>", UTDElements.UTD_NAMESPACE);
+		String newXML = String.format("<p>Some text<br /><utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" />a bold phrase</p>", NamespacesKt.UTD_NS);
 		assertEquals(p.toXML(), newXML);
 		assertTrue(result.get(0).isTranslated());
 	}
@@ -74,7 +75,7 @@ public class FlushActionTest {
 		ITranslationEngine context = new UTDTranslationEngine();
 		action.applyTo(flush, context);
 		
-		String newXML = String.format("<p>Some text<br /><utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" />a bold phrase</p>", UTDElements.UTD_NAMESPACE);
+		String newXML = String.format("<p>Some text<br /><utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\" />a bold phrase</p>", NamespacesKt.UTD_NS);
 		assertEquals(p.toXML(), newXML);
 	}
 }

@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.wordprocessor
 
-import com.google.common.collect.Lists
 import org.brailleblaster.BBIni
 import org.brailleblaster.abstractClasses.BBEditorView
 import org.brailleblaster.perspectives.braille.Manager
@@ -383,6 +382,6 @@ class FontManager(@JvmField val m: Manager) {
         }
 
         private val sWTFonts: List<FontData>
-            get() = Lists.newArrayList(*Display.getCurrent().getFontList(null, true))
+            get() = listOf(*Display.getCurrent().getFontList(null, true))
     }
 }

@@ -23,6 +23,7 @@ import java.time.Instant
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.function.Consumer
 import java.util.function.Predicate
 
 const val BB_TOOL = "BrailleBlaster"
@@ -137,11 +138,27 @@ class SimpleTextUsageLogger(private val delegate: UsageLogger, private val out: 
         delegate.log(record)
         out.appendLine(record.toString())
     }
+
+    override fun forEach(action: Consumer<in UsageRecord>) {
+        delegate.forEach(action)
+    }
+
+    override fun spliterator(): Spliterator<UsageRecord> {
+        return delegate.spliterator()
+    }
 }
 
 private class FilteredUsageLogger(private val delegate: UsageLogger, private val predicate: Predicate<UsageRecord>) : UsageLogger by delegate {
     override fun log(record: UsageRecord) {
         if (predicate.test(record)) delegate.log(record)
+    }
+
+    override fun forEach(action: Consumer<in UsageRecord>) {
+        delegate.forEach(action)
+    }
+
+    override fun spliterator(): Spliterator<UsageRecord> {
+        return delegate.spliterator()
     }
 }
 

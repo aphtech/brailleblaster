@@ -19,6 +19,7 @@ package org.brailleblaster.userHelp
 import com.sun.jna.Platform
 import org.apache.commons.lang3.SystemUtils
 import org.brailleblaster.AppProperties
+import org.brailleblaster.util.PANDOC_VERSION
 import org.mwhapples.jlouis.Louis
 import java.io.IOException
 import java.util.*
@@ -27,7 +28,7 @@ import java.util.*
  * Loads build properties file Jenkins inserts into the jar files before distributing in the maven
  * repository
  */
-private val ALL_PROJECTS = listOf(Project.BB, Project.LIBLOUIS)
+private val ALL_PROJECTS = listOf(Project.BB, Project.LIBLOUIS, Project.PANDOC)
 
 val versionsSimple: String
     get() = createSummaryString { obj: Project -> generateVersionsShort(obj) }
@@ -68,6 +69,15 @@ sealed interface Project {
         override val displayName: String = "LibLouis"
         override val version: String by lazy {
             LIBLOUIS_INSTANCE.version
+        }
+        override val versionWithRev: String
+            get() = version
+        override val date: String? = null
+    }
+    data object PANDOC : Project {
+        override val displayName: String = "PanDoc"
+        override val version: String by lazy {
+            PANDOC_VERSION
         }
         override val versionWithRev: String
             get() = version

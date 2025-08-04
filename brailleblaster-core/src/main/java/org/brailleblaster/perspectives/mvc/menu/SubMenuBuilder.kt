@@ -79,11 +79,8 @@ class SubMenuBuilder private constructor(val menu: TopMenu?, val name: String, v
     }
     fun addItem(tool: MenuTool): SubMenuBuilder {
         val sharedItem = tool.sharedItem
-        val newItem = BBMenuItem(null, tool.title, tool.accelerator, tool.swtOpts, tool::onRun, sharedItem)
-        items.add(newItem)
-        if (sharedItem != null) {
-            MenuManager.sharedItems[sharedItem] = newItem
-        }
+        items.add(tool)
+        sharedItem?.let { MenuManager.sharedItems[it] = tool }
         return this
     }
 
@@ -146,10 +143,9 @@ class SubMenuBuilder private constructor(val menu: TopMenu?, val name: String, v
     }
     fun addCheckItem(tool: CheckMenuTool): SubMenuBuilder {
         val sharedItem = tool.sharedItem
-        val newItem = BBCheckMenuItem(null, tool.title, tool.accelerator, tool.active, tool::run, sharedItem)
-        items.add(newItem)
+        items.add(tool)
         if (sharedItem != null) {
-            MenuManager.sharedItems[sharedItem] = newItem
+            MenuManager.sharedItems[sharedItem] = tool
         }
         return this
     }
@@ -166,7 +162,7 @@ class SubMenuBuilder private constructor(val menu: TopMenu?, val name: String, v
         text: String?,
         accelerator: Int,
         selected: Boolean,
-        onSelect: Consumer<BBSelectionData>
+        onSelect: (BBSelectionData) -> Unit
     ): SubMenuBuilder {
         items.add(BBRadioMenuItem(null, text, accelerator, selected, onSelect))
         return this
@@ -187,11 +183,5 @@ class SubMenuBuilder private constructor(val menu: TopMenu?, val name: String, v
         return this
     }
 
-    fun build(): BBSubMenu {
-        val subMenu = BBSubMenu(menu, name)
-        for (item in items) {
-            subMenu.addItem(item)
-        }
-        return subMenu
-    }
+    fun build(): BBSubMenu = BBSubMenu(menu, name, subMenuItems = items.toMutableList())
 }

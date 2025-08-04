@@ -30,6 +30,7 @@ import org.brailleblaster.utd.config.DocumentUTDConfig
 import org.brailleblaster.utd.config.UTDConfig
 import org.brailleblaster.utd.matchers.INodeMatcher
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 import org.brailleblaster.utils.xom.childNodes
 import java.util.*
 import java.util.function.Consumer
@@ -107,12 +108,12 @@ class DocumentMapImportFixer : AbstractFixer() {
         val ATTRIB_OVERRIDE_ID_ACTION = StringAttribute(
             "overrideActionId",
             UTDElements.UTD_PREFIX,
-            UTDElements.UTD_NAMESPACE
+            UTD_NS
         )
         val ATTRIB_OVERRIDE_ID_STYLE = StringAttribute(
             "overrideStyleId",
             UTDElements.UTD_PREFIX,
-            UTDElements.UTD_NAMESPACE
+            UTD_NS
         )
 
         fun getStyleMapElement(node: Node): Element? {

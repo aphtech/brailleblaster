@@ -17,7 +17,6 @@ package org.brailleblaster.settings
 
 import ch.qos.logback.classic.Level
 import com.google.common.base.CaseFormat
-import com.google.common.collect.ImmutableList
 import nu.xom.*
 import org.brailleblaster.BBIni
 import org.brailleblaster.bbx.BBX
@@ -68,7 +67,7 @@ class UTDManager @JvmOverloads constructor(styleDefs: StyleDefinitions = loadSty
    *
    * Was previously final, but needs to be altered when the user changes the formatting standard. Should not be altered in other cases.
    */
-  private val origStyleDefs: ImmutableList<Style>
+  private val origStyleDefs: List<Style>
   private var bookTypeStyleMap: IStyleMap? = null
   var overrideStyleMap: IStyleMap? = null
   var bbxStyleMap: BBXStyleMap? = null
@@ -94,7 +93,7 @@ class UTDManager @JvmOverloads constructor(styleDefs: StyleDefinitions = loadSty
     }
     log.debug("Liblouis data path: " + translator.dataPath)
     // Style Defs need to be set for making the StyleMap
-    origStyleDefs = ImmutableList.copyOf(styleDefs.styles)
+    origStyleDefs = styleDefs.styles.toList()
     engine.styleDefinitions = styleDefs
     when (getLogLevel()) {
       Level.ERROR -> {
@@ -597,11 +596,11 @@ class UTDManager @JvmOverloads constructor(styleDefs: StyleDefinitions = loadSty
   class BBUTDTranslationEngine : UTDTranslationEngine() {
     @JvmField
     var expectedTranslate = false
-    override fun translate(node: Node): Nodes {
+    override fun translate(doc: Node): Nodes {
       if (!expectedTranslate) {
         fail()
       }
-      return super.translate(node)
+      return super.translate(doc)
     }
 
     override fun translateDocument(doc: Document): Document {
@@ -611,14 +610,14 @@ class UTDManager @JvmOverloads constructor(styleDefs: StyleDefinitions = loadSty
       return super.translateDocument(doc)
     }
 
-    override fun format(node: Node): Document {
-      val origDoc = node.document
+    override fun format(nodes: Node): Document {
+      val origDoc = nodes.document
       return try {
-        super.format(node)
+        super.format(nodes)
       } catch (e: Exception) {
-        val failNode = if (node.document != null) node else origDoc
+        val failNode = if (nodes.document != null) nodes else origDoc
         throw NodeException(
-          "Failed to format " + if (node.document != null) "(orig node)" else "(orig doc)", failNode, e
+          "Failed to format " + if (nodes.document != null) "(orig node)" else "(orig doc)", failNode, e
         )
       }
     }

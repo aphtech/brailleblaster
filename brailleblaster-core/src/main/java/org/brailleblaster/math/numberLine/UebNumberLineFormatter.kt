@@ -178,8 +178,8 @@ open class UebNumberLineFormatter {
 
     fun getFractionString(numberLine: NumberLine, fraction: Fraction): String {
       var fraction = fraction
-      var string = ""
-      if (numberLine.settings.intervalType == SpatialMathEnum.IntervalType.WHOLE) {
+      val string: String
+        if (numberLine.settings.intervalType == SpatialMathEnum.IntervalType.WHOLE) {
         string = fraction.toInt().toString()
       } else if (numberLine.settings.intervalType == SpatialMathEnum.IntervalType.DECIMAL) {
         if (numberLine.settings.isRemoveLeadingZeros) {
@@ -223,8 +223,8 @@ open class UebNumberLineFormatter {
     private fun getBrailleFraction(numberLine: NumberLine, fraction: Fraction): String {
       // TODO account for passages
       var fraction = fraction
-      var string = ""
-      return if (numberLine.settings.intervalType == SpatialMathEnum.IntervalType.WHOLE) {
+      var string: String
+        return if (numberLine.settings.intervalType == SpatialMathEnum.IntervalType.WHOLE) {
         string = fraction.toInt().toString()
         val ascii = MathModule.translateAsciiMath(string)
         if (numberLine.settings.passage == Passage.NUMERIC) {
@@ -357,8 +357,7 @@ open class UebNumberLineFormatter {
     }
 
     private fun makeMixedFractionString(numberLine: NumberLine, fraction: Fraction): String {
-      var string = ""
-      val whole = TextTranslator.translateText(
+        val whole = TextTranslator.translateText(
         fraction.properWhole.toString(),
         WPManager.getInstance().controller.document.engine
       )
@@ -393,7 +392,7 @@ open class UebNumberLineFormatter {
       if (wholeFrac.compareTo(numDenFrac) == 0) {
         canReduceToWhole = true
       }
-      string = if (canReduceToWhole && numberLine.settings.isReduceFraction) {
+      val string = if (canReduceToWhole && numberLine.settings.isReduceFraction) {
         ((if (fraction.toDouble() < 0) UebTranslations.MINUS else "")
             + (if (numberLine.settings.passage == Passage.NUMERIC) "" else UebTranslations.NUMBER_CHAR)
             + whole)

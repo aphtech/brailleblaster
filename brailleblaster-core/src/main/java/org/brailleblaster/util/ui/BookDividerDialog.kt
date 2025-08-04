@@ -256,8 +256,8 @@ class BookDividerDialog(val manager: Manager) {
         val filePath = getPath(manager.archiver.path.toString())
 
         val dialog = BBFileDialog(
-            manager.wpManager.shell, SWT.OPEN, null, ArchiverFactory.INSTANCE.supportedDescriptionsWithCombinedEntry,
-            ArchiverFactory.INSTANCE.supportedExtensionsWithCombinedEntry,
+            manager.wpManager.shell, SWT.OPEN, null, ArchiverFactory.supportedDescriptionsWithCombinedEntry.toTypedArray(),
+            ArchiverFactory.supportedExtensionsWithCombinedEntry.toTypedArray(),
             filterPath = filePath
         )
 

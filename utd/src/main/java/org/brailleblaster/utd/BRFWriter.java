@@ -155,7 +155,7 @@ public class BRFWriter {
 		}
 		
 		//Issue #4162: non breaking spaces are mangled in other brf readers
-		braille = StringUtils.replace(braille, /*ascii nbsp*/ "\u00A0", " ");
+		braille = braille.replace('\u00a0', ' ');
 
 		//Potentially convert to ascii or unicode
 		String textToAppend = braille;

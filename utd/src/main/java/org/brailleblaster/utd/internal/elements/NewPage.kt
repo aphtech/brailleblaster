@@ -20,6 +20,7 @@ import nu.xom.Element
 import org.brailleblaster.utd.properties.UTDElements
 import kotlin.jvm.JvmOverloads
 import org.brailleblaster.utd.properties.PageNumberType
+import org.brailleblaster.utils.UTD_NS
 
 class NewPage : Element {
     @JvmOverloads
@@ -33,7 +34,7 @@ class NewPage : Element {
     constructor(e: Element?) : super(e) {
         val localName = localName
         val namespaceUri = namespaceURI
-        require(namespaceUri == UTDElements.UTD_NAMESPACE && localName == UTDElements.NEW_PAGE.elementName) { "Element is not a newPage element" }
+        require(namespaceUri == UTD_NS && localName == UTDElements.NEW_PAGE.elementName) { "Element is not a newPage element" }
     }
 
     var pageNumber: Int
@@ -76,7 +77,7 @@ class NewPage : Element {
     }
 
     companion object {
-        private val PROTOTYPE = Element(UTDElements.NEW_PAGE.qName, UTDElements.UTD_NAMESPACE)
+        private val PROTOTYPE = Element(UTDElements.NEW_PAGE.qName, UTD_NS)
         const val PAGE_BREAK_ATTR_NAME = "pageBreak"
         const val PAGE_BREAK_ATTR_VALUE = "true"
         const val UNTRANSLATED_ATTRIB_NAME = "untranslated"

@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.utd.matchers;
 
+import com.google.common.collect.Iterators;
 import org.brailleblaster.utd.ComparableStyle;
 import org.brailleblaster.utd.NamespaceMap;
 import org.brailleblaster.utd.matchers.NodeAncestorDelegatingMatcher.Position;
@@ -22,7 +23,6 @@ import org.brailleblaster.utd.properties.UTDElements;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.google.common.collect.Iterators;
 
 import static org.testng.Assert.assertTrue;
 

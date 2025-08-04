@@ -18,7 +18,6 @@ package org.brailleblaster.perspectives.braille.mapping.elements
 import nu.xom.Document
 import nu.xom.Element
 import nu.xom.Node
-import org.apache.commons.lang3.StringUtils
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.math.mathml.MathModule
 import org.brailleblaster.perspectives.braille.Manager
@@ -150,7 +149,7 @@ open class TableCellTextMapElement : TextMapElement, ITableCell, Uneditable {
             if (indexes.isEmpty()) {
                 return IntArray(0)
             }
-            val indexArray = StringUtils.split(indexes, " ")
+            val indexArray = indexes.split(" ")
             val returnArray = IntArray(indexArray.size)
             for (i in indexArray.indices) {
                 returnArray[i] = indexArray[i].toInt()

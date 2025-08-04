@@ -31,6 +31,7 @@ import org.brailleblaster.utd.internal.xml.XMLHandler;
 import org.brailleblaster.utd.internal.xml.XMLHandler2;
 import org.brailleblaster.utd.properties.UTDElements;
 import org.brailleblaster.utd.utils.TableUtils;
+import org.brailleblaster.utils.NamespacesKt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -463,7 +464,7 @@ public class MapList extends LinkedList<@NotNull TextMapElement> {
      */
     public int findNodeIndex(Node n, int startIndex) {
         Element usableElement = (Element) (n instanceof Text ? n.getParent() : n);
-        if (usableElement.getNamespaceURI().equals(BBX.MATHML_NAMESPACE)) {
+        if (usableElement.getNamespaceURI().equals(NamespacesKt.MATHML_NS)) {
             //Text nodes under a <m:math> tag are not in the map list
             //However they are all under an element in the m: namespace
             //Find the INLINE.MATHML tag (which wraps <m:math>) then get <m:math>

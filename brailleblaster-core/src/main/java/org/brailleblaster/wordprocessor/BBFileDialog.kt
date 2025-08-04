@@ -85,13 +85,10 @@ class BBFileDialog @JvmOverloads constructor(
                     }
                 }
             }
-            savePath(openFileName)
-            openFileName
+            openFileName.also { savePath(it) }
         } else {
             // used when called from save as
-            val file = widget.open()
-            savePath(file)
-            file
+            widget.open().also { savePath(it) }
         }
     }
 

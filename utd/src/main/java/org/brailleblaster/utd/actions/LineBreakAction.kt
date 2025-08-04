@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.utd.actions
 
-import com.google.common.collect.Lists
 import nu.xom.Element
 import nu.xom.Node
 import org.brailleblaster.utd.ITranslationEngine
@@ -36,18 +35,18 @@ class LineBreakAction : IBlockAction {
     override fun applyTo(node: Node, context: ITranslationEngine): List<TextSpan> {
         return if (node is Element) {
             processNode(node, context)
-        } else Lists.newArrayList(createTextSpanForLineBreak(node))
+        } else listOf(createTextSpanForLineBreak(node))
     }
 
     private fun processNode(node: Element, engine: ITranslationEngine): List<TextSpan> {
         //If the node already has a brl for a child, then return
         val textChild = UTDHelper.getTextChild(node)
         if (UTDHelper.getAssociatedBrlElement(textChild) != null) {
-            return Lists.newArrayList(createTextSpanForLineBreak(node))
+            return listOf(createTextSpanForLineBreak(node))
         }
         val brl = UTDElements.BRL.create()
         //brl.addAttribute(new Attribute("linesBefore", "1")); not needed, made in bb
         node.appendChild(brl)
-        return Lists.newArrayList(createTextSpanForLineBreak(node))
+        return listOf(createTextSpanForLineBreak(node))
     }
 }

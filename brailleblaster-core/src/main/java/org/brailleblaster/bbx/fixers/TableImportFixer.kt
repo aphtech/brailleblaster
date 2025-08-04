@@ -74,11 +74,10 @@ class TableImportFixer : AbstractFixer() {
             val utdMan = ImportFixerCommon.UTD_MANAGER
             var doc: Document
             /*
-		Issue #4780: Opening other documents can cause our UTD formatter thread to get interruped.
-		So keep trying and the formatter will stop or the Notify dialog will block user input
-		
-		TODO: They shouldn't be connected in the first place
-		*/
+            Issue #4780: Opening other documents can cause our UTD formatter thread to get interrupted.
+            So keep trying and the formatter will stop or the Notify dialog will block user input
+            TODO: They shouldn't be connected in the first place
+            */
             // Set maximum retry limit to prevent infinite looping
             var retries = 10
             while (true) {

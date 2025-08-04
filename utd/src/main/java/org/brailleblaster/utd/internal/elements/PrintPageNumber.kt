@@ -17,12 +17,13 @@ package org.brailleblaster.utd.internal.elements
 
 import nu.xom.Element
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 
 /**
  * Specialised element for print page numbers.
  */
 class PrintPageNumber @JvmOverloads constructor(pageNumber: String = "") : PageNumber(PROTOTYPE, pageNumber) {
     companion object {
-        private val PROTOTYPE = Element(UTDElements.PRINT_PAGE_NUM.qName, UTDElements.UTD_NAMESPACE)
+        private val PROTOTYPE = Element(UTDElements.PRINT_PAGE_NUM.qName, UTD_NS)
     }
 }

@@ -26,7 +26,7 @@ import org.brailleblaster.perspectives.braille.messages.InsertNodeMessage
 import org.brailleblaster.perspectives.braille.viewInitializer.ViewInitializer
 import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.properties.EmphasisType
-import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 
 class InsertElementHandler(manager: Manager, vi: ViewInitializer?, list: MapList?) : Handler(manager, vi!!, list!!) {
     val doc: BrailleDocument = manager.document
@@ -77,7 +77,7 @@ class InsertElementHandler(manager: Manager, vi: ViewInitializer?, list: MapList
     }
 
     private fun isTRNote(e: Element): Boolean {
-        val atr = e.getAttribute("overrideStyle", UTDElements.UTD_NAMESPACE)
+        val atr = e.getAttribute("overrideStyle", UTD_NS)
         if (atr != null) return atr.value == "TRNote"
 
         return false

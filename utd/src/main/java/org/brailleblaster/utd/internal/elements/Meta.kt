@@ -17,10 +17,11 @@ package org.brailleblaster.utd.internal.elements
 
 import nu.xom.Element
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 
 class Meta : Element(PROTOTYPE) {
     companion object {
         @JvmStatic
-        private val PROTOTYPE = Element(UTDElements.META.qName, UTDElements.UTD_NAMESPACE)
+        private val PROTOTYPE = Element(UTDElements.META.qName, UTD_NS)
     }
 }

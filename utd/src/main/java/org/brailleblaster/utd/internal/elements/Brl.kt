@@ -19,6 +19,7 @@ import com.google.common.primitives.ImmutableIntArray
 import nu.xom.Attribute
 import nu.xom.Element
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 import java.util.stream.Collectors
 
 class Brl : Element(PROTOTYPE) {
@@ -64,7 +65,7 @@ class Brl : Element(PROTOTYPE) {
     }
 
     companion object {
-        private val PROTOTYPE = Element(UTDElements.BRL.qName, UTDElements.UTD_NAMESPACE)
+        private val PROTOTYPE = Element(UTDElements.BRL.qName, UTD_NS)
         fun convertIndexStringToArray(value: String): ImmutableIntArray {
             val length = value.length
             val builder = ImmutableIntArray.builder(value.length / 2)

@@ -2046,9 +2046,9 @@ public class TOCBuilderTest {
 		
 		test.clickButtonWithId(TOCBuilderBBX.SWTBOT_DISPERSE_VOLUMES_BUTTON);
 		try {
-			Assert.assertTrue(TOCBuilderBBX._test_diffTOCSplitsThanVolumes);
+			Assert.assertTrue(TOCBuilderBBX.test_diffTOCSplitsThanVolumes);
 		} finally {
-			TOCBuilderBBX._test_diffTOCSplitsThanVolumes = false;
+			TOCBuilderBBX.test_diffTOCSplitsThanVolumes = false;
 		}
 		
 		test.assertRootSection_NoBrlCopy()
@@ -2175,9 +2175,9 @@ public class TOCBuilderTest {
 		
 		test.clickButtonWithId(TOCBuilderBBX.SWTBOT_DISPERSE_VOLUMES_BUTTON);
 		try {
-			Assert.assertTrue(TOCBuilderBBX._test_diffTOCSplitsThanVolumes);
+			Assert.assertTrue(TOCBuilderBBX.test_diffTOCSplitsThanVolumes);
 		} finally {
-			TOCBuilderBBX._test_diffTOCSplitsThanVolumes = false;
+			TOCBuilderBBX.test_diffTOCSplitsThanVolumes = false;
 		}
 		
 		test.assertRootSection_NoBrlCopy()

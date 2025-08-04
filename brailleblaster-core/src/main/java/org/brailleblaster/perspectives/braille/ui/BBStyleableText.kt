@@ -33,6 +33,7 @@ import org.brailleblaster.utils.xom.detachAll
 import org.brailleblaster.util.ColorManager
 import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.util.Notify.showMessage
+import org.brailleblaster.utils.BB_NS
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.ExtendedModifyEvent
@@ -432,13 +433,13 @@ class BBStyleableText(parent: Composite, buttonPanel: Composite?, buttons: Int, 
     }
 
     private fun computeMargin(element: Element) {
-        if (element.getAttribute(FIRST_LINE_INDENT_ATTRIB, BBX.BB_NAMESPACE) != null
-            && element.getAttribute(INDENT_ATTRIB, BBX.BB_NAMESPACE) != null
+        if (element.getAttribute(FIRST_LINE_INDENT_ATTRIB, BB_NS) != null
+            && element.getAttribute(INDENT_ATTRIB, BB_NS) != null
         ) {
             margins.add(
                 Margin(
-                    element.getAttributeValue(FIRST_LINE_INDENT_ATTRIB, BBX.BB_NAMESPACE).toInt(),
-                    element.getAttributeValue(INDENT_ATTRIB, BBX.BB_NAMESPACE).toInt()
+                    element.getAttributeValue(FIRST_LINE_INDENT_ATTRIB, BB_NS).toInt(),
+                    element.getAttributeValue(INDENT_ATTRIB, BB_NS).toInt()
                 )
             )
         } else {

@@ -31,6 +31,7 @@ import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.PageBuilderHelper
 import org.brailleblaster.utd.utils.TableUtils
 import org.brailleblaster.utd.utils.TextTranslator
+import org.brailleblaster.utils.UTD_NS
 import org.brailleblaster.utils.xom.childNodes
 import java.util.*
 import kotlin.math.max
@@ -154,13 +155,13 @@ class ListedTableFormatter : Formatter() {
         node.addAttribute(Attribute(CLASS_ATTRIB_NAME, CLASS_ATTRIB_VALUE))
         if (TableUtils.FALLBACK_ATTRIB_VALUE == node.getAttributeValue(
                 TableUtils.FALLBACK_ATTRIB_NAME,
-                UTDElements.UTD_NAMESPACE
+                UTD_NS
             )
         ) {
             node.addAttribute(
                 Attribute(
                     UTDElements.UTD_PREFIX + ":" + TableUtils.FALLBACK_ATTRIB_NAME,
-                    UTDElements.UTD_NAMESPACE,
+                    UTD_NS,
                     TableUtils.FALLBACK_ATTRIB_VALUE
                 )
             )

@@ -26,6 +26,7 @@ import org.brailleblaster.utd.ITranslationEngine;
 import org.brailleblaster.utd.TextSpan;
 import org.brailleblaster.utd.UTDTranslationEngine;
 import org.brailleblaster.utd.properties.UTDElements;
+import org.brailleblaster.utils.NamespacesKt;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -40,13 +41,13 @@ public class AttributeActionTest {
 		Element img = new Element("img");
 		img.addAttribute(new Attribute("alt", "My image description"));
 		p.appendChild(img);
-		String brlXML = String.format("<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\">,my image descrip;n</utd:brl>", UTDElements.UTD_NAMESPACE);
+		String brlXML = String.format("<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\">,my image descrip;n</utd:brl>", NamespacesKt.UTD_NS);
 		dataList.add(new Object[] {img, "alt", brlXML});
 		p = new Element("p");
 		img = new Element("image");
 		img.addAttribute(new Attribute("text", "An image"));
 		p.appendChild(img);
-		brlXML = String.format("<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\">,an image</utd:brl>", UTDElements.UTD_NAMESPACE);
+		brlXML = String.format("<utd:brl xmlns:utd=\"%s\" xml:space=\"preserve\">,an image</utd:brl>", NamespacesKt.UTD_NS);
 		dataList.add(new Object[] {img, "text", brlXML});
 		return dataList.iterator();
 	}

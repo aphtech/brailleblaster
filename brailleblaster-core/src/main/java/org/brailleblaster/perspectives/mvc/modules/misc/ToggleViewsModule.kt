@@ -49,13 +49,11 @@ class ToggleViewsModule(private val m: Manager) : SimpleListener {
         PRINT, BRAILLE, STYLE
     }
 
-    private val parent: Composite
-    private var currentViews: MutableList<Views>
     private var windowedView: Views? = null
+    private var currentViews: MutableList<Views> = loadSettings()
+    private val parent: Composite = findParentComposite(currentViews)
 
     init {
-        currentViews = loadSettings()
-        parent = findParentComposite()
         checkViews()
     }
 
@@ -173,7 +171,7 @@ class ToggleViewsModule(private val m: Manager) : SimpleListener {
         return true
     }
 
-    private fun findParentComposite(): Composite {
+    private fun findParentComposite(currentViews: MutableList<Views>): Composite {
         checkList(currentViews)
         val widget: StyledText = when (currentViews[0]) {
             Views.BRAILLE -> brailleView
@@ -323,7 +321,7 @@ class ToggleViewsModule(private val m: Manager) : SimpleListener {
 		fun loadSettings(): MutableList<Views> {
             val propValue = BBIni.propertyFileManager.getProperty(USER_SETTING_KEY)
             if (propValue == null || propValue.trim { it <= ' ' }.isEmpty()) {
-                return ArrayList(DEFAULT_ORDER)
+                return DEFAULT_ORDER.toMutableList()
             }
             val returnList: MutableList<Views> = ArrayList()
             val split = propValue.split(USER_SETTING_DELIMITER.toRegex()).dropLastWhile { it.isEmpty() }

@@ -53,8 +53,8 @@ object OpenFileTool : MenuTool {
             wpManager.shell,
             SWT.OPEN,
             null,
-            ArchiverFactory.INSTANCE.supportedDescriptionsWithCombinedEntry,
-            ArchiverFactory.INSTANCE.supportedExtensionsWithCombinedEntry
+            ArchiverFactory.supportedDescriptionsWithCombinedEntry.toTypedArray(),
+            ArchiverFactory.supportedExtensionsWithCombinedEntry.toTypedArray()
         )
         val result = dialog.open()
         if (result != null) {

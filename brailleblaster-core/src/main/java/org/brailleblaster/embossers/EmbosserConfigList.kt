@@ -79,14 +79,11 @@ class EmbosserConfigList(private val embosserConfigs: MutableList<EmbosserConfig
 
     @Throws(IOException::class)
     fun saveEmbossers() {
-        val embossersFile = this.embossersFile
-        if (embossersFile != null) {
-            saveEmbossers(embossersFile)
-        } else {
-            throw IllegalStateException(
+        saveEmbossers(
+            embossersFile ?: throw IllegalStateException(
                 "The Embossers object has no default file name, use saveEmbossers(File) instead"
             )
-        }
+        )
     }
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -99,7 +96,7 @@ class EmbosserConfigList(private val embosserConfigs: MutableList<EmbosserConfig
 
         @OptIn(ExperimentalSerializationApi::class)
         fun loadEmbossers(
-            embossersFile: File, s: () -> EmbosserConfigList = { EmbosserConfigList(embossersFile = embossersFile) }
+            embossersFile: File, s: () -> EmbosserConfigList = { EmbosserConfigList() }
         ): EmbosserConfigList {
             return try {
                 embossersFile.inputStream().use { Json.decodeFromStream(it) }
@@ -107,7 +104,7 @@ class EmbosserConfigList(private val embosserConfigs: MutableList<EmbosserConfig
                 s()
             } catch (_: IOException) {
                 s()
-            }
+            }.also { it.embossersFile = embossersFile }
         }
 
     }

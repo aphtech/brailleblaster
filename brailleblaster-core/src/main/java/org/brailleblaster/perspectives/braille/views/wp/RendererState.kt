@@ -16,8 +16,6 @@
 package org.brailleblaster.perspectives.braille.views.wp
 
 import nu.xom.Element
-import org.apache.commons.lang3.tuple.MutablePair
-import org.apache.commons.lang3.tuple.Pair
 import org.brailleblaster.BBIni
 import org.brailleblaster.utd.UTDTranslationEngine
 import org.brailleblaster.utd.properties.UTDElements
@@ -204,7 +202,7 @@ class RendererState(engine: UTDTranslationEngine) {
         get() {
             val newPages: MutableList<Pair<Int, Element>> = ArrayList()
             lines.stream().filter { l: RenderObject? -> l is NewPage }
-                .forEach { n: RenderObject -> newPages.add(MutablePair((n as NewPage).offset, n.newPageElement)) }
+                .forEach { n: RenderObject -> newPages.add(((n as NewPage).offset) to (n.newPageElement)) }
             return newPages
         }
 

@@ -17,7 +17,6 @@ package org.brailleblaster.search
 
 import nu.xom.Element
 import nu.xom.Node
-import org.apache.commons.lang3.tuple.Pair
 import org.brailleblaster.BBIni
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.frontmatter.VolumeUtils

@@ -22,6 +22,7 @@ import org.brailleblaster.utd.FormatSelector
 import org.brailleblaster.utd.IStyle
 import org.brailleblaster.utd.PageBuilder
 import org.brailleblaster.utd.formatters.Formatter
+import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.TableUtils
 import org.brailleblaster.utd.utils.TableUtils.TableTypes
 
@@ -48,24 +49,28 @@ class AutoTableFormatter : Formatter() {
         when (TableUtils.detectType(node, engine.styleMap, engine.brailleSettings, engine.pageSettings)) {
             TableTypes.SIMPLE -> {
                 node.addAttribute(Attribute("format", "simple"))
+                node.addAttribute(Attribute(UTDElements.UTD_STYLE_ATTRIB,
+                    engine.styleDefinitions.getStyleByName("Simple Table")!!.name))
                 mutPageBuilders.addAll(simpleTable.format(node, style, mutPageBuilders, formatSelector))
             }
-
             TableTypes.LINEAR -> {
                 node.addAttribute(Attribute("format", "simple"))
+                node.addAttribute(Attribute(UTDElements.UTD_STYLE_ATTRIB,
+                    engine.styleDefinitions.getStyleByName("Linear Table")!!.name))
                 mutPageBuilders.addAll(linearTable.format(node, style, mutPageBuilders, formatSelector))
             }
-
             TableTypes.STAIRSTEP -> {
                 node.addAttribute(Attribute("format", "stairstep"))
+                node.addAttribute(Attribute(UTDElements.UTD_STYLE_ATTRIB,
+                    engine.styleDefinitions.getStyleByName("Stairstep Table")!!.name))
                 mutPageBuilders.addAll(stairstepTable.format(node, style, mutPageBuilders, formatSelector))
             }
-
             TableTypes.LISTED, TableTypes.NONTABLE -> {
                 node.addAttribute(Attribute("format", "listed"))
+                node.addAttribute(Attribute(UTDElements.UTD_STYLE_ATTRIB,
+                    engine.styleDefinitions.getStyleByName("Listed Table")!!.name))
                 mutPageBuilders.addAll(listedTable.format(node, style, mutPageBuilders, formatSelector))
             }
-
         }
         return mutPageBuilders
     }

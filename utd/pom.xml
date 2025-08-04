@@ -14,7 +14,6 @@
     <properties>
         <findbugsXML>false</findbugsXML>
         <!-- Versioning -->
-        <graalvm.version>24.2.0</graalvm.version>
         <assertjcore.version>3.24.2</assertjcore.version>
         <equalsverifier.version>3.15.2</equalsverifier.version>
         <xmlunitmatchers.version>2.10.0</xmlunitmatchers.version>
@@ -35,13 +34,11 @@
         <dependency>
             <groupId>org.graalvm.polyglot</groupId>
             <artifactId>js-community</artifactId>
-            <version>${graalvm.version}</version>
             <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.graalvm.js</groupId>
             <artifactId>js-scriptengine</artifactId>
-            <version>${graalvm.version}</version>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>

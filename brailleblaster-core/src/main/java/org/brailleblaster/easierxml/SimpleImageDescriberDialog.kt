@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.easierxml
 
-import com.google.common.collect.Lists
 import nu.xom.Element
 import nu.xom.Node
 import org.brailleblaster.BBIni
@@ -472,7 +471,7 @@ class SimpleImageDescriberDialog(
             )
             setImageDescription(imgElem, newDescElement, wantsCaptionStyle)
         }
-        postClick(Lists.newArrayList(imgWrapper))
+        postClick(listOf(imgWrapper))
         open()
     }
 

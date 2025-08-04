@@ -223,7 +223,7 @@ object VolumeUtils {
         log.debug("scrolling to text " + text.value)
 
         //Make sure text is in a buffered section
-        val nodeSection = manager.getNodeIndexAllSections(text).key
+        val nodeSection = manager.getNodeIndexAllSections(text).first
         val currentSection = manager.firstSection
         log.debug("Current section {} found section {}", currentSection, nodeSection)
         if (nodeSection != currentSection) manager.resetSection(nodeSection)

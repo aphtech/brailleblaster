@@ -18,6 +18,7 @@ package org.brailleblaster.utd.internal.elements
 import nu.xom.Attribute
 import nu.xom.Element
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 
 class Tab : Element(PROTOTYPE) {
     var tabValue: String?
@@ -34,7 +35,7 @@ class Tab : Element(PROTOTYPE) {
 
     companion object {
         @JvmStatic
-        private val PROTOTYPE = Element(UTDElements.TAB.qName, UTDElements.UTD_NAMESPACE).apply { addAttribute(Attribute("xml:space", "http://www.w3.org/XML/1998/namespace", "preserve")) }
+        private val PROTOTYPE = Element(UTDElements.TAB.qName, UTD_NS).apply { addAttribute(Attribute("xml:space", "http://www.w3.org/XML/1998/namespace", "preserve")) }
     }
 
 }

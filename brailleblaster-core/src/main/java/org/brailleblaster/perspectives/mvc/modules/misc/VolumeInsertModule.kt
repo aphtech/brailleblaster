@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.perspectives.mvc.modules.misc
 
-import com.google.common.collect.Iterables
 import nu.xom.Document
 import nu.xom.Element
 import nu.xom.Node
@@ -113,7 +112,7 @@ class VolumeInsertModule : SimpleListener {
                             updateEndOfVolume(m.doc)
                             if (volumes.size != 2 && insertedVolume == volumes[volumes.size - 2]) {
                                 val volumeData = getVolumeNames(volumes)
-                                val lastData = Iterables.getLast(volumeData)
+                                val lastData = volumeData.last()
                                 val prevData = volumeData[volumeData.size - 2]
                                 // #4764 Make the last volume a sane value
                                 if ((lastData.type == VolumeType.VOLUME_PRELIMINARY

@@ -15,13 +15,13 @@
  */
 package org.brailleblaster.perspectives.braille;
 
+import kotlin.Pair;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.ParentNode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.brailleblaster.BBIni;
 import org.brailleblaster.Main;
 import org.brailleblaster.archiver2.Archiver2;
@@ -74,10 +74,9 @@ import org.brailleblaster.utd.properties.UTDElements;
 import org.brailleblaster.utd.utils.TableUtils;
 import org.brailleblaster.utd.utils.UTDHelper;
 import org.brailleblaster.util.*;
-import org.brailleblaster.utils.OS;
-import org.brailleblaster.utils.Platform;
 import org.brailleblaster.wordprocessor.BBStatusBar;
 import org.brailleblaster.wordprocessor.FontManager;
+import org.brailleblaster.wordprocessor.RecentDocs;
 import org.brailleblaster.wordprocessor.WPManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
@@ -431,7 +430,7 @@ public class Manager extends Controller {
         boolean cancel = false;
         // Issue #4321: Prompt user if they deleted the origional file
         if (!BBIni.getDebugging() && (isDocumentEdited() || !Files.exists(getArchiver().getPath()))) {
-            YesNoChoice ync = new YesNoChoice(localeHandler.get("hasChanged"), !Platform.getOs().equals(OS.Mac));
+            YesNoChoice ync = new YesNoChoice(localeHandler.get("hasChanged"), true);
 
             if (ync.getResult() == SWT.YES) {
                 cancel = !FileModule.Companion.fileSave(this);
@@ -492,7 +491,7 @@ public class Manager extends Controller {
 
         // Recent Files.
         if (file != DEFAULT_FILE) {
-            FileModule.addRecentDoc(file);
+            RecentDocs.Companion.getDefaultRecentDocs().addRecentDoc(file);
         }
         try {
             document = new BrailleDocument(this, getArchiver().getBbxDocument());
@@ -1695,12 +1694,12 @@ public class Manager extends Controller {
      * @param n The node to find.
      * @return Section index,
      */
-    public ImmutablePair<Integer, Integer> getNodeIndexAllSections(Node n) {
+    public Pair<Integer, Integer> getNodeIndexAllSections(Node n) {
         int startIndex = 0;
         for (int i = 0; i < viewInitializer.getSectionList().size(); i++) {
             int nodeBySection = viewInitializer.getSectionList().get(i).list.findNodeIndex(n, startIndex);
             if (nodeBySection != -1) {
-                return ImmutablePair.of(i, nodeBySection);
+                return new Pair<>(i, nodeBySection);
             }
         }
         return null;
@@ -1712,7 +1711,7 @@ public class Manager extends Controller {
      * @param printPageNumber The print page number to find.
      * @return Index of section this page number was found in, the TextMapElement
      */
-    public ImmutablePair<Integer, TextMapElement> getPrintPageElement(String printPageNumber) {
+    public @Nullable Pair<Integer, TextMapElement> getPrintPageElement(String printPageNumber) {
         for (SectionElement curSection : viewInitializer.getSectionList()) {
             for (TextMapElement curElement : curSection.list) {
                 if (!(curElement instanceof PageIndicatorTextMapElement))
@@ -1725,7 +1724,7 @@ public class Manager extends Controller {
                 }
                 String brlPageNum = ((Element) brl).getAttributeValue("printPage");
                 if (pageNumberEquals(brlPageNum, printPageNumber)) {
-                    return ImmutablePair.of(viewInitializer.getSectionList().indexOf(curSection), curElement);
+                    return new Pair<>(viewInitializer.getSectionList().indexOf(curSection), curElement);
                 }
             }
         }
@@ -1744,7 +1743,7 @@ public class Manager extends Controller {
                     String origPage = ((Element) curBrailleElement.getNode()).getAttributeValue("printPage");
                     String braillePage = curBrailleElement.getNode().getValue();
                     if (pageNumberEquals(origPage, printPageNumber) || pageNumberEquals(braillePage, printPageNumber))
-                        return ImmutablePair.of(viewInitializer.getSectionList().indexOf(curSection), curElement);
+                        return new Pair<>(viewInitializer.getSectionList().indexOf(curSection), curElement);
                 }
             }
         }
@@ -1769,7 +1768,7 @@ public class Manager extends Controller {
     // if it will ever be needed
 
     @Nullable
-    public ImmutablePair<Integer, TextMapElement> getBraillePageElementByUntranslatedPage(
+    public Pair<Integer, TextMapElement> getBraillePageElementByUntranslatedPage(
             String untranslatedBraillePage, @Nullable nu.xom.Text startNode) {
         boolean afterStartNode = false;
         for (SectionElement curSection : viewInitializer.getSectionList()) {
@@ -1787,7 +1786,7 @@ public class Manager extends Controller {
                         continue;
                     String page = ((Element) curBrailleElement.getNode()).getAttributeValue("untranslated");
                     if (untranslatedBraillePage.equalsIgnoreCase(page))
-                        return ImmutablePair.of(viewInitializer.getSectionList().indexOf(curSection), curElement);
+                        return new Pair<>(viewInitializer.getSectionList().indexOf(curSection), curElement);
                 }
             }
         }
@@ -1804,7 +1803,7 @@ public class Manager extends Controller {
      * @return Index of section this page number was found in, the TextMapElement
      */
     @Nullable
-    public ImmutablePair<Integer, TextMapElement> getBraillePageElement(int rawPageIndex) {
+    public Pair<Integer, TextMapElement> getBraillePageElement(int rawPageIndex) {
         int counter = 0;
         for (SectionElement curSection : viewInitializer.getSectionList()) {
             for (TextMapElement curElement : curSection.list) {
@@ -1812,7 +1811,7 @@ public class Manager extends Controller {
                     if (!(curBrailleElement instanceof BraillePageBrlMapElement))
                         continue;
                     if (counter == rawPageIndex)
-                        return ImmutablePair.of(viewInitializer.getSectionList().indexOf(curSection), curElement);
+                        return new Pair<>(viewInitializer.getSectionList().indexOf(curSection), curElement);
                     counter++;
                 }
             }

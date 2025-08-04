@@ -26,8 +26,8 @@ import org.brailleblaster.perspectives.braille.ui.BBStyleableText
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.TableUtils
+import org.brailleblaster.utils.UTD_NS
 import org.brailleblaster.utils.xom.childNodes
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
@@ -134,7 +134,7 @@ object ImageUtils {
         ) { curAncestor: Element ->
             curAncestor.getAttribute(
                 TableUtils.ATTRIB_TABLE_COPY,
-                UTDElements.UTD_NAMESPACE
+                UTD_NS
             ) != null
         })
     }
@@ -179,7 +179,7 @@ object ImageUtils {
         return FastXPath.descendant(doc).filterIsInstance<Element>().filter { node: Element -> isImage(node) && BBX.SPAN.IMAGE.ATTRIB_SOURCE[node] == imgSrc }.filter { node: Element ->
             XMLHandler.ancestorElementNot(node) { curAncestor: Element ->
                 curAncestor
-                    .getAttribute(TableUtils.ATTRIB_TABLE_COPY, UTDElements.UTD_NAMESPACE) != null
+                    .getAttribute(TableUtils.ATTRIB_TABLE_COPY, UTD_NS) != null
             }
         }
     }
@@ -208,7 +208,7 @@ object ImageUtils {
         var block = caret
         while (block != null && FastXPath.descendant(block).stream().noneMatch { node: Node ->
                 (node is Text
-                        && (node.parent as Element).namespaceURI != UTDElements.UTD_NAMESPACE)
+                        && (node.parent as Element).namespaceURI != UTD_NS)
             }) {
             block = FastXPath.preceding(block)
                 .stream()

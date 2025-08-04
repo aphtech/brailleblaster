@@ -27,6 +27,7 @@ import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.PageNumberType.Companion.equivalentPage
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utils.UTD_NS
 import org.brailleblaster.utils.xom.childNodes
 import org.mwhapples.jlouis.Louis
 import org.mwhapples.jlouis.TranslationException
@@ -93,7 +94,7 @@ open class UTDTranslationEngine(
         } else if (node.parent == null || node.parent is Document) {
             if (node is Element) {
                 log.debug("Adding utd prefix to root")
-                node.addNamespaceDeclaration(UTDElements.UTD_PREFIX, UTDElements.UTD_NAMESPACE)
+                node.addNamespaceDeclaration(UTDElements.UTD_PREFIX, UTD_NS)
             }
             val action: IAction = GenericBlockAction()
             var nodeCopy: Node? = node
@@ -152,7 +153,7 @@ open class UTDTranslationEngine(
         if (atomic) {
             docCopy = doc.copy()
         }
-        docCopy.rootElement.addNamespaceDeclaration(UTDElements.UTD_PREFIX, UTDElements.UTD_NAMESPACE)
+        docCopy.rootElement.addNamespaceDeclaration(UTDElements.UTD_PREFIX, UTD_NS)
         val action: IAction = GenericBlockAction()
         action.applyTo(docCopy.rootElement, this)
         return docCopy

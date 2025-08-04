@@ -15,13 +15,8 @@
  */
 package org.brailleblaster.perspectives.mvc.modules.misc
 
-import com.google.common.base.Preconditions
-import com.google.common.collect.ImmutableList
-import com.google.common.collect.Iterables
-import com.google.common.collect.Lists
 import nu.xom.*
 import nu.xom.Text
-import org.apache.commons.lang3.StringUtils
 import org.brailleblaster.BBIni.debugging
 import org.brailleblaster.BBIni.propertyFileManager
 import org.brailleblaster.bbx.BBX
@@ -54,7 +49,6 @@ import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.properties.EmphasisType
-import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.TableUtils
 import org.brailleblaster.utd.utils.TableUtils.isTableCopy
 import org.brailleblaster.utd.utils.UTDHelper.Companion.stripUTDRecursive
@@ -62,6 +56,8 @@ import org.brailleblaster.utd.utils.dom.BoxUtils.unbox
 import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.util.Notify
 import org.brailleblaster.util.Notify.notify
+import org.brailleblaster.utils.BB_NS
+import org.brailleblaster.utils.UTD_NS
 import org.brailleblaster.utils.swt.EasySWT.setSizeAndLocationMiddleScreen
 import org.brailleblaster.wordprocessor.WPManager
 import org.brailleblaster.wordprocessor.WPManager.Companion.getInstance
@@ -135,7 +131,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
 
         val boxString = propertyFileManager.getProperty(COLOR_PROP, "")
         val boxes: Array<String>
-        val array = ArrayList<String>()
+        val array = mutableListOf<String>()
         if (boxString.isNotEmpty()) {
             boxes = boxString.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             for (box in boxes) {
@@ -164,8 +160,8 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
                 } else {
                     val color = text.text
                     val sb = StringBuilder()
-                    array.iterator().forEachRemaining { z: String? ->
-                        if (!StringUtils.isEmpty(z)) {
+                    array.iterator().forEachRemaining { z: String ->
+                        if (z.isNotEmpty()) {
                             sb.append(z).append(",")
                         }
                     }
@@ -294,7 +290,6 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
 
 
     fun applyStyleOptionAndReformat(option: BBStyleOptionSelection, start: Node?, end: Node?) {
-        Preconditions.checkNotNull(option, "Option cannot be null")
 
         val blocks = getBlocks(start, end)
         val utdMan = m.document.settingsManager
@@ -371,7 +366,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
                         || (isColorFullBox(style) && isColorFullBox(start))
                     ) {
                         val container = start as Element
-                        val child = BBXUtils.findBlockChild(container)
+                        val child = BBXUtils.findBlockChildOrNull(container)
                         unbox(container)
                         if (child != null) {
                             modifiedNodes.add(child)
@@ -519,7 +514,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
                 val itr = splitTextNode.iterator()
                 while (itr.hasNext()) {
                     val next = itr.next()
-                    if (StringUtils.isEmpty(next.value)) {
+                    if (next.value.isEmpty()) {
                         next.detach()
                         itr.remove()
                     }
@@ -556,28 +551,34 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
          * and wrap accordingly
          */
         var parent = startNode.parent as Element
-        if (startNode is Text && startNode == endNode) {
-            val splitTextNode = XMLHandler2.splitTextNode(
-                startNode,
-                (m.simpleManager.currentSelection.start as XMLTextCaret).offset,
-                (m.simpleManager.currentSelection.end as XMLTextCaret).offset
-            )
-            if (splitTextNode[0].value.isEmpty()) {
-                splitTextNode[0].detach()
+        when (startNode) {
+            is Text if startNode == endNode -> {
+                val splitTextNode = XMLHandler2.splitTextNode(
+                    startNode,
+                    (m.simpleManager.currentSelection.start as XMLTextCaret).offset,
+                    (m.simpleManager.currentSelection.end as XMLTextCaret).offset
+                )
+                if (splitTextNode[0].value.isEmpty()) {
+                    splitTextNode[0].detach()
+                }
+                guideWord.appendChild(splitTextNode[1].copy())
+                parent.replaceChild(splitTextNode[1], guideWord)
             }
-            guideWord.appendChild(splitTextNode[1].copy())
-            parent.replaceChild(splitTextNode[1], guideWord)
-        } else if (startNode is Element && startNode.getAttribute("utd-style") != null && startNode.getAttributeValue("utd-style") == "Guide Word") {
-            return
-        } else {
-            parent = getCommonParent(startNode, endNode)
 
-            val blocks = getBlocks(startNode, endNode)
+            is Element if startNode.getAttribute("utd-style") != null && startNode.getAttributeValue("utd-style") == "Guide Word" -> {
+                return
+            }
 
-            for (element in blocks) {
-                var guide = BBX.SPAN.GUIDEWORD.create()
-                guide = copyChildrenToElement(element, guide)
-                element.appendChild(guide)
+            else -> {
+                parent = getCommonParent(startNode, endNode)
+
+                val blocks = getBlocks(startNode, endNode)
+
+                for (element in blocks) {
+                    var guide = BBX.SPAN.GUIDEWORD.create()
+                    guide = copyChildrenToElement(element, guide)
+                    element.appendChild(guide)
+                }
             }
         }
 
@@ -653,8 +654,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
             }
         }
         if (end is Element) {
-            Iterables.addAll(
-                nodes,
+                nodes.addAll(
                 FastXPath.descendant(end)
             )
         }
@@ -662,7 +662,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
         //Convert nodes to usable blocks without duplicates
         val blocks = LinkedHashSet<Element>()
         for (curNode in nodes) {
-            if (BBXUtils.findBlock(curNode) != null) {
+            if (BBXUtils.findBlockOrNull(curNode) != null) {
                 blocks.add(BBXUtils.findBlock(curNode))
             }
         }
@@ -758,7 +758,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
             val checkSibling = parent.getChild(parent.indexOf(table) + 1)
             if (checkSibling is Element && checkSibling.getAttribute(
                     TableUtils.ATTRIB_TABLE_COPY,
-                    UTDElements.UTD_NAMESPACE
+                    UTD_NS
                 ) != null
             ) {
                 checkSibling.detach()
@@ -845,7 +845,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
         private val log: Logger = LoggerFactory.getLogger(StylesMenuModule::class.java)
 
         //TODO: These really need to be style options....
-        private val ALWAYS_WRAP_STYLES: ImmutableList<String> = ImmutableList.of(
+        private val ALWAYS_WRAP_STYLES: List<String> = listOf(
             "Box",
             "Color Box",
             "Color Full Box",
@@ -957,7 +957,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
             for (i in 0 until listItems.size()) {
                 val listItem = listItems[i] as Element
                 maxItemLevel =
-                    max(listItem.getAttributeValue("itemLevel", BBX.BB_NAMESPACE).toInt(), maxItemLevel)
+                    max(listItem.getAttributeValue("itemLevel", BB_NS).toInt(), maxItemLevel)
             }
 
             if (ListType.POEM_LINE_GROUP.isA(container)) {
@@ -975,7 +975,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
                 }
             }
 
-            container.addAttribute(Attribute(name, BBX.BB_NAMESPACE, maxItemLevel.toString()))
+            container.addAttribute(Attribute(name, BB_NS, maxItemLevel.toString()))
         }
 
         private fun getCommonParent(start: Node, end: Node): Element {
@@ -988,13 +988,11 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
                 end = end.parent
             }
 
-            return XMLHandler.findCommonParent(Lists.newArrayList(start as Element, end as Element))
+            return XMLHandler.findCommonParent(listOf(start as Element, end as Element))
         }
 
         fun isAlwaysWrapStyle(style: Style?): Boolean {
-            return Iterables.any(
-                ALWAYS_WRAP_STYLES
-            ) { curAlwaysUnwrap: String? ->
+            return ALWAYS_WRAP_STYLES.any{ curAlwaysUnwrap: String? ->
                 isStyle(
                     style,
                     curAlwaysUnwrap!!

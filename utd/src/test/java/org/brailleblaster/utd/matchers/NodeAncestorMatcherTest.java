@@ -25,6 +25,7 @@ import org.brailleblaster.utd.NamespaceMap;
 import org.brailleblaster.utd.internal.xml.XMLHandler;
 import org.brailleblaster.utd.internal.xml.XMLHandler2;
 import org.brailleblaster.utd.properties.UTDElements;
+import org.brailleblaster.utils.NamespacesKt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +78,7 @@ public class NodeAncestorMatcherTest {
         matcher.setParentNamespace("utd");
 
         NamespaceMap ns = new NamespaceMap();
-        ns.addNamespace("utd", UTDElements.UTD_NAMESPACE);
+        ns.addNamespace("utd", NamespacesKt.UTD_NS);
 
         Nodes testElems = XMLHandler2.query(doc, "descendant::*[name()='p']");
         assertTrue(matcher.isMatch(testElems.get(0), ns));
@@ -99,7 +100,7 @@ public class NodeAncestorMatcherTest {
         matcher.setParentName("h1");
 
         NamespaceMap ns = new NamespaceMap();
-        ns.addNamespace("utd", UTDElements.UTD_NAMESPACE);
+        ns.addNamespace("utd", NamespacesKt.UTD_NS);
 
         Nodes testElems = XMLHandler2.query(doc, "descendant::*[name()='p']");
         assertTrue(matcher.isMatch(testElems.get(0), ns));
@@ -123,7 +124,7 @@ public class NodeAncestorMatcherTest {
         matcher.setParentAttribNamespace("utd");
 
         NamespaceMap ns = new NamespaceMap();
-        ns.addNamespace("utd", UTDElements.UTD_NAMESPACE);
+        ns.addNamespace("utd", NamespacesKt.UTD_NS);
 
         Nodes testElems = XMLHandler2.query(doc, "descendant::*[name()='p']");
         assertTrue(matcher.isMatch(testElems.get(0), ns));
@@ -146,7 +147,7 @@ public class NodeAncestorMatcherTest {
         matcher.setParentName("h1");
 
         NamespaceMap ns = new NamespaceMap();
-        ns.addNamespace("utd", UTDElements.UTD_NAMESPACE);
+        ns.addNamespace("utd", NamespacesKt.UTD_NS);
 
         Nodes testElems = XMLHandler2.query(doc, "descendant::*[name()='p']");
         assertTrue(matcher.isMatch(testElems.get(0), ns));
@@ -168,7 +169,7 @@ public class NodeAncestorMatcherTest {
         matcher.setParentAttribValue("someValue");
 
         NamespaceMap ns = new NamespaceMap();
-        ns.addNamespace("utd", UTDElements.UTD_NAMESPACE);
+        ns.addNamespace("utd", NamespacesKt.UTD_NS);
 
         Nodes testElems = XMLHandler2.query(doc, "descendant::*[name()='p']");
         assertTrue(matcher.isMatch(testElems.get(0), ns));
@@ -190,7 +191,7 @@ public class NodeAncestorMatcherTest {
         matcher.setParentName("h1");
 
         NamespaceMap ns = new NamespaceMap();
-        ns.addNamespace("utd", UTDElements.UTD_NAMESPACE);
+        ns.addNamespace("utd", NamespacesKt.UTD_NS);
 
         Nodes testElems = XMLHandler2.query(doc, "descendant::*[name()='p']");
         assertTrue(matcher.isMatch(testElems.get(0), ns));
@@ -203,12 +204,12 @@ public class NodeAncestorMatcherTest {
         matcher.setNodeName("toc");
 
         NamespaceMap ns = new NamespaceMap();
-        ns.addNamespace("utd", UTDElements.UTD_NAMESPACE);
+        ns.addNamespace("utd", NamespacesKt.UTD_NS);
 
         Node testNode = new Element("toc");
         assertTrue(matcher.isMatch(testNode, ns));
 
-        testNode = new Element("toc", UTDElements.UTD_NAMESPACE);
+        testNode = new Element("toc", NamespacesKt.UTD_NS);
         assertTrue(matcher.isMatch(testNode, ns));
     }
 }

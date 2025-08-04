@@ -18,6 +18,7 @@ package org.brailleblaster.pandoc
 import nu.xom.Element
 import nu.xom.XPathContext
 import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.utils.MATHML_NS
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -32,7 +33,7 @@ class FixMathML : FixerInf {
 
     override fun process() {
         val xpathContext = XPathContext().apply {
-            addNamespace("m", "http://www.w3.org/1998/Math/MathML")
+            addNamespace("m", MATHML_NS)
             addNamespace("bb", bbUri)
         }
         val mathElements = rootElement!!.query("descendant-or-self::m:math", xpathContext)

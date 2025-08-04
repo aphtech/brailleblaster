@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.archiver2
 
-import com.google.common.collect.ImmutableMap
 import com.google.common.io.Files
 import com.google.common.io.LineProcessor
 import nu.xom.Element
@@ -34,7 +33,7 @@ open class TextArchiveLoader : ArchiverFactory.FileLoader {
         val bbxDoc = BBX.newDocument()
         val root = BBX.SECTION.ROOT.create()
         bbxDoc.rootElement.appendChild(root)
-        Files.asCharSource(file.toFile(), BBIni.charset).readLines<Void>(object : LineProcessor<Void> {
+        Files.asCharSource(file.toFile(), BBIni.charset).readLines(object : LineProcessor<Void?> {
             override fun processLine(line: String): Boolean {
                 if (line.contains(FORM_FEED)) {
                     if (line.trim { it <= ' ' }.length == 1) {
@@ -78,8 +77,7 @@ open class TextArchiveLoader : ArchiverFactory.FileLoader {
         return block
     }
 
-    override val extensionsAndDescription: ImmutableMap<String, String>
-        get() = ImmutableMap.of("*.txt", "Text (*.txt)")
+    override val extensionsAndDescription: Map<String, String> = mapOf("*.txt" to "Text (*.txt)")
 
     companion object {
         private val log = LoggerFactory.getLogger(TextArchiveLoader::class.java)
@@ -96,7 +94,7 @@ open class TextArchiveLoader : ArchiverFactory.FileLoader {
 		fun getUsableText(line: String): Text? {
             return try {
                 Text(line)
-            } catch (e: IllegalCharacterDataException) {
+            } catch (_: IllegalCharacterDataException) {
                 /*
 			Try to identify weird character and remove it.
 			There is little we can do with them anyway and they may break upstream code like SWT.

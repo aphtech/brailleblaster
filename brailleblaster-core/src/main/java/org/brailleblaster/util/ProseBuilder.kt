@@ -39,6 +39,7 @@ import org.brailleblaster.tools.MenuToolListener
 import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.utils.TextTranslator
 import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utils.BB_NS
 import org.brailleblaster.utils.swt.AccessibilityUtils.setName
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
@@ -625,11 +626,11 @@ class ProseBuilder : MenuToolListener {
     }
 
     private fun isProseLineNumber(lineNum: Element?): Boolean {
-        return lineNum!!.getAttributeValue("type", BBX.BB_NAMESPACE) == "PROSE_LINE_NUMBER"
+        return lineNum!!.getAttributeValue("type", BB_NS) == "PROSE_LINE_NUMBER"
     }
 
     private fun isPoemLineNumber(lineNum: Element?): Boolean {
-        return lineNum!!.getAttributeValue("type", BBX.BB_NAMESPACE) == "POEM_LINE_NUMBER"
+        return lineNum!!.getAttributeValue("type", BB_NS) == "POEM_LINE_NUMBER"
     }
 
     private fun getBlockParent(child: Node?): Node {

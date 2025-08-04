@@ -23,6 +23,7 @@ import org.brailleblaster.bbx.BBX
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
+import org.brailleblaster.utils.BB_NS
 
 object FindGuideWordModule {
     var manager: Manager? = null
@@ -62,12 +63,12 @@ object FindGuideWordModule {
             if (nodes[i] is Element) {
                 if ((nodes[i] as Element).getAttribute(
                         "itemLevel",
-                        BBX.BB_NAMESPACE
+                        BB_NS
                     ) != null && (nodes[i] as Element).getAttributeValue(
                         "itemLevel",
-                        BBX.BB_NAMESPACE
+                        BB_NS
                     ) == "0"
-                    || (nodes[i] as Element).getAttribute("itemLevel", BBX.BB_NAMESPACE) == null
+                    || (nodes[i] as Element).getAttribute("itemLevel", BB_NS) == null
                 ) {
                     indexWords.add(nodes[i] as Element)
                 }

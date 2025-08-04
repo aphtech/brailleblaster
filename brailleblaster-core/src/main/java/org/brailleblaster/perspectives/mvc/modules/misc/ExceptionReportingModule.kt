@@ -15,9 +15,7 @@
  */
 package org.brailleblaster.perspectives.mvc.modules.misc
 
-import com.google.common.collect.ImmutableMap
 import com.google.common.util.concurrent.MoreExecutors
-import org.apache.commons.io.FileUtils
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.brailleblaster.BBIni
 import org.brailleblaster.userHelp.Project
@@ -28,7 +26,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.net.ConnectException
-import java.nio.charset.StandardCharsets
 import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.ExecutorService
@@ -114,10 +111,7 @@ object ExceptionReportingModule /*implements SimpleListener*/ {
         // Fallback to installer selected option
         if (AUTO_REPORT_INSTALLER_CONFIG.exists()) {
             try {
-                return (FileUtils.readFileToString(
-                    AUTO_REPORT_INSTALLER_CONFIG,  // text is ascii only so should be fine
-                    StandardCharsets.UTF_8
-                )
+                return (AUTO_REPORT_INSTALLER_CONFIG.readText(Charsets.UTF_8)  // text is ascii only so should be fine
                     .trim { it <= ' ' }
                         == "true")
             } catch (e: Exception) {
@@ -190,22 +184,18 @@ object ExceptionReportingModule /*implements SimpleListener*/ {
 
         return httpPost(
             ERROR_REPORT_ADDRESS,
-            ImmutableMap.builder<String, String>()
-                .put("exception", ExceptionUtils.getStackTrace(exception))
-                .put("description", description ?: "")
-                .put("versionBb", Project.BB.version)
-                .put("versionUtd", "Unknown")
-                .put("versionJLouis", "Unknown")
-                .put(
-                    "versionLibLouis",
-                    Project.LIBLOUIS.versionWithRev.split("]".toRegex(), limit = 2)
-                        .toTypedArray()[0] + "]"
+            mapOf(
+                "exception" to ExceptionUtils.getStackTrace(exception),
+                "description" to (description ?: ""),
+                "versionBb" to Project.BB.version,
+                "versionUtd" to "Unknown",
+                "versionJLouis" to "Unknown",
+                    "versionLibLouis" to Project.LIBLOUIS.versionWithRev.split("]".toRegex(), limit = 2).toTypedArray()[0] + "]",
+                "versionOs" to oSVersion,
+                "versionJava" to javaVersion,
+                "newLineSize" to "" + System.lineSeparator().length,
+                "userId" to userId,
                 )
-                .put("versionOs", oSVersion)
-                .put("versionJava", javaVersion)
-                .put("newLineSize", "" + System.lineSeparator().length)
-                .put("userId", userId)
-                .build()
         )
     }
 

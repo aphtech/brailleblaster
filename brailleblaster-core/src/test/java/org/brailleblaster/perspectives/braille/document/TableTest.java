@@ -34,6 +34,7 @@ import org.brailleblaster.testrunners.XMLElementAssert;
 import org.brailleblaster.utd.internal.xml.FastXPath;
 import org.brailleblaster.utd.internal.xml.XMLHandler2;
 import org.brailleblaster.utd.properties.UTDElements;
+import org.brailleblaster.utils.NamespacesKt;
 import org.brailleblaster.utils.gui.PickerDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swtbot.swt.finder.SWTBot;
@@ -423,7 +424,7 @@ public class TableTest {
                 .nextChildIs(child -> assertTrue(UTDElements.NEW_LINE.isA(child.element())))
                 .nextChildIs(child -> assertTrue(UTDElements.NEW_LINE.isA(child.element())))
                 .nextChildIs(tableParent -> assertEquals(tableParent.isContainer(BBX.CONTAINER.TABLE).element()
-                        .getAttributeValue(BBXDynamicOptionStyleMap.OPTION_ATTRIB_PREFIX + "newPagesBefore", BBX.BB_NAMESPACE), "1"));
+                        .getAttributeValue(BBXDynamicOptionStyleMap.OPTION_ATTRIB_PREFIX + "newPagesBefore", NamespacesKt.BB_NS), "1"));
     }
 
     /* TEST CONVERT TEXT TO TABLE */

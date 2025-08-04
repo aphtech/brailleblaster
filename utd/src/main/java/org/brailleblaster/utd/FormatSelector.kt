@@ -21,23 +21,29 @@ import org.brailleblaster.utd.formatters.LiteraryFormatter
 import org.brailleblaster.utd.internal.PartialFormatNodeAncestor
 import org.brailleblaster.utd.internal.elements.NewPage
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utd.tables.AutoTableFormatter
 import org.brailleblaster.utd.utils.PageBuilderHelper
-import org.brailleblaster.utils.SetList
 import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.utd.utils.dom.BoxUtils
+import org.brailleblaster.utils.SetList
+import org.brailleblaster.utils.UTD_NS
 import org.brailleblaster.utils.toRepeatingLetters
 import org.slf4j.LoggerFactory
 import java.util.*
 
 class FormatSelector(styleMap: IStyleMap?, styleStack: StyleStack?, engine: ITranslationEngine) {
     @JvmField
-	val styleMap: IStyleMap
+    val styleMap: IStyleMap
+
     @JvmField
-	val styleStack: StyleStack
+    val styleStack: StyleStack
+
     @JvmField
-	val engine: ITranslationEngine
+    val engine: ITranslationEngine
     private var pageLimit: Int? = null
     private var totalPageCount: Int
+    var startIndex = 0
+    private var processedPages = 0
 
     constructor(engine: ITranslationEngine) : this(StyleMap(), StyleStack(), engine)
 
@@ -63,13 +69,11 @@ class FormatSelector(styleMap: IStyleMap?, styleStack: StyleStack?, engine: ITra
 
     private fun isNewLine(node: Node): Boolean {
         if (node is Element) {
-            return UTDElements.UTD_NAMESPACE == node.namespaceURI && "newLine" == node.localName
+            return UTD_NS == node.namespaceURI && "newLine" == node.localName
         }
         return false
     }
 
-    var startIndex = 0
-    private var processedPages = 0
     private fun isIgnorableNode(node: Node): Boolean {
         if (pageLimit != null && processedPages > pageLimit!!) {
             return true
@@ -78,7 +82,7 @@ class FormatSelector(styleMap: IStyleMap?, styleStack: StyleStack?, engine: ITra
             if (!PageBuilderHelper.isSkipLinesNode(node)) {
                 val action = node.getAttributeValue("utd-action")
                 val action2 =
-                    node.getAttributeValue("overrideAction", "http://brailleblaster.org/ns/utd")
+                    node.getAttributeValue("overrideAction", UTD_NS)
                 if (action != null && action == "SkipAction" || action2 != null && action2 == "SkipAction") {
                     return true
                 }
@@ -108,7 +112,7 @@ class FormatSelector(styleMap: IStyleMap?, styleStack: StyleStack?, engine: ITra
             log.warn("Abort current thread")
             throw UTDInterruption()
         }
-        log.debug("formatNode called for {}", node)
+        log.debug(" formatNode called for {}", node)
         requireNotNull(node) { "Expected node, received null" }
         if (node is Document) {
             return formatNode(node.rootElement, pageBuilders)
@@ -148,7 +152,14 @@ class FormatSelector(styleMap: IStyleMap?, styleStack: StyleStack?, engine: ITra
             if (log.isDebugEnabled) {
                 log.debug("About to format node with {} formatter", styleStack.format.name)
             }
-            styleStack.format.formatter.format(node, styleStack, pageBuilders, this)
+            if (styleStack.format == IStyle.Format.SIMPLE) {
+                //Double check table formatting
+                val atf = AutoTableFormatter()
+                atf.format(node, styleStack, pageBuilders, this)
+            }
+            else {
+                styleStack.format.formatter.format(node, styleStack, pageBuilders, this)
+            }
         } else {
             log.debug("About to format node with default formatter")
             IStyle.Format.NORMAL.formatter.format(node, styleStack, pageBuilders, this)
@@ -301,7 +312,8 @@ class FormatSelector(styleMap: IStyleMap?, styleStack: StyleStack?, engine: ITra
     /**
      * Partial format version of formatNode.
      *
-     * It is not expected that this method will be called by clients, it should only be called by other methods within this class or formatters. It is made public due to formatters residing in other packages.
+     * It is not expected that this method will be called by clients, it should only be called by other methods within this class or formatters.
+     * It is made public due to formatters residing in other packages.
      *
      * @param pathToStart A collection of the ancestors leading to the start node.
      * @param startPoint The Braille node (IE. the child node of the brl element) where formatting should begin.
@@ -312,7 +324,6 @@ class FormatSelector(styleMap: IStyleMap?, styleStack: StyleStack?, engine: ITra
         startPoint: Node,
         pageBuilders: MutableSet<PageBuilder>
     ): PageBuilder {
-        var pageBuilder = pageBuilders.last()
         val pathElement = pathToStart.first
         val node = pathElement.node
         val style = pathElement.style
@@ -328,7 +339,7 @@ class FormatSelector(styleMap: IStyleMap?, styleStack: StyleStack?, engine: ITra
             }
         }
         // partial formatting always uses the literary formatter in partial format mode.
-//		pageBuilders = ((LiteraryFormatter)Format.NORMAL.getFormatter()).partialFormat(pathToStart, startPoint, styleStack, pageBuilders, this);
+        // pageBuilders = ((LiteraryFormatter)Format.NORMAL.getFormatter()).partialFormat(pathToStart, startPoint, styleStack, pageBuilders, this);
         pageBuilders.addAll(
             (IStyle.Format.NORMAL.formatter as LiteraryFormatter).partialFormat(
                 pathToStart,
@@ -338,9 +349,9 @@ class FormatSelector(styleMap: IStyleMap?, styleStack: StyleStack?, engine: ITra
                 this
             )
         )
-        pageBuilder = writePagesUTD(pageBuilders)
-        styleStack.pop()
-        return pageBuilder
+        return writePagesUTD(pageBuilders).also {
+            styleStack.pop()
+        }
     }
 
     private fun writePagesUTD(results: Set<PageBuilder>): PageBuilder {
@@ -391,9 +402,9 @@ class FormatSelector(styleMap: IStyleMap?, styleStack: StyleStack?, engine: ITra
         private val log = LoggerFactory.getLogger(FormatSelector::class.java)
         private var enableWriteUTD = true
 
-        /*
+   /*
 	 * Set whether UTD should "flush" the set of page builders in between brl additions.
-	 * When a page needs to be thrown out and remade, set this to false to keep UTD from
+	 * When a page needs to be thrown out and remade, set this as false to keep UTD from
 	 * adding formatting to the xml.
 	 */
 		@JvmStatic

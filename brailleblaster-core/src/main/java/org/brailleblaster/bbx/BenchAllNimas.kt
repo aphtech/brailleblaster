@@ -15,10 +15,8 @@
  */
 package org.brailleblaster.bbx
 
-import com.google.common.collect.Lists
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import org.apache.commons.lang3.exception.ExceptionUtils
-import org.apache.commons.lang3.tuple.Pair
 import org.brailleblaster.Main.initBB
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.util.Utils
@@ -36,7 +34,7 @@ object BenchAllNimas {
     @Throws(Exception::class)
     @JvmStatic
     fun main(args: Array<String>) {
-        initBB(Lists.newArrayList(*args))
+        initBB(args.asList())
         //		args = new String[]{"/home/leon/nimas-books", "6"};;
         var booksPath = Paths.get(args[0])
         if (!Files.exists(booksPath)) {
@@ -86,9 +84,8 @@ object BenchAllNimas {
             return try {
                 val load = XMLHandler().load(path)
                 converter.convert(load, path.toString())
-                Pair.of(path, null)
-            } catch (e: Exception) {
-                Pair.of(path, e)
+                path to null
+            } catch (e: Exception) {  path to e
             }
         }
     }

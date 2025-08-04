@@ -18,13 +18,11 @@ package org.brailleblaster.perspectives.mvc.menu
 import org.eclipse.swt.SWT
 import org.eclipse.swt.widgets.Menu
 import org.eclipse.swt.widgets.MenuItem
-import java.util.function.Consumer
 
 /**
  * Tracks submenus added to menus
  */
-class BBSubMenu internal constructor(override val menu: TopMenu?, val text: String) : IBBMenu {
-    val subMenuItems: MutableList<IBBMenu> = ArrayList()
+class BBSubMenu internal constructor(override val topMenu: TopMenu?, val text: String, val subMenuItems: MutableList<IBBMenu> = mutableListOf()) : IBBMenu, MutableList<IBBMenu> by subMenuItems {
 
     fun addItem(newItem: IBBMenu) {
         subMenuItems.add(newItem)
@@ -46,8 +44,7 @@ class BBSubMenu internal constructor(override val menu: TopMenu?, val text: Stri
     }
 
     override fun copy(): BBSubMenu {
-        val copy = BBSubMenu(menu, text)
-        subMenuItems.forEach(Consumer { i: IBBMenu -> copy.addItem(i.copy()) })
+        val copy = BBSubMenu(topMenu, text, subMenuItems = subMenuItems.map { it.copy() }.toMutableList())
         return copy
     }
 }

@@ -19,11 +19,13 @@ import nu.xom.Attribute
 import nu.xom.Element
 import nu.xom.Node
 import nu.xom.Text
+import org.apache.commons.text.WordUtils
 import org.brailleblaster.utd.BrailleSettings
 import org.brailleblaster.utd.IStyleMap
 import org.brailleblaster.utd.ITranslationEngine
 import org.brailleblaster.utd.PageSettings
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 import org.brailleblaster.utils.xom.detachAll
 
 object TableUtils {
@@ -44,7 +46,7 @@ object TableUtils {
         table.addAttribute(
             Attribute(
                 UTDElements.UTD_PREFIX + ":" + ATTRIB_TABLE_COPY,
-                UTDElements.UTD_NAMESPACE,
+                UTD_NS,
                 "true"
             )
         )
@@ -57,11 +59,10 @@ object TableUtils {
      * @param iStyleMap
      * @return
      */
-    fun findRows(element: Element, iStyleMap: IStyleMap): List<Element> {
-        return element.childElements.flatMap {
+    fun findRows(element: Element, iStyleMap: IStyleMap): List<Element> =
+        element.childElements.flatMap {
             val style = iStyleMap.findValueOrDefault(it)
             if (style.isTableRow) listOf(it) else findRows(it, iStyleMap)
-        }
     }
 
     /**
@@ -70,13 +71,14 @@ object TableUtils {
      * @param iStyleMap
      * @return
      */
-    fun findCols(element: Element, iStyleMap: IStyleMap): List<Element> = element.childElements.flatMap {
+    fun findCols(element: Element, iStyleMap: IStyleMap): List<Element> =
+        element.childElements.flatMap {
             val style = iStyleMap.findValueOrDefault(it)
             if (style.isTableCell) listOf(it) else findCols(it, iStyleMap)
-        }
+    }
 
     @JvmStatic
-	fun findCaption(element: Element, styleMap: IStyleMap): List<Element> {
+	  fun findCaption(element: Element, styleMap: IStyleMap): List<Element> {
         val foundCaption: MutableList<Element> = ArrayList()
         for (i in 0 until element.childCount) {
             val child = element.getChild(i)
@@ -221,12 +223,28 @@ object TableUtils {
         var columnNum = 0
         var totalCols = 0
         val rows = findRows(table, styleMap)
+        var longestCol = 0
+        var longestColBrl = ""
         for (row in rows) {
             rowNum++
             val cols = findCols(row, styleMap)
             for (col in cols) {
                 columnNum++
                 columnElements.add(col)
+                val colBrl: String = try {
+                    col.getChild(1).getChild(0).value
+                }
+                catch (_: Exception) {
+                    // If the column doesn't have a braille element, skip it
+                    continue
+                }
+                longestCol = maxOf(colBrl.length, longestCol)
+                //Get the longest braille string
+                //We want the braille string to split it by spaces to figure out line wrapping.
+                // More than 2 lines means it should be a listed table.
+                if (colBrl.length >= longestCol) {
+                    longestColBrl = colBrl
+                }
             }
             totalCols = totalCols.coerceAtLeast(columnNum)
             columnNum = 0
@@ -237,10 +255,18 @@ object TableUtils {
         }
         var defaultWidth = brailleSettings.cellType.getCellsForWidth(pageSettings.drawableWidth.toBigDecimal())
         defaultWidth /= columnNum
-        val totalSizes = columnElements.map { elem -> UTDHelper.getDescendantBrlFastNodes(elem).sumOf { it.value.length } }
-        return if (columnNum <= 4 && totalSizes.none { it > defaultWidth * 2 }) {
+
+        //totalSizes doesn't compute correctly. Seems to always be 0.
+        val totalSizes =
+            columnElements.map { elem -> UTDHelper.getDescendantBrlFastNodes(elem).sumOf { it.value.length } }
+
+        //Simple enough way to estimate the number of lines in the longest column
+        val estimatedWrap = WordUtils.wrap(longestColBrl, defaultWidth)
+        val estimatedLines = estimatedWrap.split("\n").size + 1
+
+        return if (columnNum <= 4 && estimatedLines <= 2) {
             TableTypes.SIMPLE
-        } else if (totalSizes.none { it > MAX_CHARS }) {
+        } else if (totalSizes.none { it > MAX_CHARS } || estimatedLines > 2) {
             TableTypes.LISTED
         } else {
             TableTypes.NONTABLE
@@ -248,17 +274,17 @@ object TableUtils {
     }
 
     @JvmStatic
-	fun hasSimpleTableOption(option: SimpleTableOptions, table: Element): Boolean {
+	  fun hasSimpleTableOption(option: SimpleTableOptions, table: Element): Boolean {
         return option.value == table.getAttributeValue(option.id)
     }
 
     @JvmStatic
-	fun applySimpleTableOption(table: Element, option: SimpleTableOptions) {
+	  fun applySimpleTableOption(table: Element, option: SimpleTableOptions) {
         table.addAttribute(Attribute(option.id, option.value))
     }
 
     @JvmStatic
-	fun getCustomSimpleTableWidths(table: Element): IntArray? {
+	  fun getCustomSimpleTableWidths(table: Element): IntArray? {
         if (hasSimpleTableOption(SimpleTableOptions.CUSTOM_WIDTHS, table)) {
             val attr = table.getAttributeValue("widths") ?: return null
             return attr.split(",".toRegex()).dropLastWhile { it.isEmpty() }.map { it.toInt() }.toIntArray()
@@ -267,7 +293,7 @@ object TableUtils {
     }
 
     @JvmStatic
-	fun applyCustomSimpleTableWidths(table: Element, widths: IntArray) {
+	  fun applyCustomSimpleTableWidths(table: Element, widths: IntArray) {
         applySimpleTableOption(table, SimpleTableOptions.CUSTOM_WIDTHS)
         table.addAttribute(Attribute("widths", widths.joinToString(separator = ",") { it.toString() }))
     }
@@ -277,14 +303,19 @@ object TableUtils {
      * @param table
      * @return
     </table> */
-	@JvmStatic
-	fun isTableCopy(table: Element): Boolean {
+	  @JvmStatic
+	  fun isTableCopy(table: Element): Boolean {
         return table.getAttribute(
             ATTRIB_TABLE_COPY,
-            UTDElements.UTD_NAMESPACE
+            UTD_NS
         ) != null
     }
-    fun findTableBrls(element: Element): List<Element> = element.childElements.flatMap { e -> if (e.namespaceURI == UTDElements.UTD_NAMESPACE && e.localName == "tablebrl") listOf(e) else findTableBrls(e) }
+
+    fun findTableBrls(element: Element): List<Element> = element.childElements.flatMap { e ->
+        if (e.namespaceURI == UTD_NS && e.localName == "tablebrl") listOf(e)
+        else findTableBrls(e)
+    }
+
     enum class SimpleTableOptions(val id: String, val value: String) {
         GUIDE_DOTS_DISABLED("guideDots", "false"),
         ROW_HEADING_DISABLED("rowHeading", "false"),

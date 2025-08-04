@@ -17,7 +17,6 @@ package org.brailleblaster.perspectives.mvc.modules.misc
 
 import nu.xom.Element
 import nu.xom.Node
-import org.brailleblaster.utils.localization.LocaleHandler
 import org.brailleblaster.math.mathml.MathModule
 import org.brailleblaster.math.numberLine.NumberLine.Companion.currentIsNumberLine
 import org.brailleblaster.math.spatial.Matrix
@@ -27,14 +26,15 @@ import org.brailleblaster.perspectives.braille.views.wp.BrailleView
 import org.brailleblaster.perspectives.braille.views.wp.PageNumberDialog
 import org.brailleblaster.perspectives.braille.views.wp.TextView
 import org.brailleblaster.perspectives.mvc.BBSimpleManager.SimpleListener
-import org.brailleblaster.perspectives.mvc.menu.MenuManager
-import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
-import org.brailleblaster.perspectives.mvc.menu.SharedItem
 import org.brailleblaster.perspectives.mvc.SimpleEvent
 import org.brailleblaster.perspectives.mvc.XMLTextCaret
 import org.brailleblaster.perspectives.mvc.events.BuildMenuEvent
 import org.brailleblaster.perspectives.mvc.events.XMLCaretEvent
+import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
+import org.brailleblaster.perspectives.mvc.menu.MenuManager
+import org.brailleblaster.perspectives.mvc.menu.SharedItem
 import org.brailleblaster.utd.UTDTranslationEngine
+import org.brailleblaster.utils.localization.LocaleHandler
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.SelectionAdapter
@@ -42,8 +42,6 @@ import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.widgets.Control
 import org.eclipse.swt.widgets.Menu
 import org.eclipse.swt.widgets.MenuItem
-import java.util.function.Consumer
-import java.util.function.Predicate
 
 class ContextMenuModule(private val manager: Manager) : SimpleListener {
     private val tv: TextView = manager.text
@@ -208,7 +206,7 @@ class ContextMenuModule(private val manager: Manager) : SimpleListener {
         PASTE_AS_MATH(LocaleHandler.getDefault()["PasteAsMath"]),
         HIDE(LocaleHandler.getDefault()["Hide"]),
         EDIT_PAGE_NUMBER(PageNumberDialog.MENU_NAME),
-        EDIT_TABLE(LocaleHandler.getDefault()["EditTable"]),
+        EDIT_TABLE(LocaleHandler.getDefault()["editTable"]),
         CHANGE_TRANSLATION(LocaleHandler.getDefault()["ChangeTranslation"]),
         MATH_TOGGLE(MathModule.MATH_TOGGLE),
         NUMBER_LINE(MathModule.NUMBER_LINE),
@@ -218,23 +216,23 @@ class ContextMenuModule(private val manager: Manager) : SimpleListener {
 
     private open class ContextItem(
         var name: String,
-        private val enable: Predicate<XMLCaretEvent>,
-        private val onSelect: Consumer<BBSelectionData>?
+        private val enable: (XMLCaretEvent) -> Boolean,
+        private val onSelect: (BBSelectionData) -> Unit
     ) {
         fun test(event: XMLCaretEvent): Boolean {
-            return enable.test(event)
+            return enable(event)
         }
 
         open fun execute(event: BBSelectionData) {
-            onSelect!!.accept(event)
+            onSelect(event)
         }
     }
 
     private class ContextSubItem(
         name: String,
-        enable: Predicate<XMLCaretEvent>,
+        enable: (XMLCaretEvent) -> Boolean,
         var menuSource: SharedItem? = null)
-            : ContextItem(name, enable, null) {
+            : ContextItem(name, enable, {}) {
                 override fun execute(event: BBSelectionData) {}
             }
 }

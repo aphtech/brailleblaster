@@ -32,6 +32,7 @@ import org.brailleblaster.utd.utils.PageBuilderHelper.isPageIndicator
 import org.brailleblaster.utd.utils.PageBuilderHelper.isSkipLinesNode
 import org.brailleblaster.utd.utils.UTDHelper.Companion.getAssociatedBrlElement
 import org.brailleblaster.utd.utils.UTDHelper.Companion.getDescendantBrlFast
+import org.brailleblaster.utils.UTD_NS
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -224,8 +225,8 @@ class NumberedLineFormatter : Formatter() {
 
         pageBuilder.alignment = style.align
         // Only consider adding new lines if you're on new poetry lines
-        val isEmphasis = ((node.getAttribute("type", UTDElements.UTD_NAMESPACE) != null)
-                && (node.getAttributeValue("type", UTDElements.UTD_NAMESPACE) == "EMPHASIS"))
+        val isEmphasis = ((node.getAttribute("type", UTD_NS) != null)
+                && (node.getAttributeValue("type", UTD_NS) == "EMPHASIS"))
         if (isNewLine && !isEmphasis) {
             val linesBefore = style.getLinesBefore(node, formatSelector.styleMap.namespaces)
             if (linesBefore != null) {

@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.archiver2
 
-import com.google.common.collect.ImmutableMap
 import java.nio.file.Path
 
 class BRFArchiverLoader : ArchiverFactory.FileLoader {
@@ -26,8 +25,7 @@ class BRFArchiverLoader : ArchiverFactory.FileLoader {
         throw UnsupportedOperationException("should of been handled in WPManager.addDocumentManager")
     }
 
-    override val extensionsAndDescription: ImmutableMap<String, String>
-        get() = ImmutableMap.of("*.brf", "Braille Ready File (*.brf)")
+    override val extensionsAndDescription: Map<String, String> = mapOf("*.brf" to "Braille Ready File (*.brf)")
 
     companion object {
         val INSTANCE = BRFArchiverLoader()

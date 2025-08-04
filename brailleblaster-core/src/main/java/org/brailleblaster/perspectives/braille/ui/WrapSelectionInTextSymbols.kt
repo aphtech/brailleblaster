@@ -56,12 +56,10 @@ class WrapSelectionInTextSymbols(
         val endIsText = endNode is XMLTextCaret
         val startIsMath = MathModule.isMath(startNode.node)
         val endIsMath = MathModule.isMath(endNode.node)
-        val startIsElement = !startIsText && !startIsMath
-        val endIsElement = !endIsText && !endIsMath
         val singleNode = m.simpleManager.currentSelection.isSingleNode
-        if (startIsText && endIsText && singleNode) {
+        if (singleNode && startIsText && endIsText) {
             modifySameNodeText(startNode, endNode)
-        } else if (startIsMath && endIsMath && singleNode) {
+        } else if (singleNode && startIsMath && endIsMath) {
             modifySameNodeMath(startNode, endNode)
         } else {
             if (startIsMath) {
@@ -104,7 +102,7 @@ class WrapSelectionInTextSymbols(
         val newEnd = Text(this.end)
         Utils.insertChildCountSafe(parent, newEnd, index++)
         callback.wrap(newEnd)
-        Utils.insertChildCountSafe(parent, Text(endString), index++)
+        Utils.insertChildCountSafe(parent, Text(endString), index)
         start.node.detach()
     }
 
@@ -113,7 +111,7 @@ class WrapSelectionInTextSymbols(
         val endText = Text(end)
         val parent = node.node.parent
         var index = parent.indexOf(node.node)
-        val parentBlock = BBXUtils.findBlock(node.node)
+        val parentBlock = BBXUtils.findBlockOrNull(node.node)
         if (parentBlock != null) {
             index = BBXUtils.getIndexInBlock(node.node)
             Utils.insertChildCountSafe(parentBlock, startText, index)
@@ -148,7 +146,7 @@ class WrapSelectionInTextSymbols(
         val newText = Text(if (end) this.end else start)
         val parent = node.node.parent
         var index = parent.indexOf(node.node) + if (end) 1 else 0
-        val parentBlock = BBXUtils.findBlock(node.node)
+        val parentBlock = BBXUtils.findBlockOrNull(node.node)
         if (parentBlock != null) {
             index = BBXUtils.getIndexInBlock(node.node) + if (end) 1 else 0
             Utils.insertChildCountSafe(parentBlock, newText, index)
@@ -176,7 +174,7 @@ class WrapSelectionInTextSymbols(
         val newText = Text(if (end) this.end else this.start)
         Utils.insertChildCountSafe(parent, newText, index++)
         callback.wrap(newText)
-        Utils.insertChildCountSafe(parent, Text(endString), index++)
+        Utils.insertChildCountSafe(parent, Text(endString), index)
         start.node.detach()
     }
 

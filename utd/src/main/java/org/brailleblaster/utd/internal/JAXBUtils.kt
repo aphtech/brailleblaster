@@ -21,7 +21,6 @@ import jakarta.xml.bind.annotation.XmlAttribute
 import jakarta.xml.bind.annotation.XmlElement
 import org.apache.commons.lang3.ClassUtils
 import org.apache.commons.lang3.exception.ExceptionUtils
-import org.apache.commons.lang3.tuple.Pair
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.w3c.dom.Element
@@ -89,7 +88,7 @@ object JAXBUtils {
 
                 val fieldName = curField.name
                 check(!membersWithAnnotation.containsKey(fieldName)) { "Already contain config " + membersWithAnnotation[fieldName] }
-                membersWithAnnotation[fieldName] = Pair.of(curField, annotation)
+                membersWithAnnotation[fieldName] = curField to annotation
             }
 
             for (curMethod in curClass.declaredMethods) {
@@ -120,13 +119,13 @@ object JAXBUtils {
                 methodName = methodName.replaceFirstChar { it.lowercase() }
 
                 check(!membersWithAnnotation.containsKey(methodName)) { "Already contain config " + membersWithAnnotation[methodName] }
-                membersWithAnnotation[methodName] = Pair.of(curMethod, annotation)
+                membersWithAnnotation[methodName] = curMethod to annotation
             }
         }
 
         for ((name, value) in membersWithAnnotation) {
-            val member = value.key
-            val annotation = value.value
+            val member = value.first
+            val annotation = value.second
             log.debug("Required memeber {}", member)
 
             if (annotation is XmlAttribute) {

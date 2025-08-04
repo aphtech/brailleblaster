@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.archiver2
 
-import com.google.common.collect.ImmutableMap
 import nu.xom.Document
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BookToBBXConverter
@@ -62,7 +61,7 @@ class BBXArchiver(private var origPath: Path, override val bbxDocument: Document
         origPath = destPath
     }
 
-    override val extensionsAndDescription: ImmutableMap<String, String>
+    override val extensionsAndDescription: Map<String, String>
         get() = BBXArchiverLoader.INSTANCE.extensionsAndDescription
 
     @Throws(IOException::class)

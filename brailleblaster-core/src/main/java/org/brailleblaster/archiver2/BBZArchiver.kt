@@ -15,16 +15,14 @@
  */
 package org.brailleblaster.archiver2
 
-import com.google.common.base.Charsets
-import com.google.common.collect.ImmutableList
-import com.google.common.collect.Iterators
 import nu.xom.Document
+import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.utd.BRFWriter
 import org.brailleblaster.utd.UTDTranslationEngine
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.utils.BBX2PEFConverter
+import org.brailleblaster.utd.utils.ALL_VOLUMES
 import org.brailleblaster.utd.utils.UTDHelper
-import org.brailleblaster.exceptions.BBNotifyException
+import org.brailleblaster.utd.utils.convertBBX2PEF
 import org.brailleblaster.util.Notify
 import org.slf4j.LoggerFactory
 import java.io.BufferedOutputStream
@@ -57,7 +55,7 @@ class BBZArchiver(
         val itr: Iterator<Path> = descendant.iterator()
         val zipDescendant = zipFS.getPath(
             itr.next().toString(),
-            *Iterators.toArray(Iterators.transform(itr) { obj: Path -> obj.toString() }, String::class.java)
+            *(itr.asSequence().map { it.toString() }.toList().toTypedArray())
         )
         return try {
             bbxPath.resolveSibling(zipDescendant)
@@ -101,7 +99,7 @@ class BBZArchiver(
 
     private fun saveExisting(
         doc: Document,
-        destZipFS: FileSystem?,
+        destZipFS: FileSystem,
         destZipPath: Path,
         engine: UTDTranslationEngine,
         options: Set<SaveOptions?>
@@ -109,7 +107,7 @@ class BBZArchiver(
         val relativeBBXPath = bbxPath.toString()
         try {
             log.debug("Saving to existing zip {}", bbxPath)
-            val newBBXPath = destZipFS!!.getPath(relativeBBXPath)
+            val newBBXPath = destZipFS.getPath(relativeBBXPath)
             saveBBX(newBBXPath, doc)
 
             //write location file so bbz archiver can find this in the future
@@ -127,7 +125,7 @@ class BBZArchiver(
         }
         if (options.contains(BBZSaveOptions.IncludePEF)) {
             // Create the PEF and save in the BBZ
-            val pefPath = destZipFS?.getPath("/document.pef")
+            val pefPath = destZipFS.getPath("/document.pef")
             try {
                 BufferedOutputStream(
                     Files.newOutputStream(
@@ -135,11 +133,11 @@ class BBZArchiver(
                         StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING
                     )
                 ).use { pefOut ->
-                    BBX2PEFConverter.convertBBX2PEF(
+                    convertBBX2PEF(
                         doc,
                         relativeBBXPath,
                         engine,
-                        BBX2PEFConverter.ALL_VOLUMES,
+                        ALL_VOLUMES,
                         pefOut
                     )
                 }
@@ -148,7 +146,7 @@ class BBZArchiver(
             }
         }
         if (options.contains(BBZSaveOptions.IncludeBRF)) {
-            val brfPath = destZipFS?.getPath("/document.brf")
+            val brfPath = destZipFS.getPath("/document.brf")
             try {
                 Files.newBufferedWriter(
                     brfPath, StandardOpenOption.CREATE,
@@ -332,7 +330,7 @@ class BBZArchiver(
             val bbxPathStr = "/document.bbx"
             Files.write(
                 locationPath,
-                ImmutableList.of(bbxPathStr),
+                listOf(bbxPathStr),
                 Charsets.UTF_8,
                 StandardOpenOption.WRITE,
                 StandardOpenOption.CREATE,

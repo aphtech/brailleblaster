@@ -142,17 +142,15 @@ class NumberLine : ISpatialMathContainer {
         if (!segmentNotEmpty()) {
             return
         }
-        var startInterval = 1 // At what interval the segment starts
-        var segmentLength = 1 // Number of intervals the segment takes up
         val intervalFraction = numberLineText.interval.fraction
         val startSegmentFraction = numberLineText.segment.segmentStart.fraction
         val startLineFraction = numberLineText.lineStart.fraction
         val endSegmentFraction = numberLineText.segment.segmentEnd.fraction
-        startInterval = (startSegmentFraction
+        val startInterval = (startSegmentFraction
             .subtract(startLineFraction)
             .divideBy(intervalFraction)
             .toDouble().toInt() + 1)
-        segmentLength = endSegmentFraction
+        val segmentLength = endSegmentFraction
             .subtract(startSegmentFraction)
             .divideBy(intervalFraction)
             .toDouble().toInt()

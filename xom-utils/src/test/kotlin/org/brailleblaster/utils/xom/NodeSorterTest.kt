@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.utils.xom
 
-import com.google.common.collect.ImmutableList
 import nu.xom.Document
 import nu.xom.Element
 import nu.xom.Node
@@ -38,21 +37,21 @@ class NodeSorterTest {
     }
 
     @DataProvider
-    fun nodesProvider(): MutableIterator<Array<Any?>?> {
-        val data: MutableList<Array<Any?>?> = ArrayList<Array<Any?>?>()
+    fun nodesProvider(): MutableIterator<Array<Any>> {
+        val data: MutableList<Array<Any>> = ArrayList()
         var root = Element("root")
         Document(root)
-        var input: MutableList<Node?> = ImmutableList.of<Node?>(root)
-        var expected: MutableList<Node?> = ImmutableList.of<Node?>(root)
+        var input: List<Node> = listOf(root)
+        var expected: List<Node> = listOf(root)
         data.add(arrayOf(input, expected))
         var t1 = Text("Hello world")
         root = Element("root")
         root.appendChild(t1)
         Document(root)
-        input = ImmutableList.of<Node?>(root, t1)
-        expected = ImmutableList.of<Node?>(root, t1)
+        input = listOf(root, t1)
+        expected = listOf(root, t1)
         data.add(arrayOf(input, expected))
-        input = ImmutableList.of<Node?>(t1, root)
+        input = listOf(t1, root)
         data.add(arrayOf(input, expected))
         t1 = Text("Hello")
         var t2 = Text("World")
@@ -60,13 +59,13 @@ class NodeSorterTest {
         root.appendChild(t1)
         root.appendChild(t2)
         Document(root)
-        input = ImmutableList.of<Node?>(t1, t2)
-        expected = ImmutableList.of<Node?>(t1, t2)
+        input = listOf(t1, t2)
+        expected = listOf(t1, t2)
         data.add(arrayOf(input, expected))
-        input = ImmutableList.of<Node?>(t2, t1)
+        input = listOf(t2, t1)
         data.add(arrayOf(input, expected))
-        input = ImmutableList.of<Node?>(root, t2, t1)
-        expected = ImmutableList.of<Node?>(root, t1, t2)
+        input = listOf(root, t2, t1)
+        expected = listOf(root, t1, t2)
         data.add(arrayOf(input, expected))
         t1 = Text("Hello")
         t2 = Text(", ")
@@ -78,8 +77,8 @@ class NodeSorterTest {
         root.appendChild(e1)
         root.appendChild(t3)
         Document(root)
-        input = ImmutableList.of<Node?>(e1, t3, t2, t1, root)
-        expected = ImmutableList.of<Node?>(root, t1, e1, t2, t3)
+        input = listOf(e1, t3, t2, t1, root)
+        expected = listOf(root, t1, e1, t2, t3)
         data.add(arrayOf(input, expected))
         return data.iterator()
     }

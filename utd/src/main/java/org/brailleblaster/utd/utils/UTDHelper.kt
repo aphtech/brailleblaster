@@ -24,6 +24,7 @@ import org.brailleblaster.utd.exceptions.UTDException
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.UTD_NS
 import java.lang.reflect.Field
 import java.util.*
 import java.util.function.Consumer
@@ -314,7 +315,7 @@ class UTDHelper {
                 XMLHandler2.nodeToElementOrParentOrDocRoot(
                     rootRaw
                 )
-            if (UTDElements.BRL.isA(root) || (UTDElements.UTD_NAMESPACE == root.namespaceURI && "tablebrl" == root.localName)) {
+            if (UTDElements.BRL.isA(root) || (UTD_NS == root.namespaceURI && "tablebrl" == root.localName)) {
                 root.detach()
                 return
             }
