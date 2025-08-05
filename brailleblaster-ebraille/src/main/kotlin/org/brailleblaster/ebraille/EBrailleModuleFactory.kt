@@ -20,5 +20,5 @@ import org.brailleblaster.perspectives.mvc.BBSimpleManager
 import org.brailleblaster.spi.ModuleFactory
 
 class EBrailleModuleFactory : ModuleFactory {
-    override fun createModules(manager: Manager): Iterable<BBSimpleManager.SimpleListener> = listOf(EBrailleExportTool)
+    override fun createModules(manager: Manager): Iterable<BBSimpleManager.SimpleListener> = listOf(ExportSubMenu)
 }

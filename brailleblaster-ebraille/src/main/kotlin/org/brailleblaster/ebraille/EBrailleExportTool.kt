@@ -17,12 +17,14 @@ package org.brailleblaster.ebraille
 
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.ExportMenuTool
+import org.brailleblaster.tools.MenuTool
+import org.brailleblaster.tools.SubMenuModule
 import org.brailleblaster.wordprocessor.BBFileDialog
 import org.eclipse.swt.SWT
 import java.io.File
 
-object EBrailleExportTool : MenuToolListener {
+object EBrailleExportTool : MenuTool {
     override val topMenu = TopMenu.FILE
     override val title = "Export to eBraille"
     override fun onRun(bbData: BBSelectionData) {
@@ -30,4 +32,10 @@ object EBrailleExportTool : MenuToolListener {
             EBrailleBundle(File(f)).close()
         }
     }
+}
+
+object ExportSubMenu : SubMenuModule {
+    override val topMenu = ExportMenuTool.topMenu
+    override val text = ExportMenuTool.text
+    override val subMenuItems = listOf(EBrailleExportTool)
 }
