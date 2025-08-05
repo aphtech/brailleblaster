@@ -19,7 +19,7 @@ import org.brailleblaster.AppProperties
 import org.brailleblaster.BBIni
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.util.Notify.notify
 import org.brailleblaster.utils.BBData.getBrailleblasterPath
@@ -35,14 +35,14 @@ import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Paths
 
-object GoToWebsiteTool : MenuToolListener {
+object GoToWebsiteTool : MenuToolModule {
     override val topMenu: TopMenu = TopMenu.HELP
     override val title: String = "${AppProperties.displayName} Website"
     override fun onRun(bbData: BBSelectionData) {
         showHelp(HelpOptions.GoToSite)
     }
 }
-object UserGuideTool : MenuToolListener {
+object UserGuideTool : MenuToolModule {
     override val topMenu: TopMenu = TopMenu.HELP
     override val title: String = "${AppProperties.displayName} User Guide"
     override val accelerator: Int = SWT.F1
@@ -50,7 +50,7 @@ object UserGuideTool : MenuToolListener {
         showHelp(HelpOptions.UserGuide)
     }
 }
-object AboutTool : MenuToolListener {
+object AboutTool : MenuToolModule {
     override val topMenu: TopMenu = TopMenu.HELP
     override val title: String = "About ${AppProperties.displayName}"
     override fun onRun(bbData: BBSelectionData) {

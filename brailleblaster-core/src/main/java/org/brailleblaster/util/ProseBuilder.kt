@@ -35,7 +35,7 @@ import org.brailleblaster.perspectives.mvc.XMLTextCaret
 import org.brailleblaster.perspectives.mvc.events.BuildMenuEvent
 import org.brailleblaster.perspectives.mvc.events.BuildToolBarEvent
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.utils.TextTranslator
 import org.brailleblaster.utd.utils.UTDHelper
@@ -53,7 +53,7 @@ import org.eclipse.swt.layout.RowLayout
 import org.eclipse.swt.widgets.*
 import java.util.function.Consumer
 
-class ProseBuilder : MenuToolListener {
+class ProseBuilder : MenuToolModule {
     /**
      * Note: instance variable to reset in between tests
      * @see .isEnabled
@@ -78,7 +78,7 @@ class ProseBuilder : MenuToolListener {
 
     override fun onEvent(event: SimpleEvent) {
         if (event is BuildMenuEvent) {
-            MenuManager.addMenuItem(this)
+            MenuManager.add(this)
         }
         if (event is BuildToolBarEvent) {
             if (toolbarEnabled) {

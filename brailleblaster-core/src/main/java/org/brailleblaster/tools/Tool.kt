@@ -18,16 +18,16 @@ package org.brailleblaster.tools
 import org.brailleblaster.perspectives.mvc.BBSimpleManager.SimpleListener
 import org.brailleblaster.perspectives.mvc.menu.MenuManager
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
-import org.brailleblaster.perspectives.mvc.menu.EmphasisItem
 import org.brailleblaster.perspectives.mvc.menu.EnableListener
 import org.brailleblaster.perspectives.mvc.menu.SharedItem
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.perspectives.mvc.SimpleEvent
 import org.brailleblaster.perspectives.mvc.events.BuildMenuEvent
 import org.brailleblaster.perspectives.mvc.menu.IBBCheckMenuItem
+import org.brailleblaster.perspectives.mvc.menu.IBBMenu
 import org.brailleblaster.perspectives.mvc.menu.IBBMenuItem
+import org.brailleblaster.perspectives.mvc.menu.IBBSubMenu
 import org.brailleblaster.perspectives.mvc.modules.views.DebugModule
-import org.brailleblaster.perspectives.mvc.modules.views.EmphasisModule
 import org.brailleblaster.usage.logEnd
 import org.brailleblaster.usage.logException
 import org.brailleblaster.usage.logStart
@@ -75,30 +75,37 @@ interface CheckMenuTool : ToggleTool, MenuTool, IBBCheckMenuItem {
         get() = SWT.CHECK
 }
 
-interface MenuToolListener : MenuTool, SimpleListener {
+interface MenuToolModule : MenuTool, SimpleListener {
+    val visible: Boolean
+        get() = true
     override fun onEvent(event: SimpleEvent) {
-        if (event is BuildMenuEvent) {
-            MenuManager.addMenuItem(this)
+        if (event is BuildMenuEvent && visible) {
+            MenuManager.add(this)
         }
     }
 }
-interface DebugMenuToolListener : MenuToolListener {
+interface DebugMenuToolModule : MenuToolModule {
     override val topMenu: TopMenu
         get() = TopMenu.DEBUG
-    override fun onEvent(event: SimpleEvent) {
-        if (event is  BuildMenuEvent && DebugModule.enabled) {
-            MenuManager.addMenuItem(this)
+    override val visible: Boolean
+        get() = DebugModule.enabled
+}
+
+interface SubMenuModule : IBBSubMenu, SimpleListener {
+    val visible: Boolean
+        get() = true
+
+    override fun copy(): SubMenuModule {
+        return object : SubMenuModule {
+            override val text: String = this@SubMenuModule.text
+            override val subMenuItems: List<IBBMenu> = this@SubMenuModule.subMenuItems.toList()
+            override val topMenu: TopMenu? = this@SubMenuModule.topMenu
+            override val visible: Boolean = this@SubMenuModule.visible
         }
     }
-}
-interface EmphasisMenuTool : MenuToolListener {
-    override val topMenu: TopMenu
-        get() = TopMenu.EMPHASIS
-    val emphasis: EmphasisItem
-    override val title: String
-        get() = emphasis.longName
-
-    override fun onRun(bbData: BBSelectionData) {
-        EmphasisModule.addEmphasis(bbData.manager.simpleManager, emphasis.emphasisType)
+    override fun onEvent(event: SimpleEvent) {
+        if (event is BuildMenuEvent && visible) {
+            MenuManager.add(this)
+        }
     }
 }

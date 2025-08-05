@@ -19,6 +19,7 @@ import org.brailleblaster.perspectives.mvc.menu.MenuManager.addToListenerMap
 import org.brailleblaster.perspectives.mvc.menu.MenuManager.menuItemAcceleratorSuffix
 import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.wordprocessor.WPManager
+import org.eclipse.swt.SWT
 import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.widgets.Menu
 import org.eclipse.swt.widgets.MenuItem
@@ -86,4 +87,23 @@ interface IBBRadioMenuItem : IBBMenuItem {
     }
 
     override fun copy(): IBBRadioMenuItem = this
+}
+
+interface IBBSubMenu : IBBMenu {
+    val text: String
+    val subMenuItems: List<IBBMenu>
+    override fun build(parentMenu: Menu): MenuItem {
+        val parentSubMenu = MenuItem(parentMenu, SWT.CASCADE)
+        parentSubMenu.text = text
+        val subMenu = Menu(parentMenu.shell, SWT.DROP_DOWN)
+        for (item in subMenuItems) {
+            item.build(subMenu)
+        }
+        // empty menu looks ugly
+        if (subMenuItems.isEmpty()) {
+            parentSubMenu.isEnabled = false
+        }
+        parentSubMenu.menu = subMenu
+        return parentSubMenu
+    }
 }

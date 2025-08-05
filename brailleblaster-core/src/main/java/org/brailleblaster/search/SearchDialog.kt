@@ -23,7 +23,7 @@ import org.brailleblaster.perspectives.mvc.SimpleEvent
 import org.brailleblaster.perspectives.mvc.events.BuildMenuEvent
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.EnableListener
-import org.brailleblaster.perspectives.mvc.menu.MenuManager.addMenuItem
+import org.brailleblaster.perspectives.mvc.menu.MenuManager
 import org.brailleblaster.perspectives.mvc.menu.SharedItem
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.perspectives.mvc.modules.misc.TableSelectionModule.Companion.displayInvalidTableMessage
@@ -109,9 +109,9 @@ class SearchDialog(parent: Shell?, style: Int) : Dialog(parent, style),
                     open()
                 }
             }
-            addMenuItem(searchTool)
+            MenuManager.add(searchTool)
 
-            addMenuItem(RepeatSearchTool)
+            MenuManager.add(RepeatSearchTool)
         }
     }
 

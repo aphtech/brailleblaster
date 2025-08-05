@@ -19,7 +19,7 @@ import org.brailleblaster.utils.localization.LocaleHandler
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.usage.BBUsageManager
 import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Display
 import org.eclipse.swt.widgets.Shell
 
-object PrivacyTool : MenuToolListener {
+object PrivacyTool : MenuToolModule {
     override val topMenu: TopMenu = TopMenu.HELP
     override val title: String = LocaleHandler.getDefault()["PrivacySettingsTab.title"]
     override fun onRun(bbData: BBSelectionData) {

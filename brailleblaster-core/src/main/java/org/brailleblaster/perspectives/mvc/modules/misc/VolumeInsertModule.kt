@@ -22,11 +22,11 @@ import nu.xom.ParentNode
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBX.VolumeType
 import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.frontmatter.VolumeUtils.getVolumeElementsFatal
 import org.brailleblaster.frontmatter.VolumeUtils.getVolumeNames
 import org.brailleblaster.frontmatter.VolumeUtils.newVolumeElement
 import org.brailleblaster.frontmatter.VolumeUtils.updateEndOfVolume
-import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.WhiteSpaceElement
 import org.brailleblaster.perspectives.braille.messages.Sender
@@ -35,16 +35,16 @@ import org.brailleblaster.perspectives.mvc.SimpleEvent
 import org.brailleblaster.perspectives.mvc.events.BuildMenuEvent
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
-import org.brailleblaster.perspectives.mvc.menu.MenuManager.addSubMenu
+import org.brailleblaster.perspectives.mvc.menu.MenuManager
 import org.brailleblaster.perspectives.mvc.menu.SubMenuBuilder
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.perspectives.mvc.modules.views.DebugModule
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.internal.xml.XMLHandler2
-import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.util.Notify.showMessage
 import org.brailleblaster.util.WorkingDialog
+import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 
 class VolumeInsertModule : SimpleListener {
     override fun onEvent(event: SimpleEvent) {
@@ -77,8 +77,9 @@ class VolumeInsertModule : SimpleListener {
                             VolumeType.VOLUME_SUPPLEMENTAL, e.manager
                         )
                     }
+                    .build()
             )
-            addSubMenu(volumeManagerMenu)
+            MenuManager.add(volumeManagerMenu.build())
         }
     }
 

@@ -19,9 +19,9 @@ import org.brailleblaster.perspectives.braille.views.wp.tableEditor.TableEditor
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.SharedItem
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 
-enum class TableEditorTools(override val topMenu: TopMenu, override val title: String, val action: (BBSelectionData) -> Unit, override val sharedItem: SharedItem? = null) : MenuToolListener {
+enum class TableEditorTools(override val topMenu: TopMenu, override val title: String, val action: (BBSelectionData) -> Unit, override val sharedItem: SharedItem? = null) : MenuToolModule {
     InsertTableTool(TopMenu.INSERT, TableEditor.INSERT_MENUITEM, { TableEditor(
         it.wpManager.shell
     ).initTable(it.manager, true) }),

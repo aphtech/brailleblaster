@@ -40,7 +40,7 @@ import org.eclipse.swt.SWT
 import org.slf4j.LoggerFactory
 import java.util.*
 
-object PageBreakTool : MenuToolListener {
+object PageBreakTool : MenuToolModule {
     override val topMenu: TopMenu = TopMenu.EDIT
     override val title: String = "Page Break"
     override val accelerator: Int = SWT.CTRL or SWT.CR.code

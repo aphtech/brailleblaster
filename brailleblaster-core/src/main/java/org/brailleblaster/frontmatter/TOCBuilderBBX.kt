@@ -40,12 +40,11 @@ import org.brailleblaster.perspectives.mvc.events.BBViewListener
 import org.brailleblaster.perspectives.mvc.events.BuildMenuEvent
 import org.brailleblaster.perspectives.mvc.events.BuildToolBarEvent
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
-import org.brailleblaster.perspectives.mvc.menu.MenuManager.addMenuItem
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.perspectives.mvc.modules.views.DebugModule
 import org.brailleblaster.settings.UTDManager
 import org.brailleblaster.settings.UTDManager.Companion.isStyle
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.utd.IStyle
 import org.brailleblaster.utd.Style
 import org.brailleblaster.utd.exceptions.NodeException
@@ -58,6 +57,7 @@ import org.brailleblaster.utd.utils.UTDHelper.Companion.getTextChild
 import org.brailleblaster.utd.utils.UTDHelper.Companion.stripUTDRecursive
 import org.brailleblaster.utils.xom.childNodes
 import org.brailleblaster.exceptions.BBNotifyException
+import org.brailleblaster.perspectives.mvc.menu.MenuManager
 import org.brailleblaster.util.FormUIUtils.makeButton
 import org.brailleblaster.util.FormUIUtils.makeCheckbox
 import org.brailleblaster.util.FormUIUtils.makeComboDropdown
@@ -86,7 +86,7 @@ import java.util.regex.Pattern
 /**
  * TOC Builder toolbar updated for BBX format
  */
-class TOCBuilderBBX(private var manager: Manager) : MenuToolListener, BBViewListener, VerifyKeyListener {
+class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListener, VerifyKeyListener {
     /**
      * Note: instance variable to reset in between tests
      *
@@ -117,7 +117,7 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolListener, BBViewList
     override fun onEvent(event: SimpleEvent) {
         if (event is BuildMenuEvent && DebugModule.enabled) {
             this.manager = event.manager.manager
-            addMenuItem(this)
+            MenuManager.add(this)
         }
         if (event is BuildToolBarEvent) {
             if (enabled) {

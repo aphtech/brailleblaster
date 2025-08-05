@@ -20,8 +20,7 @@ import org.brailleblaster.utils.localization.LocaleHandler.Companion.getBanaStyl
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.mvc.menu.*
-import org.brailleblaster.perspectives.mvc.menu.MenuManager.addSeparator
-import org.brailleblaster.perspectives.mvc.menu.MenuManager.addSubMenu
+import org.brailleblaster.perspectives.mvc.menu.BBSeparator
 import org.brailleblaster.perspectives.mvc.menu.MenuManager.addToStyleMenu
 import org.brailleblaster.settings.ui.Loadout
 import org.brailleblaster.settings.ui.Loadout.Companion.getAcc
@@ -73,10 +72,10 @@ class StyleMenuBuilder(shell: Shell, manager: Manager) : StylesBuilder(shell, ma
         onLevelSelect: Consumer<BBSelectionData>
     ) {
         addStyleConfiguration(onStyleSelect, onTypeformSelect, onLevelSelect)
-        addSeparator(TopMenu.STYLES)
+        MenuManager.add(BBSeparator(TopMenu.STYLES))
         if (onOptionSelect != null) {
             addStyleOptions(onOptionSelect, onStyleSelect)
-            addSeparator(TopMenu.STYLES)
+            MenuManager.add(BBSeparator(TopMenu.STYLES))
         }
         onStyleSelect?.let { getStyleCategories(it, onTypeformSelect) }
         addLoadoutListener(onStyleSelect)
@@ -174,11 +173,11 @@ class StyleMenuBuilder(shell: Shell, manager: Manager) : StylesBuilder(shell, ma
             logger.error("Miscellaneous style category not found")
         }
         for (subCategory in subCategories.values) {
-            subCategory.parentSubMenu!!.addSubMenu(subCategory)
+            subCategory.parentSubMenu!!.addSubMenu(subCategory.build())
         }
         for ((key, category) in categories) {
             addToStyleMenu(key, category)
-            addSubMenu(category)
+            MenuManager.add(category.build())
         }
     }
 
@@ -188,7 +187,7 @@ class StyleMenuBuilder(shell: Shell, manager: Manager) : StylesBuilder(shell, ma
     ) {
         val smb = SubMenuBuilder(TopMenu.STYLES, "Options")
         getStyleOptions(smb, onOptionSelect, onStyleSelect!!)
-        addSubMenu(smb)
+        MenuManager.add(smb.build())
     }
 
     private fun getStyleName(styles: List<Style>, styleId: String): String {
@@ -237,9 +236,9 @@ class StyleMenuBuilder(shell: Shell, manager: Manager) : StylesBuilder(shell, ma
                 onLevelSelect.accept(e)
             }
         }
-        configureMenu.addSubMenu(loadoutsMenu)
-        configureMenu.addSubMenu(styleLevelsMenu)
-        addSubMenu(configureMenu)
+        configureMenu.addSubMenu(loadoutsMenu.build())
+        configureMenu.addSubMenu(styleLevelsMenu.build())
+        MenuManager.add(configureMenu.build())
     }
 
     private fun showLoadoutDialog(accelerator: Int) {

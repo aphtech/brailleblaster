@@ -25,8 +25,7 @@ import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.mvc.BBSimpleManager.SimpleListener
 import org.brailleblaster.perspectives.mvc.SimpleEvent
 import org.brailleblaster.perspectives.mvc.events.BuildMenuEvent
-import org.brailleblaster.perspectives.mvc.menu.MenuManager.addMenuItem
-import org.brailleblaster.perspectives.mvc.menu.MenuManager.addSubMenu
+import org.brailleblaster.perspectives.mvc.menu.MenuManager
 import org.brailleblaster.perspectives.mvc.menu.SubMenuBuilder
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.tools.*
@@ -44,17 +43,17 @@ import kotlin.io.path.nameWithoutExtension
 class FileModule : SimpleListener {
     override fun onEvent(event: SimpleEvent) {
         if (event is BuildMenuEvent) {
-            addMenuItem(NewFileTool)
-            addMenuItem(OpenFileTool)
-            addSubMenu(buildSubMenu())
-            addSubMenu(buildSubMenuAutoSave())
+            MenuManager.add(NewFileTool)
+            MenuManager.add(OpenFileTool)
+            MenuManager.add(buildSubMenu().build())
+            MenuManager.add(buildSubMenuAutoSave().build())
             //addMenuItem(RecentAutoSavesTool)
-            addMenuItem(SaveTool)
-            addMenuItem(SaveAsTool)
-            addMenuItem(SaveVolumeBrfPefTool)
-            addMenuItem(PrintTool)
-            addMenuItem(EmbossTool)
-            addMenuItem(BraillePreviewTool)
+            MenuManager.add(SaveTool)
+            MenuManager.add(SaveAsTool)
+            MenuManager.add(ExportMenuTool)
+            MenuManager.add(PrintTool)
+            MenuManager.add(EmbossTool)
+            MenuManager.add(BraillePreviewTool)
             // Disable split and merge as not being used.
 //			MenuManager.addMenuItem(
 //					MenuManager.TopMenu.FILE,
@@ -73,8 +72,8 @@ class FileModule : SimpleListener {
 //						e.manager.mergeBook();
 //					},
 //					null);
-            addMenuItem(CloseTool)
-            addMenuItem(ExitTool)
+            MenuManager.add(CloseTool)
+            MenuManager.add(ExitTool)
         }
     }
 
@@ -137,7 +136,7 @@ class FileModule : SimpleListener {
                 success
             } else {
                 save(m, arch, arch.path)
-                ArchiverRecoverThread.Companion.removeFile(Path(pathToRemove))
+                ArchiverRecoverThread.removeFile(Path(pathToRemove))
                 log.debug("Saved file")
                 true
             }
@@ -172,7 +171,7 @@ class FileModule : SimpleListener {
                 return false
             }
             save(m, arch, Path(filePath))
-            ArchiverRecoverThread.Companion.removeFile(Path(pathToRemove))
+            ArchiverRecoverThread.removeFile(Path(pathToRemove))
             arch.setNotImported()
             log.debug("File saved")
             return true

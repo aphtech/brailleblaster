@@ -19,11 +19,11 @@ import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.settings.ui.*
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 
 private val localeHandler = getDefault()
 
-enum class SettingsModule(override val title: String, private val clazz: Class<out SettingsUITab>) : MenuToolListener {
+enum class SettingsModule(override val title: String, private val clazz: Class<out SettingsUITab>) : MenuToolModule {
     PagePropertiesTool(
         localeHandler["SettingsModule.pageProperties"],
         PagePropertiesTab::class.java

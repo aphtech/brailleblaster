@@ -21,7 +21,7 @@ import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.util.FileUtils
 import org.brailleblaster.util.Notify
 import org.eclipse.swt.SWT
@@ -33,7 +33,7 @@ import java.util.*
 
 private val localeHandler = getDefault()
 
-object SpellCheckTool : MenuToolListener {
+object SpellCheckTool : MenuToolModule {
   override val topMenu: TopMenu = TopMenu.TOOLS
   override val title: String = localeHandler["&SpellCheck"]
   override val accelerator: Int = SWT.F7

@@ -38,7 +38,7 @@ import org.brailleblaster.perspectives.braille.views.wp.MathEditHandler.makeMath
 import org.brailleblaster.perspectives.mvc.BBSimpleManager.SimpleListener
 import org.brailleblaster.perspectives.mvc.SimpleEvent
 import org.brailleblaster.perspectives.mvc.events.BuildMenuEvent
-import org.brailleblaster.perspectives.mvc.menu.MenuManager.addMenuItem
+import org.brailleblaster.perspectives.mvc.menu.MenuManager
 import org.brailleblaster.perspectives.mvc.modules.views.DebugModule
 import org.brailleblaster.tools.*
 import org.brailleblaster.utd.MathBraileCode
@@ -72,21 +72,21 @@ class MathModule : SimpleListener {
 
     override fun onEvent(event: SimpleEvent) {
         if (event is BuildMenuEvent) {
-            addMenuItem(ToggleMathTool)
-            addMenuItem(NumericSeriesTool)
-            addMenuItem(AsciiMathEditorTool)
-            addMenuItem(SpatialComboTool)
-            addMenuItem(NemethBlockTool)
-            addMenuItem(NemethInlineTool)
-            addMenuItem(NumericBlockTool)
-            addMenuItem(NumericInlineTool)
-            addMenuItem(AboutMathTool)
+            MenuManager.add(ToggleMathTool)
+            MenuManager.add(NumericSeriesTool)
+            MenuManager.add(AsciiMathEditorTool)
+            MenuManager.add(SpatialComboTool)
+            MenuManager.add(NemethBlockTool)
+            MenuManager.add(NemethInlineTool)
+            MenuManager.add(NumericBlockTool)
+            MenuManager.add(NumericInlineTool)
+            MenuManager.add(AboutMathTool)
             if (DebugModule.enabled) {
                 /*
                 * if you take one out of debug, enable it in the ToolBar Builder
                 */
 
-                addMenuItem(MathTableTool)
+                MenuManager.add(MathTableTool)
             }
         }
     }

@@ -21,7 +21,7 @@ import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.utd.PageSettings
 import org.brailleblaster.utd.config.DocumentUTDConfig
 import org.eclipse.swt.SWT
@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Button
 import org.eclipse.swt.widgets.Shell
 import org.eclipse.swt.widgets.Text
 
-class RunningHeadTool : MenuToolListener {
+class RunningHeadTool : MenuToolModule {
     override val topMenu = TopMenu.INSERT
     override val title = "Running Head"
     var documentTitle = ""

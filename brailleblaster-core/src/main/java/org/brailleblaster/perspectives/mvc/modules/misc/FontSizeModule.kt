@@ -31,8 +31,8 @@ private val localeHandler = getDefault()
 object FontSizeModule : SimpleListener {
     override fun onEvent(event: SimpleEvent) {
         if (event is BuildMenuEvent) {
-            MenuManager.addMenuItem(IncreaseFontSizeTool)
-            MenuManager.addMenuItem(DecreaseFontSizeTool)
+            MenuManager.add(IncreaseFontSizeTool)
+            MenuManager.add(DecreaseFontSizeTool)
         }
     }
 

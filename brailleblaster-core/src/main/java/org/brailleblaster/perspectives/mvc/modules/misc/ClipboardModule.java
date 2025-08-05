@@ -83,11 +83,11 @@ public class ClipboardModule implements SimpleListener {
     @Override
     public void onEvent(@NotNull SimpleEvent event) {
         if (event instanceof BuildMenuEvent) {
-            MenuManager.addMenuItem(new CutTool(this));
-            MenuManager.addMenuItem(new CopyTool(this));
-            MenuManager.addMenuItem(new CopyUnicodeBrailleTool(this));
-            MenuManager.addMenuItem(new PasteTool(this));
-            MenuManager.addMenuItem(new PasteAsMathTool(this));
+            MenuManager.INSTANCE.add(new CutTool(this));
+            MenuManager.INSTANCE.add(new CopyTool(this));
+            MenuManager.INSTANCE.add(new CopyUnicodeBrailleTool(this));
+            MenuManager.INSTANCE.add(new PasteTool(this));
+            MenuManager.INSTANCE.add(new PasteAsMathTool(this));
         }
     }
 

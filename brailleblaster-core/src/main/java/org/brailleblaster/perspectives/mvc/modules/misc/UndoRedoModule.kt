@@ -35,7 +35,7 @@ import org.brailleblaster.perspectives.mvc.events.ModifyEvent.Companion.canUndo
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent.Companion.resetUndoable
 import org.brailleblaster.perspectives.mvc.events.ModularEvent
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
-import org.brailleblaster.perspectives.mvc.menu.MenuManager.addMenuItem
+import org.brailleblaster.perspectives.mvc.menu.MenuManager
 import org.brailleblaster.perspectives.mvc.menu.SharedItem
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.tools.MenuTool
@@ -88,8 +88,8 @@ class UndoRedoModule(m: Manager) : SimpleListener {
 
     override fun onEvent(event: SimpleEvent) {
         if (event is BuildMenuEvent) {
-            addMenuItem(UndoTool(this))
-            addMenuItem(RedoTool(this))
+            MenuManager.add(UndoTool(this))
+            MenuManager.add(RedoTool(this))
         } else if (event is ModifyEvent) {
             if (canUndo()) {
                 //On every ModifyEvent, create a copy of the document and add it to the undo queue

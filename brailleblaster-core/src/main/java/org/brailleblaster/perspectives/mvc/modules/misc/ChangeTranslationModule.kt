@@ -18,12 +18,8 @@ package org.brailleblaster.perspectives.mvc.modules.misc
 import org.brailleblaster.perspectives.mvc.BBSimpleManager.SimpleListener
 import org.brailleblaster.perspectives.mvc.SimpleEvent
 import org.brailleblaster.perspectives.mvc.events.BuildMenuEvent
-import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
-import org.brailleblaster.perspectives.mvc.menu.MenuManager.addSubMenu
+import org.brailleblaster.perspectives.mvc.menu.*
 import org.brailleblaster.perspectives.mvc.menu.MenuManager.addToSharedSubMenus
-import org.brailleblaster.perspectives.mvc.menu.SharedItem
-import org.brailleblaster.perspectives.mvc.menu.SubMenuBuilder
-import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.perspectives.mvc.modules.views.EmphasisModule
 import org.brailleblaster.utd.properties.EmphasisType
 import org.eclipse.swt.SWT
@@ -44,7 +40,7 @@ class ChangeTranslationModule : SimpleListener {
                 UNCONTRACTED_HOTKEY
             ) { e: BBSelectionData -> EmphasisModule.addEmphasis(e.manager.simpleManager, EmphasisType.NO_CONTRACT) }
             addToSharedSubMenus(SharedItem.CHANGE_TRANSLATION, smb)
-            addSubMenu(smb)
+            MenuManager.add(smb.build())
         }
     }
 

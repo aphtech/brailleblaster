@@ -13,23 +13,21 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.brailleblaster.perspectives.mvc.menu
+package org.brailleblaster.tools
 
-import org.eclipse.swt.SWT
-import org.eclipse.swt.widgets.Menu
-import org.eclipse.swt.widgets.MenuItem
+import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
+import org.brailleblaster.perspectives.mvc.menu.EmphasisItem
+import org.brailleblaster.perspectives.mvc.menu.TopMenu
+import org.brailleblaster.perspectives.mvc.modules.views.EmphasisModule
 
-/**
- * Tracks submenus added to menus
- */
-class BBSubMenu internal constructor(override val topMenu: TopMenu?, override val text: String, override val subMenuItems: MutableList<IBBMenu> = mutableListOf()) : IBBSubMenu {
+interface EmphasisMenuTool : MenuToolModule {
+    override val topMenu: TopMenu
+        get() = TopMenu.EMPHASIS
+    val emphasis: EmphasisItem
+    override val title: String
+        get() = emphasis.longName
 
-    fun addItem(newItem: IBBMenu) {
-        subMenuItems.add(newItem)
-    }
-
-    override fun copy(): BBSubMenu {
-        val copy = BBSubMenu(topMenu, text, subMenuItems = subMenuItems.map { it.copy() }.toMutableList())
-        return copy
+    override fun onRun(bbData: BBSelectionData) {
+        EmphasisModule.addEmphasis(bbData.manager.simpleManager, emphasis.emphasisType)
     }
 }

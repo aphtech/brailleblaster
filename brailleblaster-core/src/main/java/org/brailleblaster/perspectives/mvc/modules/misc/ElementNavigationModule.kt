@@ -22,12 +22,12 @@ import org.brailleblaster.perspectives.braille.mapping.elements.ReadOnlyTableTex
 import org.brailleblaster.perspectives.braille.mapping.elements.TableTextMapElement
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.util.FormUIUtils
 import org.eclipse.swt.SWT
 
-object PreviousElementTool : MenuToolListener {
+object PreviousElementTool : MenuToolModule {
     override val topMenu: TopMenu = TopMenu.NAVIGATE
     override val title: String = "Previous Element"
     override val accelerator: Int = SWT.CTRL or SWT.ARROW_UP
@@ -76,7 +76,7 @@ object PreviousElementTool : MenuToolListener {
         }
     }
 }
-object NextElementTool : MenuToolListener {
+object NextElementTool : MenuToolModule {
     override val topMenu: TopMenu = TopMenu.NAVIGATE
     override val title: String = "Next Element"
     override val accelerator: Int = SWT.CTRL or SWT.ARROW_DOWN

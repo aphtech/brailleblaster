@@ -22,12 +22,12 @@ import org.brailleblaster.perspectives.mvc.BBSimpleManager
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.spi.ModuleFactory
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.eclipse.jface.dialogs.MessageDialog
 import org.eclipse.swt.program.Program
 import java.net.URI
 
-object UpdaterModule : MenuToolListener {
+object UpdaterModule : MenuToolModule {
     private val updater = SoftwareUpdateController.getInstance()
     override val topMenu: TopMenu = TopMenu.HELP
     override val title: String = "Check For Updates"

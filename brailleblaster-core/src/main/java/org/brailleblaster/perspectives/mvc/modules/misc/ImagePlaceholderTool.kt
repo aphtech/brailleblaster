@@ -23,9 +23,9 @@ import org.brailleblaster.perspectives.braille.stylers.ImagePlaceholderHandler
 import org.brailleblaster.perspectives.braille.ui.ImagePlaceholder
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 
-object ImagePlaceholderTool : MenuToolListener {
+object ImagePlaceholderTool : MenuToolModule {
     private val localeHandler = getDefault()
     @JvmField
     val MENU_ITEM_NAME = localeHandler["&ImagePlaceholder"]

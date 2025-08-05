@@ -19,11 +19,11 @@ import nu.xom.Element
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.eclipse.swt.SWT
 
-object ConvertPrintPageNumber : MenuToolListener {
+object ConvertPrintPageNumber : MenuToolModule {
     override val topMenu = TopMenu.TOOLS
     override val title = "Convert to Print Page Number"
     override val accelerator = SWT.MOD1 or '5'.code

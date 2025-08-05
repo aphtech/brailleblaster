@@ -21,12 +21,12 @@ import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.SharedItem
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.tools.CheckMenuTool
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.eclipse.swt.SWT
 
 private val localeHandler = LocaleHandler.getDefault()
 
-class SixKeyModeModule(manager: Manager) : CheckMenuTool, MenuToolListener {
+class SixKeyModeModule(manager: Manager) : CheckMenuTool, MenuToolModule {
     override val topMenu = TopMenu.TOOLS
     override val title = localeHandler["SixKeyMode.menuItem"]
     override val accelerator = SWT.MOD3 or 'X'.code

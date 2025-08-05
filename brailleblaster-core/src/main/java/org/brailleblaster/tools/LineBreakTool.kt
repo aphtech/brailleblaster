@@ -34,7 +34,7 @@ import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.util.Utils
 
-object LineBreakTool : MenuToolListener {
+object LineBreakTool : MenuToolModule {
     override val topMenu: TopMenu = TopMenu.EDIT
     override val title: String = "Line Break\tShift + Enter"
     override fun onRun(bbData: BBSelectionData) {

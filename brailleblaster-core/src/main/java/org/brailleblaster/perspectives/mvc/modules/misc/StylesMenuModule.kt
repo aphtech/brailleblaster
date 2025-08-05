@@ -36,13 +36,11 @@ import org.brailleblaster.perspectives.mvc.XMLTextCaret
 import org.brailleblaster.perspectives.mvc.events.BuildMenuEvent
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.perspectives.mvc.menu.*
-import org.brailleblaster.perspectives.mvc.menu.MenuManager.addMenuItem
-import org.brailleblaster.perspectives.mvc.menu.MenuManager.addSeparator
 import org.brailleblaster.perspectives.mvc.modules.misc.TableSelectionModule.Companion.displayInvalidTableMessage
 import org.brailleblaster.perspectives.mvc.modules.views.EmphasisModule.addEmphasis
 import org.brailleblaster.settings.UTDManager.Companion.hasUtdStyleTag
 import org.brailleblaster.settings.UTDManager.Companion.isStyle
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.utd.Style
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.FastXPath
@@ -54,6 +52,7 @@ import org.brailleblaster.utd.utils.TableUtils.isTableCopy
 import org.brailleblaster.utd.utils.UTDHelper.Companion.stripUTDRecursive
 import org.brailleblaster.utd.utils.dom.BoxUtils.unbox
 import org.brailleblaster.exceptions.BBNotifyException
+import org.brailleblaster.perspectives.mvc.menu.BBSeparator
 import org.brailleblaster.util.Notify
 import org.brailleblaster.util.Notify.notify
 import org.brailleblaster.utils.BB_NS
@@ -73,7 +72,7 @@ import java.util.*
 import kotlin.math.max
 
 class StylesMenuModule(private val m: Manager) : SimpleListener {
-    inner class RepeatStyleTool : MenuToolListener {
+    inner class RepeatStyleTool : MenuToolModule {
         override val topMenu: TopMenu
             get() = TopMenu.STYLES
         override val title: String
@@ -95,8 +94,8 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
 
     override fun onEvent(event: SimpleEvent) {
         if (event is BuildMenuEvent) {
-            addMenuItem(RepeatStyleTool())
-            addSeparator(TopMenu.STYLES)
+            MenuManager.add(RepeatStyleTool())
+            MenuManager.add(BBSeparator(TopMenu.STYLES))
             val smb = StyleMenuBuilder(getInstance().shell, m)
             smb.generateStylesMenu(
                 { s: BBStyleSelection -> this.update(s) },

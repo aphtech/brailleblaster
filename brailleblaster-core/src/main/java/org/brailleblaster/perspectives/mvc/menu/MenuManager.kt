@@ -18,7 +18,6 @@ package org.brailleblaster.perspectives.mvc.menu
 import org.brailleblaster.settings.ui.BrailleSettingsDialog
 import org.brailleblaster.settings.ui.PagePropertiesTab
 import org.brailleblaster.tools.EmphasisMenuTool
-import org.brailleblaster.tools.MenuTool
 import org.brailleblaster.userHelp.AboutTool
 import org.brailleblaster.util.ui.MenuUtils.addSystemMenuItem
 import org.brailleblaster.wordprocessor.WPManager
@@ -35,8 +34,7 @@ object MenuManager {
      * Map to link tool bar selection behavior to menu
      */
     //Welcome to hashmap hell
-	@JvmField
-	val sharedItems: HashMap<SharedItem, IBBMenuItem> = LinkedHashMap()
+    val sharedItems: HashMap<SharedItem, IBBMenuItem> = LinkedHashMap()
 
     /**
      * Map to link menu items with submenus across the menu, toolbar, and context menu
@@ -46,14 +44,12 @@ object MenuManager {
     /**
      * Map to retrieve tool bar item widget that dispatched selection event
      */
-	@JvmField
-	val sharedToolBars: HashMap<SharedItem, ToolItem> = LinkedHashMap()
+    val sharedToolBars: HashMap<SharedItem, ToolItem> = LinkedHashMap()
 
     /**
      * Map to retrieve menu items when dispatching selection events
      */
-	@JvmField
-	val sharedMenuItems: HashMap<SharedItem, MenuItem> = LinkedHashMap()
+    val sharedMenuItems: HashMap<SharedItem, MenuItem> = LinkedHashMap()
 
     /**
      * Internal list to build menu
@@ -81,7 +77,7 @@ object MenuManager {
      * after this method is called will have no effect on the menu.
      * @param shellMenu
      */
-	fun buildMenu(shellMenu: Menu) {
+    fun buildMenu(shellMenu: Menu) {
         //RT#4377: Unit tests dispose the Display, so clear the state on dispose
         if (disposeDisplayListener == null) {
             disposeDisplayListener = Listener {
@@ -165,52 +161,43 @@ object MenuManager {
         }
     }
 
-    @JvmStatic
-	fun addMenuItem(tool: MenuTool) {
-        if (tool is EmphasisMenuTool) {
-            val emphasis = tool.emphasis
-            emphasisHandlers[emphasis] = tool::run
-        }
-        items.add(tool)
-        tool.sharedItem?.let {
-            sharedItems[it] = tool
-        }
-    }
-
-    /**
-     * Adds a horizontal line to visually separate menu items
-     * @param menu Top-level menu the separator should appear under
-     */
-	@JvmStatic
-	fun addSeparator(menu: TopMenu?) {
-        items.add(BBSeparator(menu))
-    }
-
-    /**
-     * Adds a sub menu.
-     * @param subMenu SubMenuBuilder to create the sub menu.
-     * @see SubMenuBuilder
-     */
-	@JvmStatic
-	fun addSubMenu(subMenu: SubMenuBuilder) {
-        val newMenu = subMenu.build()
-
-        // Merge duplicate sub menus, allows submenus to be defined in multiple modules
-        var mergedWithExisting = false
-        for (item in items) {
-            if (item !is BBSubMenu) {
-                continue
-            }
-            if (item.text == newMenu.text) {
-                mergedWithExisting = true
-                for (subMenuItem in newMenu.subMenuItems) {
-                    item.addItem(subMenuItem)
+    fun add(tool: IBBMenu) {
+        when (tool) {
+            is IBBMenuItem -> {
+                if (tool is EmphasisMenuTool) {
+                    val emphasis = tool.emphasis
+                    emphasisHandlers[emphasis] = tool::run
                 }
-                break
+                items.add(tool)
+                tool.sharedItem?.let {
+                    sharedItems[it] = tool
+                }
             }
-        }
-        if (!mergedWithExisting) {
-            items.add(newMenu)
+            is BBSeparator -> {
+                items.add(tool)
+            }
+            is IBBSubMenu -> {
+                // Merge duplicate sub menus, allows submenus to be defined in multiple modules
+                var mergedWithExisting = false
+                for (item in items) {
+                    if (item is BBSubMenu && item.text == tool.text) {
+                        mergedWithExisting = true
+                        for (subMenuItem in tool.subMenuItems) {
+                            item.addItem(subMenuItem)
+                        }
+                        break
+                    }
+                }
+                if (!mergedWithExisting) {
+                    items.add(
+                        BBSubMenu(
+                            topMenu = tool.topMenu,
+                            text = tool.text,
+                            subMenuItems = tool.subMenuItems.toMutableList()
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -234,8 +221,8 @@ object MenuManager {
      * @param parent Shell or composite to be the parent of the menu
      * @return A menu object, or null if category does not exist
      */
-	@JvmStatic
-	fun getFromStyleMenu(category: String, parent: Composite?): Menu? {
+    @JvmStatic
+    fun getFromStyleMenu(category: String, parent: Composite?): Menu? {
         if (styleMenus.containsKey(category)) {
             val subMenu = styleMenus[category]
             val newMenu = Menu(parent)
@@ -246,7 +233,7 @@ object MenuManager {
     }
 
     @JvmStatic
-	val styleMenuCategories: Set<String>
+    val styleMenuCategories: Set<String>
         /**
          * Get all categories of styles defined in styledefs
          */
@@ -256,8 +243,8 @@ object MenuManager {
      * Create a new menu from a shared sub menu
      * @return
      */
-	@JvmStatic
-	fun createSharedSubMenu(item: SharedItem, shell: Shell?, floating: Boolean): Menu {
+    @JvmStatic
+    fun createSharedSubMenu(item: SharedItem, shell: Shell?, floating: Boolean): Menu {
         val newMenu = Menu(shell, if (floating) SWT.NONE else SWT.DROP_DOWN)
         val foundSMB = sharedSubMenus[item]
             ?: throw UnsupportedOperationException("Operation $item not yet supported")
@@ -271,7 +258,7 @@ object MenuManager {
      * @param item Shared item
      * @return Selection behavior assigned to that item
      */
-	@JvmStatic
+    @JvmStatic
     fun getSharedSelection(item: SharedItem): (BBSelectionData) -> Unit {
         return { e -> lookupSelection(item)(e) }
     }
@@ -291,8 +278,8 @@ object MenuManager {
      * @param item Shared emphasis
      * @return Selection behavior assigned to that emphasis
      */
-	@JvmStatic
-	fun getEmphasisSelection(item: EmphasisItem): Consumer<BBSelectionData> {
+    @JvmStatic
+    fun getEmphasisSelection(item: EmphasisItem): Consumer<BBSelectionData> {
         return Consumer { e: BBSelectionData -> lookupEmphasis(item)(e) }
     }
 
@@ -318,7 +305,7 @@ object MenuManager {
     }
 
     @JvmStatic
-	fun addToListenerMap(listener: EnableListener, item: MenuItem) {
+    fun addToListenerMap(listener: EnableListener, item: MenuItem) {
         if (enableItems.containsKey(listener)) {
             val items = enableItems[listener]!!
             items.add(item)
@@ -332,8 +319,8 @@ object MenuManager {
     /**
      * Dispose the given menu and clear MenuManager's internal lists.
      */
-	@JvmStatic
-	fun disposeMenu(shellMenu: Menu?) {
+    @JvmStatic
+    fun disposeMenu(shellMenu: Menu?) {
         if (shellMenu != null && !shellMenu.isDisposed) {
             shellMenu.dispose()
             items.clear()
@@ -341,7 +328,7 @@ object MenuManager {
     }
 
     @JvmStatic
-	fun menuItemAcceleratorSuffix(accelerator: Int): String {
+    fun menuItemAcceleratorSuffix(accelerator: Int): String {
         val sb = StringBuilder()
         menuItemAcceleratorSuffix(sb, accelerator)
         return sb.toString()

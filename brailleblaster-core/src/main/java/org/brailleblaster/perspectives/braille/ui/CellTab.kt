@@ -26,7 +26,7 @@ import org.brailleblaster.perspectives.braille.views.wp.TextView
 import org.brailleblaster.perspectives.braille.views.wp.ViewStateObject
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.exceptions.BBNotifyException
@@ -144,7 +144,7 @@ class CellTab(var manager: Manager, var currentElement: TextMapElement, var text
         const val MENU_NAME = "Set Cell Position"
     }
 }
-object CellTabTool : MenuToolListener {
+object CellTabTool : MenuToolModule {
     override val topMenu: TopMenu = TopMenu.EDIT
     override val title: String = CellTab.MENU_NAME
     override fun onRun(bbData: BBSelectionData) {

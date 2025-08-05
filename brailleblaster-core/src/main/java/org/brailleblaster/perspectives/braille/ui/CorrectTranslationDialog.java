@@ -25,7 +25,7 @@ import org.brailleblaster.perspectives.braille.views.wp.TextView;
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData;
 import org.brailleblaster.perspectives.mvc.menu.TopMenu;
 import org.brailleblaster.settings.TableExceptions;
-import org.brailleblaster.tools.MenuToolListener;
+import org.brailleblaster.tools.MenuToolModule;
 import org.brailleblaster.utd.UTDTranslationEngine;
 import org.brailleblaster.util.FileUtils;
 import org.brailleblaster.util.Notify;
@@ -58,7 +58,7 @@ import java.util.Properties;
  * that is translated wrong. They can save the changes locally or upload to be
  * reviewed by BrailleBlaster.
  */
-public class CorrectTranslationDialog extends Dialog implements MenuToolListener {
+public class CorrectTranslationDialog extends Dialog implements MenuToolModule {
     private static final LocaleHandler localeHandler = LocaleHandler.getDefault();
 
     private static final Logger log = LoggerFactory.getLogger(CorrectTranslationDialog.class);

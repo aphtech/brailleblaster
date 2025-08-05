@@ -51,144 +51,148 @@ open class StylesBuilder(val shell: Shell, private val manager: Manager) {
     onOptionSelect: Consumer<BBStyleOptionSelection>,
     onStyleSelect: Consumer<BBStyleSelection>
   ) {
-    smb.addItem("Don't Split", 0) { e: BBSelectionData ->
-      val styleName = getStyleName(DONT_SPLIT_STYLE_ID)
-      val style: IStyle? = styleDefs.getStyleByName(styleName)
-      if (style != null) {
-        onStyleSelect.accept(
-          BBStyleSelection(
-            style,
-            e.widget
-          )
-        )
+      smb.addItem("Don't Split", 0) { e: BBSelectionData ->
+          val styleName = getStyleName(DONT_SPLIT_STYLE_ID)
+          val style: IStyle? = styleDefs.getStyleByName(styleName)
+          if (style != null) {
+              onStyleSelect.accept(
+                  BBStyleSelection(
+                      style,
+                      e.widget
+                  )
+              )
+          }
       }
-    }
-    smb.addSubMenu(
-      SubMenuBuilder(smb, "Keep With Next")
-        .addItem("Yes", 0) { e: BBSelectionData ->
-          handleOption(
-            StyleOption.KEEP_WITH_NEXT,
-            true,
-            onOptionSelect,
-            e.widget
-          )
-        }
-        .addItem("No", 0) { e: BBSelectionData ->
-          handleOption(
-            StyleOption.KEEP_WITH_NEXT,
-            false,
-            onOptionSelect,
-            e.widget
-          )
-        })
-    smb.addItem("Lines Before", 0) { e: BBSelectionData ->
-      handleOption(
-        StyleOption.LINES_BEFORE,
-        0,
-        onOptionSelect,
-        e.widget
+      smb.addSubMenu(
+          SubMenuBuilder(smb, "Keep With Next")
+              .addItem("Yes", 0) { e: BBSelectionData ->
+                  handleOption(
+                      StyleOption.KEEP_WITH_NEXT,
+                      true,
+                      onOptionSelect,
+                      e.widget
+                  )
+              }
+              .addItem("No", 0) { e: BBSelectionData ->
+                  handleOption(
+                      StyleOption.KEEP_WITH_NEXT,
+                      false,
+                      onOptionSelect,
+                      e.widget
+                  )
+              }.build()
       )
-    }
-    smb.addItem("Lines After", 0) { e: BBSelectionData ->
-      handleOption(
-        StyleOption.LINES_AFTER,
-        0,
-        onOptionSelect,
-        e.widget
-      )
-    }
+      smb.addItem("Lines Before", 0) { e: BBSelectionData ->
+          handleOption(
+              StyleOption.LINES_BEFORE,
+              0,
+              onOptionSelect,
+              e.widget
+          )
+      }
+      smb.addItem("Lines After", 0) { e: BBSelectionData ->
+          handleOption(
+              StyleOption.LINES_AFTER,
+              0,
+              onOptionSelect,
+              e.widget
+          )
+      }
 
-    //Not sure what this is for -- comment in case we need it still
+      //Not sure what this is for -- comment in case we need it still
 //        smb.addSubMenu(new SubMenuBuilder(smb, "Line Number")
 //        		.addItem("Yes", 0, e -> handleOption(Style.StyleOption.LINE_NUMBER, true, onOptionSelect, e.widget))
 //        		.addItem("No", 0, e -> handleOption(Style.StyleOption.LINE_NUMBER, false, onOptionSelect, e.widget)));
-    smb.addSubMenu(
-      SubMenuBuilder(smb, "Page Side")
-        .addItem("Left", 0) { e: BBSelectionData ->
-          handleOption(
-            StyleOption.PAGE_SIDE,
-            "left",
-            onOptionSelect,
-            e.widget
-          )
-        }
-        .addItem("Right", 0) { e: BBSelectionData ->
-          handleOption(
-            StyleOption.PAGE_SIDE,
-            "right",
-            onOptionSelect,
-            e.widget
-          )
-        })
-    smb.addSubMenu(
-      SubMenuBuilder(smb, "Skip Number Lines")
-        .addItem("Top", 0) { e: BBSelectionData ->
-          handleOption(
-            StyleOption.SKIP_NUMBER_LINES,
-            NumberLinePosition.TOP,
-            onOptionSelect,
-            e.widget
-          )
-        }
-        .addItem("Bottom", 0) { e: BBSelectionData ->
-          handleOption(
-            StyleOption.SKIP_NUMBER_LINES,
-            NumberLinePosition.BOTTOM,
-            onOptionSelect,
-            e.widget
-          )
-        }
-        .addItem("Both", 0) { e: BBSelectionData ->
-          handleOption(
-            StyleOption.SKIP_NUMBER_LINES,
-            NumberLinePosition.BOTH,
-            onOptionSelect,
-            e.widget
-          )
-        }
-        .addItem("None", 0) { e: BBSelectionData ->
-          handleOption(
-            StyleOption.SKIP_NUMBER_LINES,
-            NumberLinePosition.NONE,
-            onOptionSelect,
-            e.widget
-          )
-        })
-    smb.addItem("New Pages Before", 0) { e: BBSelectionData ->
-      handleOption(
-        StyleOption.NEW_PAGES_BEFORE,
-        0,
-        onOptionSelect,
-        e.widget
+      smb.addSubMenu(
+          SubMenuBuilder(smb, "Page Side")
+              .addItem("Left", 0) { e: BBSelectionData ->
+                  handleOption(
+                      StyleOption.PAGE_SIDE,
+                      "left",
+                      onOptionSelect,
+                      e.widget
+                  )
+              }
+              .addItem("Right", 0) { e: BBSelectionData ->
+                  handleOption(
+                      StyleOption.PAGE_SIDE,
+                      "right",
+                      onOptionSelect,
+                      e.widget
+                  )
+              }.build()
       )
-    }
-    smb.addItem("New Pages After", 0) { e: BBSelectionData ->
-      handleOption(
-        StyleOption.NEW_PAGES_AFTER,
-        0,
-        onOptionSelect,
-        e.widget
+      smb.addSubMenu(
+          SubMenuBuilder(smb, "Skip Number Lines")
+              .addItem("Top", 0) { e: BBSelectionData ->
+                  handleOption(
+                      StyleOption.SKIP_NUMBER_LINES,
+                      NumberLinePosition.TOP,
+                      onOptionSelect,
+                      e.widget
+                  )
+              }
+              .addItem("Bottom", 0) { e: BBSelectionData ->
+                  handleOption(
+                      StyleOption.SKIP_NUMBER_LINES,
+                      NumberLinePosition.BOTTOM,
+                      onOptionSelect,
+                      e.widget
+                  )
+              }
+              .addItem("Both", 0) { e: BBSelectionData ->
+                  handleOption(
+                      StyleOption.SKIP_NUMBER_LINES,
+                      NumberLinePosition.BOTH,
+                      onOptionSelect,
+                      e.widget
+                  )
+              }
+              .addItem("None", 0) { e: BBSelectionData ->
+                  handleOption(
+                      StyleOption.SKIP_NUMBER_LINES,
+                      NumberLinePosition.NONE,
+                      onOptionSelect,
+                      e.widget
+                  )
+              }.build()
       )
-    }
-    smb.addSubMenu(
-      SubMenuBuilder(smb, "Guide Words")
-        .addItem("Yes", 0) { e: BBSelectionData ->
+      smb.addItem("New Pages Before", 0) { e: BBSelectionData ->
           handleOption(
-            StyleOption.GUIDE_WORDS,
-            true,
-            onOptionSelect,
-            e.widget
+              StyleOption.NEW_PAGES_BEFORE,
+              0,
+              onOptionSelect,
+              e.widget
           )
-        }
-        .addItem("No", 0) { e: BBSelectionData ->
+      }
+      smb.addItem("New Pages After", 0) { e: BBSelectionData ->
           handleOption(
-            StyleOption.GUIDE_WORDS,
-            false,
-            onOptionSelect,
-            e.widget
+              StyleOption.NEW_PAGES_AFTER,
+              0,
+              onOptionSelect,
+              e.widget
           )
-        })
-    smb.addItem("Double Spaced", 0) { wrapSelectedElements() }
+      }
+      smb.addSubMenu(
+          SubMenuBuilder(smb, "Guide Words")
+              .addItem("Yes", 0) { e: BBSelectionData ->
+                  handleOption(
+                      StyleOption.GUIDE_WORDS,
+                      true,
+                      onOptionSelect,
+                      e.widget
+                  )
+              }
+              .addItem("No", 0) { e: BBSelectionData ->
+                  handleOption(
+                      StyleOption.GUIDE_WORDS,
+                      false,
+                      onOptionSelect,
+                      e.widget
+                  )
+              }.build()
+      )
+      smb.addItem("Double Spaced", 0) { wrapSelectedElements() }
   }
 
   private fun handleOption(

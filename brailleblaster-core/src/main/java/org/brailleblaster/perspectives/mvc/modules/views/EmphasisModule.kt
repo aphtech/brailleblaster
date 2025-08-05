@@ -29,14 +29,12 @@ import org.brailleblaster.perspectives.mvc.BBSimpleManager.SimpleListener
 import org.brailleblaster.perspectives.mvc.events.BuildMenuEvent
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.perspectives.mvc.menu.*
-import org.brailleblaster.perspectives.mvc.menu.MenuManager.addMenuItem
-import org.brailleblaster.perspectives.mvc.menu.MenuManager.addSubMenu
 import org.brailleblaster.perspectives.mvc.menu.MenuManager.addToSharedSubMenus
 import org.brailleblaster.perspectives.mvc.modules.misc.TableSelectionModule
 import org.brailleblaster.perspectives.mvc.modules.views.EmphasisModule.addEmphasis
 import org.brailleblaster.perspectives.mvc.modules.views.EmphasisModule.verifyNumberedListItem
 import org.brailleblaster.tools.EmphasisMenuTool
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.internal.xml.XMLHandler2
@@ -64,11 +62,11 @@ object EmphasisModule : AbstractModule(), SimpleListener {
 
     override fun onEvent(event: SimpleEvent) {
         if (event is BuildMenuEvent) {
-            addMenuItem(BoldTool)
-            addMenuItem(ItalicsTool)
-            addMenuItem(UnderlineTool)
-            addMenuItem(ScriptTool)
-            addMenuItem(TnSymbolsTool)
+            MenuManager.add(BoldTool)
+            MenuManager.add(ItalicsTool)
+            MenuManager.add(UnderlineTool)
+            MenuManager.add(ScriptTool)
+            MenuManager.add(TnSymbolsTool)
             val smb = SubMenuBuilder(TopMenu.EMPHASIS, "Transcriber-Defined Typeforms")
             smb.addItem(
                 EmphasisItem.TD1.longName,
@@ -91,11 +89,11 @@ object EmphasisModule : AbstractModule(), SimpleListener {
                 if (Utils.isLinux) SWT.MOD3 + SWT.MOD2 + '%'.code else SWT.MOD3 + SWT.MOD2 + '5'.code
             ) { addEmphasis(event.manager, EmphasisType.TRANS_5) }
             addToSharedSubMenus(SharedItem.TYPEFORMS, smb)
-            addSubMenu(smb)
-            addMenuItem(RemoveAllEmphasisTool)
-            addMenuItem(RemoveAllHeadingEmphasisTool)
-            addMenuItem(RemoveAllListEmphasisTool)
-            addMenuItem(RemoveAllGuideWordEmphasisTool)
+            MenuManager.add(smb.build())
+            MenuManager.add(RemoveAllEmphasisTool)
+            MenuManager.add(RemoveAllHeadingEmphasisTool)
+            MenuManager.add(RemoveAllListEmphasisTool)
+            MenuManager.add(RemoveAllGuideWordEmphasisTool)
         }
     }
 
@@ -375,7 +373,7 @@ object EmphasisModule : AbstractModule(), SimpleListener {
 
 
 }
-object RemoveAllEmphasisTool : MenuToolListener {
+object RemoveAllEmphasisTool : MenuToolModule {
     override val topMenu = TopMenu.EMPHASIS
     override val title = "Remove Emphasis From Selection"
     override val accelerator =
@@ -402,7 +400,7 @@ object RemoveAllEmphasisTool : MenuToolListener {
         process.close()
     }
 }
-object RemoveAllHeadingEmphasisTool : MenuToolListener {
+object RemoveAllHeadingEmphasisTool : MenuToolModule {
     override val topMenu = TopMenu.EMPHASIS
     override val title = "Remove All Emphasis from Headings"
     override val enableListener = EnableListener.SELECTION
@@ -443,7 +441,7 @@ object RemoveAllHeadingEmphasisTool : MenuToolListener {
         message.open()
     }
 }
-object RemoveAllListEmphasisTool : MenuToolListener {
+object RemoveAllListEmphasisTool : MenuToolModule {
     override val topMenu = TopMenu.EMPHASIS
     override val title = "Remove Emphasis from List Prefixes"
     override val enableListener = EnableListener.SELECTION
@@ -474,7 +472,7 @@ object RemoveAllListEmphasisTool : MenuToolListener {
         message.open()
     }
 }
-object RemoveAllGuideWordEmphasisTool : MenuToolListener {
+object RemoveAllGuideWordEmphasisTool : MenuToolModule {
     override val topMenu = TopMenu.EMPHASIS
     override val title = "Remove Emphasis from Alphabetic Reference Entry Words"
     override val enableListener = EnableListener.SELECTION

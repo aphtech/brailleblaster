@@ -66,7 +66,7 @@ class NamespaceMap() {
         get() {
             try {
                 return XPC_NAMESPACES[xPathContext] as Map<String, String>
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 throw UTDException("Problem in finding namespaces from XPathContext object")
             }
         }

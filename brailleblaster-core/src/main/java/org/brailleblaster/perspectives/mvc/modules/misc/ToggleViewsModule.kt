@@ -23,7 +23,7 @@ import org.brailleblaster.perspectives.mvc.SimpleEvent
 import org.brailleblaster.perspectives.mvc.ViewManager
 import org.brailleblaster.perspectives.mvc.events.BuildMenuEvent
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
-import org.brailleblaster.perspectives.mvc.menu.MenuManager.addSubMenu
+import org.brailleblaster.perspectives.mvc.menu.MenuManager
 import org.brailleblaster.perspectives.mvc.menu.SubMenuBuilder
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.perspectives.mvc.modules.views.DebugModule
@@ -59,30 +59,41 @@ class ToggleViewsModule(private val m: Manager) : SimpleListener {
 
     override fun onEvent(event: SimpleEvent) {
         if (event is BuildMenuEvent) {
-            addSubMenu(
-                SubMenuBuilder(
-                    TopMenu.VIEW,
-                    TOGGLE_SUBMENU_TITLE
-                )
-                .addCheckItem(
-                    ToggleViewTool.TogglePrintViewTool(Views.PRINT in currentViews, makeSelectionListener(Views.PRINT))
-                )
-                .addCheckItem(
-                    ToggleViewTool.ToggleBrailleViewTool(Views.BRAILLE in currentViews, makeSelectionListener(Views.BRAILLE))
-                )
-                .addCheckItem(
-                    ToggleViewTool.ToggleStyleViewTool(Views.STYLE in currentViews, makeSelectionListener(Views.STYLE))
-                )
-                .addCheckItem(ToggleViewTool.ToggleBreadCrumbsToolbarTool(BreadcrumbsToolbar.enabled) {
-                    BreadcrumbsToolbar.enabled = !BreadcrumbsToolbar.enabled
-                    WPManager.getInstance().buildToolBar()
-                })
+            val tool = ToggleViewTool.TogglePrintViewTool(
+                Views.PRINT in currentViews,
+                makeSelectionListener(Views.PRINT)
+            )
+            val subMenuBuilder = SubMenuBuilder(
+                TopMenu.VIEW,
+                TOGGLE_SUBMENU_TITLE
+            )
+            subMenuBuilder.add(tool)
+            val tool1 = ToggleViewTool.ToggleBrailleViewTool(
+                Views.BRAILLE in currentViews,
+                makeSelectionListener(Views.BRAILLE)
+            )
+            subMenuBuilder.add(tool1)
+            val tool2 = ToggleViewTool.ToggleStyleViewTool(
+                Views.STYLE in currentViews,
+                makeSelectionListener(Views.STYLE)
+            )
+            subMenuBuilder.add(tool2)
+            val tool3 = ToggleViewTool.ToggleBreadCrumbsToolbarTool(BreadcrumbsToolbar.enabled) {
+                BreadcrumbsToolbar.enabled = !BreadcrumbsToolbar.enabled
+                WPManager.getInstance().buildToolBar()
+            }
+            subMenuBuilder.add(tool3)
+            val tool4 = RearrangeViewsTool()
+            val addSeparator = subMenuBuilder
                 .addSeparator()
-                .addItem(RearrangeViewsTool())
+            addSeparator.add(tool4)
+            MenuManager.add(
+                addSeparator
+                            .build()
             )
             windowedView = ViewManager.windowedView
             if (DebugModule.enabled) {
-                addSubMenu(
+                MenuManager.add(
                     SubMenuBuilder(
                         TopMenu.WINDOW,
                         WINDOWIZE_TITLE
@@ -100,6 +111,7 @@ class ToggleViewsModule(private val m: Manager) : SimpleListener {
                             SWT.NONE,
                             windowedView == Views.STYLE
                         ) { e: BBSelectionData -> enableWindowedView(e, Views.STYLE) }
+                        .build()
                 )
             }
         }

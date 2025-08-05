@@ -43,7 +43,7 @@ object UnwrapElementTool : MenuTool, SimpleListener {
     }
     override fun onEvent(event: SimpleEvent) {
         if (event is BuildMenuEvent) {
-            MenuManager.addMenuItem(
+            MenuManager.add(
                 this
             )
         } else if (event is XMLCaretEvent) {

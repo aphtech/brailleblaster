@@ -17,7 +17,7 @@ package org.brailleblaster.perspectives.mvc.modules.misc
 
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.utils.swt.EasyListeners
 import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.*
 import java.util.HexFormat
 
 
-class InsertUnicode(parent: Shell) : Dialog(parent, SWT.NONE), MenuToolListener {
+class InsertUnicode(parent: Shell) : Dialog(parent, SWT.NONE), MenuToolModule {
   override val topMenu: TopMenu = TopMenu.INSERT
   override val title: String = SHELL_NAME
 

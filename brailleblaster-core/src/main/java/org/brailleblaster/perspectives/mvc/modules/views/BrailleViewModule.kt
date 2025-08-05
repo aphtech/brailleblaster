@@ -70,7 +70,7 @@ class BrailleViewModule(private val manager: Manager) : AbstractModule(), CheckM
             }
         }
         if (event is BuildMenuEvent) {
-            MenuManager.addMenuItem(this)
+            MenuManager.add(this)
         }
     }
 }

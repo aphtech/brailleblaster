@@ -18,10 +18,10 @@ package org.brailleblaster.perspectives.mvc.modules.misc
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.wordprocessor.LogViewerDialog
 
-object LogTool : MenuToolListener {
+object LogTool : MenuToolModule {
     private val localeHandler = getDefault()
     override val topMenu = TopMenu.HELP
     override val title = localeHandler["View&Log"]

@@ -19,12 +19,12 @@ import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.search.GoToPageDialog
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.eclipse.swt.SWT
 
 private val localeHandler = getDefault()
 
-object GoToPageTool : MenuToolListener {
+object GoToPageTool : MenuToolModule {
     override val topMenu = TopMenu.NAVIGATE
     override val title = localeHandler["&GoToPage"]
     override val accelerator = SWT.MOD1 or 'G'.code
@@ -32,7 +32,7 @@ object GoToPageTool : MenuToolListener {
         GoToPageDialog(bbData.manager)
     }
 }
-object HomeTool : MenuToolListener {
+object HomeTool : MenuToolModule {
     override val topMenu = TopMenu.NAVIGATE
     override val title = localeHandler["&Home"]
     override val accelerator = SWT.MOD1 or SWT.HOME
@@ -40,7 +40,7 @@ object HomeTool : MenuToolListener {
         bbData.manager.home()
     }
 }
-object EndTool : MenuToolListener {
+object EndTool : MenuToolModule {
     override val topMenu = TopMenu.NAVIGATE
     override val title = localeHandler["&End"]
     override val accelerator = SWT.MOD1 or SWT.END
@@ -48,7 +48,7 @@ object EndTool : MenuToolListener {
         bbData.manager.end()
     }
 }
-object BookTreeTool : MenuToolListener {
+object BookTreeTool : MenuToolModule {
     override val topMenu = TopMenu.NAVIGATE
     override val title = localeHandler["&BookTree"]
     override val accelerator = SWT.MOD3 or SWT.END

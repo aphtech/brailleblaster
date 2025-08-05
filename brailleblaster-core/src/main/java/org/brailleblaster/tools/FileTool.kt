@@ -20,6 +20,7 @@ import org.brailleblaster.archiver2.ArchiverFactory
 import org.brailleblaster.frontmatter.VolumeSaveDialog
 import org.brailleblaster.utils.localization.LocaleHandler
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
+import org.brailleblaster.perspectives.mvc.menu.IBBMenu
 import org.brailleblaster.perspectives.mvc.menu.SharedItem
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.perspectives.mvc.modules.misc.FileModule.Companion.fileSave
@@ -97,6 +98,11 @@ object SaveVolumeBrfPefTool : MenuTool {
     }
 }
 
+object ExportMenuTool : SubMenuModule {
+    override val topMenu = TopMenu.FILE
+    override val text = "Export"
+    override val subMenuItems: List<IBBMenu> = listOf(SaveVolumeBrfPefTool)
+}
 object PrintTool : MenuTool {
     override val topMenu: TopMenu = TopMenu.FILE
     override val title: String = localeHandler["&Print"]

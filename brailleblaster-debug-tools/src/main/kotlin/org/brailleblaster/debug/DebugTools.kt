@@ -23,7 +23,7 @@ import org.brailleblaster.perspectives.mvc.modules.views.DebugModule.DebugFatalE
 import org.brailleblaster.settings.TableExceptions
 import org.brailleblaster.settings.ui.AdvancedSettingsDialog
 import org.brailleblaster.tools.CheckMenuTool
-import org.brailleblaster.tools.DebugMenuToolListener
+import org.brailleblaster.tools.DebugMenuToolModule
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.utils.UTDHelper
 import org.eclipse.swt.SWT
@@ -54,14 +54,14 @@ object DebugTool {
 private val log: Logger = LoggerFactory.getLogger(DebugTool::class.java)
 private val localeHandler = LocaleHandler.getDefault()
 
-object XMLViewerTool : DebugMenuToolListener {
+object XMLViewerTool : DebugMenuToolModule {
     override val title = "XML Viewer"
     override val accelerator = SWT.MOD1 or SWT.MOD2 or 'X'.code
     override fun onRun(bbData: BBSelectionData) {
         XMLDebugger(bbData.wpManager.shell, bbData.manager.simpleManager)
     }
 }
-object MapListViewerTool : DebugMenuToolListener {
+object MapListViewerTool : DebugMenuToolModule {
     override val title = "Map List Viewer"
     override fun onRun(bbData: BBSelectionData) {
         val manager = bbData.manager
@@ -70,7 +70,7 @@ object MapListViewerTool : DebugMenuToolListener {
         mapListViewer.setMapText(manager.mapList.current, manager.mapList.currentIndex)
     }
 }
-object StyleViewerTool : DebugMenuToolListener {
+object StyleViewerTool : DebugMenuToolModule {
     override val title = "Style Viewer"
     override fun onRun(bbData: BBSelectionData) {
         val manager = bbData.manager
@@ -79,13 +79,13 @@ object StyleViewerTool : DebugMenuToolListener {
         styleViewer.setStyleText(manager.currentTextMapElement!!.node)
     }
 }
-object PageNumberViewerTool : DebugMenuToolListener {
+object PageNumberViewerTool : DebugMenuToolModule {
     override val title = "Page Number Viewer"
     override fun onRun(bbData: BBSelectionData) {
         PageNumberDebugger(bbData.manager)
     }
 }
-object SaveWithBrlTool : DebugMenuToolListener {
+object SaveWithBrlTool : DebugMenuToolModule {
     override val title = "Save Document w/ <brl>"
     override fun onRun(bbData: BBSelectionData) {
         val path = FileDialog(bbData.wpManager.shell, SWT.SAVE).run {
@@ -99,7 +99,7 @@ object SaveWithBrlTool : DebugMenuToolListener {
         }
     }
 }
-object SaveFormattedWithBrlTool : DebugMenuToolListener {
+object SaveFormattedWithBrlTool : DebugMenuToolModule {
     override val title = "Save Document Formatted w/ <brl>"
     override fun onRun(bbData: BBSelectionData) {
         val path = FileDialog(bbData.wpManager.shell, SWT.SAVE).run {
@@ -113,7 +113,7 @@ object SaveFormattedWithBrlTool : DebugMenuToolListener {
         }
     }
 }
-object SaveFormattedWithoutBrlTool : DebugMenuToolListener {
+object SaveFormattedWithoutBrlTool : DebugMenuToolModule {
     override val title = "Save Document Formatted w/o <brl>"
     override fun onRun(bbData: BBSelectionData) {
         val path = FileDialog(bbData.wpManager.shell, SWT.SAVE).run {
@@ -128,25 +128,25 @@ object SaveFormattedWithoutBrlTool : DebugMenuToolListener {
         }
     }
 }
-object SetLogTool : DebugMenuToolListener {
+object SetLogTool : DebugMenuToolModule {
     override val title = localeHandler["setLog"]
     override fun onRun(bbData: BBSelectionData) {
         AdvancedSettingsDialog()
     }
 }
-object TriggerExceptionTool : DebugMenuToolListener {
+object TriggerExceptionTool : DebugMenuToolModule {
     override val title = "Trigger Exception"
     override fun onRun(bbData: BBSelectionData) {
         throw RuntimeException("It broke again")
     }
 }
-object TriggerFatalExceptionTool : DebugMenuToolListener {
+object TriggerFatalExceptionTool : DebugMenuToolModule {
     override val title = "Trigger Fatal Exception"
     override fun onRun(bbData: BBSelectionData) {
         throw DebugFatalException("It SUPER broke again")
     }
 }
-object DarkModeToggleTool : DebugMenuToolListener {
+object DarkModeToggleTool : DebugMenuToolModule {
     override val title = "Dark Mode Toggle (next restart)"
     override fun onRun(bbData: BBSelectionData) {
         BBIni.propertyFileManager.saveAsBooleanCompute(
@@ -155,20 +155,20 @@ object DarkModeToggleTool : DebugMenuToolListener {
         ) { !it }
     }
 }
-object MathTableExceptionsTool : DebugMenuToolListener {
+object MathTableExceptionsTool : DebugMenuToolModule {
     override val title = "Math Table Exceptions"
     override fun onRun(bbData: BBSelectionData) {
         TableExceptions.MATH_EXCEPTION_TABLES = true
     }
 }
-object DisableFocusLostListenerTool : CheckMenuTool, DebugMenuToolListener {
+object DisableFocusLostListenerTool : CheckMenuTool, DebugMenuToolModule {
     override val title = "Disable FocusLost Listener"
     override val active = false
     override fun onRun(bbData: BBSelectionData) {
         bbData.manager.text.setFocusListenerLock(bbData.menuItem!!.selection)
     }
 }
-object TogglePandocImportTool : CheckMenuTool, DebugMenuToolListener {
+object TogglePandocImportTool : CheckMenuTool, DebugMenuToolModule {
     override val title = "Toggle Pandoc Import"
             override val accelerator = SWT.MOD1 or SWT.MOD3 or 'P'.code
     override val active = true

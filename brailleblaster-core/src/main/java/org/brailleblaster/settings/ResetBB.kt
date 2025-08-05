@@ -19,7 +19,7 @@ import org.brailleblaster.utils.BBData
 import org.brailleblaster.BBIni
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.util.Notify.showMessage
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import kotlin.system.exitProcess
 
-object ResetBB : MenuToolListener {
+object ResetBB : MenuToolModule {
     private val log = LoggerFactory.getLogger(ResetBB::class.java)
     override val topMenu = TopMenu.HELP
     override val title = "Reset BB"

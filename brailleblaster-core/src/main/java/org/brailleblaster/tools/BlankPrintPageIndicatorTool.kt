@@ -27,7 +27,7 @@ import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 
-object BlankPrintPageIndicatorTool : MenuToolListener {
+object BlankPrintPageIndicatorTool : MenuToolModule {
     private val localeHandler = LocaleHandler.getDefault()
     override val topMenu: TopMenu = TopMenu.INSERT
     override val title: String = "Blank Print Page Indicator"

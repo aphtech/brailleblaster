@@ -28,11 +28,11 @@ import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.perspectives.mvc.XMLTextCaret
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
-import org.brailleblaster.tools.MenuToolListener
+import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.utd.properties.EmphasisType
 import java.util.*
 
-object NoteSeparationLineModule : MenuToolListener {
+object NoteSeparationLineModule : MenuToolModule {
     private val localeHandler = getDefault()
      override val topMenu = TopMenu.INSERT
      override val title = localeHandler["&NoteSeparationLine"]

@@ -24,12 +24,12 @@ import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.mvc.XMLSelection
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
-import org.brailleblaster.tools.DebugMenuToolListener
+import org.brailleblaster.tools.DebugMenuToolModule
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.internal.xml.XMLHandler2
 
-object SimpleImageDescriberModule : DebugMenuToolListener {
+object SimpleImageDescriberModule : DebugMenuToolModule {
     const val MENU_ITEM_NAME = "Image Describer"
     override val title = MENU_ITEM_NAME
     override fun onRun(bbData: BBSelectionData) {
