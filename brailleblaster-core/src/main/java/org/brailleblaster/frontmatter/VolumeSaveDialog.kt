@@ -127,8 +127,8 @@ class VolumeSaveDialog(
             setGridData(saveFolderAll)
 
             // ----------------- Listeners --------------------
-            addSelectionListener(saveSingle) { e: SelectionEvent? -> clickSaveSingle() }
-            addSelectionListener(saveFolder) { e: SelectionEvent? -> clickSaveFolder(false) }
+            addSelectionListener(saveSingle) { _: SelectionEvent? -> clickSaveSingle() }
+            addSelectionListener(saveFolder) { _: SelectionEvent? -> clickSaveFolder(false) }
             addSelectionListener(saveFolderAll) { e: SelectionEvent? -> clickSaveFolder(true) }
 
             // -------------------- Data ---------------------
@@ -315,13 +315,7 @@ class VolumeSaveDialog(
         }
     }
 
-    private fun identifierFromFileName(path: File): String {
-        var identifier = path.getName()
-        if (identifier.contains(".")) {
-            identifier = identifier.substring(0, identifier.lastIndexOf("."))
-        }
-        return identifier
-    }
+    private fun identifierFromFileName(path: File): String = path.name.substringBeforeLast(".")
 
     private fun checkDoSaveFolder(selectedItems: Array<TableItem>, path: String): Int {
         var existsFile = false
@@ -376,12 +370,10 @@ class VolumeSaveDialog(
                 Format.entries.indexOf(selectedFormat)
             )
 
-            val filename = dialog.open()
-            if (filename == null) {
-                return null
+            return dialog.open()?.let { filename ->
+                val format: Format = Format.matchExtension(filename, dialog.widget.getFilterIndex())
+                format to filename
             }
-            val format: Format = Format.Companion.matchExtension(filename, dialog.widget.getFilterIndex())
-            return format to filename
         }
     }
 
@@ -450,10 +442,7 @@ class VolumeSaveDialog(
             selectedFormat: Format?
         ): File {
             //Strip off extension
-            var name = documentPath.fileName.toString()
-            if (name.contains(".")) {
-                name = name.substring(0, name.lastIndexOf('.'))
-            }
+            var name = documentPath.fileName.toString().substringBeforeLast('.')
 
             var format = ".brf"
             if (selectedFormat == Format.PEF) {

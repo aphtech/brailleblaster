@@ -117,8 +117,8 @@ class ReplaceAll(private val man: Manager, private val click: Click) {
                 val end = pair.end
                 nodeValue = tn.value
                 SearchUtils.dealWithReplaceCase(click, replaceAllNodes[i].value)
-                val before = nodeValue.substring(0, start)
-                val after = nodeValue.substring(end)
+                val before = nodeValue.take(start)
+                val after = nodeValue.drop(end)
                 val value = before + click.settings.replaceString + after
                 tn.value = value
                 loops++

@@ -122,9 +122,8 @@ class ArchiverRecoverThread(private val m: Manager) {
             //Remove recovery information from disk
             //println("Removing saved file for $savedPath")
             try {
-                val path = savedPath
-                Files.deleteIfExists(path)
-                deleteRecentSave(path)
+                Files.deleteIfExists(savedPath)
+                deleteRecentSave(savedPath)
             } catch (e: IOException) {
                 // TODO Auto-generated catch block
                 e.printStackTrace()

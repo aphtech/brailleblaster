@@ -260,7 +260,7 @@ class SelectionHandler(manager: Manager?, vi: ViewInitializer?, list: MapList?) 
                 if (mutStart <= t.getStart(list)) mutStart = t.getStart(list)
 
                 if (t.getEnd(list) != mutStart) {
-                    val rTxt = replacedText.substring(0, t.getEnd(list) - mutStart).replace(LINE_BREAK.toRegex(), "")
+                    val rTxt = replacedText.take(t.getEnd(list) - mutStart).replace(LINE_BREAK.toRegex(), "")
                     val selStart = t.text.indexOf(rTxt)
                     var unEditedText = ""
                     if (0 <= selStart) {

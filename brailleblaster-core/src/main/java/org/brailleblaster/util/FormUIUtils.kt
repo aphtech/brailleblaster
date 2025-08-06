@@ -310,7 +310,7 @@ object FormUIUtils {
         val topIndex = view.topIndex
         val bottomIndex = getBottomIndex(view)
         log.debug("Offset at line {}, currently between line {} and {}", offsetLine, topIndex, bottomIndex)
-        if (offsetLine <= bottomIndex || offsetLine >= topIndex) {
+        if (offsetLine !in (bottomIndex + 1)..<topIndex) {
             log.debug("Scrolling")
             view.topIndex = offsetLine - 10
         }

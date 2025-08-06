@@ -265,7 +265,7 @@ open class StylesBuilder(val shell: Shell, private val manager: Manager) {
     val fileSeparator = "/"
     for (i in idList.indices) {
       styleId = idList[i]
-      categoryName = styleId.substring(0, styleId.indexOf(fileSeparator))
+      categoryName = styleId.substringBefore(fileSeparator)
       idList[i] = getCategoryIndex(categoryName).toString() + "-" + styleId
     }
   }

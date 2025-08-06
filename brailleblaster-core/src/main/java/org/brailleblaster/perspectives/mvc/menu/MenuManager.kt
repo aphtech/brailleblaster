@@ -164,40 +164,48 @@ object MenuManager {
     fun add(tool: IBBMenu) {
         when (tool) {
             is IBBMenuItem -> {
-                if (tool is EmphasisMenuTool) {
-                    val emphasis = tool.emphasis
-                    emphasisHandlers[emphasis] = tool::run
-                }
-                items.add(tool)
-                tool.sharedItem?.let {
-                    sharedItems[it] = tool
-                }
+                addMenuItem(tool)
             }
             is BBSeparator -> {
                 items.add(tool)
             }
             is IBBSubMenu -> {
-                // Merge duplicate sub menus, allows submenus to be defined in multiple modules
-                var mergedWithExisting = false
-                for (item in items) {
-                    if (item is BBSubMenu && item.text == tool.text) {
-                        mergedWithExisting = true
-                        for (subMenuItem in tool.subMenuItems) {
-                            item.addItem(subMenuItem)
-                        }
-                        break
-                    }
-                }
-                if (!mergedWithExisting) {
-                    items.add(
-                        BBSubMenu(
-                            topMenu = tool.topMenu,
-                            text = tool.text,
-                            subMenuItems = tool.subMenuItems.toMutableList()
-                        )
-                    )
-                }
+                addSubMenu(tool)
             }
+        }
+    }
+
+    private fun addSubMenu(tool: IBBSubMenu) {
+        // Merge duplicate sub menus, allows submenus to be defined in multiple modules
+        var mergedWithExisting = false
+        for (item in items) {
+            if (item is BBSubMenu && item.text == tool.text) {
+                mergedWithExisting = true
+                for (subMenuItem in tool.subMenuItems) {
+                    item.addItem(subMenuItem)
+                }
+                break
+            }
+        }
+        if (!mergedWithExisting) {
+            items.add(
+                BBSubMenu(
+                    topMenu = tool.topMenu,
+                    text = tool.text,
+                    subMenuItems = tool.subMenuItems.toMutableList()
+                )
+            )
+        }
+    }
+
+    private fun addMenuItem(tool: IBBMenuItem) {
+        if (tool is EmphasisMenuTool) {
+            val emphasis = tool.emphasis
+            emphasisHandlers[emphasis] = tool::run
+        }
+        items.add(tool)
+        tool.sharedItem?.let {
+            sharedItems[it] = tool
         }
     }
 

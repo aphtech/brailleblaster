@@ -146,7 +146,7 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
                 val currentStart = state.currentStart
                 val currentEnd = state.currentEnd
                 if (isArrowKey(state.currentChar) || isNavKey(state.currentChar)) {
-                    if (e.caretOffset >= currentEnd || e.caretOffset <= currentStart) {
+                    if (e.caretOffset !in (currentStart + 1)..<currentEnd) {
                         if (textChanged) sendUpdate()
                         if (view.selectionRanges[1] > 0) setSelectionElements(
                             selection.selectionStart,
@@ -207,7 +207,7 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
 //				}
                 val currentStart = state.currentStart
                 val currentEnd = state.currentEnd
-                if (view.caretOffset > currentEnd || view.caretOffset < currentStart) {
+                if (view.caretOffset !in currentStart..currentEnd) {
                     if (textChanged) sendUpdate()
                     if (view.isTextSelected && view.selectionRanges[1] > 0) setSelectionElements(
                         selection.selectionStart,

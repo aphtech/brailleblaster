@@ -30,7 +30,7 @@ class XMLTextCaret @JvmOverloads constructor(
     init {
         //this.offset = offset;
         val textLen = textNode.value.length
-        if (offset < 0 || offset > textLen) {
+        if (offset !in 0..textLen) {
             this.cursorPosition = CursorPosition.AFTER
             this.offset = textLen
         } else this.offset = offset

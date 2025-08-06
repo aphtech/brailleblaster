@@ -73,7 +73,7 @@ class Validator(var manager: Manager, var view: StyledText) {
         val currentStart = stateObj.currentStart
         val currentEnd = stateObj.currentEnd
         if (currentElement is PageIndicatorTextMapElement || currentElement is BoxLineTextMapElement) {
-            return if (selectionStart == currentStart && selectionLength == currentEnd - currentStart) false else if (selectionStart in currentStart until currentEnd && selectionLength <= currentEnd - selectionStart) false else view.selectionRanges[1] != 0 && (selectionStart < currentStart || selectionStart > currentEnd)
+            return if (selectionStart == currentStart && selectionLength == currentEnd - currentStart) false else if (selectionStart in currentStart until currentEnd && selectionLength <= currentEnd - selectionStart) false else view.selectionRanges[1] != 0 && (selectionStart !in currentStart..currentEnd)
         } else if (selectionLength > 0) {
             val t = manager.mapList.getElementInRange(selectionStart)
             return t !is BoxLineTextMapElement && t !is PageIndicatorTextMapElement || selectionStart != t.getEnd(

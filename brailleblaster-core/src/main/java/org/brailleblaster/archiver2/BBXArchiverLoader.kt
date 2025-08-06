@@ -37,7 +37,7 @@ class BBXArchiverLoader : ArchiverFactory.FileLoader {
             )
             var fileStr = file.fileName.toString()
             if (fileStr.lowercase(Locale.getDefault()).endsWith(".bbx")) {
-                fileStr = fileStr.substring(0, fileStr.length - 4) + ".bbz"
+                fileStr = fileStr.dropLast(4) + ".bbz"
             }
             arch.newPath = Paths.get(fileStr)
             arch

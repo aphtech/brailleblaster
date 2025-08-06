@@ -485,7 +485,7 @@ class PagePropertiesTab private constructor(parent: Composite, engine: UTDTransl
     private fun replaceOldUnitLabel(label: Label, newUnit: String): String {
         // Replace the last word with the new unit
         var text = label.text
-        text = text.substring(0, text.lastIndexOf(" "))
+        text = text.substringBeforeLast(" ")
         return "$text ($newUnit)"
     }
 
@@ -542,7 +542,7 @@ class PagePropertiesTab private constructor(parent: Composite, engine: UTDTransl
                     val value = rawValue.toDouble()
                     setParsedValue.applyAsDouble(value)
                     function.accept(e)
-                } catch (ex: NumberFormatException) {
+                } catch (_: NumberFormatException) {
                     val msg = MessageBox(Display.getCurrent().activeShell)
                     msg.message = "Incorrect number format. Please enter another number."
                     msg.open()
@@ -565,7 +565,7 @@ class PagePropertiesTab private constructor(parent: Composite, engine: UTDTransl
                     val value = rawValue.toDouble()
                     setParsedValue.applyAsDouble(value)
                     function.accept(e)
-                } catch (ex: NumberFormatException) {
+                } catch (_: NumberFormatException) {
                     val msg = MessageBox(Display.getCurrent().activeShell)
                     msg.message = "Incorrect number format. Please enter another number."
                     msg.open()

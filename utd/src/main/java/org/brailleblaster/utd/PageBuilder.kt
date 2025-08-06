@@ -1869,7 +1869,7 @@ class PageBuilder {
 
         // Protect against long page numbers, probably wrong mark up
         if (pageNum.length > cellsPerLine) {
-            pageNum = truncateBraille(pageNum, cellsPerLine)
+            pageNum = pageNum.take(cellsPerLine)
         }
 
         if (pageNum.isNotEmpty() && pageNumberType != PageNumberType.T_PAGE) {
@@ -2020,7 +2020,7 @@ class PageBuilder {
         var insertedElements = 0
 
         // Create the brlonly, append, put the text in the page
-        pageNumber = truncateBraille(pageNumber, cellsPerLine)
+        pageNumber = pageNumber.take(cellsPerLine)
         val remainingWidth = cellsPerLine - pageNumber.length
         val brlOnly = UTDElements.BRLONLY.create()
         // Add the brlonly to the brl
@@ -2127,9 +2127,6 @@ class PageBuilder {
         if (!isEmptyNumberLine) {
             throw CellOccupiedException("Unable to insert a separator line on non-empty line")
         }
-        //TODO:  convert to LibLouisAPH
-        val useLLAPH = engine!!.brailleSettings.isUseLibLouisAPH
-        engine!!.brailleSettings.isUseLibLouisAPH = false
         val brailleStandard = engine!!.brailleSettings.mainTranslationTable
         if (!color.isNullOrEmpty()) {
             // add transcriber note symbols
@@ -2144,7 +2141,6 @@ class PageBuilder {
             }
             color = getStart(brailleStandard) + color + getEnd(brailleStandard) + " "
         }
-        engine!!.brailleSettings.isUseLibLouisAPH = useLLAPH
         val pageNumber = printPageValue
         val maxLines = linesPerPage
         val brlPagePos = PageBuilderHelper.getBraillePageNumberAt(pageSettings, braillePageNumber.pageNumber)
@@ -2217,7 +2213,7 @@ class PageBuilder {
                 //a really long color, truncate the color 
                 //and insert the transcriber end symbol
                 //at the end of the line
-            } else if (isColor && color!!.length > i) {
+            } else if (isColor && color.length > i) {
                 str.append(color[i])
             } else {
                 str.append(sepString)
@@ -3293,8 +3289,8 @@ class PageBuilder {
                             } else {
                                 cells = pages.getCellsForNode(curBrlChild)
                             }
-                            curBrlChild.value = nodeStr.substring(0, splitPoint)
-                            val endText: Node = Text(nodeStr.substring(splitPoint))
+                            curBrlChild.value = nodeStr.take(splitPoint)
+                            val endText: Node = Text(nodeStr.drop(splitPoint))
                             curBrl.insertChild(endText, position)
                             val endCells: MutableList<Cell> = mutableListOf()
                             for (tmpCell in cells) {
@@ -3378,8 +3374,8 @@ class PageBuilder {
                 val brlStr = lastBrlChild.value
                 splitIndex++
                 val nodeCells = pages.getCellsForNode(lastBrlChild)
-                lastBrlChild.value = brlStr.substring(0, splitIndex)
-                val endText = Text(brlStr.substring(splitIndex))
+                lastBrlChild.value = brlStr.take(splitIndex)
+                val endText = Text(brlStr.drop(splitIndex))
                 for (cell in nodeCells) {
                     val newIndex = cell.index
                     if (newIndex >= splitIndex) {
@@ -3618,7 +3614,7 @@ class PageBuilder {
                 cellsPerLine - (braillePageNum.length + padding)
             }
             while (runHeadEnd > pageNumStart && runHead.isNotEmpty()) {
-                runHead = if (runHead.isNotEmpty()) runHead.substring(0, runHead.length - 1) else ""
+                runHead = if (runHead.isNotEmpty()) runHead.dropLast(1) else ""
                 runHeadStart = (cellsPerLine - runHead.length) / 2
                 runHeadEnd = runHeadStart + runHead.length
             }
@@ -3771,7 +3767,7 @@ class PageBuilder {
         }
         val brlPageLength = braillePageNum.length
         if (printGW.length > cellsPerLine - 6) {
-            printGW = printGW.substring(0, cellsPerLine - brlPageLength - 6)
+            printGW = printGW.take(cellsPerLine - brlPageLength - 6)
         }
         if (isSingle) {
             printGW += " (cont.)"
@@ -4112,13 +4108,6 @@ class PageBuilder {
         currentBrl = currBrl
     }
 
-    private fun truncateBraille(orig: String, maxLength: Int): String {
-        return if (orig.length > maxLength) {
-            // For now do not insert anything to indicate truncation, may be in the future.
-            orig.substring(0, maxLength)
-        } else orig
-    }
-
     fun isAfterTPage(): Boolean {
         return afterTPage
     }
@@ -4240,7 +4229,7 @@ class PageBuilder {
         var pageNumber = pageNumber
         try {
             pageNumber.toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             //Take each character from the string and assign a number to it
             val number = StringBuilder()
             var i = 0

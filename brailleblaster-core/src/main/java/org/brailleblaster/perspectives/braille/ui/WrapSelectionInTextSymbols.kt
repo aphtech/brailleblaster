@@ -84,9 +84,9 @@ class WrapSelectionInTextSymbols(
         val string = start.node.value
         val startIndex = (start as XMLTextCaret).offset
         val endIndex = (end as XMLTextCaret).offset
-        val startString = string.substring(0, startIndex)
+        val startString = string.take(startIndex)
         val middleString = string.substring(startIndex, endIndex)
-        val endString = string.substring(endIndex)
+        val endString = string.drop(endIndex)
         var parent = start.node.parent
         var index = parent.indexOf(start.node)
         if (!BBX.BLOCK.isA(start.node)) {
@@ -161,8 +161,8 @@ class WrapSelectionInTextSymbols(
     private fun modifyText(start: XMLNodeCaret, end: Boolean) {
         val string = start.node.value
         val stringIndex = (start as XMLTextCaret).offset
-        val startString = string.substring(0, stringIndex)
-        val endString = string.substring(stringIndex)
+        val startString = string.take(stringIndex)
+        val endString = string.drop(stringIndex)
         var parent = start.node.parent
         var index = parent.indexOf(start.node)
         if (!BBX.BLOCK.isA(parent)) {

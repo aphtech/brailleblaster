@@ -59,7 +59,6 @@ class ImportFixerMap(defaultValue: ImportFixer? = null) : NodeMatcherMap<ImportF
         } else {
             AdaptedFixerMap().apply {
                 semanticEntries.addAll(actions.map { (matcher, wrapper) ->
-                    requireNotNull(matcher)
                     requireNotNull(wrapper)
                     AdaptedFixerMap.Entry(matcher, wrapper)
                 })

@@ -41,8 +41,7 @@ class MultipleExclusionsMatcher : NodeNameMatcher() {
         }
     override fun isMatch(node: Node, namespaces: NamespaceMap): Boolean {
         if (node is Element) {
-            val currentElement = node
-            if (currentElement.localName != nodeName) {
+            if (node.localName != nodeName) {
                 return false
             } else {
                 // The list cannot have an ancestor that is a list

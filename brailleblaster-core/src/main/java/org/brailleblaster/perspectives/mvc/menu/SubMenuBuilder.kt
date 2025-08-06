@@ -94,7 +94,7 @@ class SubMenuBuilder private constructor(val menu: TopMenu?, val name: String, v
 
         override val topMenu: TopMenu = TopMenu.DEBUG // This actually isn't used for submenus so can be any value
         override val title: String = text
-        override val id: String = "${title} (generated)"
+        override val id: String = "$title (generated)"
 
         override val accelerator: Int = accelerator
         override val sharedItem: SharedItem? = sharedItem

@@ -62,7 +62,7 @@ class MoveSiblingAction : IBlockAction {
         try {
             node.value.toInt()
             line.addAttribute(Attribute("linenum", TextTranslator.translateText(node.value, engine)))
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             line.addAttribute(Attribute("lineletter", TextTranslator.translateText(node.value, engine)))
         }
 
@@ -90,7 +90,7 @@ class MoveSiblingAction : IBlockAction {
         //removes extra space in front of sibling, if any
         if (nodeSibling is Text) {
             var lineValue = nodeSibling.value
-            if (lineValue.isNotEmpty() && isWhiteSpace(lineValue.substring(0, 1))) {
+            if (lineValue.isNotEmpty() && lineValue.first().isWhitespace()) {
                 lineValue = lineValue.substring(1)
             }
             val newText = Text(lineValue)
@@ -101,9 +101,5 @@ class MoveSiblingAction : IBlockAction {
         processedInput.addAll(action.applyTo(parent.getChild(siblingIndex), engine))
         parent.removeChild(node)
         return processedInput
-    }
-
-    private fun isWhiteSpace(str: String): Boolean {
-        return str == " "
     }
 }

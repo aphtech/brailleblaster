@@ -21,7 +21,6 @@ import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.views.tree.DividerTree
 import org.brailleblaster.util.BookSplitter
-import org.brailleblaster.util.FileUtils.getPath
 import org.brailleblaster.util.Notify.showMessage
 import org.brailleblaster.util.YesNoChoice
 import org.brailleblaster.wordprocessor.BBFileDialog
@@ -253,7 +252,7 @@ class BookDividerDialog(val manager: Manager) {
     }
 
     private fun openDialogAfterSplit() {
-        val filePath = getPath(manager.archiver.path.toString())
+        val filePath = manager.archiver.path.parent.toString()
 
         val dialog = BBFileDialog(
             manager.wpManager.shell, SWT.OPEN, null, ArchiverFactory.supportedDescriptionsWithCombinedEntry.toTypedArray(),

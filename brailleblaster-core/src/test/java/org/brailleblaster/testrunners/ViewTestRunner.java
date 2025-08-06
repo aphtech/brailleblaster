@@ -179,7 +179,7 @@ public abstract class ViewTestRunner {
 	 * and sends them to SWT to process like normal user input. If you don't
 	 * call this, the UI won't change because SWT hasn't registered 
 	 * you clicked something
-	 * 
+	 * <p>
 	 * This simulates {@link WPManager#start() } but without waiting for more 
 	 * input from the OS.
 	 */

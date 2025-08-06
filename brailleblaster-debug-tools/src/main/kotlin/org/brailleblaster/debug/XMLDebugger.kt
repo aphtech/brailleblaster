@@ -165,7 +165,7 @@ class XMLDebugger(private val parent: Shell, private val simpleManager: BBSimple
         val relevantText = xmlViewer!!.getText(0, xmlViewer!!.caretOffset)
         var offset = relevantText.lastIndexOf(findButton.text)
         if (offset == xmlViewer!!.caretOffset) {
-            offset = relevantText.substring(0, relevantText.length - 1).lastIndexOf(findButton.text, 1)
+            offset = relevantText.dropLast(1).lastIndexOf(findButton.text, 1)
         }
         if (offset == -1) {
             findRed(true)

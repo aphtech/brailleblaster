@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
-import java.nio.file.FileSystems
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.copyTo
 import kotlin.io.path.exists
@@ -99,20 +98,6 @@ object FileUtils {
     //Writes XML files or logs an error if it fails
     fun createXMLFile(xmlDoc: Document, path: String) {
         XMLHandler().save(xmlDoc, File(path))
-    }
-
-
-    //Returns file name minus path and extension
-    fun getFileName(path: String): String {
-        return path.substring(path.lastIndexOf(FileSystems.getDefault().separator) + 1, path.lastIndexOf("."))
-    }
-
-    /**
-     * @param path : complete path of file
-     * @return : path to directory containing file
-     */
-    fun getPath(path: String): String {
-        return path.substring(0, path.lastIndexOf(FileSystems.getDefault().separator))
     }
 
     val logger: Logger = LoggerFactory.getLogger(FileUtils::class.java)

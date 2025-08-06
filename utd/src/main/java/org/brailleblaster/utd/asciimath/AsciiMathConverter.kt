@@ -381,12 +381,12 @@ object AsciiMathConverter : AutoCloseable {
         if (stripMathMarkers) {
             // The ASCIIMath parser's parseMath method does not strip the ` character
             if (amStr.startsWith("`")) {
-                amStr = amStr.substring(1)
+                amStr = amStr.take(1)
             } else {
                 altTextStr = "`$altTextStr"
             }
             if (amStr.endsWith("`")) {
-                amStr = amStr.substring(0, amStr.length - 1)
+                amStr = amStr.dropLast(1)
             } else {
                 altTextStr = "$altTextStr`"
             }
@@ -404,13 +404,7 @@ object AsciiMathConverter : AutoCloseable {
      */
     fun toMathMLHTMLNodes(asciiMath: String): org.w3c.dom.Element {
         // The ASCIIMath parser's parseMath method does not strip the ` character
-        var amStr = asciiMath.trim { it <= ' ' }
-        if (amStr.startsWith("`")) {
-            amStr = amStr.substring(1)
-        }
-        if (amStr.endsWith("`")) {
-            amStr = amStr.substring(0, amStr.length - 1)
-        }
+        val amStr = asciiMath.trim { it <= ' ' }.removeSurrounding("`", "`")
         return amParser.parseMath(amStr, false)
     }
 

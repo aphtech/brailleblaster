@@ -135,7 +135,7 @@ class PickerDialog {
                             continue
                         }
                         if (listItem[i] == curChar) {
-                            if (i > 0 && listItem.substring(0, i) != search.substring(0, i)) {
+                            if (i > 0 && listItem.take(i) != search.take(i)) {
                                 continue
                             }
                             selection = item

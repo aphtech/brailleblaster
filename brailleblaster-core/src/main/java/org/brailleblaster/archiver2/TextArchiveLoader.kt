@@ -59,10 +59,7 @@ open class TextArchiveLoader : ArchiverFactory.FileLoader {
         })
         val archiver: Archiver2 = BBZArchiver.createImportedBBZ(file, bbxDoc)
         var fileStr = file.toString()
-        fileStr = (if (fileStr.lowercase(Locale.getDefault()).endsWith(".txt")) fileStr.substring(
-            0,
-            fileStr.length - 4
-        ) else fileStr) + ".bbz"
+        fileStr = (if (fileStr.lowercase(Locale.getDefault()).endsWith(".txt")) fileStr.dropLast(4) else fileStr) + ".bbz"
         archiver.newPath = Paths.get(fileStr)
         return archiver
     }

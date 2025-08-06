@@ -24,11 +24,12 @@ import org.brailleblaster.bbx.BBX
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.utd.UTDTranslationEngine
 import java.nio.file.Path
+import kotlin.io.path.nameWithoutExtension
 
 class BookSplitter(private var volList: ArrayList<Element>, var manager: Manager, private val destPath: Path) {
     var doc: Document = manager.doc
     private var manifest: Document = Document(Element("Files"))
-    private var originalFileName: String = FileUtils.getFileName(manager.archiver.path.toString())
+    private var originalFileName: String = manager.archiver.path.nameWithoutExtension
     var copy: Boolean
 
     init {

@@ -77,7 +77,7 @@ object EasyListeners {
     fun verifyNumbersOnly(text: Text) {
         text.addVerifyListener { e: VerifyEvent ->
             if (e.keyCode == SWT.BS.code || e.keyCode == SWT.DEL.code || e.keyCode == SWT.ARROW_RIGHT || e.keyCode == SWT.ARROW_LEFT) return@addVerifyListener
-            if (e.text.chars().anyMatch { i: Int -> i < 0x30 || i > 0x39 }) e.doit = false
+            if (e.text.chars().anyMatch { i: Int -> i !in 0x30..0x39 }) e.doit = false
         }
     }
 

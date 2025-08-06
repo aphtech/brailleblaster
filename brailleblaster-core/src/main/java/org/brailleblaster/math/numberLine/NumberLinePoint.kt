@@ -57,11 +57,11 @@ class NumberLinePoint(
             else wholeString.indexOf(UebTranslations.PRINT_MINUS)
             if (split != -1) {
                 if (!MathModule.isNemeth) {
-                    this.leftDec = wholeString.substring(0, split + 1)
-                    this.rightDec = wholeString.substring(split + 2)
+                    this.leftDec = wholeString.take(split + 1)
+                    this.rightDec = wholeString.drop(split + 2)
                 } else {
-                    this.leftDec = wholeString.substring(0, split + 1)
-                    this.rightDec = wholeString.substring(split + 1)
+                    this.leftDec = wholeString.take(split + 1)
+                    this.rightDec = wholeString.drop(split + 1)
                 }
             } else {
                 this.leftDec = ""

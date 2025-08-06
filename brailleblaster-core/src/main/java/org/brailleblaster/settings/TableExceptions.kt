@@ -76,7 +76,7 @@ object TableExceptions {
                     )
                 }
                 engine.brailleSettings.mainTranslationTable =
-                    translationTable.substring(0, lastTableStart) + "," + exceptionsTableFile.absolutePath
+                    translationTable.take(lastTableStart) + "," + exceptionsTableFile.absolutePath
                 log.info("Reset exceptions table to " + engine.brailleSettings.mainTranslationTable)
                 TEST_EXCEPTION_FILE = exceptionsTableFile
                 mainTranslationStandardFile = exceptionsTableFile

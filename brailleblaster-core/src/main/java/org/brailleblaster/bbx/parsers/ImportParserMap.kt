@@ -44,11 +44,11 @@ class ImportParserMap : NodeMatcherMap<ImportParser?>(null as ImportParser?) {
             // JAXB requires the following no args constructor
             private constructor() : this(null, null)
 
-            fun getMatcher(): INodeMatcher? {
+            fun getMatcher(): INodeMatcher {
                 return matcher!!
             }
 
-            fun getParser(): ImportParser? {
+            fun getParser(): ImportParser {
                 return parser!!
             }
         }
@@ -62,7 +62,6 @@ class ImportParserMap : NodeMatcherMap<ImportParser?>(null as ImportParser?) {
         } else {
             AdaptedParserMap().apply {
                 semanticEntries.addAll(actions.map { (matcher, parser) ->
-                    requireNotNull(matcher)
                     requireNotNull(parser)
                     AdaptedParserMap.Entry(matcher, parser)
                 })

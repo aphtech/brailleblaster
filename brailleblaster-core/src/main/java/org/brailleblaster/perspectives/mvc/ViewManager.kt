@@ -175,7 +175,7 @@ class ViewManager(folder: CTabFolder?, private val m: Manager) {
                     }
                 } else {
                     // style, braille
-                    if (!(styleSize <= 0 || styleSize >= totalSize)) {
+                    if (styleSize in 1..<totalSize) {
                         brailleSize = totalSize - styleSize
                     } else {
                         // reset default
@@ -187,7 +187,7 @@ class ViewManager(folder: CTabFolder?, private val m: Manager) {
             } else {
                 if (text) {
                     // style, text
-                    if (!(styleSize <= 0 || styleSize >= totalSize)) {
+                    if (styleSize in 1..<totalSize) {
                         printSize = totalSize - styleSize
                     } else {
                         // reset default

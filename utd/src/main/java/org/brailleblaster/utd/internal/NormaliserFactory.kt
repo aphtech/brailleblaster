@@ -122,7 +122,7 @@ class NormaliserFactory : NodeFactory() {
                         nextNode.localName
                     ) && charsToTrim > 0
                 ) {
-                    value = value.substring(0, value.length - charsToTrim)
+                    value = value.dropLast(charsToTrim)
                 }
             }
             if (value.isEmpty()) {
@@ -137,13 +137,13 @@ class NormaliserFactory : NodeFactory() {
 
             //XML formatters will put elements after a text node on a new line
             charsToTrim = startsWithWhitespace(value)
-            if (charsToTrim > 0 && value.substring(0, charsToTrim).any { it in "\n\r" }) {
-                value = " " + value.substring(charsToTrim)
+            if (charsToTrim > 0 && value.take(charsToTrim).any { it in "\n\r" }) {
+                value = " " + value.drop(charsToTrim)
             }
 
             charsToTrim = endsWithWhitespace(value)
             if (charsToTrim > 0 && value.substring(value.length - charsToTrim).any { it in "\n\r" }) {
-                value = value.substring(0, value.length - charsToTrim) + " "
+                value = value.dropLast(charsToTrim) + " "
             }
 
             //Strip trailing spaces if text is at the start or end of the parent
@@ -160,12 +160,12 @@ class NormaliserFactory : NodeFactory() {
             stripCharsLength = endsWithWhitespace(value)
             if (stripCharsLength > 0 && textParent.childCount == 1 && textParentIndex == textGrandParent.childCount - 1) {
                 //Last element with nothing after
-                value = value.substring(0, value.length - stripCharsLength)
+                value = value.dropLast(stripCharsLength)
             }
             charsToTrim = endsWithWhitespace(value)
             if (charsToTrim > 0 && textParent.childCount == 1 && textParentIndex == textGrandParent.childCount - 1) {
                 //Last element with nothing after
-                value = value.substring(0, value.length - charsToTrim)
+                value = value.dropLast(charsToTrim)
             }
 
             if (curText.value != value) {

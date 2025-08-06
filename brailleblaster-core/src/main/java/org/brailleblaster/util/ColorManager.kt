@@ -26,7 +26,7 @@ object ColorManager {
     fun getColor(hexCode: String, control: Control): Color {
         require(hexCode.length == 6) { "Not a valid hex code $hexCode" }
 
-        val r = hexCode.substring(0, 2).toInt(16)
+        val r = hexCode.take(2).toInt(16)
         val g = hexCode.substring(2, 4).toInt(16)
         val b = hexCode.substring(4, 6).toInt(16)
 

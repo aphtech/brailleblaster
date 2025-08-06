@@ -31,6 +31,7 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
+import kotlin.io.path.nameWithoutExtension
 
 /**
  * BrailleBlaster ZIP (BBZ) file
@@ -307,9 +308,7 @@ class BBZArchiver(
 
         @Throws(IOException::class)
         fun createImportedBBZ(importedFrom: Path, bbxDocument: Document): BBZArchiver {
-            val importedFileName = importedFrom.toString()
-            val extStart = importedFileName.lastIndexOf('.')
-            val docBaseName = if (extStart > -1) importedFileName.substring(0, extStart) else importedFileName
+            val docBaseName = importedFrom.nameWithoutExtension
             val bbzFile = File.createTempFile("$docBaseName-", ".bbz")
             bbzFile.deleteOnExit()
             return createImportedBBZ(importedFrom, bbzFile.toPath(), bbxDocument)

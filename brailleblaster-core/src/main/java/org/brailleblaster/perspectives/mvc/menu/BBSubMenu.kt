@@ -15,10 +15,6 @@
  */
 package org.brailleblaster.perspectives.mvc.menu
 
-import org.eclipse.swt.SWT
-import org.eclipse.swt.widgets.Menu
-import org.eclipse.swt.widgets.MenuItem
-
 /**
  * Tracks submenus added to menus
  */

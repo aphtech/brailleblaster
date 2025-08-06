@@ -74,7 +74,7 @@ object UTDConfig {
             if (Modifier.isStatic(curField.modifiers)) continue
 
             curField.isAccessible = true
-            styleFields.put(name, curField)
+            styleFields[name] = curField
 
             try {
                 // Try #1 with get prefix
@@ -94,14 +94,14 @@ object UTDConfig {
                         ("Cannot find method " + getterName + "() " + "or " + getterNameIs
                                 + "() or " + name + "() in " + Style::class.java)
                     )
-                styleGetters.put(curField, getter)
+                styleGetters[curField] = getter
 
                 // Try to guess setter name
                 val fieldClass = getter.returnType
                 val setterName = "set" + StringUtils.capitalize(name)
                 val setter =
                     Style::class.java.getDeclaredMethod(setterName, fieldClass)
-                styleSetters.put(curField, setter)
+                styleSetters[curField] = setter
 
                 val xmlRef = curField.getAnnotation(XmlElementRef::class.java)
                 if (xmlRef != null) {
@@ -109,7 +109,7 @@ object UTDConfig {
                         val fieldStyleOption = StyleOption.valueOf(
                             CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, xmlRef.name)
                         )
-                        styleOptionFields.put(fieldStyleOption, curField)
+                        styleOptionFields[fieldStyleOption] = curField
                     } catch (_: IllegalArgumentException) {
                         //ignore unrelated style fields
                     }

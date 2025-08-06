@@ -27,10 +27,10 @@ class EntityMap private constructor(
         private var systemIdBuilder = mutableMapOf<String, IEntitySource>()
         fun put(publicId: String?, systemId: String?, source: IEntitySource): Builder {
             if (publicId != null) {
-                publicIdBuilder.put(publicId, source)
+                publicIdBuilder[publicId] = source
             }
             if (systemId != null) {
-                systemIdBuilder.put(systemId, source)
+                systemIdBuilder[systemId] = source
             }
             return this
         }

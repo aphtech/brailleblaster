@@ -132,9 +132,9 @@ object NumericSeries {
     private fun toggleMath(start: Int, end: Int, n: Node, on: Boolean) {
         if (DebugModule.enabled) {
             val asciiMath = MathModule.getMathText(n)
-            val b = asciiMath.substring(0, start)
+            val b = asciiMath.take(start)
             var s = asciiMath.substring(start, end)
-            val a = asciiMath.substring(end)
+            val a = asciiMath.drop(end)
             s = if (on) {
                 s.replace(" ".toRegex(), BRAILLE_DOT_5)
             } else {

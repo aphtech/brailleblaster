@@ -36,10 +36,7 @@ object NimasFileArchiverLoader : ArchiverFactory.FileLoader {
             )
             // Set the recommended save as new file name
             var fileStr = file.toString()
-            fileStr = (if (fileStr.lowercase(Locale.getDefault()).endsWith(".xml")) fileStr.substring(
-                0,
-                fileStr.length - 4
-            ) else fileStr) + ".bbz"
+            fileStr = (if (fileStr.lowercase(Locale.getDefault()).endsWith(".xml")) fileStr.dropLast(4) else fileStr) + ".bbz"
             archiver.newPath = Paths.get(fileStr)
             archiver
         } else {

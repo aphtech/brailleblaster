@@ -67,7 +67,7 @@ object MathUtils {
     }
 
     fun wrapInMath(i: Int, j: Int, s: String): ArrayList<MathAction> {
-        val before = s.substring(0, i).replace("\n".toRegex(), "").replace(
+        val before = s.take(i).replace("\n".toRegex(), "").replace(
             "\r".toRegex(),
             ""
         )

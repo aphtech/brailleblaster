@@ -24,5 +24,5 @@ class ModuleService {
     private val serviceLoader: ServiceLoader<ModuleFactory> = ServiceLoader.load(ModuleFactory::class.java)
     val moduleFactories: Sequence<ModuleFactory>
         get() = serviceLoader.asSequence()
-    fun modules(manager: Manager): Sequence<SimpleListener> = moduleFactories.sortedByDescending { it.priority }.flatMap { it.createModules(manager) }.asSequence()
+    fun modules(manager: Manager): Sequence<SimpleListener> = moduleFactories.sortedByDescending { it.priority }.flatMap { it.createModules(manager) }
 }

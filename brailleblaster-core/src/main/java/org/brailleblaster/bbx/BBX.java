@@ -1277,7 +1277,7 @@ public class BBX {
         }
     }
 
-    public static final ImmutableList<BBX.CoreType> CORE_TYPES = ImmutableList.of(SECTION, CONTAINER, BLOCK, INLINE,
+    public static final ImmutableList<BBX.@NotNull CoreType> CORE_TYPES = ImmutableList.of(SECTION, CONTAINER, BLOCK, INLINE,
             SPAN);
 
     public static CoreType getType(Element elem) {
@@ -1340,7 +1340,7 @@ public class BBX {
         // instance fields/methods
         // So this workaround was used so getSubType works, is performant, can
         // still use final, just a bit more verbose
-        protected ImmutableList<SubType> subTypes;
+        protected ImmutableList<@NotNull SubType> subTypes;
 
         public CoreType(String name, boolean textChildrenValid) {
             if (StringUtils.isBlank(name)) {
@@ -1364,7 +1364,7 @@ public class BBX {
             throw new NodeException("Missing subtype " + subtypeName + " for", sectionNode);
         }
 
-        public ImmutableList<SubType> getSubTypes() {
+        public ImmutableList<@NotNull SubType> getSubTypes() {
             return subTypes;
         }
 

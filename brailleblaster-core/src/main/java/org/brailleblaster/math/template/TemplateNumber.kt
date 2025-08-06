@@ -101,8 +101,8 @@ class TemplateNumber private constructor(
       val decimal = if (MathModule.isNemeth) NemethTranslations.NEMETH_DECIMAL else UebTranslations.UEB_DECIMAL
       val split = wholeString.indexOf(decimal)
       if (split != -1) {
-        this.leftDec = wholeString.substring(0, split)
-        this.rightDec = wholeString.substring(split + 1)
+        this.leftDec = wholeString.take(split)
+        this.rightDec = wholeString.drop(split + 1)
         this.decimal = true
         val minusSplit = if (MathModule.isNemeth) leftDec.indexOf(NemethTranslations.MINUS)
         else leftDec.indexOf(UebTranslations.PRINT_MINUS)

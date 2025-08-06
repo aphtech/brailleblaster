@@ -78,10 +78,9 @@ object PandocArchiverLoader : ArchiverFactory.FileLoader {
         checkFileEncoding(filename)
 
         // construct new filename with bbx extension
-        var newFilename: String
         val dot = filename.lastIndexOf('.')
-        newFilename = if (dot > -1) {
-            filename.substring(0, dot)
+        var newFilename = if (dot > -1) {
+            filename.take(dot)
         } else {
             filename
         }
@@ -182,8 +181,8 @@ object PandocArchiverLoader : ArchiverFactory.FileLoader {
             var suffix: String? = ".txt"
             val dot = filename.lastIndexOf(".")
             if (-1 < dot) {
-                suffix = filename.substring(dot)
-                prefix = filename.substring(0, dot) + "-"
+                suffix = filename.drop(dot)
+                prefix = filename.take(dot) + "-"
             }
             // make a temporary file for pandoc to use
             val tmpFile = File.createTempFile(prefix, suffix)

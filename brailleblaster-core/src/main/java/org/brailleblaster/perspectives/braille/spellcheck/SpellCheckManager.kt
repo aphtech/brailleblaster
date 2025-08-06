@@ -124,7 +124,7 @@ class SpellCheckManager(private var m: Manager) {
           if (tokenizer!!.capFlag) { // Something needs capitalization
             tokenizer!!.next()
             correctSpelling = false
-            val capsSuggestion = arrayOf((tokenizer!!.currentWord.substring(0, 1).uppercase(Locale.getDefault())
+            val capsSuggestion = arrayOf((tokenizer!!.currentWord.first().uppercase(Locale.getDefault())
                 + tokenizer!!.currentWord.substring(1)))
             setWord(tokenizer!!.currentWord, capsSuggestion)
             tokenizer!!.capFlag = false

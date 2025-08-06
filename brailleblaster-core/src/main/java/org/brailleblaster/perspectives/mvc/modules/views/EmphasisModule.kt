@@ -546,8 +546,7 @@ private fun isListItem(node: Node): Boolean {
     //If parent is a block of a list item
     return if (BBX.BLOCK.LIST_ITEM.isA(e)) {
         true
-    } else (e.getAttribute("utd-style") != null && e.getAttributeValue("utd-style").startsWith("L")
-            && e.getAttributeValue("utd-style").substring(1, 2).matches("[1-9]+".toRegex()))
+    } else (e.getAttributeValue("utd-style")?.let { it.startsWith("L") && it[1].isDigit() } ?: false)
     //If node has style list
 }
 private fun validateEmphasis(nodeLength: Int, start: Int, end: Int): Boolean {

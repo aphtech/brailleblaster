@@ -83,14 +83,14 @@ object Utils {
 
     @JvmStatic
 	fun removeRegionString(start: Int, end: Int, str: String): String {
-        return (str.substring(0, start)
-                + str.substring(end))
+        return (str.take(start)
+                + str.drop(end))
     }
 
     @JvmStatic
 	fun removeRegionRangeString(start: Int, range: Int, str: String): String {
-        return (str.substring(0, start)
-                + str.substring(start + range))
+        return (str.take(start)
+                + str.drop(start + range))
     }
 
     @JvmStatic

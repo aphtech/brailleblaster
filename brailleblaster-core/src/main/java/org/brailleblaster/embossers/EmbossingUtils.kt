@@ -333,7 +333,7 @@ object EmbossingUtils {
     }
 
     private class EmbosserConfigToStreamFunction(config: EmbosserConfig?) : OutputToStreamFunction {
-        private val config: EmbosserConfig? = Preconditions.checkNotNull(config)
+        private val config: EmbosserConfig = requireNotNull(config)
 
         @Throws(IOException::class)
         override fun consume(os: OutputStream) {

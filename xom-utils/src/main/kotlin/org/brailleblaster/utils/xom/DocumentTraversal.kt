@@ -157,8 +157,7 @@ object DocumentTraversal {
                 stack.pop()
                 curPath = stack.peek() ?: break
             } else {
-                val curNode = curPath.curChild
-                when (curNode) {
+                when (val curNode = curPath.curChild) {
                     is Element -> {
                         curPath = PathElement(curNode)
                         continue

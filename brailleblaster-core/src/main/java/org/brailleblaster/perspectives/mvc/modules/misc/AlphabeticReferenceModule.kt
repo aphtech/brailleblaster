@@ -14,7 +14,7 @@ import org.brailleblaster.util.UncontractedGlossary
 
 class AlphabeticReferenceModule(var manager: Manager) : BBSimpleManager.SimpleListener {
     override fun onEvent(event: SimpleEvent) {
-        if (event is BuildMenuEvent && DebugModule.Companion.enabled) {
+        if (event is BuildMenuEvent && DebugModule.enabled) {
             val smb = SubMenuBuilder(
                 TopMenu.DEBUG,
                 "Alphabetic Reference"

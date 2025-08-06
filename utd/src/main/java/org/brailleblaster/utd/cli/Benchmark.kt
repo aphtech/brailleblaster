@@ -38,6 +38,8 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
+import kotlin.io.path.Path
+import kotlin.io.path.nameWithoutExtension
 import kotlin.system.exitProcess
 
 /**
@@ -117,7 +119,7 @@ object Benchmark {
             printDebugResult("Total execution in $totalWatch")
             newWriterUTF8("results.properties").use { writer ->
                 val bookFilename = cli.inputFile!!.name
-                val bookName = bookFilename.substring(0, bookFilename.lastIndexOf('.'))
+                val bookName = Path(bookFilename).nameWithoutExtension
                 writer.write(bookName + "=" + totalWatch.time / 1000)
             }
         }
@@ -230,7 +232,7 @@ object Benchmark {
                                 }
                                 val asciiBrailleOffset = orig.code - '\u2800'.code
                                 cbuf[i] = ASCII_BRAILLE[asciiBrailleOffset]
-                                //hack for translated unicode characters in the format '\x1234'
+                                //hack for translated Unicode characters in the format '\x1234'
                                 if (cbuf[i] == '|' && i >= offset + 1 && i <= offset + length - 1 && cbuf[i - 1] == '\'' && cbuf[i + 1] == '\u282D' /*x*/) {
                                     cbuf[i] = '\\'
                                 }
@@ -366,9 +368,7 @@ object Benchmark {
     fun output(engine: UTDTranslationEngine, doc: Document): File {
         val fileName = Paths.get(URI.create(doc.baseURI)).fileName
             ?: throw RuntimeException("Unable to get document's file name, document seems to have zero path elements in its URI")
-        var docFileName = fileName.toString()
-        //Strip extension
-        docFileName = docFileName.substring(0, docFileName.lastIndexOf('.'))
+        val docFileName = fileName.nameWithoutExtension
         val outputFile = newFileIncrimented(File("."), "benchmark_$docFileName", ".brf")
         engine.toBRF(doc, outputFile)
         return outputFile

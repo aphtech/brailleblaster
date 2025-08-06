@@ -250,7 +250,7 @@ class PageNumberDialog(parent: Shell?) : Dialog(parent, SWT.NONE), MenuToolModul
                 // Remove all the children of the current ppi and replace with these
                 // new ones
                 ppIndicator!!.removeChild(0)
-                val startText = origText.substring(0, start)
+                val startText = origText.take(start)
                 if (startText.isNotEmpty()) {
                     ppIndicator!!.appendChild(startText)
                 }

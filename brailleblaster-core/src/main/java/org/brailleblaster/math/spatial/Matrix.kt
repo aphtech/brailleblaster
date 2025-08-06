@@ -386,8 +386,8 @@ class Matrix : ISpatialMathContainer {
         val string = rowElements[i]
         val length = string.length
         if (length > cellWidth) {
-          val start = string.substring(0, cellWidth)
-          val end = string.substring(cellWidth)
+          val start = string.take(cellWidth)
+          val end = string.drop(cellWidth)
           s.append(start)
           rowElements[i] = end
         } else {

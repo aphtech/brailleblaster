@@ -178,7 +178,7 @@ object MathEditHandler {
             mapElement.getStart(m.mapList),
             mapElement.getEnd(m.mapList)
           )
-          before = s.substring(0, offset).replace("\n".toRegex(), "").replace("\r".toRegex(), "")
+          before = s.take(offset).replace("\n".toRegex(), "").replace("\r".toRegex(), "")
           after = s.substring(offset).replace("\n".toRegex(), "").replace("\r".toRegex(), "")
           mapElement.node.detach()
         }
@@ -204,7 +204,7 @@ object MathEditHandler {
       } else if (index > mapElementText.length) {
         index = mapElementText.length
       }
-      val firstHalf = mapElementText.substring(0, index)
+      val firstHalf = mapElementText.take(index)
       val lastHalf = mapElementText.substring(index)
       addMathTextToExistingMathText(firstHalf + text + lastHalf)
     }

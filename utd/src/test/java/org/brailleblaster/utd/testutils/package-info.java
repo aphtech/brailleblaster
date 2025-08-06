@@ -15,7 +15,7 @@
  */
 /**
  * This package contains a number of helper classes for the test suite.
- * 
+ * <p>
  * As the classes contained in this package are helper classes, none of these classes should provide actual test methods.
  */
 package org.brailleblaster.utd.testutils;
