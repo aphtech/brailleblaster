@@ -37,7 +37,6 @@ import org.brailleblaster.perspectives.mvc.modules.misc.ExceptionReportingModule
 import org.brailleblaster.printers.PrintPreview
 import org.brailleblaster.usage.SimpleUsageManager
 import org.brailleblaster.usage.UsageManager
-import org.brailleblaster.util.FileUtils.exists
 import org.brailleblaster.util.Notify.showException
 import org.brailleblaster.util.Notify.showMessage
 import org.brailleblaster.util.Utils.runtimeToString
@@ -67,6 +66,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
+import kotlin.io.path.Path
 import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 
@@ -224,7 +224,7 @@ class WPManager private constructor(val usageManager: UsageManager) {
         //auto save dialog
         val recentSaves = recentSaves
         var autoSaveAlert = false
-        if (!BBIni.debugging && recentSaves.isNotEmpty() && autoSaveAlert && exists(BBIni.autoSaveCrashPath)) {
+        if (!BBIni.debugging && recentSaves.isNotEmpty() && autoSaveAlert && Path(BBIni.autoSaveCrashPath).exists()) {
             autoSaveAlert = false
             showAutoSaveDialog(recentSaves)
             try {

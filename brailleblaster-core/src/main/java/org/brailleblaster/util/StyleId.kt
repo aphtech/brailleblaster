@@ -30,7 +30,7 @@ class StyleId(utd: UTDManager) {
         utd.engine.styleDefinitions.styles.forEach { s ->
             val i = Id()
             val id = s.id
-            val array = id.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val array = id.split("/".toRegex()).dropLastWhile { it.isEmpty() }
             when (array.size) {
                 2 -> {
                     i.main = array[0]

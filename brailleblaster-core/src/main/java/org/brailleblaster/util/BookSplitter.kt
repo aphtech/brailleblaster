@@ -23,6 +23,8 @@ import org.brailleblaster.archiver2.BBXArchiver
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.utd.UTDTranslationEngine
+import org.brailleblaster.utd.internal.xml.XMLHandler
+import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.nameWithoutExtension
 
@@ -179,7 +181,10 @@ class BookSplitter(private var volList: ArrayList<Element>, var manager: Manager
     }
 
     private fun outputManifest() {
-        FileUtils.createXMLFile(manifest, destPath.resolve(originalFileName + "_manifest.mnf").toAbsolutePath().toString())
+        XMLHandler().save(
+            manifest,
+            File(destPath.resolve(originalFileName + "_manifest.mnf").toAbsolutePath().toString())
+        )
     }
 
     private fun setFileName() {

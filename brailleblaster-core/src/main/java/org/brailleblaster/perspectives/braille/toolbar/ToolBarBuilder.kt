@@ -35,7 +35,7 @@ import org.brailleblaster.perspectives.mvc.menu.SharedItem
 import org.brailleblaster.perspectives.mvc.modules.misc.ToggleViewsModule.Companion.loadSettings
 import org.brailleblaster.perspectives.mvc.modules.misc.ToggleViewsModule.Views
 import org.brailleblaster.perspectives.mvc.modules.views.DebugModule
-import org.brailleblaster.util.ImageHelper.createImage
+import org.brailleblaster.util.ImageHelper
 import org.brailleblaster.wordprocessor.WPManager.Companion.getInstance
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.MouseAdapter
@@ -345,7 +345,7 @@ class ToolBarBuilder(
             if (section != null) {
                 state.draggingSection = section //Mark current ToolBarSection as the section being dragged
             }
-            val draggingImage = createImage("draggingcursor.png")
+            val draggingImage = ImageHelper.createScaledImage("draggingcursor.png", 1f)
             toolBar.cursor = Cursor(
                 Display.getCurrent(),
                 draggingImage.imageData,
@@ -557,7 +557,7 @@ class ToolBarBuilder(
 
     private fun getImage(imgName: String): Image {
         val fileName = TOOLBAR_FOLDER + userScale.scale + "/" + imgName + ".png"
-        val scaledImage = createImage(fileName)
+        val scaledImage = ImageHelper.createScaledImage(fileName, 1f)
         disposeables.add(scaledImage)
         return scaledImage
     }

@@ -24,12 +24,8 @@ import java.nio.file.Path
 object ImageHelper {
     val imagesPath: Path = BBIni.programDataPath.resolve("images")
     const val MISSING_IMAGE_FILENAME = "missing.png"
-    @JvmStatic
-	fun createImage(fileName: String): Image {
-        return createScaledImage(fileName, 1f)
-    }
 
-    fun createScaledImage(fileName: String, scale: Float, fallback: String? = MISSING_IMAGE_FILENAME): Image = if (fallback == null) {
+    fun createScaledImage(fileName: String, scale: Float = 1f, fallback: String? = MISSING_IMAGE_FILENAME): Image = if (fallback == null) {
         val img = Image(Display.getCurrent(), imagesPath.resolve(fileName).toString())
         val width = img.imageData.width
         val height = img.imageData.height

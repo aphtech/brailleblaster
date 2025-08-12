@@ -18,9 +18,9 @@ package org.brailleblaster.frontmatter;
 import nu.xom.*;
 import org.brailleblaster.BBIni;
 import org.brailleblaster.settings.UTDManager;
+import org.brailleblaster.utd.internal.xml.XMLHandler;
 import org.brailleblaster.utd.internal.xml.XMLHandler2;
 import org.brailleblaster.utd.properties.UTDElements;
-import org.brailleblaster.util.FileUtils;
 import org.brailleblaster.util.Notify;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -513,7 +513,7 @@ public class SpecialSymbols {
     private static List<Symbol> readSymbolsFromFile(String path) {
         log.debug("Loading symbol map from path {} ", path);
         List<Symbol> returnList = new ArrayList<>();
-        if (FileUtils.INSTANCE.exists(path)) {
+        if (new File(path).exists()) {
             Document newDoc = readDocFromPath(path);
             if (newDoc == null)
                 return returnList;
@@ -589,14 +589,14 @@ public class SpecialSymbols {
     }
 
     public static String[] getPrefixDefault() {
-        if (FileUtils.INSTANCE.exists(CUSTOM_SYMBOL_PATH)) {
+        if (new File(CUSTOM_SYMBOL_PATH).exists()) {
             String[] prefix = loadPrefix(CUSTOM_SYMBOL_PATH);
             if (prefix != null) {
                 log.debug("Found custom symbol prefix: {}: {}", prefix[0], prefix[1]);
                 return prefix;
             }
         }
-        if (FileUtils.INSTANCE.exists(DEFAULT_SYMBOL_PATH)) {
+        if (new File(DEFAULT_SYMBOL_PATH).exists()) {
             String[] prefix = loadPrefix(DEFAULT_SYMBOL_PATH);
             if (prefix != null) {
                 log.debug("Found default symbol prefix: {}: {}", prefix[0], prefix[1]);
@@ -626,7 +626,7 @@ public class SpecialSymbols {
     }
 
     public static void setPrefixDefault(String symbol, String desc) {
-        if (!FileUtils.INSTANCE.exists(CUSTOM_SYMBOL_PATH)) {
+        if (!new File(CUSTOM_SYMBOL_PATH).exists()) {
             saveListToXML(new ArrayList<>(), CUSTOM_SYMBOL_PATH);
         }
         Document custom = readDocFromPath(CUSTOM_SYMBOL_PATH);
@@ -648,7 +648,7 @@ public class SpecialSymbols {
             newPrefix.appendChild(newDesc);
             root.appendChild(newPrefix);
         }
-        FileUtils.INSTANCE.createXMLFile(custom, CUSTOM_SYMBOL_PATH);
+        new XMLHandler().save(custom, new File(CUSTOM_SYMBOL_PATH));
     }
 
     static final String[][] sharedSymbols = new String[][]{{"~", "^"}, {"`", "@"}, {"{", "["}, {"}", "]"}, {"|", "\\"}};
@@ -720,7 +720,7 @@ public class SpecialSymbols {
             }
             root.appendChild(newEntry);
         }
-        FileUtils.INSTANCE.createXMLFile(doc, path);
+        new XMLHandler().save(doc, new File(path));
     }
 
     private static @Nullable Document readDocFromPath(String path) {

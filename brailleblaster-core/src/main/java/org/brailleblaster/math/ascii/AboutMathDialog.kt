@@ -99,7 +99,7 @@ object AboutMathDialog {
         val fileName = ToolBarBuilder.TOOLBAR_FOLDER + "large" + "/" + imgName + ".png"
         return if (!imagePath.resolve(fileName).exists()) {
             null
-        } else ImageHelper.createImage(fileName)
+        } else ImageHelper.createScaledImage(fileName, 1f)
     }
 
     private fun wrapText(s: String, charsPerLine: Int): String {
