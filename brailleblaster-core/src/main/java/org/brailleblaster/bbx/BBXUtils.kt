@@ -43,7 +43,6 @@ object BBXUtils {
     /**
      * Check if given node is a BLOCK or SPAN of type PAGE_NUM
      */
-    @JvmStatic
     fun isPageNum(node: Node?): Boolean {
         return BBX.SPAN.PAGE_NUM.isA(node) || BBX.BLOCK.PAGE_NUM.isA(node)
     }
@@ -76,16 +75,13 @@ object BBXUtils {
                 BBX.BLOCK.TOC_VOLUME_SPLIT.isA(findBlock(n)))
     }
 
-    @JvmStatic
     fun findBlockChildOrNull(node: Element?): Element? {
         return XMLHandler.childrenRecursiveVisitor(
             node
         ) { BBX.BLOCK.isA(it) }
     }
-    @JvmStatic
     fun findBlockChild(node: Element?): Element = findBlockChildOrNull(node) ?: throw RuntimeException("Node does not contain a block.")
 
-    @JvmStatic
     fun findBlockOrNull(node: Node?): Element? {
         return XMLHandler.ancestorVisitor(
             node

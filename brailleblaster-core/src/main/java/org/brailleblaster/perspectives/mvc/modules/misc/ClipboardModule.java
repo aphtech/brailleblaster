@@ -418,12 +418,12 @@ public class ClipboardModule implements SimpleListener {
                 if (BBX.CONTAINER.LIST.isA(clips.get(0).getNode())) {
                     if (newChild.getChildCount() == 1) {
                         //Do this to preserve emphasis
-                        newChild = BBXUtils.findBlockChild((Element) newChild).getChild(0).copy();
+                        newChild = BBXUtils.INSTANCE.findBlockChild((Element) newChild).getChild(0).copy();
                         //newChild = UTDHelper.getFirstTextDescendant((Element) newChild);
                         index = addNodeToParent(parent, newChild, index);
                         paste.recordPaste(parent.getChild(index - 1), 0);
                     } else if (newChild.getChildCount() > 1) {
-                        newChild = BBXUtils.findBlockChild((Element) newChild).getChild(0).copy();
+                        newChild = BBXUtils.INSTANCE.findBlockChild((Element) newChild).getChild(0).copy();
                         index = addNodeToParent(parent, newChild, index);
                         paste.recordPaste(parent.getChild(index - 1), 0);
                         ParentNode blockParent = parent.getParent();
