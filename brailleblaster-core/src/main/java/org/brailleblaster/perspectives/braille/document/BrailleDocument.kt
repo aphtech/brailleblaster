@@ -19,6 +19,7 @@ import nu.xom.*
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBX.SubType
 import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlockOrNull
 import org.brailleblaster.document.BBDocument
 import org.brailleblaster.math.mathml.MathModule
 import org.brailleblaster.math.mathml.MathSubject
@@ -286,7 +287,7 @@ class BrailleDocument(dm: Manager, doc: Document) : BBDocument(dm, doc) {
     }
 
     fun getParent(n: Node): Element {
-        return BBXUtils.findBlockOrNull(n.parent) ?: return engine.findTranslationBlock(n) as Element
+        return n.parent.findBlockOrNull() ?: return engine.findTranslationBlock(n) as Element
     }
 
     /**

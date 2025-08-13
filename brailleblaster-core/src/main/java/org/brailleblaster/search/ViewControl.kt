@@ -18,6 +18,7 @@ package org.brailleblaster.search
 import nu.xom.*
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.math.mathml.MathMLElement
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.TableTextMapElement
@@ -326,7 +327,7 @@ class ViewControl(val m: Manager, val click: Click) {
         // juggle the xml
         val blocks: MutableList<Element> = ArrayList()
         for (textMapElement in array) {
-            val block = BBXUtils.findBlock(textMapElement.node)
+            val block = textMapElement.node.findBlock()
             if (!blocks.contains(block)) {
                 blocks.add(block)
             }

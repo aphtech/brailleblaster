@@ -17,7 +17,7 @@ package org.brailleblaster.perspectives.braille.stylers
 
 import nu.xom.Element
 import nu.xom.Text
-import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.document.BrailleDocument
 import org.brailleblaster.perspectives.braille.mapping.elements.TextMapElement
@@ -32,8 +32,8 @@ class MergeElementHandler {
     companion object {
         @JvmStatic
 		fun merge(t1: TextMapElement, t2: TextMapElement, manager: Manager) {
-            val mergeTo = BBXUtils.findBlock(t1.node)
-            val merging = BBXUtils.findBlock(t2.node)
+            val mergeTo = t1.node.findBlock()
+            val merging = t2.node.findBlock()
             val t2Length = t2.node.value.length
             val list = manager.mapList
 
@@ -45,7 +45,7 @@ class MergeElementHandler {
             manager.simpleManager.dispatchEvent(ModifyEvent(Sender.HANDLER, true, mergedElement))
             if (mergedElement.document === manager.doc) {
                 val current = manager.text.currentElement
-                if (current != null && BBXUtils.findBlock(current.node) === mergedElement && current.node is Text) {
+                if (current != null && current.node.findBlock() === mergedElement && current.node is Text) {
                     manager.simpleManager.dispatchEvent(
                         XMLCaretEvent(
                             Sender.HANDLER,

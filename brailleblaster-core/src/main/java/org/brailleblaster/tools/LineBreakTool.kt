@@ -20,15 +20,15 @@ import nu.xom.Node
 import nu.xom.ParentNode
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.exceptions.EditingException
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.messages.AdjustLocalStyleMessage
 import org.brailleblaster.perspectives.braille.messages.Sender
-import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.perspectives.mvc.XMLTextCaret
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
+import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.utd.Style
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler2
@@ -52,7 +52,7 @@ object LineBreakTool : MenuToolModule {
                 manager.textView.caretOffset += 1
                 manager.updateFormatting()
             }
-            parent = BBXUtils.findBlock(currentNode)
+            parent = currentNode.findBlock()
             val lineBreak = BBX.INLINE.LINE_BREAK.create()
             val utdMan = manager.document.settingsManager
             utdMan.applyStyleWithOption(
@@ -96,9 +96,7 @@ object LineBreakTool : MenuToolModule {
                             .filter { node: Node? -> BBX.INLINE.LINE_BREAK.isA(node) }
                             .findFirst()
                             .orElse(null)
-                        if (previousNode != null && BBX.INLINE.LINE_BREAK.isA(previousNode) && BBXUtils.findBlock(
-                                previousNode
-                            ) == parent
+                        if (previousNode != null && BBX.INLINE.LINE_BREAK.isA(previousNode) && previousNode.findBlock() == parent
                         ) {
                             val style = manager.getStyle(previousNode)
                             if (style != null) {
@@ -123,7 +121,7 @@ object LineBreakTool : MenuToolModule {
                             .filter { node: Node? -> BBX.INLINE.LINE_BREAK.isA(node) }
                             .findFirst()
                             .orElse(null)
-                        if (nextNode != null && BBX.INLINE.LINE_BREAK.isA(nextNode) && BBXUtils.findBlock(nextNode) == parent) {
+                        if (nextNode != null && BBX.INLINE.LINE_BREAK.isA(nextNode) && nextNode.findBlock() == parent) {
                             val style = manager.getStyle(nextNode)
                             if (style != null) {
                                 try {

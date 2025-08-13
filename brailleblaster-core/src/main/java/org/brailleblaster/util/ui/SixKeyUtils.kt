@@ -21,6 +21,7 @@ import nu.xom.ParentNode
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.LineBreakElement
 import org.brailleblaster.perspectives.braille.mapping.elements.TextMapElement
@@ -57,7 +58,7 @@ object SixKeyUtils {
         val cursorOffset = m.textView.caretOffset
         var tme: TextMapElement? = m.mapList.current
         if (tme!!.node != null && tme !is LineBreakElement) {
-            val currentBlock: ParentNode = BBXUtils.findBlock(tme.node)
+            val currentBlock: ParentNode = tme.node.findBlock()
             while (tme != null && currentBlock == m.getBlock(tme.node) && BBXUtils.getIndexInBlock(tme.node) != 0) {
                 tme = m.mapList.getPrevious(m.mapList.indexOf(tme), true)
             }

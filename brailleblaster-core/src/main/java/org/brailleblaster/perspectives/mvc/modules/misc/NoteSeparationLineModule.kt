@@ -18,18 +18,18 @@ package org.brailleblaster.perspectives.mvc.modules.misc
 import nu.xom.Attribute
 import nu.xom.ParentNode
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.bbx.BBXUtils
-import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
+import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.perspectives.braille.mapping.elements.WhiteSpaceElement
 import org.brailleblaster.perspectives.braille.mapping.interfaces.Uneditable
 import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.braille.stylers.WhitespaceTransformer
-import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
-import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.perspectives.mvc.XMLTextCaret
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
+import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
+import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.utd.properties.EmphasisType
+import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import java.util.*
 
 object NoteSeparationLineModule : MenuToolModule {
@@ -76,7 +76,7 @@ object NoteSeparationLineModule : MenuToolModule {
                          || !BBX.BLOCK.isA(currNode)
                      ) {
                          //To prevent the aforementioned from happening:
-                         currNode = BBXUtils.findBlock(currNode)
+                         currNode = currNode.findBlock()
                      }
                      if (currNode == null) {
                          span.addAttribute(Attribute("class", "noteSepNoBlank"))

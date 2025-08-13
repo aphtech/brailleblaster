@@ -19,6 +19,7 @@ import nu.xom.*
 import org.brailleblaster.BBIni
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.math.ascii.ASCII2MathML.translate
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.TextMapElement
@@ -112,7 +113,7 @@ object MathUtils {
     fun getBlocksFromTextMapElements(mapElements: List<TextMapElement>): ArrayList<Node> {
         val array = ArrayList<Node>()
         for (mapElement in mapElements) {
-            val block: Node = BBXUtils.findBlock(mapElement.node)
+            val block: Node = mapElement.node.findBlock()
             if (!array.contains(block)) {
                 array.add(block)
             }
@@ -131,7 +132,7 @@ object MathUtils {
             if (mapElement.node.document == null) {
                 continue
             }
-            val block: ParentNode = BBXUtils.findBlock(mapElement.node)
+            val block: ParentNode = mapElement.node.findBlock()
             if (!blocks.contains(block)) {
                 blocks.add(block)
             }
@@ -156,7 +157,7 @@ object MathUtils {
             if (mapElement.node.document == null) {
                 continue
             }
-            val block: Node = BBXUtils.findBlock(mapElement.node)
+            val block: Node = mapElement.node.findBlock()
             if (!blocks.contains(block)) {
                 blocks.add(block)
             }
@@ -170,7 +171,7 @@ object MathUtils {
     @JvmStatic
 	fun deleteMathFromSelectionHandlerEvent(m: Manager, mapElement: MathMLElement, start: Int, end: Int) {
         var end = end
-        val block: ParentNode = BBXUtils.findBlock(mapElement.node)
+        val block: ParentNode = mapElement.node.findBlock()
         var index = BBXUtils.getIndexInBlock(mapElement.node)
         val s = mapElement.text
         end -= mapElement.getStart(m.mapList)

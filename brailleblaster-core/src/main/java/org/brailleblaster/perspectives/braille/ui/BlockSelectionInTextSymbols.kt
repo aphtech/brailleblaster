@@ -18,7 +18,7 @@ package org.brailleblaster.perspectives.braille.ui
 import nu.xom.Node
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.math.mathml.MathModule
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.ui.WrapSelectionInTextSymbols.TextWrapCallBack
@@ -49,7 +49,7 @@ object BlockSelectionInTextSymbols {
         val endIndex = selection.y
         val start = m.mapList.getClosest(startIndex, true)
         val end = m.mapList.getClosest(endIndex, true)
-        val startblock: Node = BBXUtils.findBlock(start.node)
+        val startblock: Node = start.node.findBlock()
         var startparent = startblock.parent
         var startb = startparent.indexOf(startblock)
         val startnewBlock = BBX.BLOCK.DEFAULT.create()
@@ -65,7 +65,7 @@ object BlockSelectionInTextSymbols {
             startbegInd = callback.wrap(startbegInd)
         }
         array.add(startnewBlock)
-        val endblock: Node = BBXUtils.findBlock(end.node)
+        val endblock: Node = end.node.findBlock()
         var endparent = endblock.parent
         var endb = endparent.indexOf(endblock)
         val endnewBlock = BBX.BLOCK.DEFAULT.create()

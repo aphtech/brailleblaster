@@ -22,6 +22,8 @@ import org.brailleblaster.BBIni.propertyFileManager
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBX.ListType
 import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlockChildOrNull
+import org.brailleblaster.bbx.findBlockOrNull
 import org.brailleblaster.math.mathml.MathModule
 import org.brailleblaster.math.mathml.MathModule.Companion.isMath
 import org.brailleblaster.math.mathml.MathModule.Companion.isSpatialMath
@@ -365,7 +367,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
                         || (isColorFullBox(style) && isColorFullBox(start))
                     ) {
                         val container = start as Element
-                        val child = BBXUtils.findBlockChildOrNull(container)
+                        val child = container.findBlockChildOrNull()
                         unbox(container)
                         if (child != null) {
                             modifiedNodes.add(child)
@@ -436,7 +438,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
                 }
                 modifiedNodes.addAll(blocks)
             } else {
-                val block = BBXUtils.findBlockOrNull(start) ?: throw NodeException("start not inside block", start)
+                val block = start.findBlockOrNull() ?: throw NodeException("start not inside block", start)
                 BBXUtils.stripStyle(block, m)
                 m.document.settingsManager.applyStyle(style, block)
                 modifiedNodes.add(block)
@@ -661,7 +663,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
         //Convert nodes to usable blocks without duplicates
         val blocks = LinkedHashSet<Element>()
         for (curNode in nodes) {
-            if (BBXUtils.findBlockOrNull(curNode) != null) {
+            if (curNode.findBlockOrNull() != null) {
                 blocks.add(BBXUtils.findBlock(curNode))
             }
         }

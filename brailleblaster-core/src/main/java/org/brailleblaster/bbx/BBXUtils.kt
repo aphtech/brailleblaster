@@ -64,22 +64,29 @@ fun Node?.isPageNumEffectively(): Boolean = if (this.isPageNum() || this.isPageN
 fun Node?.isTOCText(): Boolean = this != null && (BBX.BLOCK.MARGIN.isA(findBlock(this)) ||
         BBX.BLOCK.TOC_VOLUME_SPLIT.isA(findBlock(this)))
 
+fun Element?.findBlockChildOrNull(): Element? = XMLHandler.childrenRecursiveVisitor(
+    this
+) { BBX.BLOCK.isA(it) }
+
+fun Element?.findBlockChild(): Element = this.findBlockChildOrNull() ?: throw RuntimeException("Node does not contain a block.")
+
+fun Node?.findBlockOrNull(): Element? = XMLHandler.ancestorVisitor(
+    this
+) { BBX.BLOCK.isA(it) } as Element?
+
+fun Node?.findBlock(): Element = this.findBlockOrNull() ?: throw RuntimeException("Node not inside a block")
+
 object BBXUtils {
     private val log: Logger = LoggerFactory.getLogger(BBXUtils::class.java)
 
     @JvmStatic
     fun isPageNumAncestor(node: Node?): Boolean = node.isPageNumAncestor()
 
-    fun findBlockChildOrNull(node: Element?): Element? = XMLHandler.childrenRecursiveVisitor(
-        node
-    ) { BBX.BLOCK.isA(it) }
-    fun findBlockChild(node: Element?): Element = findBlockChildOrNull(node) ?: throw RuntimeException("Node does not contain a block.")
-
-    fun findBlockOrNull(node: Node?): Element? = XMLHandler.ancestorVisitor(
-        node
-    ) { BBX.BLOCK.isA(it) } as Element?
     @JvmStatic
-    fun findBlock(node: Node?): Element = findBlockOrNull(node) ?: throw RuntimeException("Node not inside a block")
+    fun findBlockChild(node: Element?): Element = node.findBlockChild()
+
+    @JvmStatic
+    fun findBlock(node: Node?): Element = node.findBlock()
 
     fun getAncestorListLevel(node: Node?): Int = BBX.CONTAINER.LIST.ATTRIB_LIST_LEVEL[XMLHandler.ancestorVisitorElement(
         node
@@ -271,7 +278,7 @@ object BBXUtils {
      */
     @JvmStatic
     fun cleanupBlock(node: Node?): Node? {
-        val block = findBlockOrNull(node) ?: return null
+        val block = node.findBlockOrNull() ?: return null
         stripUTDRecursive(block)
         if (block.value.isEmpty()) {
             var parent: Node? = block.parent

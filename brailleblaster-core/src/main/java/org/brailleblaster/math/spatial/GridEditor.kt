@@ -19,8 +19,7 @@ import nu.xom.Element
 import nu.xom.Node
 import nu.xom.ParentNode
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.bbx.BBXUtils
-import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
+import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.math.mathml.MathModule
 import org.brailleblaster.math.numberLine.NumberLine
 import org.brailleblaster.math.spatial.SpatialMathEnum.Passage
@@ -33,9 +32,10 @@ import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.perspectives.mvc.events.XMLCaretEvent
 import org.brailleblaster.perspectives.mvc.modules.views.DebugModule
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.util.Utils
+import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
+import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.ScrolledComposite
@@ -351,7 +351,7 @@ class GridEditor : ISpatialMathDialog {
             if (BBX.CONTAINER.isA(current)) {
                 currentParent = current.parent
             } else {
-                current = BBXUtils.findBlock(current)
+                current = current.findBlock()
                 currentParent = current.parent
             }
             var index = currentParent.indexOf(current)

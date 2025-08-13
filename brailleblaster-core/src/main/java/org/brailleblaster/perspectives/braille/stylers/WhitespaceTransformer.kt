@@ -19,7 +19,7 @@ import nu.xom.Element
 import nu.xom.Node
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.exceptions.EditingException
 import org.brailleblaster.math.mathml.MathModule
 import org.brailleblaster.math.numberLine.NumberLine.Companion.getNumberLineParent
@@ -122,7 +122,7 @@ class WhitespaceTransformer(manager: Manager) : Handler(manager, manager.viewIni
         } else if (isTemplate(curElement.node)) {
             targetElement = getTemplateParent(curElement.node)
         } else {
-            targetElement = BBXUtils.findBlock(curElement.node)
+            targetElement = curElement.node.findBlock()
             if (targetElement == null) {
                 //Catch for things like top box lines
                 targetElement = findParent(curElement)

@@ -17,19 +17,19 @@ package org.brailleblaster.tools
 
 import nu.xom.*
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.exceptions.EditingException
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.messages.AdjustLocalStyleMessage
 import org.brailleblaster.perspectives.braille.messages.Sender
-import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
-import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.perspectives.mvc.XMLNodeCaret
 import org.brailleblaster.perspectives.mvc.XMLNodeCaret.CursorPosition
 import org.brailleblaster.perspectives.mvc.XMLSelection
 import org.brailleblaster.perspectives.mvc.XMLTextCaret
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent.Companion.cannotUndoNextEvent
 import org.brailleblaster.perspectives.mvc.events.XMLCaretEvent
+import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
+import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.perspectives.mvc.modules.misc.TableSelectionModule
 import org.brailleblaster.settings.UTDManager
 import org.brailleblaster.utd.internal.xml.FastXPath
@@ -87,11 +87,11 @@ object PageBreakTool : MenuToolModule {
             m.splitElement()
             currentSelection = m.simpleManager.currentSelection
             if (currentSelection.start is XMLTextCaret) {
-                val startIndex = (currentSelection.start as XMLTextCaret).offset
+                val startIndex = currentSelection.start.offset
                 m.simpleManager.dispatchEvent(
                     XMLCaretEvent(
                         Sender.EMPHASIS,
-                        XMLTextCaret(currentSelection.start.node as Text, startIndex)
+                        XMLTextCaret(currentSelection.start.node, startIndex)
                     )
                 )
             }
@@ -214,7 +214,7 @@ object PageBreakTool : MenuToolModule {
             return false
         }
         val textCaret = currentSelection.end
-        val block = BBXUtils.findBlock(currentSelection.end.node)
+        val block = currentSelection.end.node.findBlock()
         return if (textCaret.offset == 0 && textCaret.node === getFirstTextNode(block)) {
             false
         } else textCaret.offset != textCaret.node.value.length

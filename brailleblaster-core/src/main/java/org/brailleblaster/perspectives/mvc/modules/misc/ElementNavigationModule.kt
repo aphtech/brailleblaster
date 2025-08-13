@@ -17,7 +17,7 @@ package org.brailleblaster.perspectives.mvc.modules.misc
 
 import nu.xom.Node
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.perspectives.braille.mapping.elements.ReadOnlyTableTextMapElement
 import org.brailleblaster.perspectives.braille.mapping.elements.TableTextMapElement
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
@@ -34,7 +34,7 @@ object PreviousElementTool : MenuToolModule {
     override fun onRun(bbData: BBSelectionData) {
         //		XMLSelection currentSelection = m.getSimpleManager().getCurrentSelection();
         val currentNode = bbData.manager.simpleManager.currentSelection.start.node
-        var currentBlock: Node? = BBXUtils.findBlock(currentNode)
+        var currentBlock: Node? = currentNode.findBlock()
         var newTME = bbData.manager.mapList.findNode(currentNode)
         if (newTME == null) {
             while (newTME == null) {
@@ -44,19 +44,19 @@ object PreviousElementTool : MenuToolModule {
         }
         if (!newTME.isFullyVisible) bbData.manager.decrementView()
         if (currentBlock != null) {
-            while (newTME != null && currentBlock == BBXUtils.findBlock(newTME.node)) {
+            while (newTME != null && currentBlock == newTME.node.findBlock()) {
                 newTME = bbData.manager.mapList.getPrevious(bbData.manager.mapList.indexOf(newTME), true)
             }
         }
         var targetBlock: Node? = null
-        if (newTME != null) targetBlock = BBXUtils.findBlock(newTME.node)
+        if (newTME != null) targetBlock = newTME.node.findBlock()
         if (targetBlock != null) {
             if (BBX.BLOCK.TABLE_CELL.isA(targetBlock)) {
                 targetBlock =
                     XMLHandler.ancestorVisitor(targetBlock.parent) { node: Node? -> BBX.CONTAINER.TABLE.isA(node) }
                 newTME = bbData.manager.mapList.findNode(targetBlock!!.getChild(0))
             } else {
-                while (newTME != null && targetBlock == BBXUtils.findBlock(newTME.node)) {
+                while (newTME != null && targetBlock == newTME.node.findBlock()) {
                     newTME = bbData.manager.mapList.getPrevious(bbData.manager.mapList.indexOf(newTME), true)
                 }
                 newTME = bbData.manager.mapList.getNext(bbData.manager.mapList.indexOf(newTME), true)
@@ -83,7 +83,7 @@ object NextElementTool : MenuToolModule {
     override fun onRun(bbData: BBSelectionData) {
         //		XMLSelection currentSelection = m.getSimpleManager().getCurrentSelection();
         val currentNode = bbData.manager.simpleManager.currentSelection.start.node
-        var currentBlock: Node? = BBXUtils.findBlock(currentNode)
+        var currentBlock: Node? = currentNode.findBlock()
         var newTME = bbData.manager.mapList.findNode(currentNode)
         if (newTME == null) {
             while (newTME == null) {
@@ -93,7 +93,7 @@ object NextElementTool : MenuToolModule {
         }
         if (!newTME.isFullyVisible) bbData.manager.incrementView()
         if (currentBlock != null) {
-            while (newTME != null && currentBlock == BBXUtils.findBlock(newTME.node)) {
+            while (newTME != null && currentBlock == newTME.node.findBlock()) {
                 newTME = bbData.manager.mapList.getNext(bbData.manager.mapList.indexOf(newTME), true)
             }
         }

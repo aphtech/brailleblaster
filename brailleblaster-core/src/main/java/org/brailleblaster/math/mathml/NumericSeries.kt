@@ -19,6 +19,7 @@ import nu.xom.Element
 import nu.xom.Node
 import nu.xom.Text
 import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.braille.views.wp.MathEditHandler.translateAndReplace
@@ -50,8 +51,8 @@ object NumericSeries {
         val toggleOn = !selectedText.contains(BRAILLE_DOT_5)
         val textArray = ArrayList<Node>()
         val mathArray = ArrayList<Node>()
-        val startParent: Node = BBXUtils.findBlock(start).parent
-        val endParent: Node = BBXUtils.findBlock(end).parent
+        val startParent: Node = start.findBlock().parent
+        val endParent: Node = end.findBlock().parent
         val startIsText = start is Text
         val endIsText = end is Text
         val startIsMath = MathModule.isMath(start)

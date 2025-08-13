@@ -19,6 +19,7 @@ import nu.xom.Node
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlockOrNull
 import org.brailleblaster.math.mathml.MathModule
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.messages.Sender
@@ -111,7 +112,7 @@ class WrapSelectionInTextSymbols(
         val endText = Text(end)
         val parent = node.node.parent
         var index = parent.indexOf(node.node)
-        val parentBlock = BBXUtils.findBlockOrNull(node.node)
+        val parentBlock = node.node.findBlockOrNull()
         if (parentBlock != null) {
             index = BBXUtils.getIndexInBlock(node.node)
             Utils.insertChildCountSafe(parentBlock, startText, index)
@@ -146,7 +147,7 @@ class WrapSelectionInTextSymbols(
         val newText = Text(if (end) this.end else start)
         val parent = node.node.parent
         var index = parent.indexOf(node.node) + if (end) 1 else 0
-        val parentBlock = BBXUtils.findBlockOrNull(node.node)
+        val parentBlock = node.node.findBlockOrNull()
         if (parentBlock != null) {
             index = BBXUtils.getIndexInBlock(node.node) + if (end) 1 else 0
             Utils.insertChildCountSafe(parentBlock, newText, index)

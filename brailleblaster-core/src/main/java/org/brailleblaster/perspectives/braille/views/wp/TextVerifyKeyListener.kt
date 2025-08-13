@@ -18,6 +18,7 @@ package org.brailleblaster.perspectives.braille.views.wp
 import nu.xom.*
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.bbx.fixers2.LiveFixer
 import org.brailleblaster.exceptions.EditingException
 import org.brailleblaster.math.mathml.MathModule
@@ -386,7 +387,7 @@ class TextVerifyKeyListener(
                 var lastTME = manager.mapList.findPreviousNonWhitespace(manager.mapList.size - 1)
                 var lastBlock: Element? = null
                 while (lastTME != null) {
-                    lastBlock = BBXUtils.findBlock(lastTME.node)
+                    lastBlock = lastTME.node.findBlock()
                     if (lastBlock != null) {
                         break
                     } else {
@@ -996,11 +997,7 @@ class TextVerifyKeyListener(
     }
 
     private fun validMerge(t1: TextMapElement, t2: TextMapElement): Boolean {
-        return isMergable(t1) && isMergable(t2) && t1.node != null && t2.node != null && BBXUtils.findBlock(t1.node) != null && BBXUtils.findBlock(
-            t1.node
-        ) !== BBXUtils.findBlock(
-            t2.node
-        )
+        return isMergable(t1) && isMergable(t2) && t1.node != null && t2.node != null && t1.node.findBlock() != null && t1.node.findBlock() !== t2.node.findBlock()
     }
 
     private fun isMergable(t: TextMapElement?): Boolean {

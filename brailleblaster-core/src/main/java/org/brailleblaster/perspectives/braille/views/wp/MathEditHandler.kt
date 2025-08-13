@@ -20,6 +20,7 @@ import nu.xom.Node
 import nu.xom.ParentNode
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.bbx.isTOCText
 import org.brailleblaster.math.ascii.ASCII2MathML
 import org.brailleblaster.math.mathml.*
@@ -124,26 +125,26 @@ object MathEditHandler {
         if (m.simpleManager.currentCaret.cursorPosition == CursorPosition.BEFORE) {
           val previousTme = m.mapList.findPreviousNonWhitespace(m.mapList.indexOf(mapElement))
           if (previousTme != null) {
-            val previousBlock: Node = BBXUtils.findBlock(previousTme.node)
+            val previousBlock: Node = previousTme.node.findBlock()
             blockParent = previousBlock.parent
             newBlockIndex = blockParent.indexOf(previousBlock)
             block = BBX.BLOCK.DEFAULT.create()
             Utils.insertChildCountSafe(blockParent, block, newBlockIndex)
           } else {
-            blockParent = BBXUtils.findBlock(m.simpleManager.currentCaret.node).parent
+            blockParent = m.simpleManager.currentCaret.node.findBlock().parent
             block = BBX.BLOCK.DEFAULT.create()
             Utils.insertChildCountSafe(blockParent, block, 0)
           }
         } else {
           val nextTme = m.mapList.findNextNonWhitespace(m.mapList.indexOf(mapElement))
           if (nextTme != null) {
-            val nextBlock: Node = BBXUtils.findBlock(nextTme.node)
+            val nextBlock: Node = nextTme.node.findBlock()
             blockParent = nextBlock.parent
             newBlockIndex = blockParent.indexOf(nextBlock)
             block = BBX.BLOCK.DEFAULT.create()
             Utils.insertChildCountSafe(blockParent, block, newBlockIndex)
           } else {
-            blockParent = BBXUtils.findBlock(m.simpleManager.currentCaret.node)
+            blockParent = m.simpleManager.currentCaret.node.findBlock()
             val indexOfBlock = blockParent.parent.indexOf(blockParent)
             block = BBX.BLOCK.DEFAULT.create()
             //Yes, add 2 and not 1
@@ -157,7 +158,7 @@ object MathEditHandler {
         Notify.notify("Cannot insert math into TOC", Notify.ALERT_SHELL_NAME)
         return
       } else {
-        block = BBXUtils.findBlock(mapElement.node)
+        block = mapElement.node.findBlock()
         index = BBXUtils.getIndexInBlock(mapElement.node)
         if (mapElement is MathMLElement) {
           // cursor is not in math, but the closest mapElement is math
@@ -228,7 +229,7 @@ object MathEditHandler {
     val mathNode = ASCII2MathML.translate(text)
     val parent: Node = mapElement.nodeParent
     (parent as ParentNode).replaceChild(mapElement.node, mathNode)
-    block = BBXUtils.findBlock(mathNode)
+    block = mathNode.findBlock()
     m.simpleManager.dispatchEvent(ModifyEvent(Sender.MATH, true, parent))
     val array = ArrayList<Node>()
     array.add(block)
@@ -241,7 +242,7 @@ object MathEditHandler {
 
 	fun translateAndReplace(o: MathSubject, mathNode: Node) {
     val m = WPManager.getInstance().controller
-    val block: ParentNode = BBXUtils.findBlock(mathNode)
+    val block: ParentNode = mathNode.findBlock()
     val index = BBXUtils.getIndexInBlock(mathNode)
     val math = o.node
     val parent = block.getChild(index)

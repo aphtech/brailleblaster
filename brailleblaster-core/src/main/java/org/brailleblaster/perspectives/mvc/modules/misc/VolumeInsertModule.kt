@@ -21,7 +21,7 @@ import nu.xom.Node
 import nu.xom.ParentNode
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBX.VolumeType
-import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.bbx.isPageNum
 import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.frontmatter.VolumeUtils.getVolumeElementsFatal
@@ -97,12 +97,12 @@ class VolumeInsertModule : SimpleListener {
             if (!m.isEmptyDocument) {
                 val firstTme = m.sectionList[0].list.firstUsable
                 val lastTme = m.sectionList[m.lastSection].list.last()
-                val firstTmeParent: ParentNode = BBXUtils.findBlock(firstTme.node)
+                val firstTmeParent: ParentNode = firstTme.node.findBlock()
                 var currentTme = m.mapList.current
 
                 if (lastTme.getEnd(m.mapList) > currentTme.getStart(m.mapList)) {
                     if (currentTme is WhiteSpaceElement) currentTme = m.mapList.getNext(true)
-                    if (firstTmeParent != BBXUtils.findBlock(currentTme.node)) {
+                    if (firstTmeParent != currentTme.node.findBlock()) {
                         WorkingDialog("Inserting new volume").use { dialog ->
                             m.stopFormatting()
                             val insertedVolume = insertVolumeBeforeElement(volumeType, currentTme.node)

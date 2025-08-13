@@ -19,14 +19,13 @@ import nu.xom.Element
 import nu.xom.Node
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.TextMapElement
 import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.braille.stylers.StyleHandler
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.eclipse.swt.graphics.Point
-import java.util.*
 
 class Replace {
 
@@ -157,7 +156,7 @@ class Replace {
             }
 
             if (n is Text && n.value.isEmpty()) {
-                n = BBXUtils.findBlock(n)
+                n = n.findBlock()
             }
 
             nodeList.add(n)
