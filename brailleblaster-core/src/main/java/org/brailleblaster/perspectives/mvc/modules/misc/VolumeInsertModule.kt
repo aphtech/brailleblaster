@@ -22,6 +22,7 @@ import nu.xom.ParentNode
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBX.VolumeType
 import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.isPageNum
 import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.frontmatter.VolumeUtils.getVolumeElementsFatal
 import org.brailleblaster.frontmatter.VolumeUtils.getVolumeNames
@@ -166,7 +167,7 @@ class VolumeInsertModule : SimpleListener {
                 .map { node: Node? -> node as Element? }
                 .findFirst()
                 .orElse(null)
-            if (BBXUtils.isPageNum(previous)) {
+            if (previous.isPageNum()) {
                 pageNumbers.add(previous)
                 stopTag = previous
             }

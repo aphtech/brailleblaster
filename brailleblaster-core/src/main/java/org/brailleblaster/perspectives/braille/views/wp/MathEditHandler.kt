@@ -20,6 +20,7 @@ import nu.xom.Node
 import nu.xom.ParentNode
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.isTOCText
 import org.brailleblaster.math.ascii.ASCII2MathML
 import org.brailleblaster.math.mathml.*
 import org.brailleblaster.perspectives.braille.mapping.elements.LineBreakElement
@@ -55,7 +56,7 @@ object MathEditHandler {
     if (mapElements.any { it.isReadOnly }) {
       TableSelectionModule.displayInvalidTableMessage(m.wpManager.shell)
       return
-    } else if (mapElements.any { BBXUtils.isTOCText(it.node) }) {
+    } else if (mapElements.any { it.node.isTOCText() }) {
       Notify.notify("Cannot insert math into TOC", Notify.ALERT_SHELL_NAME)
       return
     }
@@ -152,7 +153,7 @@ object MathEditHandler {
         index = 0
         after = ""
         before = after
-      } else if (BBXUtils.isTOCText(mapElement.node)) {
+      } else if (mapElement.node.isTOCText()) {
         Notify.notify("Cannot insert math into TOC", Notify.ALERT_SHELL_NAME)
         return
       } else {

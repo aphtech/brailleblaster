@@ -21,11 +21,14 @@ import nu.xom.Node
 import nu.xom.ParentNode
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.bbx.BBXUtils
+import org.brailleblaster.bbx.isPageNumAncestor
 import org.brailleblaster.math.mathml.MathModule
 import org.brailleblaster.perspectives.braille.messages.Sender
-import org.brailleblaster.perspectives.mvc.*
+import org.brailleblaster.perspectives.mvc.BBSimpleManager
 import org.brailleblaster.perspectives.mvc.BBSimpleManager.SimpleListener
+import org.brailleblaster.perspectives.mvc.SimpleEvent
+import org.brailleblaster.perspectives.mvc.XMLSelection
+import org.brailleblaster.perspectives.mvc.XMLTextCaret
 import org.brailleblaster.perspectives.mvc.events.BuildMenuEvent
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.perspectives.mvc.menu.*
@@ -40,8 +43,8 @@ import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.properties.EmphasisType
 import org.brailleblaster.utd.utils.UTDHelper
-import org.brailleblaster.utils.xom.childNodes
 import org.brailleblaster.util.Utils
+import org.brailleblaster.utils.xom.childNodes
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
 import org.eclipse.swt.widgets.Label
@@ -564,7 +567,7 @@ private fun emphasize(
     end: Int,
     remove: Boolean
 ): Text {
-    if (BBXUtils.isPageNumAncestor(node) || MathModule.isMath(node) || !validateEmphasis(
+    if (node.isPageNumAncestor() || MathModule.isMath(node) || !validateEmphasis(
             node.value.length,
             start,
             end

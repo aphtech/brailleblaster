@@ -21,6 +21,7 @@ import nu.xom.Node
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX.ListType
 import org.brailleblaster.bbx.BBX.MarginType
+import org.brailleblaster.bbx.BBXUtils.findBlock
 import org.brailleblaster.bbx.fixers.to3.ImageBlockToContainerImportFixer.Companion.convertImageBlockToContainer
 import org.brailleblaster.math.mathml.MathModule.Companion.isSpatialMath
 import org.brailleblaster.perspectives.braille.Manager
@@ -37,71 +38,57 @@ import org.brailleblaster.utd.utils.dom.BoxUtils.stripBoxBrl
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+/**
+ * Check if given node is a BLOCK or SPAN of type PAGE_NUM
+ */
+fun Node?.isPageNum(): Boolean = BBX.SPAN.PAGE_NUM.isA(this) || BBX.BLOCK.PAGE_NUM.isA(this)
+
+fun Node?.isPageNumAncestor(): Boolean = XMLHandler.ancestorElementIs(this) { it.isPageNum() }
+
+/**
+ * Checks if only descendant is a page num in addition to [.isPageNum]
+ * and [.isPageNumAncestor]
+ */
+fun Node?.isPageNumEffectively(): Boolean = if (this.isPageNum() || this.isPageNumAncestor()) {
+    true
+} else if (this !is Element) {
+    false
+} else {
+    // Check if all text nodes are from a page num
+    FastXPath.descendant(this)
+        .filterIsInstance<Text>()
+        .filter { Searcher.Filters.noUTDAncestor(it) }
+        .all { it.isPageNumAncestor() }
+}
+
+fun Node?.isTOCText(): Boolean = this != null && (BBX.BLOCK.MARGIN.isA(findBlock(this)) ||
+        BBX.BLOCK.TOC_VOLUME_SPLIT.isA(findBlock(this)))
+
 object BBXUtils {
     private val log: Logger = LoggerFactory.getLogger(BBXUtils::class.java)
 
-    /**
-     * Check if given node is a BLOCK or SPAN of type PAGE_NUM
-     */
-    fun isPageNum(node: Node?): Boolean {
-        return BBX.SPAN.PAGE_NUM.isA(node) || BBX.BLOCK.PAGE_NUM.isA(node)
-    }
-
     @JvmStatic
-    fun isPageNumAncestor(node: Node?): Boolean {
-        return XMLHandler.ancestorElementIs(node) { isPageNum(it) }
-    }
+    fun isPageNumAncestor(node: Node?): Boolean = node.isPageNumAncestor()
 
-    /**
-     * Checks if only descendant is a page num in addition to [.isPageNum]
-     * and [.isPageNumAncestor]
-     */
-    fun isPageNumEffectively(node: Node?): Boolean {
-        if (isPageNum(node) || isPageNumAncestor(node)) {
-            return true
-        } else if (node !is Element) {
-            return false
-        }
-        // Check if all text nodes are from a page num
-        return FastXPath.descendant(node)
-            .stream()
-            .filter { curNode: Node? -> curNode is Text }
-            .filter { Searcher.Filters.noUTDAncestor(it) }
-            .allMatch { isPageNumAncestor(it) }
-    }
-
-    fun isTOCText(n: Node?): Boolean {
-        return n != null && (BBX.BLOCK.MARGIN.isA(findBlock(n)) ||
-                BBX.BLOCK.TOC_VOLUME_SPLIT.isA(findBlock(n)))
-    }
-
-    fun findBlockChildOrNull(node: Element?): Element? {
-        return XMLHandler.childrenRecursiveVisitor(
-            node
-        ) { BBX.BLOCK.isA(it) }
-    }
+    fun findBlockChildOrNull(node: Element?): Element? = XMLHandler.childrenRecursiveVisitor(
+        node
+    ) { BBX.BLOCK.isA(it) }
     fun findBlockChild(node: Element?): Element = findBlockChildOrNull(node) ?: throw RuntimeException("Node does not contain a block.")
 
-    fun findBlockOrNull(node: Node?): Element? {
-        return XMLHandler.ancestorVisitor(
-            node
-        ) { BBX.BLOCK.isA(it) } as Element?
-    }
+    fun findBlockOrNull(node: Node?): Element? = XMLHandler.ancestorVisitor(
+        node
+    ) { BBX.BLOCK.isA(it) } as Element?
     @JvmStatic
     fun findBlock(node: Node?): Element = findBlockOrNull(node) ?: throw RuntimeException("Node not inside a block")
 
-    fun getAncestorListLevel(node: Node?): Int {
-        return BBX.CONTAINER.LIST.ATTRIB_LIST_LEVEL[XMLHandler.ancestorVisitorElement(
-            node
-        ) { BBX.CONTAINER.LIST.isA(it) }]
-    }
+    fun getAncestorListLevel(node: Node?): Int = BBX.CONTAINER.LIST.ATTRIB_LIST_LEVEL[XMLHandler.ancestorVisitorElement(
+        node
+    ) { BBX.CONTAINER.LIST.isA(it) }]
 
     /**
      * @see .stripStyle
      */
-    fun stripStyle(elementToStrip: Element, m: Manager): Element {
-        return stripStyle(elementToStrip, m.document.settingsManager)
-    }
+    fun stripStyle(elementToStrip: Element, m: Manager): Element = stripStyle(elementToStrip, m.document.settingsManager)
 
     /**
      * Actually remove all BBX style information from an Element

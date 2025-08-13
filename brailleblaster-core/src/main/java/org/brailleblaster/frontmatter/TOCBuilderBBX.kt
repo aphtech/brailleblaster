@@ -24,6 +24,7 @@ import org.brailleblaster.abstractClasses.BBEditorView
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBXUtils
 import org.brailleblaster.bbx.BBXUtils.ListStyleData
+import org.brailleblaster.bbx.isPageNumEffectively
 import org.brailleblaster.frontmatter.VolumeUtils.VolumeData
 import org.brailleblaster.frontmatter.VolumeUtils.getOrCreateTOC
 import org.brailleblaster.frontmatter.VolumeUtils.getVolumeElements
@@ -379,7 +380,7 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
                 continue
             }
             //do not TOCify page num tags
-            if (BBXUtils.isPageNumEffectively(curBlock)) {
+            if (curBlock.isPageNumEffectively()) {
                 continue
             }
             log.debug("ToXML {}", curBlock.toXML())
