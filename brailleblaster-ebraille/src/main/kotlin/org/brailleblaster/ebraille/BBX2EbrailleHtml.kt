@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.ebraille
 
-import nu.xom.Document
 import nu.xom.Element
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
@@ -28,7 +27,9 @@ class BBX2EbrailleHtml : DocumentTraversal.Handler {
         private set
     private var currentBlock: org.jsoup.nodes.Element? = null
     override fun onStartDocument(d: nu.xom.Document) {
-        htmlDoc = org.jsoup.nodes.Document.createShell("")
+        htmlDoc = org.jsoup.nodes.Document.createShell("").also {
+            it.insertChildren(0, org.jsoup.nodes.DocumentType("html", "", ""))
+        }
     }
 
     override fun onStartElement(e: Element): Boolean {
