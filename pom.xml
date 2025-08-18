@@ -70,7 +70,6 @@ child.project.url.inherit.append.path="false">
         <swt.version>3.128.0</swt.version>
         <orgeclipsejface.version>3.35.100</orgeclipsejface.version>
         <org.eclipse.equinox.common.version>3.19.200</org.eclipse.equinox.common.version>
-        <spotbugsannotations.version>4.9.3</spotbugsannotations.version>
         <hamcrest.version>2.2</hamcrest.version>
         <testng.version>7.11.0</testng.version>
         <xercesimpl.version>2.12.2</xercesimpl.version>
@@ -203,11 +202,6 @@ child.project.url.inherit.append.path="false">
             <groupId>com.github.aphtech.libembosser</groupId>
             <artifactId>libembosser-utils</artifactId>
             <version>${libembosser.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.spotbugs</groupId>
-            <artifactId>spotbugs-annotations</artifactId>
-            <version>${spotbugsannotations.version}</version>
         </dependency>
 
         <!-- Unit Tests -->

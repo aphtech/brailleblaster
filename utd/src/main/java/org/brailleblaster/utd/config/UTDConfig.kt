@@ -16,7 +16,6 @@
 package org.brailleblaster.utd.config
 
 import com.google.common.base.CaseFormat
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import jakarta.xml.bind.JAXBContext
 import jakarta.xml.bind.Marshaller
 import jakarta.xml.bind.annotation.XmlElementRef
@@ -345,10 +344,6 @@ object UTDConfig {
     /*
      * Load the shortcut definitions file
      */
-    @SuppressFBWarnings(
-        value = ["OBL_UNSATISFIED_OBLIGATION"],
-        justification = "Try with resources will close stream, spotbugs issue493"
-    )
     fun loadShortcutDefinitions(shortcutDefsFile: File): ShortcutDefinitions {
         log.debug("Loading Shortcut Definitions from file {}", shortcutDefsFile.absolutePath)
         if (!shortcutDefsFile.exists()) throw RuntimeException(

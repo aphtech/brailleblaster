@@ -33,7 +33,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.xmlunit.matchers.CompareMatcher;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
@@ -113,7 +112,6 @@ public class AsciiMathConverterTest {
 			assertThat(actual, CompareMatcher.isSimilarTo(mathml).ignoreWhitespace());
 		}
 	}
-	@SuppressFBWarnings(value= {"OBL_UNSATISFIED_OBLIGATION"}, justification="Try with resources closes stream, spotbugs issue 493")
 	@DataProvider(name="asciiMathParserTestsProvider")
 	public Iterator<Object[]> asciiMathParserTestsProvider() throws IOException, ParsingException {
 		List<Object[]> data = new ArrayList<>();
