@@ -749,7 +749,7 @@ public class ClipboardModule implements SimpleListener {
             final Node endNodeCopy = findEndNodeCopy;
             //If they're page numbers, don't detach anything from the node
             if (!(BBX.SPAN.PAGE_NUM.isA(endNodeCopy) || BBX.BLOCK.PAGE_NUM.isA(endNodeCopy))) {
-                FastXPath.followingAndSelf(endNodeCopy).stream().forEach(n -> {
+                FastXPath.followingAndSelf(endNodeCopy).forEach(n -> {
                     if (n != endNodeCopy) {
                         nodesToDetach.add(n);
                     }

@@ -15,8 +15,6 @@
  */
 package org.brailleblaster.archiver2
 
-import com.google.common.io.Files
-import com.google.common.io.LineProcessor
 import nu.xom.Element
 import nu.xom.IllegalCharacterDataException
 import nu.xom.Text
@@ -26,6 +24,7 @@ import org.slf4j.LoggerFactory
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
+import kotlin.io.path.readLines
 
 open class TextArchiveLoader : ArchiverFactory.FileLoader {
     @Throws(Exception::class)
@@ -33,30 +32,11 @@ open class TextArchiveLoader : ArchiverFactory.FileLoader {
         val bbxDoc = BBX.newDocument()
         val root = BBX.SECTION.ROOT.create()
         bbxDoc.rootElement.appendChild(root)
-        Files.asCharSource(file.toFile(), BBIni.charset).readLines(object : LineProcessor<Void?> {
-            override fun processLine(line: String): Boolean {
-                if (line.contains(FORM_FEED)) {
-                    if (line.trim { it <= ' ' }.length == 1) {
-                        //skip, essentially is an empty line
-                    } else {
-                        for (curPart in line.split(FORM_FEED)) {
-                            processLine(curPart)
-                        }
-                    }
-                } else if (line.isNotEmpty()) {
-                    val usableText = getUsableText(line.trim())
-                    if (usableText != null) {
-                        val block = createBlock(usableText)
-                        root.appendChild(block)
-                    }
-                }
-                return true
+        file.readLines(BBIni.charset).flatMap { it.split('\u000c') }.filter { it.isNotBlank() }.mapNotNull { getUsableText(it) }.fold(root) { r, v ->
+            r.also {
+                it.appendChild(createBlock(v))
             }
-
-            override fun getResult(): Void? {
-                return null
-            }
-        })
+        }
         val archiver: Archiver2 = BBZArchiver.createImportedBBZ(file, bbxDoc)
         var fileStr = file.toString()
         fileStr = (if (fileStr.lowercase(Locale.getDefault()).endsWith(".txt")) fileStr.dropLast(4) else fileStr) + ".bbz"

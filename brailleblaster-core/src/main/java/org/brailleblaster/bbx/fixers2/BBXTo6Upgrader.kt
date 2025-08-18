@@ -16,7 +16,6 @@
 package org.brailleblaster.bbx.fixers2
 
 import nu.xom.Document
-import nu.xom.Node
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.utd.internal.xml.FastXPath
@@ -35,9 +34,7 @@ object BBXTo6Upgrader {
      */
     private fun tabCleanup(doc: Document) {
         FastXPath.descendant(doc)
-            .stream()
-            .filter { node: Node? -> node is Text }
-            .map { node: Node -> node as Text }
+            .filterIsInstance<Text>()
             .filter { text: Text -> text.value.contains("\t") }
             .forEach { text: Text -> text.value = text.value.replace('\t',' ') }
     }

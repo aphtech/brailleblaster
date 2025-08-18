@@ -60,7 +60,7 @@ object NodeTreeSplitter {
             )
             )
             throw NodeException("root == splitAt, splitAt: ", splitAt)
-        } else if (FastXPath.descendant(root).stream().noneMatch { node: Node -> node === splitAt }) {
+        } else if (FastXPath.descendant(root).none { node: Node -> node === splitAt }) {
             root.addAttribute(Attribute("root", "this"))
             throw NodeException("SplitAt isn't under elem w/ root=this attrub", splitAt)
         }

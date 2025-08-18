@@ -20,7 +20,6 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.ParentNode;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.brailleblaster.BBIni;
 import org.brailleblaster.Main;
@@ -1757,7 +1756,7 @@ public class Manager extends Controller {
             return true;
         } else if (orig.contains("-")) {
             // Issue #3814: Temporary way to find combined pages
-            String[] parts = StringUtils.split(orig, "-", 2);
+            String[] parts = orig.split("-", 2);
             return parts[0].equals(compareTo) || parts[1].equals(compareTo);
         } else {
             return false;

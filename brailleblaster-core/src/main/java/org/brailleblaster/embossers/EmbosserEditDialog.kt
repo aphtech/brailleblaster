@@ -130,10 +130,7 @@ class EmbosserEditDialog(shell: Shell?, private val existingNames: Set<String>) 
             val manufacturer = cbEmbosserManufacturer.getItem(selIndex)
             selIndex = cbEmbosserModel.selectionIndex
             val model = cbEmbosserModel.getItem(selIndex)
-            embosserDriver = embosserMap!![manufacturer]!!.stream()
-                    .filter { e: Embosser? -> e!!.model == model }
-                    .findFirst()
-                    .orElse(null)
+            embosserDriver = embosserMap!![manufacturer]!!.firstOrNull { e: Embosser? -> e!!.model == model }
             if (embosserDriver != null) {
                 embosserOptionsView.embosserOptions = embosserDriver!!.options
             }

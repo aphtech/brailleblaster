@@ -27,17 +27,18 @@ import org.brailleblaster.utd.internal.DocumentOrderComparator
 import org.brailleblaster.utd.internal.elements.*
 import org.brailleblaster.utd.pagelayout.*
 import org.brailleblaster.utd.properties.*
-import org.brailleblaster.utd.utils.*
-import org.brailleblaster.utils.xom.NodeSorter.sortByDocumentOrder
-import org.brailleblaster.utils.xom.childNodes
+import org.brailleblaster.utd.utils.PageBuilderHelper
+import org.brailleblaster.utd.utils.TextTranslator
+import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.utils.Counter
 import org.brailleblaster.utils.RepeatingLetters
 import org.brailleblaster.utils.SetList
 import org.brailleblaster.utils.toRepeatingLetters
+import org.brailleblaster.utils.xom.NodeSorter.sortByDocumentOrder
+import org.brailleblaster.utils.xom.childNodes
 import org.mwhapples.jlouis.TranslationException
 import org.slf4j.LoggerFactory
 import java.util.*
-import java.util.stream.Collectors
 import kotlin.math.max
 
 /**
@@ -3402,7 +3403,7 @@ class PageBuilder {
                 formattingNodes.clear()
             }
         }
-        moveTosOnPage = moveTosOnPage.stream().filter { x: Node -> x.parent != null }.collect(Collectors.toList())
+        moveTosOnPage = moveTosOnPage.filter { x: Node -> x.parent != null }.toMutableList()
         if (moveTosOnPage.isNotEmpty()) {
             val sortedMoveTos = sortByDocumentOrder(moveTosOnPage)
             val firstMoveTo = sortedMoveTos[0]

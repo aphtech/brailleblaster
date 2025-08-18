@@ -22,7 +22,6 @@ import org.brailleblaster.utd.internal.elements.PageNumber
 import org.brailleblaster.utd.properties.UTDElements
 import java.util.*
 import java.util.stream.Stream
-import kotlin.streams.asStream
 
 /**
  * A representation of the cells of a page.
@@ -203,15 +202,13 @@ class PageGrid(val width: Int, val height: Int) {
 
     val cells: Stream<Cell>
         get() = Arrays.stream(grid)
-    val brlElementsOnPage: Stream<Element>
-        get() = grid.asSequence()
+    val brlElementsOnPage: Iterable<Element>
+        get() = grid
                 .mapNotNull { it?.node }
                 .distinct()
-                .map { it.parent}
-                .filterNotNull()
+                .mapNotNull { it.parent}
+            .filterIsInstance<Element>()
                 .filter { UTDElements.BRL.isA(it) }
-                .map { it as Element }
-                .asStream()
 
     fun getLine(i: Int): Stream<Cell?> {
         Preconditions.checkElementIndex(i, height)

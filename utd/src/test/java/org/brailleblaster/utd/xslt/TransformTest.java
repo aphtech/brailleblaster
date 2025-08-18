@@ -25,12 +25,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.text.Charsets;
 import org.testng.ITest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Factory;
 import org.testng.annotations.Test;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 
 import nu.xom.Builder;

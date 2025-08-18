@@ -31,7 +31,6 @@ import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.EmphasisType
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utils.braille.BrailleUnicodeConverter.unicodeToAsciiLouis
-import java.util.stream.Collectors
 
 /**
  * Add support for 6 key input
@@ -128,19 +127,18 @@ object SixKeyUtils {
      * @return
      */
     fun formatPreviousImageDescription(brailleString: Node?): String {
-        return FastXPath.descendant(brailleString).stream().filter { node: Node? ->
+        return FastXPath.descendant(brailleString).filter { node: Node? ->
             node is Text && XMLHandler.ancestorElementNot(node) {
                 UTDElements.BRL.isA(it)
             } || BBX.INLINE.LINE_BREAK.isA(node) || BBX.SPAN.TAB.isA(node)
+        }.joinToString(separator = "") { node ->
+            if (node is Text) {
+                node.value
+            } else if (BBX.SPAN.TAB.isA(node)) {
+                SPACE.toString().repeat(BBX.SPAN.TAB.ATTRIB_VALUE[node as Element] - 1)
+            } else {
+                "\n"
+            }
         }
-            .map { node: Node ->
-                if (node is Text) {
-                    return@map node.value
-                } else if (BBX.SPAN.TAB.isA(node)) {
-                    return@map SPACE.toString().repeat(BBX.SPAN.TAB.ATTRIB_VALUE[node as Element] - 1)
-                } else {
-                    return@map "\n"
-                }
-            }.collect(Collectors.joining())
     }
 }

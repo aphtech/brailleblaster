@@ -33,7 +33,6 @@ import org.eclipse.swt.events.KeyAdapter
 import org.eclipse.swt.events.KeyEvent
 import org.eclipse.swt.widgets.Tree
 import org.eclipse.swt.widgets.TreeItem
-import java.util.*
 
 class BookTree2(val manager: Manager, val dialog: BookTreeDialog) {
     private var headings: List<String>? = null
@@ -165,19 +164,13 @@ class BookTree2(val manager: Manager, val dialog: BookTreeDialog) {
 
     private fun hasBlocks(e: Element): Boolean {
         return FastXPath.descendant(e)
-            .stream()
-            .filter { childNode: Node? -> BBX.BLOCK.isA(childNode) || BBX.CONTAINER.isA(childNode) }
-            .map { node: Node? -> node as Element? }
-            .anyMatch { node: Element? -> firstTextChild(node).isPresent }
+            .filterIsInstance<Element>()
+            .any { node -> BBX.BLOCK.isA(node) || BBX.CONTAINER.isA(node) && firstTextChild(node) != null }
     }
 
-    private fun firstTextChild(e: Element?): Optional<Text> {
+    private fun firstTextChild(e: Element?): Text? {
         return FastXPath.descendant(e)
-            .stream()
-            .filter { node: Node? -> node is Text }
-            .filter { node: Node? -> Searcher.Filters.noUTDAncestor(node) }
-            .map { node: Node -> node as Text }
-            .findFirst()
+            .filterIsInstance<Text>().firstOrNull { node: Node? -> Searcher.Filters.noUTDAncestor(node) }
     }
 
     fun navigate(): Boolean {

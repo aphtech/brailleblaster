@@ -16,7 +16,6 @@
 package org.brailleblaster.bbx.fixers
 
 import nu.xom.Element
-import nu.xom.Node
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.utd.internal.xml.FastXPath
@@ -34,9 +33,8 @@ class DefinitionListLineBreakImportFixer : LineBreakImportFixer() {
             return
         }
         if (newBlock != null && oldBlock != null && FastXPath.descendant(oldBlock)
-                .stream()
-                .filter { curNode: Node? -> curNode is Text } //if no text nodes not under a definition term
-                .noneMatch { curNode: Node? ->
+                .filterIsInstance<Text>()
+                .none { curNode ->
                     XMLHandler.ancestorElementNot(curNode) { node: Element? ->
                         BBX.SPAN.DEFINITION_TERM.isA(
                             node

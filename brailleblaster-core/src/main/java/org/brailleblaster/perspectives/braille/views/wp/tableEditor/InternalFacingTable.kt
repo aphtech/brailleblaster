@@ -29,7 +29,7 @@ internal class InternalFacingTable(
         get() {
             val returnList: MutableList<List<Node>> = ArrayList()
             for (row in nodes) {
-                val cellList = row.stream().limit(split.toLong()).toList()
+                val cellList = row.take(split)
                 returnList.add(cellList)
             }
             return returnList

@@ -37,10 +37,7 @@ class EmbosserConfigList(private val embosserConfigs: MutableList<EmbosserConfig
                 throw NoSuchElementException()
             }
             // When no default is set we resort to the first embosser.
-            return embosserConfigs.stream()
-                .filter { e: EmbosserConfig -> e.name == defaultName }
-                .findFirst()
-                .orElseGet { embosserConfigs[0] }
+            return embosserConfigs.firstOrNull { e: EmbosserConfig -> e.name == defaultName } ?: embosserConfigs[0]
         }
         set(embosser) {
             require(embosserConfigs.contains(embosser)) { "Specified embosser is not in embosser list" }
@@ -51,10 +48,7 @@ class EmbosserConfigList(private val embosserConfigs: MutableList<EmbosserConfig
             if (embosserConfigs.isEmpty()) {
                 throw NoSuchElementException()
             }
-            return embosserConfigs.stream()
-                .filter { e: EmbosserConfig -> e.name == lastUsedName }
-                .findFirst()
-                .orElseGet { embosserConfigs[0] }
+            return embosserConfigs.firstOrNull { e: EmbosserConfig -> e.name == lastUsedName } ?: embosserConfigs[0]
         }
         set(embosser) {
             require(embosserConfigs.contains(embosser)) { "Specified embosser is not in embosser list" }

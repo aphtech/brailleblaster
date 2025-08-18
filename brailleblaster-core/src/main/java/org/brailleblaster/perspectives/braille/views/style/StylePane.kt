@@ -16,11 +16,9 @@
 package org.brailleblaster.perspectives.braille.views.style
 
 import nu.xom.Element
-import nu.xom.Node
 import org.brailleblaster.abstractClasses.BBEditorView
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.easierxml.ImageUtils.getImageNavigateBlock
-import org.brailleblaster.utils.localization.LocaleHandler.Companion.getBanaStyles
 import org.brailleblaster.math.mathml.MathModule
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.BraillePageBrlMapElement
@@ -32,10 +30,11 @@ import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utils.swt.AccessibilityUtils.setName
-import org.brailleblaster.utils.swt.DebugStyledText
 import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.util.Utils.runtimeToString
+import org.brailleblaster.utils.localization.LocaleHandler.Companion.getBanaStyles
+import org.brailleblaster.utils.swt.AccessibilityUtils.setName
+import org.brailleblaster.utils.swt.DebugStyledText
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.StyledText
 import org.eclipse.swt.events.*
@@ -219,12 +218,8 @@ class StylePane(parent: Composite, private val m: Manager) : BBEditorView {
 
             if (!processedBlocks.containsKey(block) || lines[processedBlocks[block]] == null) {
                 block = FastXPath.preceding(block)
-                    .stream()
-                    .filter { node: Node? -> BBX.BLOCK.isA(node) }
-                    .map { node: Node -> node as Element }
-                    .filter { node: Element? -> processedBlocks.containsKey(node) && lines[processedBlocks[node]] != null }
-                    .findFirst()
-                    .orElse(null)
+                    .filterIsInstance<Element>()
+                    .firstOrNull { node -> BBX.BLOCK.isA(node) && processedBlocks.containsKey(node) && lines[processedBlocks[node]] != null }
                 if (block == null) {
                     //TODO: might be null when scrolling sometimes, not sure if this is the proper fix though
                     continue

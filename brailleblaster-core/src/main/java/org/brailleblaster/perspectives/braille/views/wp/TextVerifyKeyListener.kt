@@ -415,7 +415,7 @@ class TextVerifyKeyListener(
                 val newBlock = BBX.BLOCK.DEFAULT.create()
                 newBlock.addAttribute(Attribute(LiveFixer.NEWPAGE_PLACEHOLDER_ATTRIB, "tre"))
                 newBlock.appendChild(LiveFixer.PILCROW)
-                lastBlock!!.parent.appendChild(newBlock)
+                lastBlock.parent.appendChild(newBlock)
 
                 dispatchModifyEvent(true, lastBlock, newBlock)
 
@@ -838,27 +838,19 @@ class TextVerifyKeyListener(
         }
 
         if (previousNode == null || previousNode == currentNode) {
-            workNode = FastXPath.followingAndSelf(currentNode)
-                .stream()
-                .filter { n: Node ->
-                    (BBX.INLINE.LINE_BREAK.isA(n)
-                            && !UTDElements.BRL.isA(n.parent)
-                            && !UTDElements.BRL_PAGE_NUM.isA(n.parent)
-                            && !UTDElements.BRLONLY.isA(n.parent))
-                }
-                .findFirst()
-                .orElse(null)
+            workNode = FastXPath.followingAndSelf(currentNode).firstOrNull { n: Node ->
+                (BBX.INLINE.LINE_BREAK.isA(n)
+                        && !UTDElements.BRL.isA(n.parent)
+                        && !UTDElements.BRL_PAGE_NUM.isA(n.parent)
+                        && !UTDElements.BRLONLY.isA(n.parent))
+            }
         } else if (nextNode == null || nextNode == currentNode) {
-            workNode = FastXPath.precedingAndSelf(currentNode)
-                .stream()
-                .filter { n: Node ->
-                    (BBX.INLINE.LINE_BREAK.isA(n)
-                            && !UTDElements.BRL.isA(n.parent)
-                            && !UTDElements.BRL_PAGE_NUM.isA(n.parent)
-                            && !UTDElements.BRLONLY.isA(n.parent))
-                }
-                .findFirst()
-                .orElse(null)
+            workNode = FastXPath.precedingAndSelf(currentNode).firstOrNull { n: Node ->
+                (BBX.INLINE.LINE_BREAK.isA(n)
+                        && !UTDElements.BRL.isA(n.parent)
+                        && !UTDElements.BRL_PAGE_NUM.isA(n.parent)
+                        && !UTDElements.BRLONLY.isA(n.parent))
+            }
         }
 
         if (workNode != null && BBX.INLINE.LINE_BREAK.isA(workNode)) {

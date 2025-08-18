@@ -137,7 +137,7 @@ object DocumentTraversal {
     }
 
     fun traverseDocument(doc: Document, handler: Handler) {
-        Preconditions.checkNotNull(doc.rootElement)
+        requireNotNull(doc.rootElement)
         handler.onStartDocument(doc)
         doc.docType?.let { handler.onDocType(it) }
         val stack: Deque<PathElement> = LinkedList()

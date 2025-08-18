@@ -50,8 +50,8 @@ class NestedListImportFixer : AbstractFixer() {
                 return false
             }
             val nestedList = node as Element
-            return FastXPath.descendant(nestedList).stream()
-                .anyMatch { BBX.CONTAINER.LIST.isA(it) }
+            return FastXPath.descendant(nestedList)
+                .any { BBX.CONTAINER.LIST.isA(it) }
         }
     }
 }

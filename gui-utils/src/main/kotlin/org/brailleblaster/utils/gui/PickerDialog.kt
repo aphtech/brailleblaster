@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.utils.gui
 
-import org.apache.commons.lang3.mutable.MutableBoolean
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.KeyAdapter
 import org.eclipse.swt.events.KeyEvent
@@ -35,6 +34,7 @@ import org.eclipse.swt.widgets.TableColumn
 import org.eclipse.swt.widgets.TableItem
 import org.eclipse.swt.widgets.Text
 import java.util.Locale
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Consumer
 
 /**
@@ -45,7 +45,7 @@ class PickerDialog {
     var contents: List<Array<String>>? = null
     var message: String? = null
 
-    val cancelled: MutableBoolean = MutableBoolean(true)
+    val cancelled: AtomicBoolean = AtomicBoolean(true)
 
     fun open(parent: Shell, callback: Consumer<Int>): Shell {
         return createContents(parent, callback)
@@ -96,7 +96,7 @@ class PickerDialog {
                 if (table.selectionCount > 0) {
                     callback.accept(table.selectionIndex)
                     if (!parent.isDisposed) {
-                        cancelled.setFalse()
+                        cancelled.set(false)
                         shell.close()
                     }
                 }
@@ -107,13 +107,13 @@ class PickerDialog {
         applyGridData(80, 1, cancelButton)
         cancelButton.addSelectionListener(object : SelectionAdapter() {
             override fun widgetSelected(e: SelectionEvent) {
-                cancelled.setTrue()
+                cancelled.set(true)
                 shell.close()
             }
         })
 
         shell.addDisposeListener {
-            if (cancelled.isTrue) callback.accept(-1)
+            if (cancelled.get()) callback.accept(-1)
         }
         shell.pack()
         shell.open()

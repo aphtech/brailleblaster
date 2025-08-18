@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.perspectives.mvc
 
-import com.google.common.base.Preconditions
 import com.google.common.collect.ClassToInstanceMap
 import com.google.common.collect.MutableClassToInstanceMap
 import nu.xom.Document
@@ -49,15 +48,13 @@ abstract class BBSimpleManager {
 
     private fun checkSelection(): XMLSelection {
         try {
-            val cs = Preconditions.checkNotNull(privCurrentSelection)
-            Preconditions.checkNotNull(
-                cs.start.node.document,
-                "Start node " + privCurrentSelection!!.start.node.toXML() + " is not attached to document"
-            )
-            Preconditions.checkNotNull(
-                cs.end.node.document,
-                "End node " + privCurrentSelection!!.end.node.toXML() + " is not attached to document"
-            )
+            val cs = requireNotNull(privCurrentSelection)
+            requireNotNull(
+                cs.start.node.document
+            ) { "Start node " + privCurrentSelection!!.start.node.toXML() + " is not attached to document" }
+            requireNotNull(
+                cs.end.node.document
+            ) { "End node ${privCurrentSelection!!.end.node.toXML()} is not attached to document" }
             return cs
         } catch (e: NullPointerException) {
             throw OutdatedMapListException("Selection has invalid node", e)

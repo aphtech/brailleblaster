@@ -17,7 +17,6 @@ package org.brailleblaster.archiver2
 
 import nu.xom.Document
 import nu.xom.Element
-import nu.xom.Node
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.slf4j.Logger
@@ -46,18 +45,16 @@ object OPFUtils {
                 log.warn("Found {} OPF files?", opfs.size)
             }
             return opfs
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             throw RuntimeException("Failed to find OPFs in $folder")
         }
     }
 
     @JvmStatic
 	fun getDCElementValueCaseInsensitive(opfDocument: Document?, opfElemName: String?): String? {
-        val results = FastXPath.descendant(opfDocument).stream()
-            .filter { curNode: Node? -> curNode is Element }
-            .map { curNode: Node -> curNode as Element }
-            .filter { curElem: Element -> curElem.namespacePrefix == "dc" }
-            .filter { curElem: Element -> curElem.localName.equals(opfElemName, ignoreCase = true) }.toList()
+        val results = FastXPath.descendant(opfDocument)
+            .filterIsInstance<Element>()
+            .filter { curElem: Element -> curElem.namespacePrefix == "dc" && curElem.localName.equals(opfElemName, ignoreCase = true) }.toList()
         if (results.isEmpty()) {
             return null
         } else if (results.size > 1) {

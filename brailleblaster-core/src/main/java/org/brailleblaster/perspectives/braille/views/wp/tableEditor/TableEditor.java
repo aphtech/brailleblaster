@@ -1761,7 +1761,7 @@ public class TableEditor extends Dialog {
         List<Style> styles = engine.getStyleDefinitions().getStyles().stream()
                 .filter((s) -> !s.getId().contains("internal")).toList();
         List<String[]> styleNames =
-                styles.stream().map(s -> new String[]{banaStyles.get(s.getName())}).collect(Collectors.toList());
+                styles.stream().map(s -> new String[]{banaStyles.get(s.getName())}).toList();
         //Really wish they were sorted. Comparators aren't cooperating though.
         List<Style> newStyles = new ArrayList<>();
         Pair<Integer, Integer> shellLoc = null;
@@ -1841,7 +1841,7 @@ public class TableEditor extends Dialog {
         List<Style> styles = engine.getStyleDefinitions().getStyles().stream()
                 .filter((s) -> !s.getId().contains("internal")).toList();
         List<String[]> styleNames =
-                styles.stream().map(s -> new String[]{banaStyles.get(s.getName())}).collect(Collectors.toList());
+                styles.stream().map(s -> new String[]{banaStyles.get(s.getName())}).toList();
 
         PickerDialog pd = new PickerDialog();
         pd.setHeadings(new String[]{"Style"});

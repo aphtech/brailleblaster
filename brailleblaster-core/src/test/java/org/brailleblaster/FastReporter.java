@@ -20,7 +20,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +74,7 @@ public class FastReporter implements IReporter {
 
 		if (method.getGroups().length != 0) {
 			output.append(" Groups: ")
-					.append(StringUtils.join(method.getGroups(), ","));
+					.append(String.join(",", method.getGroups()));
 		}
 
 		if (method.getDescription() != null) {

@@ -24,6 +24,8 @@ import org.brailleblaster.abstractClasses.BBEditorView
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBXUtils
 import org.brailleblaster.bbx.BBXUtils.ListStyleData
+import org.brailleblaster.bbx.findBlock
+import org.brailleblaster.bbx.getAncestorListLevel
 import org.brailleblaster.bbx.isPageNumEffectively
 import org.brailleblaster.frontmatter.VolumeUtils.VolumeData
 import org.brailleblaster.frontmatter.VolumeUtils.getOrCreateTOC
@@ -392,7 +394,7 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
             var runoverBlock: Int? = null
             if (BBX.BLOCK.LIST_ITEM.isA(curBlock)) {
                 indentBlock = BBX.BLOCK.LIST_ITEM.ATTRIB_ITEM_LEVEL.get(curBlock)
-                runoverBlock = BBXUtils.getAncestorListLevel(curBlock)
+                runoverBlock = curBlock.getAncestorListLevel()
             } else if (BBX.BLOCK.MARGIN.isA(curBlock)) {
                 indentBlock = BBX.BLOCK.MARGIN.ATTRIB_INDENT.get(curBlock)
                 runoverBlock = BBX.BLOCK.MARGIN.ATTRIB_RUNOVER.get(curBlock)
@@ -442,13 +444,12 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
                         }
 
                         FastXPath.descendant(ancestorList)
-                            .stream()
-                            .filter { node: Node? ->
+                            .filter { node ->
                                 BBX.BLOCK.MARGIN.isA(node)
                                         && BBX.BLOCK.MARGIN.ATTRIB_RUNOVER.get(node as Element?) < runoverTarget
                             }
-                            .peek { e: Node -> modifiedNodes.add(e) }
-                            .forEach { node: Node? ->
+                            .onEach { e -> modifiedNodes.add(e) }
+                            .forEach { node ->
                                 BBX.BLOCK.MARGIN.ATTRIB_RUNOVER.set(
                                     node as Element?,
                                     runoverTarget
@@ -513,14 +514,14 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
             } else {
                 //assume the user meant the whole piece of text
                 //The element needs to be an actual block (it could be inside an INLINE)
-                BBXUtils.findBlock(currentSelection.start.node)
+                currentSelection.start.node.findBlock()
                 //				pageWrapElem = (Element) currentSelection.start.node().getParent();
             }
 
             log.debug("initial {}", pageWrapElem.toXML())
             previousTitleBlock = isValidToMakePage(pageWrapElem, true)
 
-            val parentBlock: Element = BBXUtils.findBlock(pageWrapElem)
+            val parentBlock: Element = pageWrapElem.findBlock()
             stripUTDRecursive(parentBlock)
             modifiedNodes.add(parentBlock)
 
@@ -543,7 +544,7 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
             val selectionStart: XMLTextCaret = currentSelection.start
             val selectionEnd: XMLTextCaret = currentSelection.end
             val textNode: nu.xom.Text = selectionEnd.node
-            val parentBlock: Element = BBXUtils.findBlock(textNode)
+            val parentBlock: Element = textNode.findBlock()
 
             if (unwrapPage(textNode)) {
                 stripUTDRecursive(parentBlock)
@@ -658,7 +659,7 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
             // live fixer will cleanup block
         }
 
-        modifiedNodes.add(BBXUtils.findBlock(pageWrapElem))
+        modifiedNodes.add(pageWrapElem.findBlock())
 
         pageNumStripPrecedingText(pageWrapElem, modifiedNodes)
 
@@ -682,7 +683,7 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
 
         if (isFullySelected) {
             //Make sure that your node is its parent or else comparison below will be inaccurate
-            node = BBXUtils.findBlock(node)
+            node = node.findBlock()
         }
 
         // Find an associated title
@@ -695,15 +696,13 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
         }
 
         val previousBlock: Element? = FastXPath.preceding(node)
-            .stream()
-            .filter { node: Node? -> BBX.BLOCK.isA(node) }
-            .map { node: Node? ->
+            .filter { node -> BBX.BLOCK.isA(node) }
+            .map { node ->
                 Searcher.Mappers.toElement(
                     node!!
                 )
             }
-            .findFirst()
-            .orElse(null)
+            .firstOrNull()
 
         //If it's a number and
         if (ancestorTitle != null) {
@@ -718,11 +717,8 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
                     .size <= 1
             ) {
                 if (previousBlock != null && previousBlock.childCount <= 1 && FastXPath.descendant(previousBlock)
-                        .stream()
-                        .filter { n: Node? -> n is Element }
-                        .map { n: Node -> n as Element }
-                        .filter { elem: Element? -> TOCAttributes.TYPE.inElement(elem!!) }
-                        .noneMatch { elem: Element? -> TOCAttributes.TYPE.getValue(elem!!) == "page" }
+                        .filterIsInstance<Element>()
+                        .none { elem -> TOCAttributes.TYPE.inElement(elem) && TOCAttributes.TYPE.getValue(elem) == "page" }
                 ) {
                     return previousBlock
                 }
@@ -742,13 +738,8 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
 
     private fun unwrapPage(cursor: Node): Boolean {
         val ancestorPageNum: Element? = FastXPath.ancestorOrSelf(cursor)
-            .stream()
-            .filter { node: Node? -> node is Element }
-            .map { node: Node -> node as Element }
-            .filter { elem: Element? -> TOCAttributes.TYPE.inElement(elem!!) }
-            .filter { elem: Element? -> TOCAttributes.TYPE.getValue(elem!!) == "page" }
-            .findFirst()
-            .orElse(null)
+            .filterIsInstance<Element>()
+            .firstOrNull { elem -> TOCAttributes.TYPE.inElement(elem) && TOCAttributes.TYPE.getValue(elem) == "page" }
 
         if (ancestorPageNum == null) {
             return false
@@ -765,8 +756,7 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
 
         //Ignore blocks that just contain a page number
         val textNodes: List<Node> = FastXPath.descendant(curBlock)
-            .stream()
-            .filter { node: Node? -> node is nu.xom.Text }.toList()
+            .filterIsInstance<nu.xom.Text>()
         if (textNodes.isEmpty()) {
             return true
         } else if (textNodes.size > 1) {
@@ -798,11 +788,8 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
 
         // do not re-wrap page numbers
         if (FastXPath.descendant(block)
-                .stream()
-                .filter { node: Node? -> node is Element }
-                .map { node: Node -> node as Element }
-                .filter { elem: Element? -> TOCAttributes.TYPE.inElement(elem!!) }
-                .anyMatch { elem: Element? -> TOCAttributes.TYPE.getValue(elem!!) == "page" }
+                .filterIsInstance<Element>()
+                .any { elem -> TOCAttributes.TYPE.inElement(elem) && TOCAttributes.TYPE.getValue(elem) == "page" }
         ) {
             return
         }
@@ -888,7 +875,7 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
 
             //Rel 7254: If current block contains only this node, use it as a title, not a page.
             //Page should not have a blank title, but the title can live without a page.
-            if (BBXUtils.findBlock(nodeToWrap).childCount == 1 && moveableBlock == null) {
+            if (nodeToWrap.findBlock().childCount == 1 && moveableBlock == null) {
                 return
             }
         }
@@ -998,11 +985,7 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
             throw NodeException("Node not attached to doc", pageNum)
         }
         //Need to strip space so it doesn't affect formatting of title or line wrapping
-        val precedingText: nu.xom.Text = FastXPath.preceding(pageNum).stream()
-            .filter { curNode: Node? -> curNode is nu.xom.Text }
-            .map { curNode: Node -> curNode as nu.xom.Text }
-            .findFirst()
-            .orElseThrow()
+        val precedingText: nu.xom.Text = FastXPath.preceding(pageNum).filterIsInstance<nu.xom.Text>().first()
         if (precedingText.value.endsWith(" ")) {
             precedingText.value = precedingText.value.trimEnd()
             if (precedingText.value.isEmpty()) {
@@ -1138,11 +1121,10 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
         tocElements.forEach(Consumer { tocElement: Element -> log.info("before toc element: {}", tocElement.toXML()) })
         tocElements = tocElements.subList(
             tocElements.indexOf(
-                tocElements.stream()
-                    .filter { node: Element? -> BBX.BLOCK.TOC_VOLUME_SPLIT.isA(node) }
-                    .skip(1)
-                    .findFirst()
-                    .orElse(tocElements[0])
+                tocElements
+                    .filter { node -> BBX.BLOCK.TOC_VOLUME_SPLIT.isA(node) }
+                    .drop(1)
+                    .firstOrNull() ?: tocElements[0]
             ),
             tocElements.size
         )
@@ -1184,8 +1166,8 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
         }
 
         modifiedElements.addAll(
-            tocElements.stream()
-                .filter { node: Element? -> BBX.BLOCK.TOC_VOLUME_SPLIT.isA(node) }.toList()
+            tocElements
+                .filter { node: Element? -> BBX.BLOCK.TOC_VOLUME_SPLIT.isA(node) }
         )
         manager.simpleManager.dispatchEvent(
             org.brailleblaster.perspectives.mvc.events.ModifyEvent(

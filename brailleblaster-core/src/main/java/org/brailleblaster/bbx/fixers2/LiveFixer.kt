@@ -78,7 +78,7 @@ object LiveFixer {
         }
 
         // only contains blank text nodes
-        if (FastXPath.descendant(block).stream().anyMatch { node: Node? -> BBX.SPAN.IMAGE.isA(node) }) {
+        if (FastXPath.descendant(block).any { node: Node? -> BBX.SPAN.IMAGE.isA(node) }) {
             // leave image
             nodesToDetach.addAll(descendantTextNodes)
         } else {
@@ -160,14 +160,13 @@ object LiveFixer {
 
     private fun removeEmptyContainers(root: Element) {
         val toDetach = FastXPath.descendant(root)
-            .stream()
-            .filter { node: Node? -> BBX.CONTAINER.isA(node) }
-            .filter { container: Node? ->
+            .filter { node -> BBX.CONTAINER.isA(node) }
+            .filter { container ->
                 !BBX.CONTAINER.IMAGE.isA(container) && !BBX.CONTAINER.TPAGE_SECTION.isA(
                     container
                 )
             }
-            .filter { container: Node -> container.childCount == 0 }.toList()
+            .filter { container -> container.childCount == 0 }
         for (node in toDetach) {
             node.detach()
         }

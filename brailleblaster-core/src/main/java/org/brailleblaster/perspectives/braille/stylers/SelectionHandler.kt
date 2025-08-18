@@ -34,6 +34,7 @@ import org.brailleblaster.perspectives.braille.viewInitializer.ViewInitializer
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.utd.actions.GenericBlockAction
 import org.brailleblaster.util.WhitespaceUtils.removeLineBreakElements
+import kotlin.streams.asSequence
 
 class SelectionHandler(manager: Manager?, vi: ViewInitializer?, list: MapList?) : Handler(
     manager!!, vi!!, list!!
@@ -58,10 +59,10 @@ class SelectionHandler(manager: Manager?, vi: ViewInitializer?, list: MapList?) 
         // whitespace
         if (startIndex == endIndex && isWhitespace(list[startIndex])) {
             var nearest = streamCurrentBufferReverseFromCurrentCursor(manager)
-                .filter { t: TextMapElement -> t.node != null && t.node.document != null }.findFirst().orElse(null)
+                .firstOrNull { t: TextMapElement -> t.node != null && t.node.document != null }
             if (nearest == null) {
                 nearest = streamCurrentBufferFromCurrentCursor(manager)
-                    .filter { t: TextMapElement -> t.node != null && t.node.document != null }.findFirst().orElse(null)
+                    .firstOrNull { t -> t.node != null && t.node.document != null }
             }
             if (nearest != null && nearest.node != null) {
                 reformat(nearest.node, false)

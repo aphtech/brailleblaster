@@ -64,9 +64,9 @@ class XMLSelection(@JvmField val start: XMLNodeCaret, @JvmField val end: XMLNode
             }
             if (BBX.CONTAINER.isA(startBlock) || BBX.SECTION.isA(startBlock)) {
                 //Add all descendant blocks to the list
-                FastXPath.descendant(startBlock).stream()
-                    .filter { node: Node? -> BBX.BLOCK.isA(node) }
-                    .map { n: Node -> n as Element }
+                FastXPath.descendant(startBlock)
+                    .filterIsInstance<Element>()
+                    .filter { node -> BBX.BLOCK.isA(node) }
                     .forEach { e: Element -> returnList.add(e) }
                 if (returnList.isNotEmpty()) startBlock = returnList[0]
             }
@@ -77,8 +77,8 @@ class XMLSelection(@JvmField val start: XMLNodeCaret, @JvmField val end: XMLNode
             //Convert end.node to a block
             var endBlock = end.node
             if (BBX.CONTAINER.isA(endBlock) || BBX.SECTION.isA(endBlock)) { //Mark the final block in its descendants as the ending block
-                val childBlocks = FastXPath.descendant(endBlock).stream()
-                    .filter { node: Node? -> BBX.BLOCK.isA(node) }.toList()
+                val childBlocks = FastXPath.descendant(endBlock)
+                    .filter { node -> BBX.BLOCK.isA(node) }
                 if (childBlocks.isEmpty()) {
                     for (next in FastXPath.precedingAndSelf(endBlock)) {
                         if (next === startBlock) {
@@ -146,11 +146,8 @@ class XMLSelection(@JvmField val start: XMLNodeCaret, @JvmField val end: XMLNode
                 startElement = start.parent as Element
                 //Initial check if start is first in it's own parent
                 if (FastXPath.descendant(startElement)
-                        .stream()
-                        .filter { node: Node? -> node is Text }
-                        .filter { node: Node -> (node.parent as Element).namespaceURI != UTD_NS }
-                        .findFirst()
-                        .get() !== start
+                        .filterIsInstance<Text>()
+                        .first { node -> (node.parent as Element).namespaceURI != UTD_NS } !== start
                 ) {
                     return null
                 }

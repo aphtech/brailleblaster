@@ -30,7 +30,6 @@ import org.brailleblaster.utd.internal.DynamicOptionStyleMap
 import org.brailleblaster.utils.BB_NS
 import org.brailleblaster.utils.xom.attributes
 import java.util.function.Supplier
-import java.util.stream.Stream
 
 /**
  * Dynamically override styles with bb:overrideOption-* attributes
@@ -82,10 +81,9 @@ class BBXDynamicOptionStyleMap(
         )
     }
 
-    fun getStyleOptions(element: Element): Stream<Attribute> {
+    fun getStyleOptions(element: Element): List<Attribute> {
         return element.attributes
-            .stream()
-            .filter { attrib: Attribute -> this.isStyleOptionAttrib(attrib) }
+            .filter { attrib -> this.isStyleOptionAttrib(attrib) }
     }
 
     val generatedStyles: List<Style>

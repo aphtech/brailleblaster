@@ -18,10 +18,10 @@ package org.brailleblaster.testrunners;
 import static org.testng.Assert.*;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -214,9 +214,9 @@ public abstract class ViewTestRunner {
 		try {
 			Display display = Display.getCurrent();
 
-			MutableBoolean flag = new MutableBoolean(false);
-			display.timerExec(sec * 1000, flag::setTrue);
-			while (flag.isFalse()) {
+			AtomicBoolean flag = new AtomicBoolean(false);
+			display.timerExec(sec * 1000, () -> flag.set(true));
+			while (!flag.get()) {
 				if (!display.readAndDispatch()) {
 					display.sleep();
 				}

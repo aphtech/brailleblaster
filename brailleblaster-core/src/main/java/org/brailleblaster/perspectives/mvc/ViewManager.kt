@@ -109,7 +109,7 @@ class ViewManager(folder: CTabFolder?, private val m: Manager) {
             windowedShell!!.layout(true)
             windowedShell!!.setRedraw(true)
             windowedShell!!.text =
-                WordUtils.capitalize(windowedViewNew.name.lowercase(Locale.getDefault())) + " View"
+                "${WordUtils.capitalizeFully(windowedViewNew.name)} View"
             redrawMainContainer = true
         }
         windowedViewCurrent = windowedViewNew
@@ -272,7 +272,7 @@ class ViewManager(folder: CTabFolder?, private val m: Manager) {
         for (curChild in containerSash.children) {
             if (weights.size > weightCounter) {
                 if (weights[weightCounter] != 0
-                    && views.stream().anyMatch { curView: BBEditorView -> curView.view === curChild }
+                    && views.any { curView: BBEditorView -> curView.view === curChild }
                 ) {
                     weightCounter++
                     continue

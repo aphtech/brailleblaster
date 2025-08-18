@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.perspectives.braille.stylers
 
-import com.google.common.base.Preconditions
 import nu.xom.Element
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.document.BrailleDocument
@@ -92,7 +91,7 @@ class StyleHandler(manager: Manager, vi: ViewInitializer?, list: MapList?) : Han
 
     /*Local Config */
     fun createAndApplyStyle(t: TextMapElement?, message: AdjustLocalStyleMessage) {
-        val e = Preconditions.checkNotNull(message.getElement(manager))
+        val e = requireNotNull(message.getElement(manager))
         var style = manager.document.engine.styleMap.findValueOrDefault(e) as Style
 
         if (message is AdjustIndentMessage) {

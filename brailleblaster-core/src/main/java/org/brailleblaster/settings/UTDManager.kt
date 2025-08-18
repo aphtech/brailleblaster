@@ -428,7 +428,7 @@ class UTDManager @JvmOverloads constructor(styleDefs: StyleDefinitions = loadSty
 
     // Sanity check
     val lookedUpStyle = engine.styleMap.findValueOrDefault(element)
-    if (lookedUpStyle != style && bbxOptionStyleMap!!.getStyleOptions(element).findAny().isEmpty) {
+    if (lookedUpStyle != style && bbxOptionStyleMap!!.getStyleOptions(element).isEmpty()) {
       throw NodeException(
         "Expected element style to be " + style.name
             + ", got " + lookedUpStyle.name

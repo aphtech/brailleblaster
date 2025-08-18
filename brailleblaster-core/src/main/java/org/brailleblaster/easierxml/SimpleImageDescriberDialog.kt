@@ -364,7 +364,7 @@ class SimpleImageDescriberDialog(
         if (index > 0) {
             index--
             matchingImages = matchingImages(m.doc, getSrc(array[index] as Element))
-            captionEnabled = matchingImages.stream().anyMatch { node: Element? -> BBX.CONTAINER.IMAGE.isA(node) }
+            captionEnabled = matchingImages.any { node: Element? -> BBX.CONTAINER.IMAGE.isA(node) }
             saveLocation()
             shell.close()
             open()
@@ -377,7 +377,7 @@ class SimpleImageDescriberDialog(
         if (index < array.size - 1) {
             index++
             matchingImages = matchingImages(m.doc, getSrc(array[index] as Element))
-            captionEnabled = matchingImages.stream().anyMatch { node: Element? -> BBX.CONTAINER.IMAGE.isA(node) }
+            captionEnabled = matchingImages.any { node: Element? -> BBX.CONTAINER.IMAGE.isA(node) }
             saveLocation()
             shell.close()
             open()

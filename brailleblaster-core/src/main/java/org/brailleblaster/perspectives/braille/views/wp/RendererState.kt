@@ -201,7 +201,7 @@ class RendererState(engine: UTDTranslationEngine) {
     val newPages: List<Pair<Int, Element>>
         get() {
             val newPages: MutableList<Pair<Int, Element>> = ArrayList()
-            lines.stream().filter { l: RenderObject? -> l is NewPage }
+            lines.filterIsInstance<NewPage>()
                 .forEach { n: RenderObject -> newPages.add(((n as NewPage).offset) to (n.newPageElement)) }
             return newPages
         }

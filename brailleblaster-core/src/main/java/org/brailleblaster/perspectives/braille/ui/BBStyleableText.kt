@@ -300,8 +300,7 @@ class BBStyleableText(parent: Composite, buttonPanel: Composite?, buttons: Int, 
                 val start = startOffset + sb.length
                 sb.append(MathModule.getMathText(child))
                 val end = startOffset + sb.length
-                styles.add(Range(start, end, tags.stream().filter { n: Tag? -> n is MathTag }
-                    .findFirst().orElseThrow()))
+                styles.add(Range(start, end, tags.first { n: Tag? -> n is MathTag }))
             } else if (child is Element) {
                 if (newLineWrap && BBX.BLOCK.isA(child) && sb.isNotEmpty()) {
                     sb.append(System.lineSeparator())
@@ -890,7 +889,7 @@ class BBStyleableText(parent: Composite, buttonPanel: Composite?, buttons: Int, 
         }
         try {
             text.styleRanges = ranges
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             if (logger.isErrorEnabled) {
                 logger.error("Invalid StyleRange for BBMarkdownText. Style ranges:")
                 for (range in ranges) {

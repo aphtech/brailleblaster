@@ -162,11 +162,7 @@ class VolumeInsertModule : SimpleListener {
                 stopTag
             ) { curAncestor: Element? -> BBX.BLOCK.isA(curAncestor) || BBX.CONTAINER.isA(curAncestor) }
             val previous = FastXPath.preceding(stopTag)
-                .stream()
-                .filter { node: Node? -> BBX.BLOCK.isA(node) }
-                .map { node: Node? -> node as Element? }
-                .findFirst()
-                .orElse(null)
+                .filterIsInstance<Element>().firstOrNull { node: Node? -> BBX.BLOCK.isA(node) }
             if (previous.isPageNum()) {
                 pageNumbers.add(previous)
                 stopTag = previous

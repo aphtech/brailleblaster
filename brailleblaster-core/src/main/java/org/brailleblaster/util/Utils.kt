@@ -95,16 +95,14 @@ object Utils {
 
     @JvmStatic
 	fun combineAdjacentTextNodes(parent: ParentNode?) {
-        val textNodes = FastXPath.descendant(parent).stream()
-            .filter { n: Node? -> n is Text }.toList()
+        val textNodes = FastXPath.descendant(parent).filterIsInstance<Text>()
         for (node in textNodes) {
-            val text = node as Text
-            val textParent = text.parent
-            val index = textParent.indexOf(text)
+            val textParent = node.parent
+            val index = textParent.indexOf(node)
             if (index + 1 < textParent.childCount && textParent.getChild(index + 1) is Text) {
                 val sibling = textParent.getChild(index + 1) as Text
                 sibling.detach()
-                text.value += sibling.value
+                node.value += sibling.value
                 combineAdjacentTextNodes(parent)
                 return
             }

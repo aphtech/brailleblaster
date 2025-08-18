@@ -61,10 +61,8 @@ class EmbossDialog @JvmOverloads constructor(parentShell: Shell? = Display.getCu
         updateEmbosserCombo()
         EasySWT.addSelectionListener(cbPrinter) {
             val selEmbosser = cbPrinter.text
-            embosserList!!.stream()
-                    .filter { p: EmbosserConfig -> p.name == selEmbosser }
-                    .findFirst()
-                    .ifPresent { emb: EmbosserConfig? -> embosser = emb }
+            embosserList!!.firstOrNull { p: EmbosserConfig -> p.name == selEmbosser }
+                ?.let { emb: EmbosserConfig? -> embosser = emb }
         }
 
         // Blank label for blank grid cell
@@ -161,7 +159,7 @@ class EmbossDialog @JvmOverloads constructor(parentShell: Shell? = Display.getCu
     }
 
     private fun updateEmbosserCombo() {
-        embosserList!!.stream().filter(EmbosserConfig::isActive).forEach { e: EmbosserConfig -> cbPrinter!!.add(e.name) }
+        embosserList!!.filter(EmbosserConfig::isActive).forEach { e: EmbosserConfig -> cbPrinter!!.add(e.name) }
         var defaultIndex = 0
         if (embosser != null) {
             defaultIndex = cbPrinter!!.indexOf(embosser!!.name)

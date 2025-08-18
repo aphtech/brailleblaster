@@ -438,15 +438,14 @@ class UTDHelper {
 
 //		Nodes volumes = currNode.query("preceding::node()[@utd-style='Volume End']");
             val volumes = FastXPath.preceding(currNode)
-                .stream()
-                .filter { curNode: Node? ->
-                    curNode is Element && curNode.getAttribute("utd-style") != null && curNode.getAttributeValue(
+                .filterIsInstance<Element>()
+                .filter { curNode ->
+                    curNode.getAttribute("utd-style") != null && curNode.getAttributeValue(
                         "utd-style"
                     ) == "Volume End"
                 }
-                .toList()
             if (volumes.isNotEmpty()) {
-                val volumeBefore = volumes[0] as Element
+                val volumeBefore = volumes[0]
                 val endOfVolumeText = getFirstTextDescendant(volumeBefore).value
                 //Correction : It may say "End of Preliminary Volume []", so look for the last word
                 val split = endOfVolumeText.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()

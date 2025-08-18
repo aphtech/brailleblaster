@@ -298,11 +298,10 @@ class PagePropertiesTab private constructor(parent: Composite, engine: UTDTransl
         val microHeight = LengthUtils.Units.MILLIMETRES.fromUnits(pageHeight)
         // Compare width and height in micrometres as int
         // It is not good to compare == for double values.
-        val matchedPage = standardPages.stream()
-            .filter { p: Page -> p.height == microHeight && p.width == microWidth }.findFirst()
-        if (matchedPage.isPresent) pageTypes.select(
+        val matchedPage = standardPages.firstOrNull { p: Page -> p.height == microHeight && p.width == microWidth }
+        if (matchedPage != null) pageTypes.select(
             pageTypes.indexOf(
-                matchedPage.get().toString(units, NUMBER_FORMATTER)
+                matchedPage.toString(units, NUMBER_FORMATTER)
             )
         )
         else if (pageTypes.itemCount == standardPages.size) {

@@ -213,10 +213,9 @@ class BookToBBXConverter(
 
         // Remove all internal markers used for fixer communication
         FastXPath.descendant(documentRoot)
-            .stream()
-            .filter { node: Node? -> node is Element }
-            .filter { node: Node? -> BBX.FixerMarker.ATTRIB_FIXER_MARKER.has(node) }
-            .forEach { curNode: Node? -> BBX.FixerMarker.ATTRIB_FIXER_MARKER.detach(curNode as Element?) }
+            .filterIsInstance<Element>()
+            .filter { node -> BBX.FixerMarker.ATTRIB_FIXER_MARKER.has(node) }
+            .forEach { curNode -> BBX.FixerMarker.ATTRIB_FIXER_MARKER.detach(curNode) }
     }
 
     companion object {

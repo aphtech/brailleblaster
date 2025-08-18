@@ -69,7 +69,7 @@ open class SimpleTableFormatter : Formatter() {
         val textLength: Int
             get() {
                 val brls = brlElements
-                return brls.stream().mapToInt { e: Element -> e.value.length }.sum()
+                return brls.sumOf { e: Element -> e.value.length }
             }
     }
 
@@ -144,7 +144,7 @@ open class SimpleTableFormatter : Formatter() {
         val startingY = pageBuilder.y
         try {
             mutPageBuilders.addAll(addHeadings(mutPageBuilders, pageBuilder, cells[0], widths, startOfPage, startingY))
-        } catch (e: BadSimpleTableException) {
+        } catch (_: BadSimpleTableException) {
             return handleBadSimpleTable(
                 node,
                 originalTable, style,
@@ -184,7 +184,7 @@ open class SimpleTableFormatter : Formatter() {
                         lastRow
                     )
                 )
-            } catch (e: BadSimpleTableException) {
+            } catch (_: BadSimpleTableException) {
                 return handleBadSimpleTable(
                     node,
                     originalTable, style,

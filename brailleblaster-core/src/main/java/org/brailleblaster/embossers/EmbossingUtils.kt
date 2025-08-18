@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.embossers
 
-import com.google.common.base.Preconditions
 import kotlinx.serialization.json.Json
 import org.brailleblaster.BBIni
 import org.brailleblaster.document.BBDocument
@@ -47,7 +46,6 @@ import java.nio.file.Path
 import java.util.*
 import java.util.function.Consumer
 import java.util.function.Function
-import java.util.stream.Collectors
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import javax.print.PrintService
@@ -164,16 +162,11 @@ object EmbossingUtils {
             .toList()
         val noWarnings = prerequisiteWarnings.isEmpty()
         if (!noWarnings) {
-            val warningMsg = prerequisiteWarnings.stream()
-                .map { n: Notification -> n.getMessage(LocaleHandler.getDefault().locale) }
-                .collect(
-                    Collectors.joining(
-                        "\n", String.format(
-                            "%s%n%n", LocaleHandler.getDefault()["EmbossersManager.prerequisitesNotMet"]
-                        ),
-                        ""
-                    )
+            val warningMsg = prerequisiteWarnings.joinToString(
+                "\n", prefix = String.format(
+                    "%s%n%n", LocaleHandler.getDefault()["EmbossersManager.prerequisitesNotMet"]
                 )
+            ) { n: Notification -> n.getMessage(LocaleHandler.getDefault().locale) }
             Notify.showMessage(warningMsg)
         }
         return noWarnings
@@ -267,10 +260,9 @@ object EmbossingUtils {
     }
 
     private fun embossToFile(parent: Shell, zipEntryFunctions: Map<String, OutputToStreamFunction>): Boolean {
-        Preconditions.checkState(
-            !parent.isDisposed, "Shell has been disposed, this manager is no longer valid for use."
-        )
-        Preconditions.checkNotNull(zipEntryFunctions)
+        require(
+            !parent.isDisposed
+        ) { "Shell has been disposed, this manager is no longer valid for use." }
         val saveDialog = FileDialog(parent, SWT.SAVE)
         saveDialog.filterNames = arrayOf(LocaleHandler.getDefault()["EmbossersManager.zipFiles"])
         saveDialog.filterExtensions = arrayOf("*.zip")
@@ -320,9 +312,8 @@ object EmbossingUtils {
     }
 
     private class EmbossToStreamFunction(
-        private val serviceFactory: StreamPrintServiceFactory, embossFunction: Function<PrintService?, Boolean>
+        private val serviceFactory: StreamPrintServiceFactory, private val embossFunction: Function<PrintService?, Boolean>
     ) : OutputToStreamFunction {
-        private val embossFunction: Function<PrintService?, Boolean> = Preconditions.checkNotNull(embossFunction)
         override fun consume(os: OutputStream) {
             val service = serviceFactory.getPrintService(os)
             if (!embossFunction.apply(service)) {
