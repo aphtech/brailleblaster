@@ -34,7 +34,6 @@ import org.brailleblaster.perspectives.braille.viewInitializer.ViewInitializer
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.utd.actions.GenericBlockAction
 import org.brailleblaster.util.WhitespaceUtils.removeLineBreakElements
-import kotlin.streams.asSequence
 
 class SelectionHandler(manager: Manager?, vi: ViewInitializer?, list: MapList?) : Handler(
     manager!!, vi!!, list!!

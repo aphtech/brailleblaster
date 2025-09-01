@@ -35,7 +35,7 @@ import kotlin.math.abs
 /**
  * Handle fonts in views
  */
-class FontManager(@JvmField val m: Manager) {
+class FontManager(val m: Manager) {
     fun initViews() {
         initTextView()
         initBrailleView()

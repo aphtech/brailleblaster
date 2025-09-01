@@ -235,7 +235,6 @@ class BrailleView(manager: Manager, sash: Composite) : WPView(manager, sash) {
       positionFromStart -= checkPageRange(stateObj.currentStart, stateObj.currentStart + positionFromStart)
       cursorOffset = count
     } else if (positionFromStart > 0 && stateObj.currentStart + positionFromStart > stateObj.currentEnd) {
-      val text = view.getTextRange(stateObj.currentStart, positionFromStart)
       cursorOffset = stateObj.currentStart + positionFromStart - stateObj.currentEnd
       positionFromStart = 99999
     } else {

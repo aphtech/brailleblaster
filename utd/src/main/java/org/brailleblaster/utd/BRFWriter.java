@@ -443,53 +443,11 @@ public class BRFWriter {
 		}
 	}
 
-	public static class PageEntry {
-		final String braille, orig;
-		final boolean isPrintPage;
-
-		public PageEntry(String braille, String orig, boolean isPrintPage) {
-			this.braille = braille;
-			this.orig = orig;
-			this.isPrintPage = isPrintPage;
-		}
-
-		@Override
-		public String toString() {
-			return "PageEntry{" + "braille=" + braille + ", orig=" + orig + ", isPrintPage=" + isPrintPage + '}';
-		}
-	}
-
-	public static class Point {
-		final int x, y;
-
-		public Point(int x, int y) {
-			this.x = x;
-			this.y = y;
-		}
-
-		@Override
-		public String toString() {
-			return "(" + x + "," + y + ')';
-		}
-
-		@Override
-		public int hashCode() {
-			int hash = 3;
-			hash = 19 * hash + this.x;
-			hash = 19 * hash + this.y;
-			return hash;
-		}
-
-		@Override
-		public boolean equals(Object other) {
-			if (other == null)
-				return false;
-			if (getClass() != other.getClass())
-				return false;
-			final Point obj = (Point) other;
-      return this.x == obj.x && this.y == obj.y;
+    public record PageEntry(String braille, String orig, boolean isPrintPage) {
     }
-	}
+
+    public record Point(int x, int y) {
+    }
 
 	private static String debugLine(char[] line) {
 		StringBuilder builder = new StringBuilder();

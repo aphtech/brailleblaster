@@ -161,7 +161,7 @@ class GoToPageDialog(private val m: Manager) {
         //Normal people are 1-based
         val index = page.toInt() - 1
         m.getBraillePageElement(index)
-      } catch (e: NumberFormatException) {
+      } catch (_: NumberFormatException) {
         log.warn("Page '{}' is not a number", page)
         return null
       }
@@ -201,29 +201,26 @@ class GoToPageDialog(private val m: Manager) {
       )
     } else {
       val textAfterVolume = FastXPath.descendantAndFollowing(nodeToSearchForText)
-        .stream()
+          .filterIsInstance<nu.xom.Text>()
         .filter { curNode: Node ->
-          (curNode is nu.xom.Text
-              && curNode.value.isNotEmpty()
-              && XMLHandler.ancestorElementNot(
-            curNode
-          ) { curAncestor: Element ->
-            if (BBX.BLOCK.VOLUME_END.isA(curAncestor) //Don't get text nodes inside utd elements
-              || getByName(curAncestor.localName) != null
-            ) {
-              return@ancestorElementNot true
+            (curNode.value.isNotEmpty()
+                    && XMLHandler.ancestorElementNot(
+                curNode
+            ) { curAncestor: Element ->
+                if (BBX.BLOCK.VOLUME_END.isA(curAncestor) //Don't get text nodes inside utd elements
+                    || getByName(curAncestor.localName) != null
+                ) {
+                    return@ancestorElementNot true
+                }
+                val brl = UTDHelper.getAssociatedBrlElement(curNode)
+                if (brl != null) {
+                    return@ancestorElementNot brl.childCount == 0
+                }
+                false
             }
-            val brl = UTDHelper.getAssociatedBrlElement(curNode)
-            if (brl != null) {
-              return@ancestorElementNot brl.childCount == 0
-            }
-            false
-          }
-              &&
-              !MathModule.isMath(curNode))
-        }.findFirst()
-        .map { curNode: Node? -> curNode as nu.xom.Text? }
-        .get()
+                    &&
+                    !MathModule.isMath(curNode))
+        }.first()
       val (_, value) = m.getBraillePageElementByUntranslatedPage(brlPage, textAfterVolume)
         ?: throw BBNotifyException(
           "Braille page "

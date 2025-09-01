@@ -112,8 +112,8 @@ class EmbosserSettingsTab(folder: TabFolder?) : SettingsUITab {
         } else {
             // An embosser is selected.
             // Only allow editing of active embosser profiles.
-            val active = embosserList.stream()
-                .anyMatch { p: EmbosserConfig -> p.name == defaultEmbosserCombo.text && p.isActive }
+            val active = embosserList
+                .any { p: EmbosserConfig -> p.name == defaultEmbosserCombo.text && p.isActive }
             btnEditEmbosser.isEnabled = active
             btnRemoveEmbosser.isEnabled = true
         }

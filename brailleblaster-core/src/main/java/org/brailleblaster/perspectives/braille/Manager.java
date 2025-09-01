@@ -123,7 +123,7 @@ public class Manager extends Controller {
     private BrailleDocument document;
     private final FontManager fontManager;
     private MapList list;
-    private final Vector<String> ignoreList = new Vector<>();
+    private final List<String> ignoreList = new Vector<>();
 
     private final Reformatter reformatter;
     private CountDownLatch finishFormattingLatch, rebuiltSectionLatch, rebuiltSectionMapLatch;
@@ -1613,7 +1613,7 @@ public class Manager extends Controller {
         return viewManager.stylePane;
     }
 
-    public Vector<String> getIgnoreList() {
+    public List<String> getIgnoreList() {
         return ignoreList;
     }
 

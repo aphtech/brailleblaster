@@ -741,14 +741,13 @@ class PrintPreview private constructor(
             }
         } else {
             // Find the offset relating to the end of the current page.
-            val pageEnd = pageRanges.stream().filter { e: Range<Int> -> e.contains(offset) }.findFirst()
-                .map { obj: Range<Int> -> obj.upperEndpoint() }
-                .orElse(offset)
+            val pageEnd = pageRanges.filter { e -> offset in e }.map { e -> e.upperEndpoint() }.firstOrNull() ?: offset
             val lookup: Map<String, Int> = if (brlPageButton.selection) brlPageOffsets else printPageOffsets
             // Find the last page before the end of the current page.
-            lookup.entries.stream().filter { e: Map.Entry<String, Int> -> e.value <= pageEnd }
-                .reduce { _: Map.Entry<String, Int>?, b: Map.Entry<String, Int>? -> b }
-                .ifPresent { e: Map.Entry<String, Int> -> curPage.text = e.key }
+            lookup.entries
+                .filter { (_,v) -> v <= pageEnd }
+                .reduceOrNull { _: Map.Entry<String, Int>?, b: Map.Entry<String, Int>? -> b }
+                ?.let { (k, _) -> curPage.text = k }
         }
 
         updatePPStatusBar()

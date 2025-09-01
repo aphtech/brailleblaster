@@ -193,8 +193,8 @@ object SearchUtils {
             val findEmphasis = makeEnumFromList(so.settings.findEmphasisFormatting, false)
             val findNegatedEmphasis = makeEnumFromList(so.settings.findEmphasisFormatting, true)
 
-            return emphasisBits.containsAll(findEmphasis) && emphasisBits.stream()
-                .noneMatch { o: EmphasisType -> findNegatedEmphasis.contains(o) }
+            return emphasisBits.containsAll(findEmphasis) && emphasisBits
+                .none { o: EmphasisType -> findNegatedEmphasis.contains(o) }
         }
         //if there are no emphasis criteria to look for, every element is a valid match
         return true
@@ -213,7 +213,7 @@ object SearchUtils {
                 //if the element is not null after checking the criteria, it's probably valid
                 return true
             }
-        } catch (e: NullPointerException) {
+        } catch (_: NullPointerException) {
             throw SearchException(
                 """Null pointer thrown searching for "${click.settings.findString}" with styles: ${
                     click.settings.printStyleFormatting(

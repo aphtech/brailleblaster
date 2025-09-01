@@ -17,9 +17,8 @@ package org.brailleblaster.exceptions
 
 import org.slf4j.helpers.MessageFormatter
 
-class BBRuntimeException : RuntimeException {
-    constructor(message: String, vararg args: Any?) : super(format(message, *args))
-    constructor(message: String, cause: Throwable?, vararg args: Any?) : super(format(message, *args), cause)
+class BBRuntimeException(message: String, cause: Throwable?, vararg args: Any?) :
+    RuntimeException(format(message, *args), cause) {
 
     companion object {
         private fun format(messagePattern: String, vararg args: Any?): String {
