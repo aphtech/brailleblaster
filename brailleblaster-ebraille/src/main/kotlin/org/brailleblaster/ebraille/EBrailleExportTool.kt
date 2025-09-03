@@ -24,7 +24,6 @@ import org.brailleblaster.utils.xom.DocumentTraversal
 import org.brailleblaster.wordprocessor.BBFileDialog
 import org.eclipse.swt.SWT
 import kotlin.io.path.Path
-import kotlin.io.path.writer
 
 object EBrailleExportTool : MenuTool {
     override val topMenu = TopMenu.FILE
@@ -32,11 +31,9 @@ object EBrailleExportTool : MenuTool {
     override fun onRun(bbData: BBSelectionData) {
         DocumentTraversal.traverseDocument(bbData.manager.doc, BBX2EbrailleHtml())
         BBFileDialog(bbData.wpManager.shell, SWT.SAVE,  suggestedFileName = null, filterNames = arrayOf("eBraille files"), filterExtensions = arrayOf("*.ebrl")).open()?.let { f ->
-            Path(f).writer(Charsets.UTF_8).use { w ->
-                val converter = BBX2EbrailleHtml()
-                DocumentTraversal.traverseDocument(bbData.manager.doc, converter)
-                converter.htmlDoc?.html(w)
-            }
+            val converter = BBX2EbrailleHtml()
+            DocumentTraversal.traverseDocument(bbData.manager.doc, converter)
+            EBraillePackager.packageDocument(Path(f), converter.htmlDoc!!)
         }
     }
 }
