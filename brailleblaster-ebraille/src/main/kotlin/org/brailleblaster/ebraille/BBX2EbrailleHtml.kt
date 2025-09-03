@@ -38,8 +38,8 @@ class BBX2EbrailleHtml : DocumentTraversal.Handler {
                 e.childNodes.filterIsInstance<Text>().joinToString { BrailleMapper.ASCII_TO_UNICODE_FAST.map(it.value) }
             )
             false
-        } else if (BBX.BLOCK.isA(e)) {
-            currentBlock = htmlDoc?.body()?.appendElement("pre")
+        } else if (BBX.BLOCK.DEFAULT.isA(e)) {
+            currentBlock = htmlDoc?.body()?.appendElement("p")
             true
         } else {
             true
