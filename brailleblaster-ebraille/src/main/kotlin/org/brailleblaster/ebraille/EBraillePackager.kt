@@ -26,11 +26,11 @@ object EBraillePackager {
     private const val MIMETYPE_DATA = "application/epub+zip"
     fun packageDocument(outPath: Path, html: Document) {
         ZipArchiveOutputStream(FileChannel.open(outPath, StandardOpenOption.CREATE, StandardOpenOption.WRITE)).use { zos ->
-            zos.putArchiveEntry(ZipArchiveEntry("/mimetype").apply {
+            zos.putArchiveEntry(ZipArchiveEntry("mimetype").apply {
                 method = ZipArchiveEntry.STORED
             })
             zos.writeUsAscii(MIMETYPE_DATA)
-            zos.putArchiveEntry(ZipArchiveEntry("/ebraille/document.html"))
+            zos.putArchiveEntry(ZipArchiveEntry("ebraille/document.html"))
             zos.writer(Charsets.UTF_8).let {
                 html.html(it)
                 it.flush()
