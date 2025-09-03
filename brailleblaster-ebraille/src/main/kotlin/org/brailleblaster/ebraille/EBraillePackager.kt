@@ -25,7 +25,7 @@ import java.nio.file.StandardOpenOption
 object EBraillePackager {
     private const val MIMETYPE_DATA = "application/epub+zip"
     fun packageDocument(outPath: Path, html: Document) {
-        ZipArchiveOutputStream(FileChannel.open(outPath, StandardOpenOption.CREATE, StandardOpenOption.WRITE)).use { zos ->
+        ZipArchiveOutputStream(FileChannel.open(outPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE)).use { zos ->
             zos.putArchiveEntry(ZipArchiveEntry("mimetype").apply {
                 method = ZipArchiveEntry.STORED
             })
