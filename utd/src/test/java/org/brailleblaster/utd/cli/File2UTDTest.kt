@@ -15,13 +15,11 @@
  */
 package org.brailleblaster.utd.cli
 
-import com.google.common.io.Resources
 import org.brailleblaster.utd.testutils.UTDConfigUtils
 import org.slf4j.LoggerFactory
 import org.testng.annotations.Test
 import java.io.File
 import java.io.FileOutputStream
-import java.io.OutputStream
 
 class File2UTDTest {
     @Test
@@ -32,15 +30,8 @@ class File2UTDTest {
         // Also fixes the issue of building from a path containing a space.
         // (See: RT4407)
         val tempIn = File.createTempFile("File2UTD", "basicDTBook.xml")
-        var outStream: OutputStream? = null
-        try {
-            outStream = FileOutputStream(tempIn)
-            Resources.copy(javaClass.getResource("basicDTBook.xml")!!, outStream)
-        } finally {
-            if (outStream != null) {
-                outStream.close()
-                outStream = null
-            }
+        FileOutputStream(tempIn).use { outStream ->
+            javaClass.getResourceAsStream("basicDTBook.xml")?.use { it.transferTo(outStream) }
         }
         val input = tempIn.absolutePath
         val output = File.createTempFile("file2utd", "basicDTBook").toString()
