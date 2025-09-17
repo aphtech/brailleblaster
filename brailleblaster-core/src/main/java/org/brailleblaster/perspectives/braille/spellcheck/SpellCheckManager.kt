@@ -54,11 +54,7 @@ class SpellCheckManager(private var m: Manager) {
   private var correctSpelling = false
 
   fun open() {
-    if (!m.ignoreList.isEmpty()) {
-      for (dc in m.ignoreList) {
-        ignoreList.add(dc)
-      }
-    }
+    ignoreList.addAll(m.ignoreList)
     try {
       dictLang = localeHandler["dictionary"]
       val dictPath = FileUtils.findInProgramData("dictionaries${FileSystems.getDefault().separator}$dictLang.dic")
@@ -89,7 +85,7 @@ class SpellCheckManager(private var m: Manager) {
   fun checkWord() {
     correctSpelling = true
     while (correctSpelling && tokenizer!!.next()) {
-      if (!ignoreList.contains(tokenizer!!.currentWord)) {
+      if (tokenizer!!.currentWord !in ignoreList) {
         correctSpelling = sc!!.checkSpelling(tokenizer!!.currentWord)
         if (!correctSpelling) {
           val suggestions = sc!!.getSuggestions(tokenizer!!.currentWord)

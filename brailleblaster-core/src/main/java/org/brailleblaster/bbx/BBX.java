@@ -64,7 +64,6 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -263,7 +262,7 @@ public class BBX {
 
         private SectionElement() {
             super("SECTION", false);
-            subTypes = ImmutableList.of(ROOT, OTHER);
+            subTypes = List.of(ROOT, OTHER);
         }
 
         @Override
@@ -746,7 +745,7 @@ public class BBX {
 
         private ContainerElement() {
             super("CONTAINER", false);
-            subTypes = ImmutableList.of(LIST, DONT_SPLIT, TABLE, TABLE_ROW, TABLETN, DOUBLE_SPACE, BOX, IMAGE, PRODNOTE,
+            subTypes = List.of(LIST, DONT_SPLIT, TABLE, TABLE_ROW, TABLETN, DOUBLE_SPACE, BOX, IMAGE, PRODNOTE,
                     NOTE, PROSE, STYLE, TPAGE, TPAGE_SECTION, TPAGE_CATEGORY, VOLUME_TOC, VOLUME, FALLBACK, OTHER,
                     CAPTION, BLOCKQUOTE, DEFAULT, NUMBER_LINE, MATRIX, TEMPLATE, SPATIAL_GRID, CONNECTING_CONTAINER);
         }
@@ -1023,7 +1022,7 @@ public class BBX {
 
         private BlockElement() {
             super("BLOCK", true);
-            subTypes = ImmutableList.of(LIST_ITEM, TABLE_CELL, MARGIN, VOLUME_END, TOC_VOLUME_SPLIT, PAGE_NUM,
+            subTypes = List.of(LIST_ITEM, TABLE_CELL, MARGIN, VOLUME_END, TOC_VOLUME_SPLIT, PAGE_NUM,
                     IMAGE_PLACEHOLDER, DEFAULT, STYLE, SPATIAL_MATH);
         }
 
@@ -1120,7 +1119,7 @@ public class BBX {
 
         private InlineElement() {
             super("INLINE", true);
-            subTypes = ImmutableList.of(EMPHASIS, MATHML, LINE_BREAK);
+            subTypes = List.of(EMPHASIS, MATHML, LINE_BREAK);
         }
 
         @Override
@@ -1220,7 +1219,7 @@ public class BBX {
 
         private SpanElement() {
             super("SPAN", true);
-            subTypes = ImmutableList.of(IMAGE, PAGE_NUM, SUPERSCRIPT, POEM_LINE_NUMBER, PROSE_LINE_NUMBER,
+            subTypes = List.of(IMAGE, PAGE_NUM, SUPERSCRIPT, POEM_LINE_NUMBER, PROSE_LINE_NUMBER,
                     DEFINITION_TERM, TAB, FALLBACK, NOTEREF, GUIDEWORD, OTHER);
         }
 
@@ -1277,7 +1276,7 @@ public class BBX {
         }
     }
 
-    public static final ImmutableList<BBX.@NotNull CoreType> CORE_TYPES = ImmutableList.of(SECTION, CONTAINER, BLOCK, INLINE,
+    public static final List<BBX.@NotNull CoreType> CORE_TYPES = List.of(SECTION, CONTAINER, BLOCK, INLINE,
             SPAN);
 
     public static CoreType getType(Element elem) {
@@ -1340,7 +1339,7 @@ public class BBX {
         // instance fields/methods
         // So this workaround was used so getSubType works, is performant, can
         // still use final, just a bit more verbose
-        protected ImmutableList<@NotNull SubType> subTypes;
+        protected List<@NotNull SubType> subTypes;
 
         public CoreType(String name, boolean textChildrenValid) {
             if (StringUtils.isBlank(name)) {
@@ -1364,7 +1363,7 @@ public class BBX {
             throw new NodeException("Missing subtype " + subtypeName + " for", sectionNode);
         }
 
-        public ImmutableList<@NotNull SubType> getSubTypes() {
+        public List<@NotNull SubType> getSubTypes() {
             return subTypes;
         }
 

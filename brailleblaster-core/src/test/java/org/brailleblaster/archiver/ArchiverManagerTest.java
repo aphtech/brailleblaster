@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.archiver;
 
-import com.google.common.collect.ImmutableSet;
 import nu.xom.Element;
 import nu.xom.Nodes;
 import org.brailleblaster.archiver2.*;
@@ -36,6 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.instanceOf;
 
@@ -125,7 +125,7 @@ public class ArchiverManagerTest {
 			Path pathBeforeSave = arch.getPath();
 			tmpSaveFile = Files.createTempFile("bb-test", "save");
 			Files.delete(tmpSaveFile);
-			arch.save(tmpSaveFile, arch.getBbxDocument(), new UTDTranslationEngine(), ImmutableSet.of());
+			arch.save(tmpSaveFile, arch.getBbxDocument(), new UTDTranslationEngine(), Set.of());
 			Assert.assertEquals(arch.getPath(), pathBeforeSave);
 			
 			if (arch instanceof BBZArchiver && testOPF) {
@@ -146,7 +146,7 @@ public class ArchiverManagerTest {
 			//Test re-savability of a fresh BBZArchiver
 			Path tmpSaveReAsFile = Files.createTempFile("bb-test", "saveReAs");
 			Files.delete(tmpSaveReAsFile);
-			saveArch.saveAs(tmpSaveReAsFile, saveArch.getBbxDocument(), new UTDTranslationEngine(), ImmutableSet.of());
+			saveArch.saveAs(tmpSaveReAsFile, saveArch.getBbxDocument(), new UTDTranslationEngine(), Set.of());
 			Assert.assertEquals(saveArch.getPath(), tmpSaveReAsFile);
 			
 			if (saveArch instanceof BBZArchiver && testOPF) {
@@ -161,7 +161,7 @@ public class ArchiverManagerTest {
 			log.warn("Save 3");
 			Path tmpSaveAsFile = Files.createTempFile("bb-test", "saveAs");
 			Files.delete(tmpSaveAsFile);
-			arch.saveAs(tmpSaveAsFile, arch.getBbxDocument(), new UTDTranslationEngine(), ImmutableSet.of());
+			arch.saveAs(tmpSaveAsFile, arch.getBbxDocument(), new UTDTranslationEngine(), Set.of());
 			Assert.assertEquals(arch.getPath(), tmpSaveAsFile);
 
 			if (arch instanceof BBZArchiver && testOPF) {
@@ -230,8 +230,8 @@ public class ArchiverManagerTest {
 	@Test(enabled =false)
 	public void saveZipAgain_issue6359() throws IOException {
 		try (Archiver2 archive = archiverManager.load(createTempZip())) {
-			archive.save(archive.getPath(), archive.getBbxDocument(), new UTDTranslationEngine(), ImmutableSet.of());
-			archive.save(archive.getPath(), archive.getBbxDocument(), new UTDTranslationEngine(), ImmutableSet.of());
+			archive.save(archive.getPath(), archive.getBbxDocument(), new UTDTranslationEngine(), Set.of());
+			archive.save(archive.getPath(), archive.getBbxDocument(), new UTDTranslationEngine(), Set.of());
 		}
 	}
 	
@@ -239,8 +239,8 @@ public class ArchiverManagerTest {
 	public void saveAsZipAgain_newFile_issue6359() throws IOException {
 		try (Archiver2 archive = archiverManager.load(createTempZip())) {
 			Path path = Files.createTempFile("archiverManager", ".bbz");
-			archive.saveAs(path, archive.getBbxDocument(), new UTDTranslationEngine(), ImmutableSet.of());
-			archive.saveAs(path, archive.getBbxDocument(), new UTDTranslationEngine(), ImmutableSet.of());
+			archive.saveAs(path, archive.getBbxDocument(), new UTDTranslationEngine(), Set.of());
+			archive.saveAs(path, archive.getBbxDocument(), new UTDTranslationEngine(), Set.of());
 		}
 	}
 	
@@ -250,11 +250,11 @@ public class ArchiverManagerTest {
 		try (Archiver2 archive = archiverManager.load(origZipFile)) {
 			Path newZipArchive = Files.createTempFile("archiverManager", ".bbz");
 			log.error("--------------------- SAVE AS #1 --");
-			archive.saveAs(newZipArchive, archive.getBbxDocument(), new UTDTranslationEngine(), ImmutableSet.of());
+			archive.saveAs(newZipArchive, archive.getBbxDocument(), new UTDTranslationEngine(), Set.of());
 			log.error("--------------------- SAVE #2 --");
-			archive.save(origZipFile, archive.getBbxDocument(), new UTDTranslationEngine(), ImmutableSet.of());
+			archive.save(origZipFile, archive.getBbxDocument(), new UTDTranslationEngine(), Set.of());
 			log.error("--------------------- SAVE AS #3 --");
-			archive.saveAs(newZipArchive, archive.getBbxDocument(), new UTDTranslationEngine(), ImmutableSet.of());
+			archive.saveAs(newZipArchive, archive.getBbxDocument(), new UTDTranslationEngine(), Set.of());
 		}
 	}
 	
@@ -264,11 +264,11 @@ public class ArchiverManagerTest {
 		try (Archiver2 archive = archiverManager.load(origZipFile)) {
 			Path newZipArchive = Files.createTempFile("archiverManager", ".bbz");
 			log.error("--------------------- SAVE AS #1 --");
-			archive.save(origZipFile, archive.getBbxDocument(), new UTDTranslationEngine(), ImmutableSet.of());
+			archive.save(origZipFile, archive.getBbxDocument(), new UTDTranslationEngine(), Set.of());
 			log.error("--------------------- SAVE #2 --");
-			archive.saveAs(newZipArchive, archive.getBbxDocument(), new UTDTranslationEngine(), ImmutableSet.of());
+			archive.saveAs(newZipArchive, archive.getBbxDocument(), new UTDTranslationEngine(), Set.of());
 			log.error("--------------------- SAVE AS #3 --");
-			archive.save(origZipFile, archive.getBbxDocument(), new UTDTranslationEngine(), ImmutableSet.of());
+			archive.save(origZipFile, archive.getBbxDocument(), new UTDTranslationEngine(), Set.of());
 		}
 	}
 	
@@ -278,10 +278,10 @@ public class ArchiverManagerTest {
 		Archiver2 archive = archiverManager.load(zip);
 		Archiver2 archive2 = archiverManager.load(zip);
 		Path path = Files.createTempFile("archiverManager", ".bbz");
-		archive.saveAs(path, archive.getBbxDocument(), new UTDTranslationEngine(), ImmutableSet.of());
+		archive.saveAs(path, archive.getBbxDocument(), new UTDTranslationEngine(), Set.of());
 		// should fail, can't have 2 tabs overwriting each other
 		try {
-			archive2.saveAs(path, archive.getBbxDocument(), new UTDTranslationEngine(), ImmutableSet.of());
+			archive2.saveAs(path, archive.getBbxDocument(), new UTDTranslationEngine(), Set.of());
 		} catch (BBNotifyException e) {
 			log.error("on expected error", e);
 			archive.close();

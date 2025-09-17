@@ -15,8 +15,6 @@
  */
 package org.brailleblaster.archiver2
 
-import com.google.common.collect.ImmutableMultimap
-import com.google.common.collect.Multimap
 import jakarta.xml.bind.DatatypeConverter
 import nu.xom.Document
 import org.brailleblaster.bbx.BookToBBXConverter
@@ -27,7 +25,7 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
-import java.util.Locale
+import java.util.*
 import javax.xml.stream.XMLInputFactory
 
 /**
@@ -35,27 +33,21 @@ import javax.xml.stream.XMLInputFactory
  * if necessary
  */
 object ArchiverFactory {
-    private val loaders: Multimap<Types, FileLoader> = ImmutableMultimap.builder<Types, FileLoader>().apply {
-        put(Types.XML, BBXArchiverLoader.INSTANCE)
-        // put BBZ archiver first so it can find the bbx_location file
-        put(Types.ZIP, BBZArchiver.Loader.INSTANCE)
-        put(Types.XML, NimasFileArchiverLoader)
-        put(Types.ZIP, NimasZipArchiverLoader.INSTANCE)
+    private val loaders: Map<Types, List<FileLoader>> = mapOf(
+        Types.ZIP to listOf(BBZArchiver.Loader.INSTANCE, NimasZipArchiverLoader.INSTANCE),
+        Types.XML to listOf(BBXArchiverLoader.INSTANCE, NimasFileArchiverLoader),
+        Types.DOCX to listOf(PandocArchiverLoader),
+        Types.EPUB to listOf(PandocArchiverLoader),Types.MD to listOf(PandocArchiverLoader),
+        Types.MD to listOf(PandocArchiverLoader),
+        Types.HTML to listOf(PandocArchiverLoader),
+        Types.ODT to listOf(PandocArchiverLoader),
+        Types.TEX to listOf(PandocArchiverLoader),
+        Types.OTHER to listOf(BRLArchiverLoader.INSTANCE, BRFArchiverLoader.INSTANCE, TextArchiveLoader.INSTANCE)
+    )
 
-        // these are the pandoc file types
-        put(Types.DOCX, PandocArchiverLoader)
-        put(Types.EPUB, PandocArchiverLoader)
-        put(Types.MD, PandocArchiverLoader)
-        put(Types.HTML, PandocArchiverLoader)
-        put(Types.ODT, PandocArchiverLoader)
-        put(Types.TEX, PandocArchiverLoader)
-        put(Types.OTHER, BRLArchiverLoader.INSTANCE)
-        put(Types.OTHER, BRFArchiverLoader.INSTANCE)
-        put(Types.OTHER, TextArchiveLoader.INSTANCE)
-    }.build()
     private val supportedExtensionAndDesc: Map<String, String> = buildMap {
         var alreadyLoaded = false // used to skip double loading pandoc loader
-        for (loader in loaders.values()) {
+        for (loader in loaders.values.flatten()) {
             // hack to avoid multiple listing of file types for pandoc
             if (loader is PandocArchiverLoader) {
                 alreadyLoaded = if (alreadyLoaded) {
@@ -78,7 +70,7 @@ object ArchiverFactory {
         try {
             parseData = detectFileType(path)
             log.info("Parsed file {} as {}", path, parseData)
-            val archiver = loaders[parseData.type].firstNotNullOfOrNull { curLoader ->
+            val archiver = loaders[parseData.type]?.firstNotNullOfOrNull { curLoader ->
                 log.info("Attempting to load {} with loader {}", path, curLoader)
                 curLoader.tryLoad(path, parseData)
             }
