@@ -77,7 +77,6 @@ public class MockTranslatorFactory {
         doReturn(translationResultMock).when(louisMock).translate(table, str, typeForms, 0, 0);
 
         BrailleSettings brailleSettings = new BrailleSettings();
-        brailleSettings.setUseLibLouisAPH(false);
         brailleSettings.setMainTranslationTable(table);
         brailleSettings.setUseAsciiBraille(true);
 

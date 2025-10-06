@@ -24,7 +24,7 @@ import org.brailleblaster.perspectives.braille.document.BrailleDocument
 import org.brailleblaster.perspectives.braille.mapping.maps.MapList
 import org.brailleblaster.perspectives.braille.messages.InsertNodeMessage
 import org.brailleblaster.perspectives.braille.viewInitializer.ViewInitializer
-import org.brailleblaster.utd.internal.xml.XMLHandler2
+import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.EmphasisType
 import org.brailleblaster.utils.UTD_NS
 
@@ -44,7 +44,7 @@ class InsertElementHandler(manager: Manager, vi: ViewInitializer?, list: MapList
         }
 
         if (isTRNote(e)) {
-            XMLHandler2.wrapNodeWithElement(
+            XMLHandler.wrapNodeWithElement(
                 e.getChild(0),
                 BBX.INLINE.EMPHASIS.create(EmphasisType.TRANS_NOTE)
             )

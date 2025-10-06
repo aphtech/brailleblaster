@@ -16,6 +16,7 @@
 package org.brailleblaster.utd.testutils.test;
 
 import java.io.StringReader;
+import java.util.stream.StreamSupport;
 
 import nu.xom.Document;
 import nu.xom.Element;
@@ -38,8 +39,7 @@ public class TestOptionStyleMapTest {
         Document doc = new XMLHandler().load(new StringReader("<root><p linesBefore='20' format='TOC'/></root>"));
         log.trace("yay");
 
-        Element pTag = FastXPath.descendant(doc)
-                .stream()
+        Element pTag = StreamSupport.stream(FastXPath.descendant(doc).spliterator(), false)
                 .filter(curNode -> curNode instanceof Element && ((Element) curNode).getLocalName().equals("p"))
                 .findFirst()
                 .map(node -> (Element) node)

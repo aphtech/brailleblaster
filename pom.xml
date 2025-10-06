@@ -48,23 +48,23 @@ child.project.url.inherit.append.path="false">
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <wrappermavenplugin.version>3.3.2</wrappermavenplugin.version>
         <versions.plugin.version>2.18.0</versions.plugin.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.version>2.2.20</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <serialization.version>1.9.0</serialization.version>
         <jetbrains.annotations.version>26.0.2-1</jetbrains.annotations.version>
         <graalvm.version>25.0.0</graalvm.version>
-        <slf4j.version>2.0.16</slf4j.version>
+        <slf4j.version>2.0.17</slf4j.version>
         <logback-core.version>1.5.18</logback-core.version>
         <logback-classic.version>1.5.18</logback-classic.version>
         <icu4j.version>77.1</icu4j.version>
         <mathcat4j.version>0.6.8-1</mathcat4j.version>
         <jlouis.version>c75db74718cea465f839f7cb5b4bcf716ba3e3e3</jlouis.version>
         <libembosser.version>1.4.3</libembosser.version>
-        <jaxbapi.version>4.0.2</jaxbapi.version>
-        <jaxbruntime.version>4.0.5</jaxbruntime.version>
+        <jaxbapi.version>4.0.4</jaxbapi.version>
+        <jaxbruntime.version>4.0.6</jaxbruntime.version>
         <activation.version>1.1</activation.version>
         <swt.platform>win32.win32.x86_64</swt.platform>
         <swt.version>3.128.0</swt.version>
@@ -84,8 +84,8 @@ child.project.url.inherit.append.path="false">
         <mavensurefireplugin.version>3.0.0-M6</mavensurefireplugin.version>
         <mavencompilerplugin.version>3.14.0</mavencompilerplugin.version>
         <downloadmavenplugin.version>2.0.0</downloadmavenplugin.version>
-        <guava.version>33.4.8-jre</guava.version>
-        <gson.version>2.12.1</gson.version>
+        <guava.version>33.5.0-jre</guava.version>
+        <gson.version>2.13.2</gson.version>
         <jcommander.version>2.0</jcommander.version>
         <mockitocore.version>5.6.0</mockitocore.version>
         <mavenenforcerplugin.version>3.0.0-M3</mavenenforcerplugin.version>
@@ -93,10 +93,10 @@ child.project.url.inherit.append.path="false">
         <commons-compress.version>1.28.0</commons-compress.version>
         <commonsio.version>2.20.0</commonsio.version>
         <commonstext.version>1.14.0</commonstext.version>
-        <commons-lang3.version>3.18.0</commons-lang3.version>
+        <commons-lang3.version>3.19.0</commons-lang3.version>
         <commonsexec.version>1.5.0</commonsexec.version>
         <commonscollections4.version>4.5.0</commonscollections4.version>
-        <jna.version>5.17.0</jna.version>
+        <jna.version>5.18.0</jna.version>
         <pandoc.version>3.6.4</pandoc.version>
         <orgeclipseswtbotswtfinder.version>f5b2edaee2</orgeclipseswtbotswtfinder.version>
     </properties>

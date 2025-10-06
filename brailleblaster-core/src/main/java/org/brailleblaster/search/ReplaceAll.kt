@@ -44,7 +44,7 @@ class ReplaceAll(private val man: Manager, private val click: Click) {
         }
 
         for (node in nodeArray) {
-            stripUTDRecursive(node.parent)
+            stripUTDRecursive(node.parent as Element)
         }
 
         click.settings.replaceStyleFormatting?.let {
@@ -147,8 +147,8 @@ class ReplaceAll(private val man: Manager, private val click: Click) {
             val nodeValue = tn.value
             var matches = SearchUtils.matchPhrase(nodeValue, click, true)
 
-            if (n.parent is Element) {
-                val element = n.parent as Element
+            val element = n.parent
+            if (element is Element) {
                 if (BBX.INLINE.EMPHASIS.isA(element)) {
                     val existingEnum = BBX.INLINE.EMPHASIS.ATTRIB_EMPHASIS[element]
 
@@ -158,7 +158,7 @@ class ReplaceAll(private val man: Manager, private val click: Click) {
                     //All emphasis removed from the set
                     if (existingEnum.isEmpty()) {
                         //We removed the only emphasis, get rid of the wrapper
-                        val pn = element.parent
+                        val pn = element.parent as Element
                         stripUTDRecursive(pn)
                         n.detach()
                         pn.replaceChild(element, n)

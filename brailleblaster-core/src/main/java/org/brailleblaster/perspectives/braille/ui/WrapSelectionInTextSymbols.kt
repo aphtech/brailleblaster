@@ -26,7 +26,7 @@ import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.mvc.XMLNodeCaret
 import org.brailleblaster.perspectives.mvc.XMLTextCaret
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
-import org.brailleblaster.utd.internal.xml.XMLHandler2
+import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.EmphasisType
 import org.brailleblaster.util.Notify
 import org.brailleblaster.util.Notify.notify
@@ -192,7 +192,7 @@ class WrapSelectionInTextSymbols(
     companion object {
         var defaultNoWrap: TextWrapCallBack = TextWrapCallBack { n: Node -> n }
         var direct: TextWrapCallBack = TextWrapCallBack { n: Node ->
-            XMLHandler2.wrapNodeWithElement(
+            XMLHandler.wrapNodeWithElement(
                 n,
                 BBX.INLINE.EMPHASIS.create(EmphasisType.NO_TRANSLATE)
             )

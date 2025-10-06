@@ -37,7 +37,6 @@ import org.brailleblaster.utd.config.StyleDefinitions
 import org.brailleblaster.utd.config.UTDConfig
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.mwhapples.jlouis.LogLevels
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -224,7 +223,7 @@ class UTDManager @JvmOverloads constructor(styleDefs: StyleDefinitions = loadSty
       // Use simpler override style map
       BBX._ATTRIB_OVERRIDE_ACTION[element] = actionName
       log.debug("Applied override action {} to {}", action,
-          XMLHandler2.toXMLStartTag(element)
+          XMLHandler.toXMLStartTag(element)
       )
     } else {
       throw RuntimeException("Unhandlable action (does it take fields?) $action")
@@ -421,8 +420,8 @@ class UTDManager @JvmOverloads constructor(styleDefs: StyleDefinitions = loadSty
     }
 
     if (element.document == null) {
-      throw NodeException("Element missing from document? " + XMLHandler2.toXMLSimple(
-        element
+      throw NodeException("Element missing from document? " + XMLHandler.toXMLSimple(
+          element
       ), doc)
     }
 
@@ -441,13 +440,10 @@ class UTDManager @JvmOverloads constructor(styleDefs: StyleDefinitions = loadSty
 
   // For RT 5752 added getPreviousBBXSiblingNode and getNextBBXSiblingNode
   private fun getPreviousBBXSiblingNode(element: Node): Node? {
-    var sibling: Node? = element
+    var sibling: Node = element
     var isBBX = false
     while (!isBBX) {
-      sibling = XMLHandler.previousSiblingNode(sibling)
-      if (null == sibling) {
-        break
-      }
+      sibling = XMLHandler.previousSiblingNode(sibling) ?: return null
       if (sibling is Element) {
         if (sibling.namespacePrefix.equals("utd", ignoreCase = true)) {
           continue
@@ -459,13 +455,10 @@ class UTDManager @JvmOverloads constructor(styleDefs: StyleDefinitions = loadSty
   }
 
   private fun getNextBBXSiblingNode(element: Node): Node? {
-    var sibling: Node? = element
+    var sibling: Node = element
     var isBBX = false
     while (!isBBX) {
-      sibling = XMLHandler.nextSiblingNode(sibling)
-      if (null == sibling) {
-        break
-      }
+      sibling = XMLHandler.nextSiblingNode(sibling) ?: return null
       if (sibling is Element) {
         if (sibling.namespacePrefix.equals("utd", ignoreCase = true)) {
           continue

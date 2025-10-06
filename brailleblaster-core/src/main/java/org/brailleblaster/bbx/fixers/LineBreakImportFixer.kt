@@ -20,14 +20,13 @@ import nu.xom.Node
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.slf4j.LoggerFactory
 
 open class LineBreakImportFixer : AbstractFixer() {
     override fun fix(matchedNode: Node) {
         val brElement = matchedNode as Element
         log.trace("found br {}",
-            XMLHandler2.toXMLSimple(brElement)
+            XMLHandler.toXMLSimple(brElement)
         )
         val oldBlock = XMLHandler.ancestorVisitorElement(
             brElement

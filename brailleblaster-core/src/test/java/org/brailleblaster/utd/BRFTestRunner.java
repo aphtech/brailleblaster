@@ -23,7 +23,6 @@ import java.util.Objects;
 
 import org.brailleblaster.settings.UTDManager;
 import org.brailleblaster.utd.internal.xml.XMLHandler;
-import org.brailleblaster.utd.internal.xml.XMLHandler2;
 import org.brailleblaster.utils.NamespacesKt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +74,7 @@ public class BRFTestRunner {
         compareXMLtoBraille(doc, expectedBrfOutput, opts,
                 "=== BBRoot"
                         + System.lineSeparator()
-                        + XMLHandler2.query(doc, "descendant::*[@bbtestroot]").get(0).toXML()
+                        + XMLHandler.query(doc, "descendant::*[@bbtestroot]").get(0).toXML()
                         + System.lineSeparator()
         );
     }

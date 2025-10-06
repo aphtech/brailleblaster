@@ -16,6 +16,8 @@
 package org.brailleblaster.bbx;
 
 import java.util.EnumSet;
+import java.util.stream.StreamSupport;
+
 import nu.xom.Attribute;
 
 import org.brailleblaster.settings.DefaultNimasMaps;
@@ -1989,8 +1991,7 @@ public class BookToBBXConverterTest {
 
 	public static XMLElementAssert convertAndAssert(BookToBBXConverter converter, IStyleMap map, String body) {
 		Document doc = TestXMLUtils.generateBookDoc("", body);
-		FastXPath.descendant(doc)
-				.stream()
+		StreamSupport.stream(FastXPath.descendant(doc).spliterator(), false)
 				.filter(node -> node instanceof Text && node.getValue().isEmpty())
 				.forEach(node -> {
 					throw new NodeException("blank text node", node);
@@ -2004,7 +2005,7 @@ public class BookToBBXConverterTest {
 		Document bbxDoc = converter.convert(doc);
 		BookToBBXConverter.upgradeFormat(bbxDoc);
 
-		if (FastXPath.descendant(bbxDoc).stream()
+		if (StreamSupport.stream(FastXPath.descendant(bbxDoc).spliterator(), false)
 				.filter(node -> node instanceof Element)
 				.anyMatch(BBX._ATTRIB_FIXER_TODO::has)) {
 			throw new NodeException("Document still contains fixerTodo attributes", bbxDoc);

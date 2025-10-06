@@ -39,7 +39,6 @@ class BrailleSettingsTest {
 //		assertEquals(braille.getMainTranslationTable(), "en-us-g2.ctb");
         Assert.assertFalse(braille!!.isUseAsciiBraille)
         Assert.assertEquals(braille!!.cellType, BrlCell.NLS)
-        Assert.assertTrue(braille!!.mathLineWrapping.isEmpty())
     }
 
     @Test
@@ -58,17 +57,6 @@ class BrailleSettingsTest {
         braille!!.cellType = setCellType
         val getCellType = braille!!.cellType
         Assert.assertEquals(getCellType, setCellType)
-
-        val setMathLineWrapping: MutableList<InsertionPatternEntry> = mutableListOf(
-            InsertionPatternEntry("ab", "\""),
-            InsertionPatternEntry("bc", "\"")
-        )
-        braille!!.mathLineWrapping = setMathLineWrapping
-        val getMathLineWrapping: List<InsertionPatternEntry> = listOf(
-            InsertionPatternEntry("ab", "\""),
-            InsertionPatternEntry("bc", "\"")
-        )
-        Assert.assertEquals(braille!!.mathLineWrapping, getMathLineWrapping)
     }
 
     /**
@@ -82,10 +70,6 @@ class BrailleSettingsTest {
         val brailleSettings = BrailleSettings()
         Assert.assertNotSame(brailleSettings.cellType, BrlCell.SMALL_ENGLISH, "Defaults changed, update test")
         brailleSettings.cellType = BrlCell.SMALL_ENGLISH
-        brailleSettings.mathLineWrapping = mutableListOf(
-            InsertionPatternEntry(" (\\.k )", "\""),
-            InsertionPatternEntry("-", "\"")
-        )
 
         val tempOutput = File.createTempFile("utdEngine", "test")
         saveBrailleSettings(tempOutput, brailleSettings)
@@ -96,12 +80,5 @@ class BrailleSettingsTest {
     fun loadEngine() {
         val brailleSettings = loadBrailleSettings(UTDConfigUtils.TEST_BRAILLE_SETTINGS_FILE)
         Assert.assertEquals(brailleSettings.cellType, BrlCell.SMALL_ENGLISH)
-        Assert.assertEquals(
-            brailleSettings.mathLineWrapping,
-            listOf(
-                InsertionPatternEntry(" (\\.k )", "\""),
-                InsertionPatternEntry("-", "\"")
-            )
-        )
     }
 }

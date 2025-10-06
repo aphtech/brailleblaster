@@ -16,12 +16,12 @@
 package org.brailleblaster.perspectives.mvc
 
 import nu.xom.Node
-import org.brailleblaster.utd.internal.xml.XMLHandler2
+import org.brailleblaster.utd.internal.xml.XMLHandler
 
 open class XMLNodeCaret @JvmOverloads constructor(open val node: Node, var cursorPosition: CursorPosition = CursorPosition.ALL) {
 
     override fun toString(): String {
-        return "XMLNodeCaret{" + "node=" + XMLHandler2.toXMLSimple(
+        return "XMLNodeCaret{" + "node=" + XMLHandler.toXMLSimple(
             node
         ) + ", cursorPosition=" + cursorPosition + '}'
     }

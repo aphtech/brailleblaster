@@ -414,7 +414,6 @@ public class LiteraryFormatterTest {
 	
 	private UTDTranslationEngine generateDefaultEngine(){
 		BrailleSettings brailleSettings = new BrailleSettings();
-		brailleSettings.setUseLibLouisAPH(false);
 		brailleSettings.setUseAsciiBraille(true);
 		UTDTranslationEngine newEngine = new UTDTranslationEngine();
 		newEngine.setBrailleSettings(brailleSettings);

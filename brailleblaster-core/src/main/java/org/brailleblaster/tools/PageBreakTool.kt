@@ -98,44 +98,46 @@ object PageBreakTool : MenuToolModule {
         }
         currentSelection = m.simpleManager.currentSelection
         val beginning = beginning(m)
-        var nodeToBreak: Node? = currentSelection.start.node
-        if (!beginning) {
-            nodeToBreak =
+        var nodeToBreak: Node? = currentSelection.start.node.let { nodeToBreak ->
+            if (beginning) {
+                nodeToBreak
+            } else {
                 if (BBX.CONTAINER.TABLE.isA(nodeToBreak) && currentSelection.start.cursorPosition == CursorPosition.BEFORE) {
                     //If cursor is before a table, use the table
                     Manager.getTableParent(nodeToBreak)
+                } else if (BBX.CONTAINER.TABLE.isA(nodeToBreak)) {
+                    //Cursor is after table, so find the next non-table node
+                    val tableParent: Node = Manager.getTableParent(nodeToBreak)
+                    FastXPath.following(nodeToBreak)
+                        .filterIsInstance<Text>().firstOrNull { n: Node ->
+                            (!UTDElements.BRL.isA(n.parent)
+                                    && XMLHandler.ancestorElementNot(n) { e: Element? -> Manager.getTableParent(e) === tableParent })
+                        }
                 } else {
-                    if (BBX.CONTAINER.TABLE.isA(nodeToBreak)) {
-                        //Cursor is after table, so find the next non-table node
-                        val tableParent: Node = Manager.getTableParent(nodeToBreak)
-                        FastXPath.following(nodeToBreak)
-                            .filterIsInstance<Text>().firstOrNull { n: Node ->
-                                (!UTDElements.BRL.isA(n.parent)
-                                        && XMLHandler.ancestorElementNot(n) { e: Element? -> Manager.getTableParent(e) === tableParent })
-                            }
-                    } else {
-                        FastXPath.following(currentSelection.start.node)
-                            .filterIsInstance<Text>().firstOrNull { n: Node ->
-                                !UTDElements.BRL.isA(n.parent) && !UTDElements.BRLONLY.isA(
-                                    n.parent
-                                )
-                            }
-                    }
+                    FastXPath.following(currentSelection.start.node)
+                        .filterIsInstance<Text>().firstOrNull { n: Node ->
+                            !UTDElements.BRL.isA(n.parent) && !UTDElements.BRLONLY.isA(
+                                n.parent
+                            )
+                        }
                 }
-            if (nodeToBreak == null) {
-                // we can't find a node to add a page break to end of document
-                return
+            }
+        }?.let { nodeToBreak ->
+            if (isBraille(nodeToBreak)) {
+                val nodes = m.simpleManager.currentSelection.start.node.query("following::text()")
+                getFirstNonBraille(nodes, nodeToBreak)
+            } else {
+                nodeToBreak
+            }
+        }?.let { nodeToBreak ->
+            //Place the catch for a boxline after you get the correct text nodeToBreak
+            if (XMLHandler.ancestorElementIs(nodeToBreak) { node: Element -> BBX.CONTAINER.BOX.isA(node) }) {
+                XMLHandler.ancestorVisitor(nodeToBreak) { node: Node? -> BBX.CONTAINER.BOX.isA(node) }
+            } else {
+                nodeToBreak
             }
         }
-        if (isBraille(nodeToBreak)) {
-            val nodes = m.simpleManager.currentSelection.start.node.query("following::text()")
-            nodeToBreak = getFirstNonBraille(nodes, nodeToBreak)
-        }
 
-        //Place the catch for a boxline after you get the correct text nodeToBreak
-        if (XMLHandler.ancestorElementIs(nodeToBreak) { node: Element? -> BBX.CONTAINER.BOX.isA(node) }) {
-            nodeToBreak = XMLHandler.ancestorVisitor(nodeToBreak) { node: Node? -> BBX.CONTAINER.BOX.isA(node) }
-        }
         var block = if (BBX.CONTAINER.BOX.isA(nodeToBreak)) nodeToBreak else m.getBlock(nodeToBreak)
         if (BBX.BLOCK.TABLE_CELL.isA(block) || BBX.CONTAINER.TABLE.isA(block)) {
             val tableParent = Manager.getTableParent(block)
@@ -238,7 +240,7 @@ object PageBreakTool : MenuToolModule {
         return null
     }
 
-    private fun isBraille(node: Node?): Boolean {
+    private fun isBraille(node: Node): Boolean {
         return XMLHandler.ancestorElementIs(
             node
         ) { e: Element ->

@@ -17,7 +17,7 @@ package org.brailleblaster.util
 
 import nu.xom.*
 import org.brailleblaster.utd.exceptions.NodeException
-import org.brailleblaster.utd.internal.xml.XMLHandler2
+import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utils.xom.attributes
 import org.brailleblaster.utils.xom.childNodes
 
@@ -34,13 +34,13 @@ object XMLDiffTool {
                     "Expected " + actualRoot.childCount + " children "
                             + actualRoot.childNodes
                         .joinToString(separator = ", ") { node ->
-                            XMLHandler2.toXMLSimple(
+                            XMLHandler.toXMLSimple(
                                 node
                             )
                         } + " but found " + expectedRoot.childCount + " children "
                             + expectedRoot.childNodes
                         .joinToString(separator = ", ") { node ->
-                            XMLHandler2.toXMLSimple(
+                            XMLHandler.toXMLSimple(
                                 node
                             )
                         }
@@ -117,9 +117,9 @@ object XMLDiffTool {
         actualDoc.rootElement.appendChild(expectedRootCopy)
         throw NodeException(
             "Expected "
-                    + XMLHandler2.toXMLSimple(expectedNode)
+                    + XMLHandler.toXMLSimple(expectedNode)
                     + " does not match actual "
-                    + XMLHandler2.toXMLSimple(actualNode)
+                    + XMLHandler.toXMLSimple(actualNode)
                     + " | ",
             actualNode,
             cause

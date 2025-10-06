@@ -877,7 +877,7 @@ class TextVerifyKeyListener(
     private fun removeTab(tab: TabTextMapElement) {
         textView.update(false)
         val newOffset = tab.getStart(manager.mapList)
-        val parent: ParentNode = tab.nodeParent
+        val parent = tab.nodeParent
         tab.node.detach()
         stripUTDRecursive(parent)
         combineAdjacentTextNodes(parent)
@@ -960,7 +960,7 @@ class TextVerifyKeyListener(
             //Line break occurred before text node, so delete it
             if (BBX.INLINE.LINE_BREAK.isA(node) //					|| UTDElements.NEW_LINE.isA(node)
             ) {
-                val parent = node.parent
+                val parent = node.parent as Element
                 node.detach()
                 stripUTDRecursive(parent)
                 combineAdjacentTextNodes(parent)

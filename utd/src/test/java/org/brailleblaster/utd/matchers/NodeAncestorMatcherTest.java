@@ -23,8 +23,6 @@ import nu.xom.Node;
 import nu.xom.Nodes;
 import org.brailleblaster.utd.NamespaceMap;
 import org.brailleblaster.utd.internal.xml.XMLHandler;
-import org.brailleblaster.utd.internal.xml.XMLHandler2;
-import org.brailleblaster.utd.properties.UTDElements;
 import org.brailleblaster.utils.NamespacesKt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +78,7 @@ public class NodeAncestorMatcherTest {
         NamespaceMap ns = new NamespaceMap();
         ns.addNamespace("utd", NamespacesKt.UTD_NS);
 
-        Nodes testElems = XMLHandler2.query(doc, "descendant::*[name()='p']");
+        Nodes testElems = XMLHandler.query(doc, "descendant::*[name()='p']");
         assertTrue(matcher.isMatch(testElems.get(0), ns));
         assertFalse(matcher.isMatch(testElems.get(1), ns), "failed on " + testElems.get(1).getParent().toXML());
 // tod Michael Whapples I removed this and am not sure why. 		assertTrue(matcher.isMatch(testElems.get(1), new NamespaceMap()));
@@ -102,7 +100,7 @@ public class NodeAncestorMatcherTest {
         NamespaceMap ns = new NamespaceMap();
         ns.addNamespace("utd", NamespacesKt.UTD_NS);
 
-        Nodes testElems = XMLHandler2.query(doc, "descendant::*[name()='p']");
+        Nodes testElems = XMLHandler.query(doc, "descendant::*[name()='p']");
         assertTrue(matcher.isMatch(testElems.get(0), ns));
         assertFalse(matcher.isMatch(testElems.get(1), ns), "failed on " + testElems.get(1).getParent().toXML());
 //todo removed to make the test run will figure out why later 		assertTrue(matcher.isMatch(testElems.get(1), new NamespaceMap()));
@@ -126,7 +124,7 @@ public class NodeAncestorMatcherTest {
         NamespaceMap ns = new NamespaceMap();
         ns.addNamespace("utd", NamespacesKt.UTD_NS);
 
-        Nodes testElems = XMLHandler2.query(doc, "descendant::*[name()='p']");
+        Nodes testElems = XMLHandler.query(doc, "descendant::*[name()='p']");
         assertTrue(matcher.isMatch(testElems.get(0), ns));
         assertFalse(matcher.isMatch(testElems.get(1), ns), "failed on " + testElems.get(1).getParent().toXML());
     }
@@ -149,7 +147,7 @@ public class NodeAncestorMatcherTest {
         NamespaceMap ns = new NamespaceMap();
         ns.addNamespace("utd", NamespacesKt.UTD_NS);
 
-        Nodes testElems = XMLHandler2.query(doc, "descendant::*[name()='p']");
+        Nodes testElems = XMLHandler.query(doc, "descendant::*[name()='p']");
         assertTrue(matcher.isMatch(testElems.get(0), ns));
         assertFalse(matcher.isMatch(testElems.get(1), ns), "failed on " + testElems.get(1).getParent().toXML());
     }
@@ -171,7 +169,7 @@ public class NodeAncestorMatcherTest {
         NamespaceMap ns = new NamespaceMap();
         ns.addNamespace("utd", NamespacesKt.UTD_NS);
 
-        Nodes testElems = XMLHandler2.query(doc, "descendant::*[name()='p']");
+        Nodes testElems = XMLHandler.query(doc, "descendant::*[name()='p']");
         assertTrue(matcher.isMatch(testElems.get(0), ns));
         assertFalse(matcher.isMatch(testElems.get(1), ns), "failed on " + testElems.get(1).getParent().toXML());
     }
@@ -193,7 +191,7 @@ public class NodeAncestorMatcherTest {
         NamespaceMap ns = new NamespaceMap();
         ns.addNamespace("utd", NamespacesKt.UTD_NS);
 
-        Nodes testElems = XMLHandler2.query(doc, "descendant::*[name()='p']");
+        Nodes testElems = XMLHandler.query(doc, "descendant::*[name()='p']");
         assertTrue(matcher.isMatch(testElems.get(0), ns));
         assertFalse(matcher.isMatch(testElems.get(1), ns), "failed on " + testElems.get(1).getParent().toXML());
     }

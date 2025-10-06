@@ -38,7 +38,9 @@ class MathFormatter : Formatter() {
         val styleMap = formatSelector.styleMap
         var pb = mutPageBuilders.last()
         mutPageBuilders.addAll(preFormat(node, pb, style, styleMap))
-        val (_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, mathLineWrapping, mathStartLines) = formatSelector.engine.brailleSettings
+        val brailleSettings = formatSelector.engine.brailleSettings
+        val mathLineWrapping = brailleSettings.mathBrailleCode.lineWrapping
+        val mathStartLines = brailleSettings.mathBrailleCode.startLines
         val mathLineWrap = RegexLineWrapper(mathLineWrapping)
         val numSignPatterns = listToMap(mathStartLines)
         mathLineWrap.setLineStartInsertions(numSignPatterns)

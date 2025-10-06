@@ -89,7 +89,6 @@ object UTDTestUtils {
         asciiBraille: Boolean = true
     ): UTDTranslationEngine {
         val engine = UTDTranslationEngine()
-        engine.brailleSettings.isUseLibLouisAPH = false
         engine.styleMap = styleMap!!
         engine.actionMap = actionMap!!
         engine.brailleSettings.isUseAsciiBraille = asciiBraille

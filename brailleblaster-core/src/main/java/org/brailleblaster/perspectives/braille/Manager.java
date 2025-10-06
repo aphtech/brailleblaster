@@ -68,7 +68,6 @@ import org.brailleblaster.utd.exceptions.UTDInterruption;
 import org.brailleblaster.utd.internal.DocumentOrderComparator;
 import org.brailleblaster.utd.internal.xml.FastXPath;
 import org.brailleblaster.utd.internal.xml.XMLHandler;
-import org.brailleblaster.utd.internal.xml.XMLHandler2;
 import org.brailleblaster.utd.properties.UTDElements;
 import org.brailleblaster.utd.utils.TableUtils;
 import org.brailleblaster.utd.utils.UTDHelper;
@@ -101,6 +100,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.StreamSupport;
 
 //This class manages each document in an MDI environment. It controls the braille View and the daisy View.
 public class Manager extends Controller {
@@ -205,7 +205,7 @@ public class Manager extends Controller {
 
                     // Used to comminicate information before a formatting stage
                     // Can't just apply to mEvent.changedNodes as these might be added to a parent
-                    FastXPath.descendant(getDoc()).stream().filter(Searcher.Filters::isElement)
+                    StreamSupport.stream(FastXPath.descendant(getDoc()).spliterator(), false).filter(Searcher.Filters::isElement)
                             .map(Searcher.Mappers::toElement)
                             .filter(BBX.PreFormatterMarker.ATTRIB_PRE_FORMATTER_MARKER::has).forEach(BBX.PreFormatterMarker.ATTRIB_PRE_FORMATTER_MARKER::detach);
 
@@ -215,13 +215,13 @@ public class Manager extends Controller {
                             return;
                         }
                         if (n instanceof Document || n.getDocument().getRootElement() == n) {
-                            LiveFixer.fix(XMLHandler2.nodeToElementOrParentOrDocRoot(n));
+                            LiveFixer.fix(Objects.requireNonNull(XMLHandler.nodeToElementOrParentOrDocRoot(n)));
                             refresh(false);
                             changedNodes.clear();
                             return;
                         } else {
                             // Issue #6022 #5947: cleanup document to prevent weird state or formatting
-                            Element section = XMLHandler.ancestorVisitorElement(n, BBX.SECTION::isA);
+                            Element section = XMLHandler.Companion.ancestorVisitorElement(n, BBX.SECTION::isA);
                             if (section != null && !liveFixedSections.contains(section)) {
                                 LiveFixer.fix(section);
                                 liveFixedSections.add(section);
@@ -232,7 +232,7 @@ public class Manager extends Controller {
                                 }
                             }
                         }
-                        Element tableParent = XMLHandler.ancestorVisitorElement(n,
+                        Element tableParent = XMLHandler.Companion.ancestorVisitorElement(n,
                                 BBX.CONTAINER.TABLE::isA);
                         if (tableParent != null) {
                             // Table formatter re-creates table, meaning a
@@ -299,8 +299,8 @@ public class Manager extends Controller {
                  */
 
                 mEvent.changedNodes.sort(new DocumentOrderComparator());
-                if (!mEvent.changedNodes.isEmpty() && list.findNode(mEvent.changedNodes.get(0)) == null) {
-                    reformat(mEvent.changedNodes.get(0));
+                if (!mEvent.changedNodes.isEmpty() && list.findNode(mEvent.changedNodes.getFirst()) == null) {
+                    reformat(mEvent.changedNodes.getFirst());
                 } else {
                     reformat();
                 }
@@ -865,7 +865,7 @@ public class Manager extends Controller {
         text.setListenerLock(true);
 //		text.view.setFocus();
         text.getView().setTopIndex(text.getView().getLineCount() - 1);
-        SectionElement lastSection = getSectionList().get(getSectionList().size() - 1);
+        SectionElement lastSection = getSectionList().getLast();
         if (getSectionList().size() > 1 || !lastSection.list.isEmpty()) {
             setTextCaret(lastSection.list.getLast().getEnd(getMapList()));
         }
@@ -904,14 +904,14 @@ public class Manager extends Controller {
     private void reformat() {
         Node firstNonWhitespace = getFirstReformattableNode();
         if (firstNonWhitespace != null && firstNonWhitespace.getDocument() != null) {
-            if (viewInitializer.getSectionList().size() > 1 && getSection(list.get(0)) != 0) {
+            if (viewInitializer.getSectionList().size() > 1 && getSection(list.getFirst()) != 0) {
                 reformat(firstNonWhitespace);
                 return;
             } else {
                 // If the user is at the first section, find the first brl
-                Node firstBrl = XMLHandler.followingVisitor(firstNonWhitespace, UTDElements.BRL::isA);
+                Node firstBrl = XMLHandler.Companion.followingVisitor(firstNonWhitespace, UTDElements.BRL::isA);
                 if (firstBrl != null) {
-                    Node firstNode = XMLHandler.childrenRecursiveNodeVisitor(firstBrl,
+                    Node firstNode = XMLHandler.Companion.childrenRecursiveNodeVisitor(firstBrl,
                             n -> UTDElements.NEW_PAGE.isA(n) || n instanceof nu.xom.Text);
                     if (!(firstNode instanceof nu.xom.Text) && firstNode != null) {
                         reformat(firstNode);
@@ -1557,7 +1557,7 @@ public class Manager extends Controller {
     }
 
     public boolean isEmptyDocument() {
-        return list.size() == 1 && list.get(0).getText().isEmpty();
+        return list.size() == 1 && list.getFirst().getText().isEmpty();
     }
 
     //Addendum to isEmptyDocument - a document that's only newlines is bound to cause problems.

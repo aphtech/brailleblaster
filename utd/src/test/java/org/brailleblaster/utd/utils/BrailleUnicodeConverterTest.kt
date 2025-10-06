@@ -33,7 +33,6 @@ class BrailleUnicodeConverterTest {
     fun convertTest() {
         val engine = UTDTranslationEngine()
 
-        engine.brailleSettings.isUseLibLouisAPH = false
         val louisResultAscii = engine.brailleTranslator.translate(
             engine.brailleSettings.mainTranslationTable,
             TEST_STRING,

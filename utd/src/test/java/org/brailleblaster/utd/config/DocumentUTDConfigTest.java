@@ -59,7 +59,6 @@ public class DocumentUTDConfigTest {
 		pageSettings.setRunningHead("Test Running Head");
 
 		BrailleSettings brailleSettings = new BrailleSettings();
-		brailleSettings.setUseLibLouisAPH(false);
 		assertNotSame(brailleSettings.getMainTranslationTable(), TEST_TABLE, "Defaults changed, update test");
 		brailleSettings.setMainTranslationTable(TEST_TABLE);
 		

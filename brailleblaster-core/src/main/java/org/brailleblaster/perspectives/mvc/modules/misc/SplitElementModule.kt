@@ -68,7 +68,7 @@ class SplitElementModule : SimpleListener {
                     val pathToBlock: MutableList<Int> = ArrayList()
                     var curNode: Node = textNode
                     while (!BBX.BLOCK.isA(curNode)) {
-                        val newParent = curNode.parent
+                        val newParent = curNode.parent as Element
                         UTDHelper.stripUTDRecursive(newParent)
                         pathToBlock.add(newParent.indexOf(curNode))
                         curNode = newParent

@@ -170,7 +170,7 @@ class BookTree2(val manager: Manager, val dialog: BookTreeDialog) {
 
     private fun firstTextChild(e: Element?): Text? {
         return FastXPath.descendant(e)
-            .filterIsInstance<Text>().firstOrNull { node: Node? -> Searcher.Filters.noUTDAncestor(node) }
+            .filterIsInstance<Text>().firstOrNull { node -> Searcher.Filters.noUTDAncestor(node) }
     }
 
     fun navigate(): Boolean {

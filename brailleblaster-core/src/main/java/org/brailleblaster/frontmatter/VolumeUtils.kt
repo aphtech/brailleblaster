@@ -23,7 +23,7 @@ import org.brailleblaster.bbx.BBX.VolumeType
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.FastXPath
-import org.brailleblaster.utd.internal.xml.XMLHandler2
+import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.EmphasisType
 import org.brailleblaster.util.FormUIUtils
 import org.slf4j.LoggerFactory
@@ -219,7 +219,7 @@ object VolumeUtils {
         val textView = manager.text.view
 
         //Find the first text of the volume
-        val text = XMLHandler2.findFirstText(volumeElement)
+        val text = XMLHandler.findFirstText(volumeElement)
         log.debug("scrolling to text " + text.value)
 
         //Make sure text is in a buffered section
@@ -243,7 +243,7 @@ object VolumeUtils {
     }
 
     @JvmStatic
-	fun getVolumeAfterNode(doc: Document?, caretNode: Node): Element {
+	fun getVolumeAfterNode(doc: Document, caretNode: Node): Element {
         //Descend into tree and find volume after this node
         //Benchmarked to be faster than a following:: query for volumes
         return FastXPath.descendantFindFirst(doc, object : Predicate<Node> {

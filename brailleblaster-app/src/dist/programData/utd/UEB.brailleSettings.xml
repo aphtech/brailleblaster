@@ -9,10 +9,5 @@
 	<mathExpressionTable>en-ueb-math.ctb</mathExpressionTable >
 	<editTable>nemeth_edit.ctb</editTable >
 	<mathBrailleCode>UEB</mathBrailleCode>
-	<mathLineWrapping>
-		<lineWrap matchPattern=" (?=(&quot;7(`:)?|`[&lt;&gt;]) )"/>
-		<lineWrap matchPattern="(?=&quot;[68\-/])"/>
-		<lineWrap matchPattern="[\._&quot;]?&gt;(?&lt;contDots&gt;)(?=[\._&quot;]?&lt;)" insertionDots="&quot;"/>
-	</mathLineWrapping>
 </brailleSettings>
 

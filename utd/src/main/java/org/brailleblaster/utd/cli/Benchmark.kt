@@ -97,7 +97,7 @@ object Benchmark {
             val doc: Document
             try {
                 xmlWatch.start()
-                doc = loadFile(cli.inputFile)
+                doc = loadFile(cli.inputFile!!)
                 xmlWatch.stop()
             } finally {
                 if (xmlWatch.nanoTime != 0L) printDebugResult(" - XML loaded in $xmlWatch")
@@ -147,7 +147,7 @@ object Benchmark {
     fun part3BenchUnicodeFresh(engine: UTDTranslationEngine, cli: BenchmarkCLI, firstBRFFile: File) {
         printDebugResult("Starting translate in unicode on fresh document")
         engine.brailleSettings.isUseAsciiBraille = false
-        val doc = loadFile(cli.inputFile)
+        val doc = loadFile(cli.inputFile!!)
         val thirdBRFFile = runBenchmark(doc, engine)
         compareUnicodeToAsciiBRF(firstBRFFile, thirdBRFFile)
     }
@@ -352,7 +352,7 @@ object Benchmark {
         println("---- End Arguments ---")
     }
 
-    fun loadFile(bookFile: File?): Document {
+    fun loadFile(bookFile: File): Document {
         return xmlHandler.load(bookFile)
     }
 

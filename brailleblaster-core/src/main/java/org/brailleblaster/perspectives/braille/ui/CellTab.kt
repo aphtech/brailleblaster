@@ -28,8 +28,8 @@ import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.utd.internal.xml.FastXPath
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.exceptions.BBNotifyException
+import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.KeyAdapter
 import org.eclipse.swt.events.KeyEvent
@@ -116,7 +116,7 @@ class CellTab(var manager: Manager, var currentElement: TextMapElement, var text
             "tabValue {} element {}",
             tabValue,
             existingTab?.let {
-                XMLHandler2.toXMLSimple(
+                XMLHandler.toXMLSimple(
                     it
                 )
             }

@@ -53,7 +53,6 @@ import org.brailleblaster.utd.Style
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.toc.TOCAttributes
 import org.brailleblaster.utd.toc.TOCAttributes.Companion.removeAll
 import org.brailleblaster.utd.utils.UTDHelper.Companion.getTextChild
@@ -584,14 +583,14 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
                 val textNodeToWrap: nu.xom.Text
                 if (selectionStart.offset == 0) {
                     val splitTextNodes: List<nu.xom.Text> =
-                        XMLHandler2.splitTextNode(
+                        XMLHandler.splitTextNode(
                             textNode,
                             selectionEnd.offset
                         )
                     textNodeToWrap = splitTextNodes[0]
                 } else {
                     val splitTextNodes: List<nu.xom.Text> =
-                        XMLHandler2.splitTextNode(
+                        XMLHandler.splitTextNode(
                             textNode,
                             selectionStart.offset,
                             selectionEnd.offset
@@ -889,14 +888,14 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
             }
             1 if BBX.INLINE.isA(parent) -> {
                 newPageWrapper = BBX.SPAN.OTHER.create()
-                XMLHandler2.wrapNodeWithElement(
+                XMLHandler.wrapNodeWithElement(
                     parent,
                     newPageWrapper
                 )
             }
             else -> {
                 newPageWrapper = BBX.SPAN.OTHER.create()
-                XMLHandler2.wrapNodeWithElement(
+                XMLHandler.wrapNodeWithElement(
                     nodeToWrap,
                     newPageWrapper
                 )
@@ -1077,7 +1076,7 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
             val tocContainer: Element = getOrCreateTOC(curVolume)
             tocContainer.removeChildren()
             log.debug("toc container: {}",
-                XMLHandler2.toXMLSimple(tocContainer)
+                XMLHandler.toXMLSimple(tocContainer)
             )
 
             volumeTocContainers.add(tocContainer)
@@ -1183,7 +1182,7 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
         tocContainer: Element,
         previousPageNum: Element?
     ): Element? {
-        val previousPageNumQuery: Nodes = XMLHandler2.query(
+        val previousPageNumQuery: Nodes = XMLHandler.query(
             tocEntry,
             "preceding::*[@{}:{}='{}'][1]",
             BBX._ATTRIB_TYPE.nsPrefix,

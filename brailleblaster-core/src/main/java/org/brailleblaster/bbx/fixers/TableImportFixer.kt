@@ -24,7 +24,6 @@ import org.brailleblaster.bbx.fixers2.ImportFixerCommon
 import org.brailleblaster.math.mathml.MathModule
 import org.brailleblaster.utd.exceptions.UTDInterruption
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.utils.TableUtils
 import org.brailleblaster.utd.utils.TableUtils.TableTypes
 import org.brailleblaster.utils.xom.childNodes
@@ -157,7 +156,7 @@ class TableImportFixer : AbstractFixer() {
             }
             val parent = curElement.parent
             val lastChild = curElement.childNodes.lastOrNull()
-            XMLHandler2.unwrapElement(curElement)
+            XMLHandler.unwrapElement(curElement)
             if (needsSpace) {
                 parent.insertChild(Text(" "), if (lastChild != null) parent.indexOf(lastChild) + 1 else 0)
             }
@@ -176,10 +175,10 @@ class TableImportFixer : AbstractFixer() {
             for (curRow in bbxTable.childElements) {
                 if (BBX.CONTAINER.TABLE_ROW.isA(curRow)) {
                     cells.addAll(curRow.childElements)
-                    XMLHandler2.unwrapElement(curRow)
+                    XMLHandler.unwrapElement(curRow)
                 }
             }
-            XMLHandler2.unwrapElement(bbxTable)
+            XMLHandler.unwrapElement(bbxTable)
             for (cell in cells) {
                 if (BBX.BLOCK.isA(cell)) {
                     BBX.transform(cell, BBX.BLOCK.DEFAULT)

@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.printers
 
-import com.google.common.collect.Range
 import nu.xom.Document
 import org.brailleblaster.BBIni
 import org.brailleblaster.embossers.EmbossingUtils.emboss
@@ -92,7 +91,7 @@ class PrintPreview private constructor(
     private val curPage: Text
     private val searchText: Text
     private lateinit var brfOutput: String
-    private val pageRanges: MutableList<Range<Int>> = ArrayList()
+    private val pageRanges: MutableList<IntRange> = mutableListOf()
     private var currentViewMode: ViewMode
     private val dualViewMode: ViewMode
     private val singleViewMode: ViewMode
@@ -488,7 +487,7 @@ class PrintPreview private constructor(
         protected fun getTotalOffset(pageIndex: Int): Int {
             val currentPageIndex = max(pageIndex, 0) // handle -1 page
 
-            return pageRanges[currentPageIndex].lowerEndpoint()
+            return pageRanges[currentPageIndex].first
         }
 
         abstract val totalOffset: Int
@@ -504,7 +503,7 @@ class PrintPreview private constructor(
         abstract fun goToOffset(totalOffset: Int)
 
         protected fun getPageRangeIndexFromOffset(totalOffset: Int): Int {
-            val index = pageRanges.indexOfFirst { totalOffset < it.upperEndpoint() }
+            val index = pageRanges.indexOfFirst { totalOffset < it.last }
             if (index >= 0) {
                 return index
             } else {
@@ -518,8 +517,8 @@ class PrintPreview private constructor(
     private inner class DualViewMode : ViewMode() {
         private var pageRangeIndex = 0
         private var leftPageIndex = 0
-        var leftPageRange: Range<Int>? = null
-        var rightPageRange: Range<Int>? = null
+        var leftPageRange: IntRange? = null
+        var rightPageRange: IntRange? = null
 
         override val totalOffset: Int
             get() = getTotalOffset(leftPageIndex)
@@ -527,17 +526,17 @@ class PrintPreview private constructor(
         override fun searchGetStart(): Int {
             val startIndex: Int
             if (lastFocusedView === viewLeft) {
-                startIndex = leftPageRange!!.lowerEndpoint() + viewLeft.caretOffset
+                startIndex = leftPageRange!!.first + viewLeft.caretOffset
                 log.trace("getting left caret {}", startIndex)
             } else if (lastFocusedView === viewRight) {
-                startIndex = rightPageRange!!.lowerEndpoint() + viewRight.caretOffset
+                startIndex = rightPageRange!!.first + viewRight.caretOffset
                 log.trace("getting right caret {}", startIndex)
             } else if (leftPageRange != null) {
                 // Need to check for null as could be first page which is on right
-                startIndex = leftPageRange!!.lowerEndpoint()
+                startIndex = leftPageRange!!.first
                 log.trace("getting start of left {}", startIndex)
             } else {
-                startIndex = rightPageRange!!.lowerEndpoint()
+                startIndex = rightPageRange!!.first
                 log.trace("getting start of right {}", startIndex)
             }
             return startIndex
@@ -545,10 +544,10 @@ class PrintPreview private constructor(
 
         override fun seachSetCaret(foundOffset: Int, needle: String) {
             if (leftPageRange != null && leftPageRange!!.contains(foundOffset)) {
-                viewLeft.setSelectionRange(foundOffset - leftPageRange!!.lowerEndpoint(), needle.length)
+                viewLeft.setSelectionRange(foundOffset - leftPageRange!!.first, needle.length)
                 viewLeft.setFocus()
             } else if (rightPageRange != null && rightPageRange!!.contains(foundOffset)) {
-                viewRight.setSelectionRange(foundOffset - rightPageRange!!.lowerEndpoint(), needle.length)
+                viewRight.setSelectionRange(foundOffset - rightPageRange!!.first, needle.length)
                 viewRight.setFocus()
             } else {
                 throw RuntimeException(
@@ -570,7 +569,7 @@ class PrintPreview private constructor(
             if (pageRangeIndex != -1) {
                 leftPageRange = pageRanges[pageRangeIndex]
                 viewLeft.text =
-                    brfOutput.substring(leftPageRange!!.lowerEndpoint(), leftPageRange!!.upperEndpoint())
+                    brfOutput.substring(leftPageRange!!.first, leftPageRange!!.last)
                 viewLeft.background = viewColorDefault
             } else {
                 leftPageRange = null
@@ -581,7 +580,7 @@ class PrintPreview private constructor(
             if (pageRangeIndex + 1 <= pageRanges.size - 1) {
                 rightPageRange = pageRanges[pageRangeIndex + 1]
                 viewRight.text =
-                    brfOutput.substring(rightPageRange!!.lowerEndpoint(), rightPageRange!!.upperEndpoint())
+                    brfOutput.substring(rightPageRange!!.first, rightPageRange!!.last)
                 viewRight.background = viewColorDefault
             } else {
                 rightPageRange = null
@@ -648,20 +647,20 @@ class PrintPreview private constructor(
 
     inner class SingleViewMode : ViewMode() {
         private var pageRangeIndex = 0
-        private var pageRange: Range<Int>? = null
+        private var pageRange: IntRange? = null
 
         override val totalOffset: Int
             get() = getTotalOffset(pageRangeIndex)
 
         override fun searchGetStart(): Int {
-            return pageRange!!.lowerEndpoint() + viewLeft.caretOffset
+            return pageRange!!.first + viewLeft.caretOffset
         }
 
         override fun seachSetCaret(foundOffset: Int, needle: String) {
             if (!pageRange!!.contains(foundOffset)) {
                 throw RuntimeException("Unable to set selection to $foundOffset with $pageRange")
             }
-            viewLeft.setSelectionRange(foundOffset - pageRange!!.lowerEndpoint(), needle.length)
+            viewLeft.setSelectionRange(foundOffset - pageRange!!.first, needle.length)
             viewLeft.setFocus()
         }
 
@@ -669,7 +668,7 @@ class PrintPreview private constructor(
             log.debug("Page range index set to {}", pageRangeIndex)
 
             pageRange = pageRanges[pageRangeIndex]
-            viewLeft.text = brfOutput.substring(pageRange!!.lowerEndpoint(), pageRange!!.upperEndpoint())
+            viewLeft.text = brfOutput.substring(pageRange!!.first, pageRange!!.last)
 
             nextPageButton.isEnabled = pageRangeIndex < pageRanges.size -  /* to 0-index */1
             previousPageButton.isEnabled = pageRangeIndex > 0
@@ -733,7 +732,7 @@ class PrintPreview private constructor(
         // When we pass the offset we just entered the current page
         if (rawPageButton.selection) {
             for (curPageRange in pageRanges) {
-                if (offset < curPageRange.upperEndpoint()) {
+                if (offset < curPageRange.last) {
                     val pageNum = pageRanges.indexOf(curPageRange)
                     curPage.text = "" + (pageNum + 1)
                     break
@@ -741,7 +740,7 @@ class PrintPreview private constructor(
             }
         } else {
             // Find the offset relating to the end of the current page.
-            val pageEnd = pageRanges.filter { e -> offset in e }.map { e -> e.upperEndpoint() }.firstOrNull() ?: offset
+            val pageEnd = pageRanges.filter { e -> offset in e }.map { e -> e.last }.firstOrNull() ?: offset
             val lookup: Map<String, Int> = if (brlPageButton.selection) brlPageOffsets else printPageOffsets
             // Find the last page before the end of the current page.
             lookup.entries
@@ -786,7 +785,7 @@ class PrintPreview private constructor(
                     // Don't include page seperator text in ranges so dual view doesn't have to
                     // strip them out
                     val lastPageEnd = output.length
-                    pageRanges.add(Range.closed(lastPageStart, lastPageEnd))
+                    pageRanges.add(lastPageStart..lastPageEnd)
                     pageStartOffsets.add(output.length)
                     //				setMarginTopLines(output, addMargin);
 //				setMarginLeftCells(output, addMargin);
@@ -836,7 +835,7 @@ class PrintPreview private constructor(
         var pageStart = 0
         var pageEnd: Int
         while ((brfOutput.indexOf(BRFWriter.PAGE_SEPARATOR, pageStart).also { pageEnd = it }) != -1) {
-            pageRanges.add(Range.closed(pageStart, pageEnd))
+            pageRanges.add(pageStart..pageEnd)
             pageStart = pageEnd + 1
             pageStartOffsets.add(pageStart)
         }
@@ -845,7 +844,7 @@ class PrintPreview private constructor(
         // Issue #6469: Single page files may not have any at all
         if (pageStartOffsets.isEmpty()) {
             pageStartOffsets.add(0)
-            pageRanges.add(Range.closed(0, brfOutput.length))
+            pageRanges.add(0..(brfOutput.length))
         }
 
 

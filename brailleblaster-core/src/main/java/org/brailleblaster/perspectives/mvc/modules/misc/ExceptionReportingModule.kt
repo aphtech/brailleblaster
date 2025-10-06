@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.perspectives.mvc.modules.misc
 
-import com.google.common.util.concurrent.MoreExecutors
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.brailleblaster.BBIni
 import org.brailleblaster.userHelp.Project
@@ -39,7 +38,7 @@ object ExceptionReportingModule /*implements SimpleListener*/ {
     private val DEFAULT_RECOVERY_VALUE: ExceptionRecoveryLevel = ExceptionRecoveryLevel.RECOVER
     private const val EXCEPTION_LEVEL_PROPERTY: String = "exceptionLevel"
     private const val EXCEPTION_RECOVERY_PROPERTY: String = "exceptionRecovery"
-    private val REPORTER_THREAD: ExecutorService = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool())
+    private val REPORTER_THREAD: ExecutorService = Executors.newCachedThreadPool()
 
     /**
      * ABSOLUTELY DO NOT USE THIS SETTING OUTSIDE THIS CLASS.

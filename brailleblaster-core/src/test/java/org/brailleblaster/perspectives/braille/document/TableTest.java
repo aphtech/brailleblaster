@@ -32,7 +32,7 @@ import org.brailleblaster.testrunners.TestXMLUtils;
 import org.brailleblaster.testrunners.ViewTestRunner;
 import org.brailleblaster.testrunners.XMLElementAssert;
 import org.brailleblaster.utd.internal.xml.FastXPath;
-import org.brailleblaster.utd.internal.xml.XMLHandler2;
+import org.brailleblaster.utd.internal.xml.XMLHandler;
 import org.brailleblaster.utd.properties.UTDElements;
 import org.brailleblaster.utils.NamespacesKt;
 import org.brailleblaster.utils.gui.PickerDialog;
@@ -46,6 +46,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotStyledText;
 import org.testng.annotations.Test;
 
 import java.io.File;
+import java.util.stream.StreamSupport;
 
 import static org.brailleblaster.TestUtils.getFirstSectionChild;
 import static org.brailleblaster.TestUtils.getInnerSection;
@@ -266,8 +267,7 @@ public class TableTest {
         dialog.bot().button(TableEditor.SAVE_BUTTON).click();
         doPendingSWTWork();
 
-        Element[] rows = FastXPath.descendant(test.getDoc())
-                .stream()
+        Element[] rows = StreamSupport.stream(FastXPath.descendant(test.getDoc()).spliterator(), false)
                 .filter(BBX.BLOCK.TABLE_CELL::isA)
                 .map(node -> (Element) node)
                 .toArray(Element[]::new);
@@ -367,14 +367,14 @@ public class TableTest {
         assertEquals(
                 Manager.getTableParent(text),
                 TestXMLUtils.getTestIdElements(doc, "table").get(0),
-                XMLHandler2.toXMLPrettyPrint(doc)
+                XMLHandler.toXMLPrettyPrint(doc)
         );
 
         text = (Text) TestXMLUtils.getTestIdElements(doc, "first").get(1).getChild(0);
         assertEquals(
                 Manager.getTableParent(text),
                 TestXMLUtils.getTestIdElements(doc, "table").get(0),
-                XMLHandler2.toXMLPrettyPrint(doc)
+                XMLHandler.toXMLPrettyPrint(doc)
         );
     }
 

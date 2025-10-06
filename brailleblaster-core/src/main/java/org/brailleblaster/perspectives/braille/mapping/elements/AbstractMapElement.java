@@ -19,7 +19,7 @@ import org.brailleblaster.perspectives.braille.mapping.maps.MapList;
 
 import nu.xom.Element;
 import nu.xom.Node;
-import org.brailleblaster.utd.internal.xml.XMLHandler2;
+import org.brailleblaster.utd.internal.xml.XMLHandler;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractMapElement {
@@ -76,7 +76,7 @@ public abstract class AbstractMapElement {
 	
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "{" + "start=" + start + ", end=" + end + ", n=" + XMLHandler2.toXMLSimple(getNode()) + '}';
+		return getClass().getSimpleName() + "{" + "start=" + start + ", end=" + end + ", n=" + XMLHandler.toXMLSimple(getNode()) + '}';
 	}
 	
 	

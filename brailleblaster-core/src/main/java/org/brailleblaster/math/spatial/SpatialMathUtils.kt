@@ -78,7 +78,7 @@ object SpatialMathUtils {
     }
 
     @JvmStatic
-    fun getSpatialPageParent(node: Node?): Element? {
+    fun getSpatialPageParent(node: Node): Element? {
         return XMLHandler.ancestorVisitorElement(node) { e: Element -> BBX.CONTAINER.SPATIAL_GRID.isA(e) }
     }
 

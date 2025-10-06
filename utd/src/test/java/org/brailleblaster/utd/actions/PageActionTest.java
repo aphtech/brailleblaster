@@ -47,7 +47,6 @@ public class PageActionTest {
 	private void setupMethod() {
 		contextMock = mock(UTDTranslationEngine.class);
 		brailleSettings = new BrailleSettings();
-		brailleSettings.setUseLibLouisAPH(false);
 		when(contextMock.getBrailleSettings()).thenReturn(brailleSettings);
 	}
 	

@@ -136,7 +136,6 @@ public class UTDTranslationEngineTest {
     public void brailleSettingsGettersAndSetters() {
         UTDTranslationEngine context = new UTDTranslationEngine();
         BrailleSettings brlSettings = new BrailleSettings();
-        brlSettings.setUseLibLouisAPH(false);
         context.setBrailleSettings(brlSettings);
         assertSame(context.getBrailleSettings(), brlSettings);
     }

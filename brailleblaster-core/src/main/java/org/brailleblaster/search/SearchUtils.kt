@@ -24,7 +24,6 @@ import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.mvc.modules.misc.StylesMenuModule
 import org.brailleblaster.search.SearchCriteria.*
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.properties.EmphasisType
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.UTDHelper.Companion.stripUTDRecursive
@@ -247,14 +246,14 @@ On node $node"""
         return false
     }
 
-    internal fun isUneditable(node: Node?): Boolean {
+    internal fun isUneditable(node: Node): Boolean {
         return XMLHandler.ancestorVisitor(node) { n: Node? -> BBX.CONTAINER.TABLE.isA(n) } != null || MathModule.isMath(
             node
         )
     }
 
     @JvmStatic
-    fun checkUneditable(node: Node?): Boolean {
+    fun checkUneditable(node: Node): Boolean {
         if (isUneditable(node)) {
             if (isUneditable(node)) {
                 notify(
@@ -285,7 +284,7 @@ On node $node"""
 
     internal fun addEmphasisNoViews(node: Text, start: Int, end: Int, et: EnumSet<EmphasisType>?): EmphasisReturn {
         val nodesWithEmpty =
-            XMLHandler2.splitTextNode(node, start, end)
+            XMLHandler.splitTextNode(node, start, end)
         val splitTextNode: MutableList<Text> = ArrayList()
         var index = 0
 
@@ -328,8 +327,8 @@ On node $node"""
     internal fun modifyEmphasis(node: Node, ef: List<EmphasisFormatting>) {
         val addEmphasisEnum = makeEnumFromList(ef, false)
         val removeEmphasisEnum = makeEnumFromList(ef, true)
-        if (node.parent is Element) {
-            val element = node.parent as Element
+        val element = node.parent
+        if (element is Element) {
             if (BBX.INLINE.EMPHASIS.isA(element)) {
                 val existingEnum = BBX.INLINE.EMPHASIS.ATTRIB_EMPHASIS[element]
                 //System.out.println("Modifying emphasis...");
@@ -339,7 +338,7 @@ On node $node"""
                 // all unwanted emphasis removed from enum set
                 if (existingEnum.isEmpty()) {
                     // we removed the only emphasis, get rid of the wrapper
-                    val pn = element.parent
+                    val pn = element.parent as Element
                     stripUTDRecursive(pn)
                     node.detach()
                     pn.replaceChild(element, node)
@@ -444,7 +443,7 @@ On node $node"""
         return m.mapList.current.isReadOnly
     }
 
-    internal fun removeContainer(list: List<Node?>, replaceRemoveContainerString: String, m: Manager) {
+    internal fun removeContainer(list: List<Node>, replaceRemoveContainerString: String, m: Manager) {
         when (replaceRemoveContainerString) {
             "Box", "Full Box", "Color Box", "Color Full Box" -> {
                 val box = XMLHandler.ancestorVisitor(list[0]) { node: Node? -> BBX.CONTAINER.BOX.isA(node) }
@@ -461,14 +460,14 @@ On node $node"""
                     list[0]
                 ) { n: Node? -> n is Element && n.getAttributeValue("utd-style") != null && n.getAttributeValue("utd-style") == "Poetic Stanza" }
                 if (stanza != null) {
-                    XMLHandler2.unwrapElement(stanza as Element)
+                    XMLHandler.unwrapElement(stanza as Element)
                 }
             }
 
             "List Tag" -> {
                 val lnode = XMLHandler.ancestorVisitor(list[0]) { node: Node? -> BBX.CONTAINER.LIST.isA(node) }
                 if (lnode != null) {
-                    XMLHandler2.unwrapElement(lnode as Element)
+                    XMLHandler.unwrapElement(lnode as Element)
                 }
             }
 

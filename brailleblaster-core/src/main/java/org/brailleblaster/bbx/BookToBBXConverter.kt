@@ -37,7 +37,6 @@ import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.NormaliserFactory
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.matchers.INodeMatcher
 import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.utils.xom.childNodes
@@ -133,7 +132,7 @@ class BookToBBXConverter(
                     curFixer,
                     if (curFixer is AbstractFixer) " (" + curFixer.comment + ")" else "",
                     curMatcher,
-                    rootToSearch?.let { XMLHandler2.toXMLSimple(it) }
+                    rootToSearch?.let { XMLHandler.toXMLSimple(it) }
                 )
                 log.trace("import fix.1")
 
@@ -169,7 +168,7 @@ class BookToBBXConverter(
                     if (matchedNode === lastMatchedNode
                         && XMLHandler
                             .ancestorOrSelf(
-                                XMLHandler2.nodeToElementOrParentOrDocRoot(
+                                XMLHandler.nodeToElementOrParentOrDocRoot(
                                     matchedNode
                                 )
                             )
@@ -188,7 +187,7 @@ class BookToBBXConverter(
                         lastMatchedAncestors.clear()
                         lastMatchedAncestors.addAll(
                             XMLHandler.ancestorOrSelf(
-                                XMLHandler2.nodeToElementOrParentOrDocRoot(
+                                XMLHandler.nodeToElementOrParentOrDocRoot(
                                     matchedNode
                                 )
                             )
@@ -196,7 +195,7 @@ class BookToBBXConverter(
                     }
                 }
                 log.trace("fixing matched node {}",
-                    XMLHandler2.toXMLSimple(matchedNode)
+                    XMLHandler.toXMLSimple(matchedNode)
                 )
 
                 //Note: Restart as high in the tree as possible as some matchers

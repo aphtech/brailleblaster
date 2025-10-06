@@ -22,7 +22,7 @@ import org.apache.commons.lang3.builder.ToStringStyle
 import org.brailleblaster.utd.Style
 import org.brailleblaster.utd.exceptions.UTDException
 import org.brailleblaster.utd.internal.xml.FastXPath
-import org.brailleblaster.utd.internal.xml.XMLHandler2
+import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utils.UTD_NS
 import java.lang.reflect.Field
@@ -191,7 +191,7 @@ class UTDHelper {
                 return
             }
             val realRoot =
-                XMLHandler2.parentToElement(root)
+                XMLHandler.parentToElement(root)
             for (childNode in realRoot.childElements) {
                 if (UTDElements.BRL.isA(childNode)) {
                     onBrl.accept(childNode)
@@ -206,7 +206,7 @@ class UTDHelper {
             }
 
             val realRoot =
-                XMLHandler2.parentToElement(root)
+                XMLHandler.parentToElement(root)
             for (childNode in realRoot.childElements) {
                 if (childNode.getAttribute("class") != null && childNode.getAttributeValue("class")
                         .contains("utd:table")
@@ -229,7 +229,7 @@ class UTDHelper {
 
             if (UTDElements.BRL.isA(root)) return true
             val realRoot =
-                XMLHandler2.parentToElement(root)
+                XMLHandler.parentToElement(root)
             for (childNode in realRoot.childElements) {
                 if (UTDElements.BRL.isA(childNode)) {
                     return true
@@ -310,23 +310,25 @@ class UTDHelper {
          * @param rootRaw
          */
         @JvmStatic
-        fun stripUTDRecursive(rootRaw: ParentNode) {
-            val root =
-                XMLHandler2.nodeToElementOrParentOrDocRoot(
-                    rootRaw
-                )
-            if (UTDElements.BRL.isA(root) || (UTD_NS == root.namespaceURI && "tablebrl" == root.localName)) {
-                root.detach()
+        fun stripUTDRecursive(rootRaw: Document) = stripUTDRecursive(rootRaw.rootElement)
+        /**
+         * Recursively remove all brl nodes and internal UTD attributes (utdAction, utdStyle)
+         * @param rootRaw
+         */
+        @JvmStatic
+        fun stripUTDRecursive(rootRaw: Element) {
+            if (UTDElements.BRL.isA(rootRaw) || (UTD_NS == rootRaw.namespaceURI && "tablebrl" == rootRaw.localName)) {
+                rootRaw.detach()
                 return
             }
 
-            var attrib = root.getAttribute(UTDElements.UTD_ACTION_ATTRIB)
-            if (attrib != null) root.removeAttribute(attrib)
+            var attrib = rootRaw.getAttribute(UTDElements.UTD_ACTION_ATTRIB)
+            if (attrib != null) rootRaw.removeAttribute(attrib)
 
-            attrib = root.getAttribute(UTDElements.UTD_STYLE_ATTRIB)
-            if (attrib != null) root.removeAttribute(attrib)
+            attrib = rootRaw.getAttribute(UTDElements.UTD_STYLE_ATTRIB)
+            if (attrib != null) rootRaw.removeAttribute(attrib)
 
-            for (curChild in root.childElements) {
+            for (curChild in rootRaw.childElements) {
                 stripUTDRecursive(curChild)
             }
         }
@@ -422,7 +424,7 @@ class UTDHelper {
                     return if (value == null) {
                         null
                     } else if (Node::class.java.isAssignableFrom(field.type)) {
-                        XMLHandler2.toXMLSimple(value as Node)
+                        XMLHandler.toXMLSimple(value as Node)
                     } else if (JAXBElement::class.java.isAssignableFrom(field.type)) {
                         (value as JAXBElement<*>).value
                     } else value

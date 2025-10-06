@@ -33,7 +33,6 @@ import org.brailleblaster.utd.Style
 import org.brailleblaster.utd.config.UTDConfig
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.properties.EmphasisType
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.util.FormUIUtils
@@ -105,7 +104,7 @@ class BreadcrumbsToolbar(private val manager: Manager) : SimpleListener {
             val curAncestor = iterator.next()
             log.trace(
                 "CurAncestor: {}",
-                XMLHandler2.toXMLStartTag(curAncestor)
+                XMLHandler.toXMLStartTag(curAncestor)
             )
             if (!running) {
                 if (BBX.SECTION.ROOT.isA(curAncestor)) {

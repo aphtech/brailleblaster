@@ -16,7 +16,6 @@
 package org.brailleblaster.math.spatial
 
 import nu.xom.Element
-import nu.xom.Node
 import nu.xom.ParentNode
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.findBlock
@@ -399,13 +398,13 @@ class GridEditor : ISpatialMathDialog {
         val COL_LABEL = localeHandler["col"]
 
         fun deletePage() {
-            val current: Node? = XMLHandler.ancestorVisitorElement(
+            val current = XMLHandler.ancestorVisitorElement(
                 WPManager.getInstance().controller
                     .simpleManager.currentCaret.node
-            ) { node: Element? -> BBX.CONTAINER.SPATIAL_GRID.isA(node) }
+            ) { node -> BBX.CONTAINER.SPATIAL_GRID.isA(node) }!!
             // get previous block for caret event
             val previous = XMLHandler.previousSiblingNode(current)
-            val parent = current!!.parent
+            val parent = current.parent
             parent.removeChild(current)
             WPManager.getInstance().controller.simpleManager
                 .dispatchEvent(ModifyEvent(Sender.TEXT, true, parent))

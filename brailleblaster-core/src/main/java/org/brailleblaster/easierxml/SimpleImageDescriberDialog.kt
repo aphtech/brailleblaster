@@ -35,7 +35,6 @@ import org.brailleblaster.perspectives.braille.views.wp.SixKeyHandler
 import org.brailleblaster.perspectives.mvc.XMLNodeCaret
 import org.brailleblaster.perspectives.mvc.events.XMLCaretEvent
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.properties.EmphasisType
 import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.util.FormUIUtils
@@ -630,12 +629,12 @@ class SimpleImageDescriberDialog(
         private var captionEnabled = false
         private var braille = true
         private var previousLocation: SizeAndLocation? = null
-        fun alreadyHasBrailleElement(image: Element?): Node? {
+        fun alreadyHasBrailleElement(image: Element): Node? {
             return XMLHandler.childrenRecursiveVisitor(
                 image
-            ) { e: Element ->
+            ) { e ->
                 (BBX.INLINE.EMPHASIS.isA(e)
-                        && BBX.INLINE.EMPHASIS.ATTRIB_EMPHASIS[e].contains(EmphasisType.NO_TRANSLATE)) && XMLHandler2.findFirstText(
+                        && BBX.INLINE.EMPHASIS.ATTRIB_EMPHASIS[e].contains(EmphasisType.NO_TRANSLATE)) && XMLHandler.findFirstText(
                     e
                 ) != null
             }

@@ -46,8 +46,8 @@ class MultipleExclusionsMatcher : NodeNameMatcher() {
             } else {
                 // The list cannot have an ancestor that is a list
                 val ancestorMatcher = NodeAncestorMatcher()
-                ancestorMatcher.setSelfName(nodeName)
-                ancestorMatcher.setParentName(nodeName)
+                ancestorMatcher.selfName = nodeName
+                ancestorMatcher.parentName = nodeName
                 if (ancestorMatcher.isMatch(node, namespaces)) return false
             }
         } else {
@@ -63,8 +63,8 @@ class MultipleExclusionsMatcher : NodeNameMatcher() {
                 // Ancestor cannot be side bar unless that side bar has
                 // a side bar parent.
                 val ancestorMatcher = NodeAncestorMatcher()
-                ancestorMatcher.setSelfName(repeatOnce)
-                ancestorMatcher.setParentName(repeatOnce)
+                ancestorMatcher.selfName = repeatOnce
+                ancestorMatcher.parentName = repeatOnce
                 if (ancestorMatcher.isMatch(currentParent, namespaces)) return true
                 else {
                     for (i in 0..<currentParent.getChildCount()) {

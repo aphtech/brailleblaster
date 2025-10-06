@@ -22,6 +22,7 @@ import nu.xom.xslt.XSLException
 import nu.xom.xslt.XSLTransform
 import org.brailleblaster.utd.UTDTranslationEngine
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utils.xom.childNodes
 import org.graalvm.polyglot.Context
 import org.w3c.dom.Document
 import org.xml.sax.InputSource
@@ -138,17 +139,11 @@ object AsciiMathConverter : AutoCloseable {
 
     private fun getBrailleTextFromNode(node: Node, s: String): String {
         var str = StringBuilder(s)
-        for (i in 0 until node.childCount) {
-            if (UTDElements.BRL.isA(node.getChild(i))) {
-                val brailleNode = node.getChild(i)
-                for (j in 0 until brailleNode.childCount) {
-                    val brailleNodeChild = brailleNode.getChild(j)
-                    if (brailleNodeChild is Text) {
-                        str.append(brailleNodeChild.value)
-                    }
-                }
+        for (childNode in node.childNodes) {
+            if (UTDElements.BRL.isA(childNode)) {
+                str.append(childNode.childNodes.filterIsInstance<Text>().joinToString(separator = "") { it.value })
             }
-            str = StringBuilder(getBrailleTextFromNode(node.getChild(i), str.toString()))
+            str = StringBuilder(getBrailleTextFromNode(childNode, str.toString()))
         }
         return str.toString()
     }
@@ -243,10 +238,9 @@ object AsciiMathConverter : AutoCloseable {
         val navigator = JSNavigator("BrailleBlaster UTD")
         val window = JSWindow()
         val dbf = DocumentBuilderFactory.newInstance()
-        val jsDoc: Document
-        try {
+        val jsDoc: Document = try {
             val db = dbf.newDocumentBuilder()
-            jsDoc = db.parse(InputSource(StringReader("<html><head/><body/></html>")))
+            db.parse(InputSource(StringReader("<html><head/><body/></html>")))
         } catch (e1: ParserConfigurationException) {
             throw RuntimeException("Problem creating the DOM for the JavaScript library", e1)
         } catch (e1: SAXException) {

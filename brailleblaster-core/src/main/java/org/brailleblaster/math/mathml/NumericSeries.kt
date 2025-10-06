@@ -84,10 +84,10 @@ object NumericSeries {
             } else {
                 addNotAlreadyThere(textArray, current)
             }
-            current = XMLHandler.followingVisitor(current) { n: Node? ->
+            current = XMLHandler.followingVisitor(current) { n ->
                 (n is Text
                         && XMLHandler.ancestorElementNot(n) { n2: Element? -> n2 != null && UTDElements.BRL.isA(n2) })
-            }
+            }!!
         }
         for (i in textArray.indices) {
             val n = textArray[i]

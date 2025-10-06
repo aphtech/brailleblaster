@@ -71,7 +71,7 @@ class Matrix : ISpatialMathContainer {
         matrixLog("Formatting wide matrix, indent")
         try {
           formatIndent(brailleCells)
-        } catch (e: RuntimeException) {
+        } catch (_: RuntimeException) {
           notify(MatrixConstants.FORMAT_INDENT_TOO_WIDE_WARNING, Notify.ALERT_SHELL_NAME)
         }
       }
@@ -424,7 +424,7 @@ class Matrix : ISpatialMathContainer {
       return matrix != null
     }
 
-    fun getMatrixParent(node: Node?): Element? {
+    fun getMatrixParent(node: Node): Element? {
       return XMLHandler.ancestorVisitorElement(node) { e: Element -> BBX.CONTAINER.MATRIX.isA(e) }
     }
 
@@ -474,12 +474,12 @@ class Matrix : ISpatialMathContainer {
     }
 
     fun deleteMatrix() {
-      val current: Node? = XMLHandler.ancestorVisitorElement(
+      val current = XMLHandler.ancestorVisitorElement(
         WPManager.getInstance().controller.simpleManager.currentCaret.node
       ) { node: Element? -> BBX.CONTAINER.MATRIX.isA(node) }
       // get previous block for caret event
-      val previous = XMLHandler.previousSiblingNode(Objects.requireNonNull(current))
-      val parent = current!!.parent
+      val previous = XMLHandler.previousSiblingNode(current!!)
+      val parent = current.parent
       parent.removeChild(current)
       WPManager.getInstance().controller.simpleManager
         .dispatchEvent(ModifyEvent(Sender.TEXT, true, (parent)))

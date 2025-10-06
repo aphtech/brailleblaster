@@ -67,6 +67,7 @@ import java.util.List;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class TableEditor extends Dialog {
     private static final LocaleHandler localeHandler = LocaleHandler.getDefault();
@@ -362,7 +363,7 @@ public class TableEditor extends Dialog {
             open((Node[] nodeList) -> {
                         if (manager.isEmptyDocument()) {
                             //Get rid of placeholder node
-                            FastXPath.descendant(manager.getDoc().getRootElement()).stream()
+                            StreamSupport.stream(FastXPath.descendant(manager.getDoc().getRootElement()).spliterator(), false)
                                     .filter(rootDesc -> BBX.BLOCK.isA(rootDesc) && BrailleDocument.isEmptyPlaceholder((Element) rootDesc))
                                     .findFirst().ifPresent(Node::detach);
                         }
@@ -395,8 +396,7 @@ public class TableEditor extends Dialog {
             int actualOffset = text.getOffset();
             int blockTextLength = 0;
             boolean pastOriginalText = false;
-            Iterator<Node> iter = FastXPath.descendant(block)
-                    .stream()
+            Iterator<Node> iter = StreamSupport.stream(FastXPath.descendant(block).spliterator(), false)
                     .filter(e -> e instanceof nu.xom.Text && !UTDElements.BRL.isA(e.getParent()))
                     .iterator();
             while (iter.hasNext()) {
@@ -475,7 +475,7 @@ public class TableEditor extends Dialog {
                 tableNode = createConvertedTable(blocks, i);
 
                 //insert table before selected blocks
-                blocks.get(0).getParent().insertChild(tableNode, blocks.get(0).getParent().indexOf(blocks.get(0)));
+                blocks.getFirst().getParent().insertChild(tableNode, blocks.getFirst().getParent().indexOf(blocks.getFirst()));
                 open(nodes -> {
                     blocks.forEach(e -> {
                         //If they press ok, delete all existing blocks
@@ -550,7 +550,7 @@ public class TableEditor extends Dialog {
                 tableNode = (Element) tableNode.getParent();
 
             Element[] tables = getFacingTableParents(tableNode);
-            int split = getTableCells(tables[0]).get(0).size();
+            int split = getTableCells(tables[0]).getFirst().size();
             List<List<Node>> combinedTables = combineFacingTables(tableNode);
             state = new InternalFacingTable(combinedTables, split, new ArrayList<>(), TableType.SIMPLE_FACING);
             createFacingContents();
@@ -937,12 +937,12 @@ public class TableEditor extends Dialog {
             returnList.add(new ArrayList<>());
             if (row < leftTable.size()) {
                 for (int col = 0; col < leftTable.get(row).size(); col++) {
-                    returnList.get(returnList.size() - 1).add(leftTable.get(row).get(col));
+                    returnList.getLast().add(leftTable.get(row).get(col));
                 }
             }
             if (row < rightTable.size()) {
                 for (int col = 0; col < rightTable.get(row).size(); col++) {
-                    returnList.get(returnList.size() - 1).add(rightTable.get(row).get(col));
+                    returnList.getLast().add(rightTable.get(row).get(col));
                 }
             }
         }
@@ -1007,7 +1007,7 @@ public class TableEditor extends Dialog {
                             for (CellText text : textBoxes) {
                                 text.row--;
                             }
-                            state.getNodes().remove(0);
+                            state.getNodes().removeFirst();
                             //Set table to be one less row
                             //Note: state.setRows does not need to be called because it is
                             //based on the size of state's nodes list, and the row was deleted
@@ -1069,13 +1069,13 @@ public class TableEditor extends Dialog {
 
         if (!captions.isEmpty()) {
             //If table has a caption, include caption text box and store it in the first position of the return list.
-            Element captionParent = captions.get(0);
+            Element captionParent = captions.getFirst();
             IStyle parentStyle = m.getEngine().getStyle(captionParent);
             //Find caption element
             while (parentStyle == null || !parentStyle.getName().toLowerCase().contains("caption")) {
                 captionParent = (Element) captionParent.getParent();
                 if (captionParent == tableNode.getDocument().getRootElement()) {
-                    captionParent = captions.get(0);
+                    captionParent = captions.getFirst();
                     break;
                 }
                 parentStyle = m.getEngine().getStyle(captionParent);
@@ -1228,7 +1228,7 @@ public class TableEditor extends Dialog {
 
         //Always set focus to the first text box on creation
         if (!returnList.isEmpty()) {
-            returnList.get(0).getWidget().setFocus();
+            returnList.getFirst().getWidget().setFocus();
         }
 
         //Detect the Ctl-Alt-Arrow keypresses to navigate around the textBoxes, which should amount to traversing a list
@@ -1245,14 +1245,14 @@ public class TableEditor extends Dialog {
                                     returnList.get(textIndex - state.getDisplayedCols()).getWidget().setFocus();
                                 } else {
                                     //Send to start of table. Might modify to go to start of row instead.
-                                    returnList.get(0).getWidget().setFocus();
+                                    returnList.getFirst().getWidget().setFocus();
                                 }
                             } else if (e.keyCode == SWT.ARROW_DOWN) {
                                 if (textIndex + state.getDisplayedCols() < returnList.size()) {
                                     returnList.get(textIndex + state.getDisplayedCols()).getWidget().setFocus();
                                 } else {
                                     //Send to the end of the table. Might modify to go to end of row instead.
-                                    returnList.get(returnList.size() - 1).getWidget().setFocus();
+                                    returnList.getLast().getWidget().setFocus();
                                 }
                             } else if (e.keyCode == SWT.ARROW_LEFT) {
                                 if (textIndex - 1 >= 0) {
@@ -1263,9 +1263,9 @@ public class TableEditor extends Dialog {
                                     returnList.get(textIndex + 1).getWidget().setFocus();
                                 }
                             } else if (e.keyCode == SWT.HOME) {
-                                returnList.get(0).getWidget().setFocus();
+                                returnList.getFirst().getWidget().setFocus();
                             } else if (e.keyCode == SWT.END) {
-                                returnList.get(returnList.size() - 1).getWidget().setFocus();
+                                returnList.getLast().getWidget().setFocus();
                             }
                         }
                     }
@@ -1449,7 +1449,7 @@ public class TableEditor extends Dialog {
             for (int i = 1; i < tnTexts.size(); i++) {
                 firstRow.add(tnTexts.get(i).text.getXML(BBX.BLOCK.STYLE.create("1-3")));
             }
-            state.getNodes().add(0, firstRow);
+            state.getNodes().addFirst(firstRow);
             state.setDisplayedRows(state.getDisplayedRows() + 1);
             updateRowColTexts();
         }
@@ -1472,9 +1472,9 @@ public class TableEditor extends Dialog {
             throw new IllegalStateException("state type");
         }
 
-        Element firstBlock = tnTexts.get(0).text.getXML(BBX.BLOCK.STYLE.create("7-5"));
+        Element firstBlock = tnTexts.getFirst().text.getXML(BBX.BLOCK.STYLE.create("7-5"));
         List<CellText> tnTextsCopy = new ArrayList<>(tnTexts);
-        tnTextsCopy.remove(0);
+        tnTextsCopy.removeFirst();
         return createTNContainer(firstBlock, tnTextsCopy);
     }
 
@@ -1548,9 +1548,9 @@ public class TableEditor extends Dialog {
                 break;
         }
 
-        if (!state.getCaptions().isEmpty() && !state.getCaptions().get(0).getValue().isEmpty()) {
+        if (!state.getCaptions().isEmpty() && !state.getCaptions().getFirst().getValue().isEmpty()) {
             Element captionContainer = BBX.CONTAINER.CAPTION.create();
-            captionContainer.insertChild(state.getCaptions().get(0), 0);
+            captionContainer.insertChild(state.getCaptions().getFirst(), 0);
             newTable.insertChild(captionContainer, 0);
         }
 
@@ -1600,18 +1600,18 @@ public class TableEditor extends Dialog {
      */
     private void trimTable(List<List<Node>> nodes) {
         //Trim rows
-        List<Node> finalRow = nodes.get(nodes.size() - 1);
+        List<Node> finalRow = nodes.getLast();
         boolean emptyRow = true;
         for (Node node : finalRow) {
             Node nodeCopy = node.copy();
-            UTDHelper.stripUTDRecursive((ParentNode) nodeCopy);
+            UTDHelper.stripUTDRecursive((Element) nodeCopy);
             if (!nodeCopy.getValue().isEmpty()) {
                 emptyRow = false;
                 break;
             }
         }
         if (emptyRow) {
-            nodes.remove(nodes.size() - 1);
+            nodes.removeLast();
             if (nodes.isEmpty()) {
                 //If that was the rest of the table, stop recursion
                 return;
@@ -1623,8 +1623,8 @@ public class TableEditor extends Dialog {
         //Trim columns
         boolean emptyCol = true;
         for (List<Node> row : nodes) {
-            Node finalNode = row.get(row.size() - 1).copy();
-            UTDHelper.stripUTDRecursive((ParentNode) finalNode);
+            Node finalNode = row.getLast().copy();
+            UTDHelper.stripUTDRecursive((Element) finalNode);
             if (!finalNode.getValue().isEmpty()) {
                 emptyCol = false;
                 break;
@@ -1632,7 +1632,7 @@ public class TableEditor extends Dialog {
         }
         if (emptyCol) {
             for (List<Node> row : nodes) {
-                row.remove(row.size() - 1);
+                row.removeLast();
             }
             if (!nodes.isEmpty()) {
                 trimTable(nodes);
@@ -1709,8 +1709,8 @@ public class TableEditor extends Dialog {
         parent.removeChild(index);
         int iterator = 0;
         CellText captionText = null;
-        if (!textBoxes.isEmpty() && textBoxes.get(0).isCaption())
-            captionText = textBoxes.remove(0);
+        if (!textBoxes.isEmpty() && textBoxes.getFirst().isCaption())
+            captionText = textBoxes.removeFirst();
         Map<Element, Style> newElements = new LinkedHashMap<>();
         for (CellText textBox : textBoxes) {
             Element newSpan;
@@ -1787,7 +1787,7 @@ public class TableEditor extends Dialog {
             while (!pdShell.isDisposed()) {
                 Display.getCurrent().readAndDispatch();
             }
-            if (newStyles.isEmpty() || newStyles.get(newStyles.size() - 1) == null) { //Cancel was pressed
+            if (newStyles.isEmpty() || newStyles.getLast() == null) { //Cancel was pressed
                 return false;
             }
         }
@@ -1816,11 +1816,11 @@ public class TableEditor extends Dialog {
         if (state.getNodes().isEmpty())
             return;
         List<List<Node>> newList = new ArrayList<>();
-        for (int i = 0; i < state.getNodes().get(0).size(); i++) {
+        for (int i = 0; i < state.getNodes().getFirst().size(); i++) {
             newList.add(new ArrayList<>());
         }
         int col = 0;
-        while (col < state.getNodes().get(0).size()) {
+        while (col < state.getNodes().getFirst().size()) {
             for (int row = 0; row < state.getNodes().size(); row++) {
                 newList.get(col).add(state.getNodes().get(row).get(col));
             }
@@ -1829,7 +1829,7 @@ public class TableEditor extends Dialog {
         if (state instanceof InternalTable) {
             state = new InternalTable(newList, state.getCaptions(), state.getTNContainer(), state.getType());
         } else {
-            state = new InternalFacingTable(newList, newList.get(0).size() / 2, new ArrayList<>(), state.getType());
+            state = new InternalFacingTable(newList, newList.getFirst().size() / 2, new ArrayList<>(), state.getType());
         }
     }
 
@@ -1862,7 +1862,7 @@ public class TableEditor extends Dialog {
         for (int i = 0; i < tableNode.getChildElements().size(); i++) {
             Element child = tableNode.getChildElements().get(i);
             if (BBX.BLOCK.TABLE_CELL.isA(child)) {
-                rows.get(rows.size() - 1).add(child);
+                rows.getLast().add(child);
             } else if (BBX.CONTAINER.TABLE_ROW.isA(child)) {
                 rows.add(new ArrayList<>());
             }
@@ -1899,8 +1899,7 @@ public class TableEditor extends Dialog {
         //Strip UTD
         UTDHelper.stripUTDRecursive(containerCopy);
 
-        List<Node> children = FastXPath.descendant(containerCopy).list();
-        for (Node child : children) {
+        for (Node child : FastXPath.descendant(containerCopy)) {
             if (BBX.SPAN.OTHER.isA(child)) {
                 if (type == TableType.LINEAR) {
                     //If linear, re-attach span tags as children of the container

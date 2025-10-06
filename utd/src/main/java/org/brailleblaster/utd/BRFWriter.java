@@ -16,8 +16,6 @@
 package org.brailleblaster.utd;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import nu.xom.Element;
 import org.apache.commons.lang3.StringUtils;
 import org.brailleblaster.libembosser.spi.BrlCell;
@@ -29,10 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Write translated text to BRF (Braille Ready File)
@@ -393,7 +388,7 @@ public class BRFWriter {
 	 */
 	private class InputPageListener implements PageListener {
 		private final Logger log = LoggerFactory.getLogger(InputPageListener.class);
-		private final Multimap<Point, PageEntry> pages = ArrayListMultimap.create();
+		private final Map<Point, List<PageEntry>> pages = new HashMap<>();
 
 		@Override
 		public void onBrlPageNum(String brlPageBraille, String brlPageOrig) {
@@ -404,7 +399,7 @@ public class BRFWriter {
 			// Braille pages only start after the first newPage.
 			// MWhapples: Might it be better to throw an exception as this would indicate invalid UTD when there is a call before the start of Braille?
 			if (afterBookStart) {
-				pages.put(newPointCur(), new PageEntry(brlPageBraille, brlPageOrig, false));
+				pages.computeIfAbsent(newPointCur(), k -> new ArrayList<>()).add(new PageEntry(brlPageBraille, brlPageOrig, false));
 			}
 		}
 
@@ -418,7 +413,7 @@ public class BRFWriter {
 			if (!afterBookStart) {
 				pages.clear();
 			}
-			pages.put(newPointCur(), new PageEntry(printPageBraille, printPageOrig, true));
+			pages.computeIfAbsent(newPointCur(), k -> new ArrayList<>()).add(new PageEntry(printPageBraille, printPageOrig, true));
 		}
 		
 		private Point newPointCur() {

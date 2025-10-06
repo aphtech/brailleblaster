@@ -22,7 +22,7 @@ import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.math.mathml.MathModule
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.ui.WrapSelectionInTextSymbols.TextWrapCallBack
-import org.brailleblaster.utd.internal.xml.XMLHandler2
+import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.EmphasisType
 import org.brailleblaster.util.Utils
 
@@ -77,7 +77,7 @@ object BlockSelectionInTextSymbols {
             endb = mathParent.parent.indexOf(mathParent)
         }
         Utils.insertChildCountSafe(endparent, endnewBlock, endb + 1)
-        XMLHandler2.wrapNodeWithElement(
+        XMLHandler.wrapNodeWithElement(
             endbegInd,
             BBX.INLINE.EMPHASIS.create(EmphasisType.NO_TRANSLATE)
         )

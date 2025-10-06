@@ -9,12 +9,4 @@
 	<mathTextTable>en-us-g2.ctb</mathTextTable >
 	<mathExpressionTable>nemeth.ctb</mathExpressionTable >
 	<editTable>nemeth_edit.ctb</editTable >
-	<mathLineWrapping>
-		<lineWrap matchPattern=" (?=(/?\.k|\.1|&quot;\.) )"/> 
-		<lineWrap matchPattern="(?=\+|-|\./|`\*)"/>
-	</mathLineWrapping>
-	<mathStartLines>
-		<insertion matchPattern="(?=[0-9])" insertionDots="#"/>
-		<insertion matchPattern="-(?=[0-9])" insertionDots="#"/>
-	</mathStartLines>
 </brailleSettings>

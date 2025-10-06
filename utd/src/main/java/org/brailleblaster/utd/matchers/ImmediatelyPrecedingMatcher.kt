@@ -24,9 +24,9 @@ import org.brailleblaster.utd.NamespaceMap
  */
 class ImmediatelyPrecedingMatcher : NodeAncestorMatcher() {
     override fun isMatch(node: Node, namespaces: NamespaceMap): Boolean {
-        return if (selfMatcher != null && !selfMatcher.isMatch(node, namespaces)) {
-            false
-        } else matchParent(node, namespaces)
+        return if (selfMatcher?.isMatch(node, namespaces) != false) {
+            matchParent(node, namespaces)
+        } else false
     }
 
     private fun matchParent(node: Node, namespaces: NamespaceMap): Boolean {
@@ -34,7 +34,7 @@ class ImmediatelyPrecedingMatcher : NodeAncestorMatcher() {
         val nodeIndex = parent.indexOf(node)
         return if (nodeIndex > 0) {
             //Something is right before this
-            parentMatcher.isMatch(parent.getChild(nodeIndex - 1), namespaces)
+            parentMatcher?.isMatch(parent.getChild(nodeIndex - 1), namespaces) != false
         } else {
             //First element, need to up a level
             matchParent(parent, namespaces)

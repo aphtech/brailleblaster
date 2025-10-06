@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.brailleblaster.utils.NamespacesKt;
 import org.jetbrains.annotations.Nullable;
@@ -867,13 +868,13 @@ public class BBX {
             public void assertComplete(Element node, StyleDefinitions styleDefs) {
                 super.assertComplete(node, styleDefs);
 
-                Element parentList = XMLHandler.ancestorVisitorElement(node,
+                Element parentList = XMLHandler.Companion.ancestorVisitorElement(node,
                         BBX.CONTAINER.LIST::isA);
                 if (parentList == null) {
                     throw new NodeException("List item not under list", node);
                 }
                 if (BBX.ListType.POEM_LINE_GROUP.isA(parentList)) {
-                    Element poemWrapper = XMLHandler.ancestorVisitorElement(parentList.getParent(),
+                    Element poemWrapper = XMLHandler.Companion.ancestorVisitorElement(parentList.getParent(),
                             ListType.POEM::isA);
                     if (poemWrapper != null) {
                         parentList = poemWrapper;
@@ -939,11 +940,6 @@ public class BBX {
                 super(coreType, name);
             }
 
-            /**
-             * <b>NOTE: You probably want
-             * {@link BBXUtils#isPageNum(nu.xom.Node) } to also handle
-             * SPAN.PAGE_NUM </b>
-             */
             @Override
             public boolean isA(Node node) {
                 return super.isA(node);
@@ -1106,7 +1102,7 @@ public class BBX {
                     throw new NodeException("Expected only container child to be math, got ", mathTag);
                 }
 
-                List<Element> nonMathMl = FastXPath.descendant(node).stream().filter(n -> n instanceof Element)
+                List<Element> nonMathMl = StreamSupport.stream(FastXPath.descendant(node).spliterator(), false).filter(n -> n instanceof Element)
                         .map(n -> (Element) n).filter(e -> !e.getNamespaceURI().equals(NamespacesKt.MATHML_NS)).toList();
                 if (!nonMathMl.isEmpty()) {
                     throw new NodeException("Unexpected non-mathml elements " + StringUtils.join(nonMathMl, ", "),
@@ -1161,11 +1157,6 @@ public class BBX {
                 super(coreType, name);
             }
 
-            /**
-             * <b>NOTE: You probably want
-             * {@link BBXUtils#isPageNum(nu.xom.Node) } to also handle
-             * BLOCK.PAGE_NUM </b>
-             */
             @Override
             public boolean isA(Node node) {
                 return super.isA(node);

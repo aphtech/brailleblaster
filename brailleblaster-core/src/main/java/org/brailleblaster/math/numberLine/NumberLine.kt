@@ -161,7 +161,7 @@ class NumberLine : ISpatialMathContainer {
     override fun format() {
         try {
             formatter.format()
-        } catch (e: MathFormattingException) {
+        } catch (_: MathFormattingException) {
             Notify.notify(NumberLineConstants.NUMERAL_WARNING, Notify.ALERT_SHELL_NAME)
         }
     }
@@ -219,7 +219,7 @@ class NumberLine : ISpatialMathContainer {
         widget.extractText()
         try {
             parse()
-        } catch (e: MathFormattingException) {
+        } catch (_: MathFormattingException) {
             Notify.notify(NumberLineConstants.NUMBER_LINE_ALLOWED_CHARS, Notify.ALERT_SHELL_NAME)
             return false
         }
@@ -295,7 +295,7 @@ class NumberLine : ISpatialMathContainer {
                     }
                     return false
                 }
-            } catch (e: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 if (!hush) {
                     Notify.notify(NumberLineConstants.NUMERAL_WARNING, Notify.ALERT_SHELL_NAME)
                 } else {
@@ -304,7 +304,7 @@ class NumberLine : ISpatialMathContainer {
                 return false
             }
             true
-        } catch (e1: MathFormattingException) {
+        } catch (_: MathFormattingException) {
             false
         }
     }
@@ -334,7 +334,7 @@ class NumberLine : ISpatialMathContainer {
     private fun notEmptyAndZero(s: String): Boolean {
         return try {
             s.isNotBlank() && s.toInt() == 0
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             false
         }
     }
@@ -478,7 +478,7 @@ class NumberLine : ISpatialMathContainer {
         if (settings.type == NumberLineType.AUTOMATIC_MATH) {
             try {
                 parse()
-            } catch (e: MathFormattingException) {
+            } catch (_: MathFormattingException) {
                 Notify.notify(NumberLineConstants.NUMBER_LINE_ALLOWED_CHARS, Notify.ALERT_SHELL_NAME)
                 return false
             }
@@ -546,7 +546,7 @@ class NumberLine : ISpatialMathContainer {
         }
 
         @JvmStatic
-        fun getNumberLineParent(node: Node?): Element? {
+        fun getNumberLineParent(node: Node): Element? {
             return XMLHandler.ancestorVisitorElement(node) { e: Element -> BBX.CONTAINER.NUMBER_LINE.isA(e) }
         }
 
@@ -576,12 +576,12 @@ class NumberLine : ISpatialMathContainer {
         }
 
         fun deleteNumberLine() {
-            val current: Node? = XMLHandler.ancestorVisitorElement(
+            val current = XMLHandler.ancestorVisitorElement(
                 WPManager.getInstance().controller.simpleManager.currentCaret.node
-            ) { node: Element? -> BBX.CONTAINER.NUMBER_LINE.isA(node) }
+            ) { node -> BBX.CONTAINER.NUMBER_LINE.isA(node) }!!
             // get previous block for caret event
             val previous = XMLHandler.previousSiblingNode(current)
-            val parent = current!!.parent
+            val parent = current.parent
             parent.removeChild(current)
             WPManager.getInstance()
                 .controller

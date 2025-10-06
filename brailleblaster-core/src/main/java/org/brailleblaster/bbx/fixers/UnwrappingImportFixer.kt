@@ -18,7 +18,7 @@ package org.brailleblaster.bbx.fixers
 import nu.xom.Element
 import nu.xom.Node
 import org.brailleblaster.utd.exceptions.NodeException
-import org.brailleblaster.utd.internal.xml.XMLHandler2
+import org.brailleblaster.utd.internal.xml.XMLHandler
 
 @Suppress("UNUSED")
 class UnwrappingImportFixer : AbstractFixer() {
@@ -26,6 +26,6 @@ class UnwrappingImportFixer : AbstractFixer() {
         if (matchedNode !is Element) {
             throw NodeException("Expected Elemenet, got", matchedNode)
         }
-        XMLHandler2.unwrapElement(matchedNode)
+        XMLHandler.unwrapElement(matchedNode)
     }
 }

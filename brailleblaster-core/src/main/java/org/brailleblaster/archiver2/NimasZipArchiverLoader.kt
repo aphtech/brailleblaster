@@ -91,7 +91,7 @@ class NimasZipArchiverLoader : ArchiverFactory.FileLoader {
                 bookPath = filesStream
                     .filter { path: Path? -> OPFUtils.pathNotHiddenOrInHiddenDirectory(path!!) }
                     .filter { curPath: Path? -> curPath!!.fileName.toString().endsWith(".xml") }
-                    .filter { curPath: Path? ->
+                    .filter { curPath: Path ->
                         try {
                             return@filter XMLHandler().load(curPath).rootElement.localName == "dtbook"
                         } catch (e: Exception) {

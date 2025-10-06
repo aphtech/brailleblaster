@@ -332,7 +332,7 @@ class ViewControl(val m: Manager, val click: Click) {
                 blocks.add(block)
             }
         }
-        val parent: ParentNode = blocks[0]
+        val parent = blocks[0]
         var index = BBXUtils.getIndexInBlock(array[0].node)
         if (before.value.isNotEmpty()) {
             insertChildCountSafe(parent, before, index++)

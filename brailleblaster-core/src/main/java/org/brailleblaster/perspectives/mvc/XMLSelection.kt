@@ -23,7 +23,6 @@ import org.brailleblaster.math.mathml.MathModule
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.utils.TableUtils.isTableCopy
 import org.brailleblaster.utils.UTD_NS
 import org.brailleblaster.utils.xom.childNodes
@@ -101,10 +100,9 @@ class XMLSelection(@JvmField val start: XMLNodeCaret, @JvmField val end: XMLNode
 
             //Iterate through the xml from the starting block to the ending block,
             //adding all blocks found along the way to the return list.
-            var curBlock: Node? = startBlock
+            var curBlock: Node = startBlock
             while (curBlock !== endBlock) {
-                curBlock = XMLHandler.followingVisitor(curBlock) { node: Node? -> BBX.BLOCK.isA(node) }
-                if (curBlock == null) break
+                curBlock = XMLHandler.followingVisitor(curBlock) { node: Node -> BBX.BLOCK.isA(node) } ?: break
                 returnList.add(curBlock as Element)
             }
             return returnList
@@ -131,12 +129,12 @@ class XMLSelection(@JvmField val start: XMLNodeCaret, @JvmField val end: XMLNode
 		fun isValidTreeSelection(start: Node, end: Node): List<Node>? {
             val commonParent = XMLHandler.findCommonParent(
                 listOf(
-                    XMLHandler2.nodeToElementOrParentOrDocRoot(
+                    XMLHandler.nodeToElementOrParentOrDocRoot(
                         start
-                    ),
-                    XMLHandler2.nodeToElementOrParentOrDocRoot(
+                    )!!,
+                    XMLHandler.nodeToElementOrParentOrDocRoot(
                         end
-                    )
+                    )!!
                 )
             )
 

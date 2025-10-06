@@ -16,8 +16,6 @@
 package org.brailleblaster.utd
 
 import jakarta.xml.bind.annotation.XmlAttribute
-import jakarta.xml.bind.annotation.XmlElement
-import jakarta.xml.bind.annotation.XmlElementWrapper
 import jakarta.xml.bind.annotation.XmlRootElement
 import org.brailleblaster.libembosser.spi.BrlCell
 
@@ -39,34 +37,51 @@ data class BrailleSettings(
     /** What table should be used to edit together parts of documents (eg. to join maths and text)  */
     var editTable: String = "nemeth_edit.ctb",
     var mathBrailleCode: MathBraileCode = MathBraileCode.Nemeth,
-    @Deprecated("No longer using LibLouisAPH")
-    var mainTranslationTableLLAPH: String = "english-ueb-grade2.rst",
-    @Deprecated("No longer using LibLouisAPH")
-    var uncontractedTableLLAPH: String = "english-ueb-grade2.rst",
-    @Deprecated("No longer using LibLouisAPH")
-    var mathExpressionTableLLAPH: String = "english-ueb-math.rst",
-    @Deprecated("No longer using LibLouisAPH")
-    var mathTextTableLLAPH: String = "english-ueb-math.rst",
-    @Deprecated("No longer using LibLouisAPH")
-    var editTableLLAPH: String = "english-ueb-math.rst",
-    @Deprecated("No longer using LibLouisAPH")
-    var computerBrailleTableLLAPH: String = "en-us-comp8.ctb",
-    @Deprecated("No longer using LibLouisAPH")
-    var isUseLibLouisAPH: Boolean = false,
     var isUseAsciiBraille: Boolean = false,
-    /** The patterns for line wrapping math.  */
-    @get:XmlElementWrapper(name = "mathLineWrapping")
-    @get:XmlElement(name = "lineWrap")
-    var mathLineWrapping: MutableList<InsertionPatternEntry> = mutableListOf(),
-    @get:XmlElementWrapper(name = "mathStartLines")
-    @get:XmlElement(name = "insertion")
-    var mathStartLines: List<InsertionPatternEntry>? = null,
     var mathIndicators: MathIndicators = MathIndicators()
 )
 
-enum class MathBraileCode(val preferenceName: String) {
-    UEB("UEB"),
-    Nemeth("Nemeth")
+enum class MathBraileCode(
+    val preferenceName: String,
+    val lineWrapping: List<InsertionPatternEntry> = listOf(),
+    val startLines: List<InsertionPatternEntry> = listOf(),
+) {
+    UEB(
+        "UEB",
+        lineWrapping = listOf(
+            InsertionPatternEntry(
+                matchPattern = " (?=(\"7(`:)?|`[<>]) )"
+            ),
+            InsertionPatternEntry(
+                matchPattern = "(?=\"[68\\-/])"
+            ),
+            InsertionPatternEntry(
+                matchPattern = "[\\._\"]?>(?<contDots>)(?=[\\._\"]?<)",
+                insertionDots = "\""
+            )
+        )
+    ),
+    Nemeth(
+        "Nemeth",
+        lineWrapping = listOf(
+            InsertionPatternEntry(
+                matchPattern = " (?=(/?\\.k|\\.1|\"\\.) )"
+            ),
+            InsertionPatternEntry(
+                matchPattern = "(?=\\+|-|\\./|`\\*)"
+            )
+        ),
+        startLines = listOf(
+            InsertionPatternEntry(
+                matchPattern = "(?=[0-9])",
+                insertionDots = "#"
+            ),
+            InsertionPatternEntry(
+                matchPattern = "-(?=[0-9])",
+                insertionDots = "#"
+            )
+        )
+    )
 }
 
 data class InsertionPatternEntry @JvmOverloads constructor(
@@ -77,13 +92,7 @@ data class InsertionPatternEntry @JvmOverloads constructor(
     companion object {
         @JvmStatic
         fun listToMap(listInsertions: List<InsertionPatternEntry>?): Map<String, String> {
-            val result: MutableMap<String, String> = LinkedHashMap()
-            if (listInsertions != null) {
-                for (i in listInsertions) {
-                    result[i.matchPattern] = i.insertionDots
-                }
-            }
-            return result
+            return listInsertions?.associate { it.matchPattern to it.insertionDots } ?: emptyMap()
         }
     }
 }

@@ -27,7 +27,6 @@ import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.tools.DebugMenuToolModule
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 
 object SimpleImageDescriberModule : DebugMenuToolModule {
     const val MENU_ITEM_NAME = "Image Describer"
@@ -61,7 +60,7 @@ object SimpleImageDescriberModule : DebugMenuToolModule {
         if (block == null) {
             //selection might be something strange
             block =
-                XMLHandler2.nodeToElementOrParentOrDocRoot(sel.start.node)
+                XMLHandler.nodeToElementOrParentOrDocRoot(sel.start.node)
         }
         return FastXPath.followingAndSelf(block).firstOrNull { node -> ImageUtils.isImage(node) } as Element?
     }

@@ -20,7 +20,7 @@ import nu.xom.Node
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.utd.NamespaceMap
 import org.brailleblaster.utd.internal.xml.FastXPath
-import org.brailleblaster.utd.internal.xml.XMLHandler2
+import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.matchers.INodeMatcher
 
 @Suppress("UNUSED")
@@ -30,14 +30,14 @@ class ImageGroupToSpanImportFixer : AbstractFixer() {
         getDescendantBlock(matchedNode)
             .firstOrNull()
             ?.let { elem: Element ->
-                XMLHandler2.unwrapElement(
+                XMLHandler.unwrapElement(
                     elem
                 )
             }
         getDescendantContainer(matchedNode)
             .firstOrNull()
             ?.let { elem: Element ->
-                XMLHandler2.unwrapElement(
+                XMLHandler.unwrapElement(
                     elem
                 )
             }

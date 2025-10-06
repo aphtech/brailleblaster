@@ -42,7 +42,6 @@ import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.perspectives.mvc.modules.views.DebugModule
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.util.Notify.showMessage
 import org.brailleblaster.util.WorkingDialog
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
@@ -91,7 +90,7 @@ class VolumeInsertModule : SimpleListener {
         const val MENU_VOLUME_MANAGER_NAME: String = "Volume Manager"
         const val MENU_INSERT_VOLUME: String = "Insert"
 
-        val pageNumbers: ArrayList<Element?> = ArrayList()
+        val pageNumbers: MutableList<Element> = mutableListOf()
 
         private fun insertVolume(volumeType: VolumeType, m: Manager) {
             if (!m.isEmptyDocument) {
@@ -148,22 +147,22 @@ class VolumeInsertModule : SimpleListener {
 
         fun insertVolumeBeforeElement(
             type: VolumeType?,
-            caret: Node?
+            caret: Node
         ): Element {
             var stopTag =
-                XMLHandler2.nodeToElementOrParentOrDocRoot(caret)
+                XMLHandler.nodeToElementOrParentOrDocRoot(caret)!!
             if (XMLHandler.ancestorVisitorElement(
                     stopTag
-                ) { node: Element? -> BBX.CONTAINER.VOLUME.isA(node) } != null
+                ) { node: Element -> BBX.CONTAINER.VOLUME.isA(node) } != null
             ) {
                 throw BBNotifyException("Cannot insert volume inside another volume division")
             }
             stopTag = XMLHandler.ancestorVisitorElement(
                 stopTag
-            ) { curAncestor: Element? -> BBX.BLOCK.isA(curAncestor) || BBX.CONTAINER.isA(curAncestor) }
+            ) { curAncestor: Element -> BBX.BLOCK.isA(curAncestor) || BBX.CONTAINER.isA(curAncestor) }!!
             val previous = FastXPath.preceding(stopTag)
-                .filterIsInstance<Element>().firstOrNull { node: Node? -> BBX.BLOCK.isA(node) }
-            if (previous.isPageNum()) {
+                .filterIsInstance<Element>().firstOrNull { node -> BBX.BLOCK.isA(node) }
+            if (previous != null && previous.isPageNum()) {
                 pageNumbers.add(previous)
                 stopTag = previous
             }
@@ -173,11 +172,11 @@ class VolumeInsertModule : SimpleListener {
                     )
                 }) {
                 stopTag =
-                    XMLHandler.ancestorVisitorElement(previous) { node: Element? -> BBX.CONTAINER.TABLETN.isA(node) }
+                    XMLHandler.ancestorVisitorElement(previous) { node: Element? -> BBX.CONTAINER.TABLETN.isA(node) }!!
             }
 
             val newVolumeElement = newVolumeElement(type)
-            val stopTagParent = stopTag!!.parent!!
+            val stopTagParent = stopTag.parent!!
             stopTagParent.insertChild(newVolumeElement, stopTagParent.indexOf(stopTag))
             return newVolumeElement
         }

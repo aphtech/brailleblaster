@@ -58,7 +58,7 @@ class PageIndicatorTextMapElement(node: Element?) : TextMapElement(node), Unedit
             return parent
         } else {
             if (BBX.SPAN.PAGE_NUM.isA(node)) {
-                val parent = node.parent
+                val parent = node.parent as Element
                 node.detach()
                 UTDHelper.stripUTDRecursive(parent)
                 Utils.combineAdjacentTextNodes(parent)

@@ -55,7 +55,6 @@ object TableExceptions {
         if (forTesting) {
             try {
                 //TODO:  refactor tests that use actual translation
-                engine.brailleSettings.isUseLibLouisAPH = false
                 exceptionsTableFile = testExceptionFile
                 if (!exceptionsTableFile!!.exists()) {
                     log.debug("Making exceptions table {}", exceptionsTableFile)

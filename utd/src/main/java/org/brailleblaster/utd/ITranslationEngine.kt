@@ -94,4 +94,11 @@ interface ITranslationEngine {
      */
     var callback: UTDTranslationEngineCallback
 	  var shortcutDefinitions: ShortcutDefinitions
+    fun toBRF(
+        utdDocument: Document,
+        ocs: BRFWriter.OutputCharStream,
+        opts: Int,
+        outputPageListener: BRFWriter.PageListener,
+        convertToBrfChars: Boolean = false
+    )
 }

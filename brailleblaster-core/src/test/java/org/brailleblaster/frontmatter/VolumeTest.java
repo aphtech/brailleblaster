@@ -55,6 +55,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -154,8 +155,7 @@ public class VolumeTest {
 		BBTestRunner bbTest = new BBTestRunner(new File("/media/brailleblaster/nimas-books/9780133268195NIMAS_revised.xml"));
 		int NUM_VOLUMES = 20;
 
-		int textNodeCount = (int) FastXPath.descendant(BBX.getRoot(bbTest.getDoc()))
-				.stream()
+		int textNodeCount = (int) StreamSupport.stream(FastXPath.descendant(BBX.getRoot(bbTest.getDoc())).spliterator(), false)
 				.filter(curNode -> curNode instanceof Text)
 				.count();
 		int textNodesPerVolume = textNodeCount / NUM_VOLUMES;
@@ -175,7 +175,7 @@ public class VolumeTest {
 			ViewTestRunner.doPendingSWTWork();
 			//find usable text node to scroll to
 			log.debug("startNode doc " + startNode.getDocument());
-			Element startNodeProcessing = FastXPath.descendantAndFollowing(bbTest.getDoc()).stream()
+			Element startNodeProcessing = StreamSupport.stream(FastXPath.descendantAndFollowing(bbTest.getDoc()).spliterator(), false)
 					.filter(curNode -> curNode instanceof Element && ((Element) curNode).getAttribute("insertManyVolumes") != null)
 					.findFirst()
 					.map(curNode -> (Element) curNode)
@@ -185,7 +185,7 @@ public class VolumeTest {
 			Text nodeToVolumize = null;
 			do {
 				endOffset++;
-				nodeToVolumize = (Text) FastXPath.descendantAndFollowing(startNodeProcessing).stream()
+				nodeToVolumize = (Text) StreamSupport.stream(FastXPath.descendantAndFollowing(startNodeProcessing).spliterator(), false)
                         .filter(curNode -> curNode instanceof Text)
                         .skip(textNodesPerVolume + endOffset)
                         .filter(curNode -> !BBXUtils.isPageNumAncestor(curNode))
@@ -194,7 +194,7 @@ public class VolumeTest {
 					//end of document
 					break Outer;
 				}
-			} while (XMLHandler.ancestorVisitor(
+			} while (XMLHandler.Companion.ancestorVisitor(
 					nodeToVolumize,
 					curNode -> BBX.CONTAINER.TABLE.isA(curNode)
 					|| BBX.CONTAINER.VOLUME.isA(curNode)

@@ -40,15 +40,15 @@ import org.slf4j.LoggerFactory
 /**
  * Check if given node is a BLOCK or SPAN of type PAGE_NUM
  */
-fun Node?.isPageNum(): Boolean = BBX.SPAN.PAGE_NUM.isA(this) || BBX.BLOCK.PAGE_NUM.isA(this)
+fun Node.isPageNum(): Boolean = BBX.SPAN.PAGE_NUM.isA(this) || BBX.BLOCK.PAGE_NUM.isA(this)
 
-fun Node?.isPageNumAncestor(): Boolean = XMLHandler.ancestorElementIs(this) { it.isPageNum() }
+fun Node.isPageNumAncestor(): Boolean = XMLHandler.ancestorElementIs(this) { it.isPageNum() }
 
 /**
  * Checks if only descendant is a page num in addition to [.isPageNum]
  * and [.isPageNumAncestor]
  */
-fun Node?.isPageNumEffectively(): Boolean = if (this.isPageNum() || this.isPageNumAncestor()) {
+fun Node.isPageNumEffectively(): Boolean = if (this.isPageNum() || this.isPageNumAncestor()) {
     true
 } else if (this !is Element) {
     false
@@ -63,19 +63,19 @@ fun Node?.isPageNumEffectively(): Boolean = if (this.isPageNum() || this.isPageN
 fun Node?.isTOCText(): Boolean = this != null && (this.findBlock().let { BBX.BLOCK.MARGIN.isA(it) ||
         BBX.BLOCK.TOC_VOLUME_SPLIT.isA(it) })
 
-fun Element?.findBlockChildOrNull(): Element? = XMLHandler.childrenRecursiveVisitor(
+fun Element.findBlockChildOrNull(): Element? = XMLHandler.childrenRecursiveVisitor(
     this
 ) { BBX.BLOCK.isA(it) }
 
-fun Element?.findBlockChild(): Element = this.findBlockChildOrNull() ?: throw RuntimeException("Node does not contain a block.")
+fun Element.findBlockChild(): Element = this.findBlockChildOrNull() ?: throw RuntimeException("Node does not contain a block.")
 
-fun Node?.findBlockOrNull(): Element? = XMLHandler.ancestorVisitor(
+fun Node.findBlockOrNull(): Element? = XMLHandler.ancestorVisitor(
     this
 ) { BBX.BLOCK.isA(it) } as Element?
 
-fun Node?.findBlock(): Element = this.findBlockOrNull() ?: throw RuntimeException("Node not inside a block")
+fun Node.findBlock(): Element = this.findBlockOrNull() ?: throw RuntimeException("Node not inside a block")
 
-fun Node?.getAncestorListLevel(): Int = BBX.CONTAINER.LIST.ATTRIB_LIST_LEVEL[XMLHandler.ancestorVisitorElement(
+fun Node.getAncestorListLevel(): Int = BBX.CONTAINER.LIST.ATTRIB_LIST_LEVEL[XMLHandler.ancestorVisitorElement(
     this
 ) { BBX.CONTAINER.LIST.isA(it) }]
 
@@ -83,13 +83,13 @@ object BBXUtils {
     private val log: Logger = LoggerFactory.getLogger(BBXUtils::class.java)
 
     @JvmStatic
-    fun isPageNumAncestor(node: Node?): Boolean = node.isPageNumAncestor()
+    fun isPageNumAncestor(node: Node): Boolean = node.isPageNumAncestor()
 
     @JvmStatic
-    fun findBlockChild(node: Element?): Element = node.findBlockChild()
+    fun findBlockChild(node: Element): Element = node.findBlockChild()
 
     @JvmStatic
-    fun findBlock(node: Node?): Element = node.findBlock()
+    fun findBlock(node: Node): Element = node.findBlock()
 
     /**
      * @see .stripStyle
@@ -270,7 +270,7 @@ object BBXUtils {
      * the block, or the block. Returns the parent of the removed element
      */
     @JvmStatic
-    fun cleanupBlock(node: Node?): Node? {
+    fun cleanupBlock(node: Node): Node? {
         val block = node.findBlockOrNull() ?: return null
         stripUTDRecursive(block)
         if (block.value.isEmpty()) {
@@ -362,7 +362,7 @@ object BBXUtils {
         return manager.documentName
     }
 
-    fun isUneditable(node: Node?): Boolean {
+    fun isUneditable(node: Node): Boolean {
         return XMLHandler.ancestorVisitor(node) { BBX.CONTAINER.TABLE.isA(it) } != null
                 || isSpatialMath(node)
     }

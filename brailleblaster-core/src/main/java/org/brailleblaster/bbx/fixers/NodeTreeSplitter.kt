@@ -20,7 +20,7 @@ import nu.xom.Element
 import nu.xom.Node
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.FastXPath
-import org.brailleblaster.utd.internal.xml.XMLHandler2
+import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.slf4j.LoggerFactory
 
 object NodeTreeSplitter {
@@ -54,8 +54,8 @@ object NodeTreeSplitter {
         } else if (splitAt == null) {
             throw NullPointerException("oldTrigger")
         } else if (root === splitAt) {
-            log.error("root " + XMLHandler2.toXMLSimple(root))
-            log.error("splitAt " + XMLHandler2.toXMLSimple(
+            log.error("root " + XMLHandler.toXMLSimple(root))
+            log.error("splitAt " + XMLHandler.toXMLSimple(
                 splitAt
             )
             )
@@ -70,8 +70,8 @@ object NodeTreeSplitter {
         var newRoot: Element? = null
         while (splitCursor !== root) {
             log.trace(
-                "cursor " + XMLHandler2.toXMLSimple(splitCursor)
-                        + " parent " + XMLHandler2.toXMLSimple(
+                "cursor " + XMLHandler.toXMLSimple(splitCursor)
+                        + " parent " + XMLHandler.toXMLSimple(
                     parent
                 )
             )
@@ -89,7 +89,7 @@ object NodeTreeSplitter {
             if (splitStart - 1 < parent.childCount) {
                 // recreate parent
                 val prevNewRoot = newRoot
-                newRoot = XMLHandler2.shallowCopy(parent)
+                newRoot = XMLHandler.shallowCopy(parent)
                 //			root.getParent().insertChild(newRoot, root.getParent().indexOf(root) + 1);
                 log.trace("Making root " + newRoot.toXML())
                 if (prevNewRoot != null) {

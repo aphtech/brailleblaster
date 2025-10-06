@@ -36,7 +36,7 @@ class CountingXPathLikeMatcher : NodeAncestorMatcher() {
     @XmlAttribute
     private var count = 0
     override fun isMatch(node: Node, namespaces: NamespaceMap): Boolean {
-        if (!selfMatcher.isMatch(node, namespaces)) return false
+        if (selfMatcher?.isMatch(node, namespaces) == false) return false
         if (node.parent == null && axes != "child") {
             return false
         }
@@ -57,7 +57,7 @@ class CountingXPathLikeMatcher : NodeAncestorMatcher() {
             }
             "child" -> node.childNodes.asSequence()
             else -> throw UnsupportedOperationException("Axes not implemented: $axes")
-        }.count { parentMatcher.isMatch(it, namespaces) }
+        }.count { parentMatcher?.isMatch(it, namespaces) != false }
 
         // Match count
         return when (comparer) {

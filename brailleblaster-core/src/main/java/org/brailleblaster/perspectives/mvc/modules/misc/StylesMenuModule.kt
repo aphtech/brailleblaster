@@ -48,7 +48,6 @@ import org.brailleblaster.utd.Style
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.properties.EmphasisType
 import org.brailleblaster.utd.utils.TableUtils
 import org.brailleblaster.utd.utils.TableUtils.isTableCopy
@@ -306,7 +305,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
         val block = if ((BBX.CONTAINER.TABLE.isA(start) || BBX.CONTAINER.LIST.isA(start)
                     || BBX.CONTAINER.BOX.isA(start))
         ) start as Element else start.findBlock()
-        XMLHandler2.wrapNodeWithElement(
+        XMLHandler.wrapNodeWithElement(
             block,
             BBX.CONTAINER.BOX.create()
         )
@@ -476,11 +475,11 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
                 ) { node: Element? -> BBX.BLOCK.isA(node) }!!
                 stripUTDRecursive(ancestorElement)
 
-                val splitTextNode = XMLHandler2.splitTextNode(
+                val splitTextNode = XMLHandler.splitTextNode(
                     startNode,
                     (m.simpleManager.currentSelection.start as XMLTextCaret).offset,
                     (m.simpleManager.currentSelection.end as XMLTextCaret).offset
-                )
+                ).toMutableList()
 
                 //If the parent of the text node is an INLINE element, split the two text nodes into two separate INLINEs
                 if (BBX.INLINE.isA(splitTextNode[0].parent)) {
@@ -519,7 +518,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
                 }
                 if (BBX.BLOCK.isA(parent) && parent.childCount == 1) {
                     // user highlighted entire block, undo wrap
-                    XMLHandler2.unwrapElement(page)
+                    XMLHandler.unwrapElement(page)
                     BBX.transform(parent, BBX.BLOCK.PAGE_NUM)
                     page = parent
                 }
@@ -551,7 +550,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
         var parent = startNode.parent as Element
         when (startNode) {
             is Text if startNode == endNode -> {
-                val splitTextNode = XMLHandler2.splitTextNode(
+                val splitTextNode = XMLHandler.splitTextNode(
                     startNode,
                     (m.simpleManager.currentSelection.start as XMLTextCaret).offset,
                     (m.simpleManager.currentSelection.end as XMLTextCaret).offset

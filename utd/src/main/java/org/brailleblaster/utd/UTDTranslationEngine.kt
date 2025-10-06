@@ -337,9 +337,8 @@ open class UTDTranslationEngine(
      * @param ocs
      * @throws IOException
      */
-    @JvmOverloads
     @Throws(IOException::class)
-    fun toBRF(utdDocument: Document, ocs: OutputCharStream, opts: Int, outputPageListener: PageListener, convertToBrfChars: Boolean = false) {
+    override fun toBRF(utdDocument: Document, ocs: OutputCharStream, opts: Int, outputPageListener: PageListener, convertToBrfChars: Boolean) {
         val writer = if (convertToBrfChars) OutputCharStream { ocs.accept(it + if (it in '\u0060'..'\u007f') -0x20 else 0) } else ocs
         val grid = BRFWriter(this, writer, opts, outputPageListener)
         val cellType = brailleSettings.cellType

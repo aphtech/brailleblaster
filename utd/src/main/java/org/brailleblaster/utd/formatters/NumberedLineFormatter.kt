@@ -248,8 +248,6 @@ class NumberedLineFormatter : Formatter() {
                 return formatRemainingAsLiterary(node, i, style, pageBuilders, formatSelector)
             }
 
-            var isParentLinenum = parentLinenum != null && parentLinenum!!.getAttribute("linenum") != null
-
             if (node.getChild(i) is Text) {
                 val brl = getAssociatedBrlElement(node, i)
                 pageBuilder.poemEnabled = true
@@ -275,7 +273,7 @@ class NumberedLineFormatter : Formatter() {
                 lines!!.add(brl)
                 lineDetails!!.add(intArrayOf(pageBuilder.pendingLinesBefore, firstLineIndent, leftIndent))
 
-                if (isLineNum || isParentLinenum) {
+                if (isLineNum || parentLinenum?.getAttribute("linenum") != null) {
                     pageBuilder.setSkipNumberLines(NumberLinePosition.BOTH)
                     pageBuilder.setContinueSkip(true)
                     pageBuilder.padding = padding
@@ -283,11 +281,10 @@ class NumberedLineFormatter : Formatter() {
                     // make sure this element is to the right
                     var numLength: Int
 
-                    if (isParentLinenum) {
+                    if (parentLinenum?.getAttribute("linenum") != null) {
                         numLength = parentLinenum!!.getAttributeValue("linenum").length
                         brl.addAttribute(Attribute("lineNumber", parentLinenum!!.getAttributeValue("linenum")))
                         parentLinenum = null
-                        isParentLinenum = false
                     } else {
                         numLength = node.getAttributeValue("linenum").length
                         brl.addAttribute(Attribute("lineNumber", node.getAttributeValue("linenum")))
@@ -346,7 +343,7 @@ class NumberedLineFormatter : Formatter() {
                         if (pageBuilders.size > size) {
                             try {
                                 handleBadPoetry(pageBuilders, brl, pageBuilder, style)
-                            } catch (e: BadPoetryException) {
+                            } catch (_: BadPoetryException) {
                                 pageBuilder.removeBrl(brl)
                                 pageBuilder = pageBuilders.last()
                                 pageBuilder.removeBrl(brl)
@@ -380,7 +377,7 @@ class NumberedLineFormatter : Formatter() {
                     if (pageBuilders.size > size) {
                         try {
                             handleBadPoetry(pageBuilders, brl, pageBuilder, style)
-                        } catch (e: BadPoetryException) {
+                        } catch (_: BadPoetryException) {
                             pageBuilder.removeBrl(brl)
                             pageBuilder = pageBuilders.last()
                             pageBuilder.removeBrl(brl)

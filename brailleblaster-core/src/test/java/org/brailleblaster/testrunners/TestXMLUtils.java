@@ -21,6 +21,7 @@ import java.io.StringReader;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.StringUtils;
 import org.brailleblaster.utd.exceptions.NodeException;
@@ -85,7 +86,7 @@ public class TestXMLUtils {
     }
 
     private static Stream<Element> getTestIdElementStream(Document doc, String id) {
-        return FastXPath.descendant(doc).stream()
+        return StreamSupport.stream(FastXPath.descendant(doc).spliterator(), false)
                 .filter(curNode -> curNode instanceof Element
                         && ((Element) curNode).getAttribute("testid") != null
                         && ((Element) curNode).getAttribute("testid").getValue().equals(id)
@@ -93,8 +94,7 @@ public class TestXMLUtils {
     }
 
     public static Text getByTextNode(Document doc, String textValue) {
-        return FastXPath.descendant(doc)
-                .stream()
+        return StreamSupport.stream(FastXPath.descendant(doc).spliterator(), false)
                 .filter(node -> node instanceof Text && node.getValue().equals(textValue))
                 .findFirst()
                 .map(node -> (Text) node)
@@ -102,8 +102,7 @@ public class TestXMLUtils {
     }
 
     public static Element getElementByOccurance(Document doc, String elementName, int occurrence) {
-        return FastXPath.descendant(doc)
-                .stream()
+        return StreamSupport.stream(FastXPath.descendant(doc).spliterator(), false)
                 .filter(node -> node instanceof Element && ((Element) node).getLocalName().equals(elementName))
                 .skip(occurrence)
                 .findFirst()
@@ -114,7 +113,7 @@ public class TestXMLUtils {
     public static String toXMLnoNS(Node node) {
         Node copiedNode = node.copy();
         if (copiedNode instanceof ParentNode) {
-            UTDHelper.stripUTDRecursive((ParentNode) copiedNode);
+            UTDHelper.stripUTDRecursive((Element) copiedNode);
         }
         String xml = copiedNode.toXML();
         xml = StringUtils.replace(xml, " xmlns:utd=\"http://brailleblaster.org/ns/utd\"", "");
@@ -129,7 +128,7 @@ public class TestXMLUtils {
     }
 
     public static Element getBookRoot(Document doc) {
-        return FastXPath.descendant(doc).stream()
+        return StreamSupport.stream(FastXPath.descendant(doc).spliterator(), false)
                 .filter(n -> n instanceof Element)
                 .map(n -> (Element) n)
                 .filter(elem -> "testroot".equals(elem.getAttributeValue("testid")))

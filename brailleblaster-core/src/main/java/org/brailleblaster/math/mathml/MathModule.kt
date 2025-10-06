@@ -44,7 +44,6 @@ import org.brailleblaster.tools.*
 import org.brailleblaster.utd.MathBraileCode
 import org.brailleblaster.utd.asciimath.AsciiMathConverter.toAsciiMath
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.properties.BrailleTableType
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.TextTranslator.translateText
@@ -345,41 +344,41 @@ class MathModule : SimpleListener {
             ) { node: Element? -> BBX.CONTAINER.SPATIAL_GRID.isA(node) } != null)
         }
 
-        fun getSpatialMathParent(node: Node?): Element {
+        fun getSpatialMathParent(node: Node): Element {
             return XMLHandler.ancestorVisitorElement(node) { node: Element? -> BBX.CONTAINER.isA(node) } ?: throw NoSuchElementException()
         }
 
         @JvmStatic
 		fun retranslateSpatial(document: BrailleDocument) {
-            val nodes = XMLHandler2.queryElements(
+            val nodes = XMLHandler.queryElements(
                 document.doc,
                 "//*[@bb:type='TEMPLATE']"
             )
             for (n in nodes) {
                 Template.initialize(n)
             }
-            val nodes2 = XMLHandler2.queryElements(
+            val nodes2 = XMLHandler.queryElements(
                 document.doc,
                 "//*[@bb:type='MATRIX']"
             )
             for (n in nodes2) {
                 Matrix.initialize(n)
             }
-            val nodes3 = XMLHandler2.queryElements(
+            val nodes3 = XMLHandler.queryElements(
                 document.doc,
                 "//*[@bb:type='NUMBER_LINE']"
             )
             for (n in nodes3) {
                 NumberLine.initialize(n)
             }
-            val nodes4 = XMLHandler2.queryElements(
+            val nodes4 = XMLHandler.queryElements(
                 document.doc,
                 "//*[@bb:type='CONNECTING_CONTAINER']"
             )
             for (n in nodes4) {
                 ConnectingContainer.initialize(n)
             }
-            val nodes6 = XMLHandler2.queryElements(
+            val nodes6 = XMLHandler.queryElements(
                 document.doc,
                 "//*[@bb:type='SPATIAL_GRID']"
             )

@@ -17,7 +17,6 @@ package org.brailleblaster.frontmatter
 
 import nu.xom.Document
 import nu.xom.Element
-import nu.xom.Node
 import org.brailleblaster.BBIni.debugSavePath
 import org.brailleblaster.BBIni.debugging
 import org.brailleblaster.BBIni.propertyFileManager
@@ -129,7 +128,7 @@ class VolumeSaveDialog(
             // ----------------- Listeners --------------------
             addSelectionListener(saveSingle) { _: SelectionEvent? -> clickSaveSingle() }
             addSelectionListener(saveFolder) { _: SelectionEvent? -> clickSaveFolder(false) }
-            addSelectionListener(saveFolderAll) { e: SelectionEvent? -> clickSaveFolder(true) }
+            addSelectionListener(saveFolderAll) { clickSaveFolder(true) }
 
             // -------------------- Data ---------------------
             for (curVolume in VolumeUtils.getVolumeNames(volumes)) {
@@ -245,7 +244,7 @@ class VolumeSaveDialog(
             formatSelector.pack()
 
             // listeners
-            submit.addListener(SWT.Selection) { e: Event? ->
+            submit.addListener(SWT.Selection) {
                 selectedFormat = if (formatBrf.selection) {
                     Format.BRF
                 } else if (formatPef.selection) {
@@ -460,19 +459,19 @@ class VolumeSaveDialog(
         @Throws(IOException::class)
         fun volumeToBRF(engine: UTDTranslationEngine, doc: Document, volume: Int, convertLineEndings: Boolean): String {
             log.trace("Saving volume {}", volume)
-            val volumeEndBrls = FastXPath.descendantFindList<Element?>(
+            val volumeEndBrls = FastXPath.descendantFindList(
                 doc
-            ) { results: MutableList<Element?>?, curNode: Node? ->
+            ) { results, curNode ->
                 if (BBX.BLOCK.VOLUME_END.isA(curNode)) {
-                    val blockBrls = FastXPath.descendantFindList<Element?>(
+                    val blockBrls = FastXPath.descendantFindList<Element>(
                         curNode
-                    ) { brlResults: MutableList<Element?>?, curEndBlockChild: Node? ->
+                    ) { _, curEndBlockChild ->
                         UTDElements.BRL.isA(
                             curEndBlockChild
                         )
                     }
                     //manually add the results we want instead of this method doing it for us
-                    results!!.add(blockBrls.last())
+                    results.add(blockBrls.last())
                 }
                 false
             }

@@ -48,8 +48,6 @@ class AttributeAction : IAction {
         val translator = context.brailleTranslator
         val brailleSettings = context.brailleSettings
         // TODO:  convert to LibLouisAPH
-        val useLLAPH = brailleSettings.isUseLibLouisAPH
-        brailleSettings.isUseLibLouisAPH = false
         val tables = brailleSettings.mainTranslationTable
         val mode = if (brailleSettings.isUseAsciiBraille) 0 else Louis.TranslationModes.DOTS_IO or Louis.TranslationModes.UC_BRL
         try {
@@ -59,8 +57,6 @@ class AttributeAction : IAction {
             ts.brlElement = brlElement
         } catch (e: TranslationException) {
             throw UTDTranslateException("Problem with Braille translation, see log for details", e)
-        } finally {
-            brailleSettings.isUseLibLouisAPH = useLLAPH
         }
         result.add(ts)
         return result

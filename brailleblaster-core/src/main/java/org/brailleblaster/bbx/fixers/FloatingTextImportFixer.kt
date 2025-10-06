@@ -25,7 +25,6 @@ import org.brailleblaster.bbx.BBX.BlockSubType
 import org.brailleblaster.bbx.BBX.SpanSubType
 import org.brailleblaster.utd.NamespaceMap
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.matchers.INodeMatcher
 import org.slf4j.LoggerFactory
 
@@ -68,7 +67,7 @@ class FloatingTextImportFixer : AbstractFixer {
             matchedNode.parent.indexOf(matchedNode)
         )
         log.trace("Starting with cursor {}",
-            XMLHandler2.toXMLSimple(matchedNode)
+            XMLHandler.toXMLSimple(matchedNode)
         )
         var cursor: Node? = matchedNode
         //cursor can be null when there's no more elements

@@ -25,7 +25,6 @@ import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.canonical.Canonicalizer;
 import org.brailleblaster.utd.internal.xml.XMLHandler;
-import org.brailleblaster.utd.internal.xml.XMLHandler2;
 
 import static org.testng.Assert.assertEquals;
 
@@ -75,6 +74,6 @@ public class XMLTester {
     }
 
     public static Element getTestIdElement(Document doc, String testId) {
-        return (Element) XMLHandler2.query(doc, "descendant::*[@testid='{}']", testId).get(0);
+        return (Element) XMLHandler.query(doc, "descendant::*[@testid='{}']", testId).get(0);
     }
 }

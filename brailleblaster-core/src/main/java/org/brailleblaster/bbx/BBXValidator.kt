@@ -20,7 +20,7 @@ import org.brailleblaster.BBIni
 import org.brailleblaster.bbx.BBX.CoreType
 import org.brailleblaster.utd.config.StyleDefinitions
 import org.brailleblaster.utd.exceptions.NodeException
-import org.brailleblaster.utd.internal.xml.XMLHandler2
+import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utils.xom.childNodes
 import org.brailleblaster.util.Utils
 import org.brailleblaster.utils.BB_NS
@@ -82,7 +82,7 @@ object BBXValidator {
                 "{} subtype {} for element {}",
                 curType,
                 curSubType,
-                XMLHandler2.toXMLSimple(curElem)
+                XMLHandler.toXMLSimple(curElem)
             )
             log.trace("Found type $elemDebug")
             try {

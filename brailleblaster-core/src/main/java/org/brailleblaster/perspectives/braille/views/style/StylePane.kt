@@ -28,7 +28,6 @@ import org.brailleblaster.perspectives.braille.mapping.maps.PaintedElementsList
 import org.brailleblaster.perspectives.braille.views.wp.WPView
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.util.Utils.runtimeToString
@@ -93,7 +92,7 @@ class StylePane(parent: Composite, private val m: Manager) : BBEditorView {
                 "tme start {} end {} text {}",
                 textMapElement.getStart(mapList),
                 textMapElement.getEnd(mapList),
-                if (textMapElement.node == null) null else XMLHandler2.toXMLSimple(
+                if (textMapElement.node == null) null else XMLHandler.toXMLSimple(
                     textMapElement.node
                 )
             )
@@ -214,17 +213,17 @@ class StylePane(parent: Composite, private val m: Manager) : BBEditorView {
                 break
             }
 
-            var block: Element? = getImageNavigateBlock(imageNode) ?: continue
-
-            if (!processedBlocks.containsKey(block) || lines[processedBlocks[block]] == null) {
-                block = FastXPath.preceding(block)
-                    .filterIsInstance<Element>()
-                    .firstOrNull { node -> BBX.BLOCK.isA(node) && processedBlocks.containsKey(node) && lines[processedBlocks[node]] != null }
-                if (block == null) {
-                    //TODO: might be null when scrolling sometimes, not sure if this is the proper fix though
-                    continue
+            val block: Element = getImageNavigateBlock(imageNode)?.let { block ->
+                if (!processedBlocks.containsKey(block) || lines[processedBlocks[block]] == null) {
+                    FastXPath.preceding(block)
+                        .filterIsInstance<Element>()
+                        .firstOrNull { node -> BBX.BLOCK.isA(node) && processedBlocks.containsKey(node) && lines[processedBlocks[node]] != null }
+                } else {
+                    block
                 }
-            }
+            } ?: continue
+
+
 
             val lineOfBlock = processedBlocks[block]
             val blockStylePaneText = lines[lineOfBlock]

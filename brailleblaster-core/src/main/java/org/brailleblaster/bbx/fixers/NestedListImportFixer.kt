@@ -20,7 +20,7 @@ import nu.xom.Node
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.utd.NamespaceMap
 import org.brailleblaster.utd.internal.xml.FastXPath
-import org.brailleblaster.utd.internal.xml.XMLHandler2
+import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.matchers.INodeMatcher
 import org.brailleblaster.utils.xom.childNodes
 
@@ -40,7 +40,7 @@ class NestedListImportFixer : AbstractFixer() {
         //A seperate Fixer should of put us under the list
         val parentList = nestedList.parent as Element
         BBX.CONTAINER.LIST.assertIsA(parentList)
-        XMLHandler2.unwrapElement(nestedList)
+        XMLHandler.unwrapElement(nestedList)
     }
 
     @Suppress("UNUSED")

@@ -16,7 +16,6 @@
 package org.brailleblaster.perspectives.mvc.modules.misc;
 
 import org.brailleblaster.perspectives.braille.messages.AdjustLocalStyleMessage;
-import org.brailleblaster.perspectives.braille.messages.Sender;
 import org.brailleblaster.testrunners.BBTestRunner;
 import org.brailleblaster.testrunners.BBTestRunner.ViewTools;
 import org.brailleblaster.testrunners.TestXMLUtils;
@@ -120,7 +119,7 @@ public class SplitElementModuleTest {
     }
 
     private void testSplitDoesNotCopyStyleOptions(BBTestRunner test, ViewTools view) {
-        Element block = XMLHandler.childrenRecursiveVisitor(test.getDoc().getRootElement(), BBX.BLOCK::isA);
+        Element block = XMLHandler.Companion.childrenRecursiveVisitor(test.getDoc().getRootElement(), BBX.BLOCK::isA);
         assertNotNull(block);
         test.manager.dispatch(new AdjustLocalStyleMessage.AdjustLinesMessage(block, false, 2));
 

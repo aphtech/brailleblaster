@@ -20,7 +20,7 @@ import nu.xom.Node
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BookToBBXConverter
 import org.brailleblaster.utd.exceptions.NodeException
-import org.brailleblaster.utd.internal.xml.XMLHandler2
+import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utils.xom.childNodes
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -52,7 +52,7 @@ class ListLevelImportFixer : AbstractFixer() {
                         throw NodeException("Unhandled element", curChildNode)
                     } else {
                         log.warn("Unhandled element {}",
-                            XMLHandler2.toXMLSimple(curChildNode)
+                            XMLHandler.toXMLSimple(curChildNode)
                         )
                     }
                     curLevel = 0
@@ -63,7 +63,7 @@ class ListLevelImportFixer : AbstractFixer() {
                     throw NodeException("Unexpected list child", curChildNode)
                 } else {
                     log.warn("Unexpected list child {}",
-                        XMLHandler2.toXMLSimple(curChildNode)
+                        XMLHandler.toXMLSimple(curChildNode)
                     )
                 }
             }

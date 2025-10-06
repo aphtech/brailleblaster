@@ -20,7 +20,6 @@ import nu.xom.Element
 import nu.xom.Node
 import nu.xom.ParentNode
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.utils.LocalEntityResolver
 import org.brailleblaster.utils.MoreFileUtils
 import java.io.File
@@ -89,13 +88,13 @@ open class NodeException @JvmOverloads constructor(message: String, node: Node?,
             val parentElement: Element
             if (node is ParentNode) {
                 parentElement =
-                    XMLHandler2.parentToElement(node)
+                    XMLHandler.parentToElement(node)
                 parentElement.addAttribute(callbackAttrib)
                 message += " (search for string $callbackID on element"
             } else {
                 val parent = node.parent
                 parentElement =
-                    XMLHandler2.parentToElement(parent)
+                    XMLHandler.parentToElement(parent)
                 parentElement.addAttribute(callbackAttrib)
                 message += " (search for string " + callbackID + " on parent, child index " + parent.indexOf(node)
             }

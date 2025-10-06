@@ -21,7 +21,7 @@ import nu.xom.Text
 import org.brailleblaster.libembosser.spi.BrlCell
 import org.brailleblaster.libembosser.utils.BrailleMapper
 import org.brailleblaster.libembosser.utils.xml.DocumentUtils
-import org.brailleblaster.utd.UTDTranslationEngine
+import org.brailleblaster.utd.ITranslationEngine
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.properties.UTDElements.Companion.findType
 import org.brailleblaster.utils.APH_PAPER_NS
@@ -673,7 +673,7 @@ class BBX2PEFConverter(
 fun convertBBX2PEF(
     doc: nu.xom.Document,
     defaultIdentifier: String,
-    engine: UTDTranslationEngine,
+    engine: ITranslationEngine,
     volumeFilter: IntPredicate
 ): Document {
     val pageSettings = engine.pageSettings
@@ -701,7 +701,7 @@ fun convertBBX2PEF(
 fun convertBBX2PEF(
     doc: nu.xom.Document,
     defaultIdentifier: String,
-    engine: UTDTranslationEngine,
+    engine: ITranslationEngine,
     volumeFilter: IntPredicate,
     out: OutputStream?
 ) {

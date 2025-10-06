@@ -19,7 +19,6 @@ import nu.xom.Element
 import nu.xom.Node
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.slf4j.LoggerFactory
 
 @Suppress("UNUSED")
@@ -31,8 +30,8 @@ class FallbackImportFixer : AbstractFixer() {
             ) { node: Element -> BBX.BLOCK.isA(node) }!!
             log.debug(
                 "Splitting {} out of {}",
-                XMLHandler2.toXMLStartTag(matchedNode as Element),
-                XMLHandler2.toXMLStartTag(ancestorBlock)
+                XMLHandler.toXMLStartTag(matchedNode as Element),
+                XMLHandler.toXMLStartTag(ancestorBlock)
             )
             NodeTreeSplitter.split(ancestorBlock, matchedNode)
         } else if (BBX.BLOCK.isA(matchedNode)) {
@@ -41,8 +40,8 @@ class FallbackImportFixer : AbstractFixer() {
             ) { node: Element? -> BBX.BLOCK.isA(node) }!!
             log.debug(
                 "Splitting {} out of {}",
-                XMLHandler2.toXMLStartTag(matchedNode as Element),
-                XMLHandler2.toXMLStartTag(ancestorBlock)
+                XMLHandler.toXMLStartTag(matchedNode as Element),
+                XMLHandler.toXMLStartTag(ancestorBlock)
             )
             NodeTreeSplitter.split(ancestorBlock, matchedNode)
         }

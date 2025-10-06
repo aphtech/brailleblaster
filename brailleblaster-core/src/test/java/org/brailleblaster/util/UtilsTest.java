@@ -27,6 +27,8 @@ import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.Test;
 
+import java.util.stream.StreamSupport;
+
 public class UtilsTest {
     @Test
     public void removeRegionStringTest() {
@@ -66,8 +68,7 @@ public class UtilsTest {
                                 )
                         ));
 
-        Node textNode = FastXPath.descendant(docFactory.root)
-                .stream()
+        Node textNode = StreamSupport.stream(FastXPath.descendant(docFactory.root).spliterator(), false)
                 .filter(node -> node instanceof Text)
                 .findFirst()
                 .get();

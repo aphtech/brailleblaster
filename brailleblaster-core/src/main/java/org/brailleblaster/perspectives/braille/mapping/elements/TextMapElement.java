@@ -86,7 +86,7 @@ public class TextMapElement extends AbstractMapElement {
 	}
 	
 	public boolean ancestorIsMath(Node text){
-		return XMLHandler.ancestorVisitorElement(text, n -> n.getLocalName().equals("math")) != null;
+		return XMLHandler.Companion.ancestorVisitorElement(text, n -> n.getLocalName().equals("math")) != null;
 	}
 
 	public boolean isReadOnly() {

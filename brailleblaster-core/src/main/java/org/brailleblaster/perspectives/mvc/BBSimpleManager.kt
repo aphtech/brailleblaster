@@ -15,8 +15,6 @@
  */
 package org.brailleblaster.perspectives.mvc
 
-import com.google.common.collect.ClassToInstanceMap
-import com.google.common.collect.MutableClassToInstanceMap
 import nu.xom.Document
 import org.brailleblaster.exceptions.OutdatedMapListException
 import org.brailleblaster.perspectives.braille.Manager
@@ -37,8 +35,7 @@ import org.slf4j.LoggerFactory
 
 abstract class BBSimpleManager {
     private var privCurrentSelection: XMLSelection? = null
-    private val mutableListeners: MutableList<SimpleListener> = ArrayList()
-    private val listenersByClass: ClassToInstanceMap<SimpleListener> = MutableClassToInstanceMap.create()
+    private val listenersByClass: MutableMap<Class<out SimpleListener>, MutableList<SimpleListener>> = mutableMapOf()
 
     val currentCaret: XMLNodeCaret
         get() = checkSelection().start
@@ -67,7 +64,7 @@ abstract class BBSimpleManager {
     abstract val manager: Manager
 
     val listeners: List<SimpleListener>
-        get() = mutableListeners
+        get() = listenersByClass.values.flatten()
 
     fun dispatchEvent(event: SimpleEvent) {
         log.debug("Event: {}", event, RuntimeException("event"))
@@ -86,27 +83,23 @@ abstract class BBSimpleManager {
         }
 
 
-        for (curListener in mutableListeners) {
-            if (curListener !is AbstractModule || !(curListener.self(event.sender)) || event is ModifyEvent) {
-                curListener.onEvent(event)
-            }
+        listeners.filter { it !is AbstractModule || !(it.self(event.sender)) || event is ModifyEvent }.forEach {
+            it.onEvent(event)
         }
     }
 
     fun registerModules(eventHandlers: Sequence<SimpleListener>) {
-        for (eventHandler in eventHandlers) {
-            registerModule(eventHandler)
-        }
+        eventHandlers.forEach { registerModule(it) }
     }
 
     fun registerModule(eventHandler: SimpleListener) {
-        log.trace("Registered listener: " + eventHandler.javaClass.simpleName)
-        mutableListeners.add(eventHandler)
-        listenersByClass[eventHandler.javaClass] = eventHandler
+        log.trace("Registered listener: ${eventHandler.javaClass.simpleName}")
+        listenersByClass.getOrPut(eventHandler.javaClass, ::mutableListOf).add(eventHandler)
     }
 
     fun <N : SimpleListener> getModule(clazz: Class<N>): N? {
-        return listenersByClass.getInstance(clazz)
+        @Suppress("UNCHECKED_CAST")
+        return listenersByClass[clazz]?.lastOrNull() as N?
     }
 
     fun initMenu(shell: Shell) {

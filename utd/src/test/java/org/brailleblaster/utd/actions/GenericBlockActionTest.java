@@ -242,7 +242,6 @@ public class GenericBlockActionTest {
 	@DataProvider(name="brNodesProvider")
 	public Iterator<Object[]> brNodesProvider() throws TranslationException {
 		BrailleSettings brailleSettings = new BrailleSettings();
-		brailleSettings.setUseLibLouisAPH(false);
 		brailleSettings.setUseAsciiBraille(true);
 		brailleSettings.setMainTranslationTable("en-us-g2.ctb");
 		List<Object[]> dataList = new ArrayList<>();
@@ -343,7 +342,6 @@ public class GenericBlockActionTest {
 	
 	void testTranslate(String inputText, String outputBraille, String inputPos, String expectedXML) {
 		BrailleSettings brailleSettings = new BrailleSettings();
-		brailleSettings.setUseLibLouisAPH(false);
 		brailleSettings.setUseAsciiBraille(true);
 		brailleSettings.setMainTranslationTable("en-us-g2.ctb");
 		

@@ -88,7 +88,7 @@ class File2BRF(
 
     private val engine: UTDTranslationEngine
     private val xmlHandler: XMLHandler = Formatted()
-    fun raw2UTD(rawBook: File?): Document {
+    fun raw2UTD(rawBook: File): Document {
         val doc = xmlHandler.load(rawBook)
         var docActionMap = DocumentUTDConfig.NIMAS.loadActions(doc)
         if (docActionMap == null) {
@@ -116,7 +116,7 @@ class File2BRF(
     }
 
     @Throws(IOException::class, ParsingException::class)
-    fun raw2UTDFile(rawBook: File?, utdOutput: File?): Document {
+    fun raw2UTDFile(rawBook: File, utdOutput: File): Document {
         val result = raw2UTD(rawBook)
         xmlHandler.save(result, utdOutput)
         return result

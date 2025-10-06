@@ -30,7 +30,6 @@ import org.brailleblaster.perspectives.mvc.XMLTextCaret
 import org.brailleblaster.perspectives.mvc.events.XMLCaretEvent
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.properties.UTDElements.Companion.getByName
 import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.exceptions.BBNotifyException
@@ -234,9 +233,9 @@ class GoToPageDialog(private val m: Manager) {
         m.simpleManager.dispatchEvent(XMLCaretEvent(Sender.GO_TO_PAGE, XMLTextCaret(node, 0)))
       } else {
         log.debug(
-            "scrolling to node for braille page $brlPage " + XMLHandler2.toXMLSimple(
-            node
-        )
+            "scrolling to node for braille page $brlPage " + XMLHandler.toXMLSimple(
+                node
+            )
         )
         m.simpleManager.dispatchEvent(XMLCaretEvent(Sender.GO_TO_PAGE, XMLNodeCaret(node)))
       }

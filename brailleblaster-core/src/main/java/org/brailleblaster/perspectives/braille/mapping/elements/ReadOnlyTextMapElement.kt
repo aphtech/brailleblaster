@@ -28,7 +28,7 @@ import org.brailleblaster.perspectives.braille.mapping.interfaces.Uneditable
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.util.Notify
 
-class ReadOnlyTextMapElement(n: Node?) : TextMapElement(n), Uneditable {
+class ReadOnlyTextMapElement(n: Node) : TextMapElement(n), Uneditable {
   var invalidMessage = localeHandler["readOnlyWarning"]
 
   init {
@@ -45,9 +45,9 @@ class ReadOnlyTextMapElement(n: Node?) : TextMapElement(n), Uneditable {
   companion object {
     private val localeHandler = getDefault()
     @JvmStatic
-		fun getMessage(n: Node?): String? {
+		fun getMessage(n: Node): String? {
       val isNumberLine: Node? =
-        XMLHandler.ancestorVisitorElement(n) { node: Element? -> BBX.CONTAINER.NUMBER_LINE.isA(node) }
+        XMLHandler.ancestorVisitorElement(n) { node: Element -> BBX.CONTAINER.NUMBER_LINE.isA(node) }
       if (isNumberLine != null) {
         return NumberLineConstants.USE_EDITOR_WARNING
       }

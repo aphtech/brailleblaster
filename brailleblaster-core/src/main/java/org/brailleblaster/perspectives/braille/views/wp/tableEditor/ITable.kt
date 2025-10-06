@@ -17,7 +17,7 @@ package org.brailleblaster.perspectives.braille.views.wp.tableEditor
 
 import nu.xom.Element
 import nu.xom.Node
-import org.brailleblaster.utd.internal.xml.XMLHandler2
+import org.brailleblaster.utd.internal.xml.XMLHandler
 import java.util.function.Consumer
 import kotlin.math.max
 
@@ -60,7 +60,7 @@ internal interface ITable {
         for (row in nodes) {
             while (cols > row.size) {
                 row.add(
-                    XMLHandler2.newElement(
+                    XMLHandler.newElement(
                         nodes[0][0] as Element,
                         "td"
                     )

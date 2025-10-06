@@ -30,9 +30,9 @@ import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.perspectives.mvc.events.XMLCaretEvent
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.tools.MenuTool
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.utils.dom.BoxUtils
 import org.brailleblaster.exceptions.BBNotifyException
+import org.brailleblaster.utd.internal.xml.XMLHandler
 
 object UnwrapElementTool : MenuTool, SimpleListener {
     override val topMenu: TopMenu = TopMenu.TOOLS
@@ -75,7 +75,7 @@ object UnwrapElementTool : MenuTool, SimpleListener {
         val elementToUnwrap = m.simpleManager.currentCaret.node as Element
         val parentOfUnwrap = elementToUnwrap.parent as Element
         BoxUtils.unbox(elementToUnwrap)
-        XMLHandler2.unwrapElement(elementToUnwrap)
+        XMLHandler.unwrapElement(elementToUnwrap)
         m.simpleManager.dispatchEvent(ModifyEvent(Sender.NO_SENDER, true, parentOfUnwrap))
     }
 }

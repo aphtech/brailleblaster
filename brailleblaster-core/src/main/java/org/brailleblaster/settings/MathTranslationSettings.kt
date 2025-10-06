@@ -21,21 +21,13 @@ object MathTranslationSettings {
     private const val NEMETH = "nemeth.ctb"
     private const val UEB = "en-ueb-math.ctb"
     private const val UEB_PLUS_NEMETH = "nemeth-ueb.ctb"
-    private const val UEB_LLAPH = "english-ueb-math.rst"
-    private const val UEB_PLUS_NEMETH_LLAPH = "nemeth-ueb.rst"
     fun getMathTable(settings: BrailleSettings): String {
-        val mathTable = settings.mathExpressionTable.split(",".toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray()[0]
+        val mathTable = settings.mathExpressionTable.split(",".toRegex()).dropLastWhile { it.isEmpty() }.first()
         return when (mathTable) {
             NEMETH -> MathTable.MATH_NEMETH.name
             UEB -> MathTable.MATH_UEB.name
             UEB_PLUS_NEMETH -> MathTable.MATH_UEB_PLUS_NEMETH.name
-            UEB_LLAPH -> MathTable.MATH_UEB_LLAPH.name
-            UEB_PLUS_NEMETH_LLAPH -> MathTable.MATH_UEB_PLUS_NEMETH_LLAPH.name
-            else -> settings.mainTranslationTableLLAPH.split(",".toRegex())
-                .dropLastWhile { it.isEmpty() }
-                .toTypedArray()[0]
-                
+                else -> MathTable.MATH_NEMETH.name
         }
     }
 
@@ -43,8 +35,6 @@ object MathTranslationSettings {
         MATH_NEMETH,
         MATH_UEB,
         MATH_UEB_PLUS_NEMETH,
-        MATH_UEB_LLAPH,
-        MATH_UEB_PLUS_NEMETH_LLAPH,
         NONE
     }
 }

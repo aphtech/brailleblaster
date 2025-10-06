@@ -19,7 +19,7 @@ import nu.xom.Element
 import nu.xom.Node
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.utd.exceptions.NodeException
-import org.brailleblaster.utd.internal.xml.XMLHandler2
+import org.brailleblaster.utd.internal.xml.XMLHandler
 
 @Suppress("UNUSED")
 class TableGroupImportFixer : AbstractFixer() {
@@ -36,6 +36,6 @@ class TableGroupImportFixer : AbstractFixer() {
                 BBX.CONTAINER.TABLE_ROW.ATTRIB_ROW_TYPE[curChild] = type
             }
         }
-        XMLHandler2.unwrapElement(tableGroup)
+        XMLHandler.unwrapElement(tableGroup)
     }
 }

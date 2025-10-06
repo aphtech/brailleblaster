@@ -231,7 +231,7 @@ class Template : ISpatialMathContainer {
     settings.operator = SpatialMathEnum.OPERATOR.valueOf(operator)
     try {
       settings.passage = Passage.valueOf(passage)
-    } catch (e: IllegalArgumentException) {
+    } catch (_: IllegalArgumentException) {
       passage = Passage.NONE.name
       BBIni.propertyFileManager.save(TemplateConstants.USER_SETTINGS_TEMPLATE_PASSAGE, passage)
       settings.passage = Passage.valueOf(passage)
@@ -364,8 +364,8 @@ class Template : ISpatialMathContainer {
       return XMLHandler.ancestorElementIs(node) { elm: Element? -> BBX.CONTAINER.TEMPLATE.isA(elm) }
     }
 
-    fun getTemplateParent(node: Node?): Element? {
-      return XMLHandler.ancestorVisitorElement(node) { elm: Element? -> BBX.CONTAINER.TEMPLATE.isA(elm) }
+    fun getTemplateParent(node: Node): Element? {
+      return XMLHandler.ancestorVisitorElement(node) { elm: Element -> BBX.CONTAINER.TEMPLATE.isA(elm) }
     }
 
     @JvmStatic

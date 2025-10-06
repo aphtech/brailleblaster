@@ -218,7 +218,7 @@ object ArchiverFactory {
         fun tryLoad(file: Path, fileData: ParseData): Archiver2?
 
         companion object {
-            fun loadXML(file: Path?): Document {
+            fun loadXML(file: Path): Document {
                 return XMLHandler().load(file)
             }
 

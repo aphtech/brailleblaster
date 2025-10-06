@@ -50,13 +50,11 @@ class DefinitionTermImportFixer : AbstractFixer() {
          * @param node
          * @return
          */
-        fun nextUsableListItem(node: Node?): Element? {
+        fun nextUsableListItem(node: Node): Element? {
             var curNode = node
             while (true) {
-                curNode = XMLHandler.nextSiblingNode(curNode)
-                return if (curNode == null) {
-                    null
-                } else if (curNode is Text) {
+                curNode = XMLHandler.nextSiblingNode(curNode) ?: return null
+                return if (curNode is Text) {
                     if (curNode.value.isNotBlank()) {
                         null
                     } else {

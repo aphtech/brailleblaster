@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.mapping.elements
 
+import nu.xom.Element
 import nu.xom.Node
 import nu.xom.ParentNode
 import org.brailleblaster.perspectives.braille.Manager
@@ -25,7 +26,7 @@ import org.brailleblaster.util.Utils.combineAdjacentTextNodes
 
 open class TabTextMapElement(n: Node) : TextMapElement(n), Deletable, Uneditable {
     override fun deleteNode(m: Manager): ParentNode? {
-        val parent = node.parent
+        val parent = node.parent as Element
         node.detach()
         stripUTDRecursive(parent)
         combineAdjacentTextNodes(parent)

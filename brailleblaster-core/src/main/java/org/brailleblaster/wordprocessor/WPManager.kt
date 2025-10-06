@@ -223,13 +223,11 @@ class WPManager private constructor(val usageManager: UsageManager) {
 
         //auto save dialog
         val recentSaves = recentSaves
-        var autoSaveAlert = false
-        if (!BBIni.debugging && recentSaves.isNotEmpty() && autoSaveAlert && Path(BBIni.autoSaveCrashPath).exists()) {
-            autoSaveAlert = false
+        if (!BBIni.debugging && recentSaves.isNotEmpty() && Path(BBIni.autoSaveCrashPath).exists()) {
             showAutoSaveDialog(recentSaves)
             try {
                 Files.deleteIfExists(Paths.get(BBIni.autoSaveCrashPath))
-            } catch (ignored: IOException) {
+            } catch (_: IOException) {
             }
         }
 
@@ -603,7 +601,7 @@ class WPManager private constructor(val usageManager: UsageManager) {
                     logger.error("Escalating to an editing exception")
                     //Try undoing the edit
                     handleEditingException()
-                } catch (e2: RuntimeException) {
+                } catch (_: RuntimeException) {
                     logger.error("Dying")
                     //Try dying
                     handleFatalException(origException)

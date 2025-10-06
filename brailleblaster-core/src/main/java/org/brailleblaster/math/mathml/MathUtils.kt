@@ -28,7 +28,6 @@ import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.perspectives.mvc.modules.views.TextViewModule.Companion.getAllTextMapElementsInSelectedRange
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.util.Utils
@@ -61,7 +60,7 @@ object MathUtils {
     fun wrapInMath(math: String?, block: ParentNode, index: Int) {
         val mathNode = translate(math!!)
         Utils.insertChildCountSafe(block, mathNode, index)
-        XMLHandler2.wrapNodeWithElement(
+        XMLHandler.wrapNodeWithElement(
             mathNode,
             BBX.INLINE.MATHML.create()
         )
@@ -100,7 +99,7 @@ object MathUtils {
         }
         val mathNode = getNode.getNode(o!!)
         Utils.insertChildCountSafe(block, mathNode, curIndex++)
-        XMLHandler2.wrapNodeWithElement(
+        XMLHandler.wrapNodeWithElement(
             mathNode,
             BBX.INLINE.MATHML.create()
         )
@@ -249,7 +248,7 @@ object MathUtils {
     fun removeAllBBMarkupFromMathML(bbNode: Node): Node? {
         var mathNode: Node? = null
         if (MathModule.isMath(bbNode)) {
-            UTDHelper.stripUTDRecursive(bbNode as ParentNode)
+            UTDHelper.stripUTDRecursive(bbNode as Element)
             mathNode = bbNode.copy()
             removeAltText(mathNode)
         }

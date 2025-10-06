@@ -16,6 +16,8 @@
 package org.brailleblaster.bbx.fixer;
 
 import java.util.List;
+
+import com.google.common.collect.Lists;
 import org.brailleblaster.bbx.fixers.NodeTreeSplitter;
 import org.brailleblaster.testrunners.TestXMLUtils;
 import org.brailleblaster.testrunners.XMLElementAssert;
@@ -412,7 +414,7 @@ public class NodeTreeSplitterTest {
 //	}
 	
 	private static void testNodeTreeSplit(Element root, Node splitAt) {
-		List<Node> allNodes = FastXPath.descendant(root.getDocument()).list();
+		List<Node> allNodes = Lists.newArrayList(FastXPath.descendant(root.getDocument()));
 		
 		NodeTreeSplitter.split(root, splitAt);
 		

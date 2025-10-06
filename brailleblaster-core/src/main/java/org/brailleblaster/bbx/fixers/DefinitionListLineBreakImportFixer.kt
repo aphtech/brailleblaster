@@ -20,7 +20,6 @@ import nu.xom.Text
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 
 /**
  * Issue #5390: Treat linebreaks in Definition lists specially
@@ -45,7 +44,7 @@ class DefinitionListLineBreakImportFixer : LineBreakImportFixer() {
             //No need to move empty br
             newBlock.detach()
             oldBlock.appendChild(newBlock)
-            XMLHandler2.unwrapElement(newBlock)
+            XMLHandler.unwrapElement(newBlock)
         } else if (newBlock != null) {
             val incriment = if (BBX.FixerMarker.ATTRIB_FIXER_MARKER.has(newBlock)
                 && BBX.FixerMarker.ATTRIB_FIXER_MARKER[newBlock] == BBX.FixerMarker.DEFINITION_LINE_BREAK_SPLIT

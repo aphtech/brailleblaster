@@ -547,7 +547,7 @@ public class XMLElementAssert {
             elem.addAttribute(attribute);
 
             Document copyDoc = elem.getDocument().copy();
-            Element copyElement = FastXPath.descendantFindOnly(
+            Element copyElement = FastXPath.INSTANCE.descendantFindOnly(
                     copyDoc,
                     node -> node instanceof Element && ((Element) node).getAttribute(attribName) != null
             );

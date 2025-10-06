@@ -322,10 +322,10 @@ class ViewManager(folder: CTabFolder?, private val m: Manager) {
         }
     }
 
-    fun removeModuleListeners(view: BBEditorView?) {
+    fun removeModuleListeners(view: BBEditorView) {
         for (curListener in m.simpleManager.listeners) {
             if (curListener is BBViewListener) {
-                (curListener as BBViewListener).removeListener(view!!)
+                (curListener as BBViewListener).removeListener(view)
             }
         }
     }

@@ -87,7 +87,7 @@ class TextViewModule(private val manager: Manager) : AbstractModule(), SimpleLis
                             .get()
                     }
                     val descendants = Supplier {
-                        Suppliers.memoize { FastXPath.descendantOrSelf(node).list() }
+                        Suppliers.memoize { FastXPath.descendantOrSelf(node).toList() }
                             .get()
                     }
                     var tmeStart = getTMEFirst(node, tableParent, descendants)

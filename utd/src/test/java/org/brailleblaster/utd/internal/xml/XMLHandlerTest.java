@@ -18,13 +18,9 @@ package org.brailleblaster.utd.internal.xml;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import org.brailleblaster.utd.testutils.XMLTester;
 import org.testng.Assert;
@@ -50,44 +46,44 @@ public class XMLHandlerTest {
 		Document doc = new XMLHandler().load(new StringReader(inputXML));
 
 		//Single element handling
-		Assert.assertEquals(XMLHandler.findCommonParent(Collections.singletonList(
+		Assert.assertEquals(XMLHandler.Companion.findCommonParent(Collections.singletonList(
                 XMLTester.getTestIdElement(doc, "inner")
         )), XMLTester.getTestIdElement(doc, "inner"));
 
 		//Nested
-		Assert.assertEquals(XMLHandler.findCommonParent(Arrays.asList(
+		Assert.assertEquals(XMLHandler.Companion.findCommonParent(Arrays.asList(
 				XMLTester.getTestIdElement(doc, "inner"),
 				XMLTester.getTestIdElement(doc, "bold")
 		)), XMLTester.getTestIdElement(doc, "inner"));
 
-		Assert.assertEquals(XMLHandler.findCommonParent(Arrays.asList(
+		Assert.assertEquals(XMLHandler.Companion.findCommonParent(Arrays.asList(
 				XMLTester.getTestIdElement(doc, "inner"),
 				XMLTester.getTestIdElement(doc, "outer")
 		)), XMLTester.getTestIdElement(doc, "outer"));
 
-		Assert.assertEquals(XMLHandler.findCommonParent(Arrays.asList(
+		Assert.assertEquals(XMLHandler.Companion.findCommonParent(Arrays.asList(
 				XMLTester.getTestIdElement(doc, "outer"),
 				XMLTester.getTestIdElement(doc, "bold2")
 		)), XMLTester.getTestIdElement(doc, "outer"));
 
 		//Other
-		Assert.assertEquals(XMLHandler.findCommonParent(Arrays.asList(
+		Assert.assertEquals(XMLHandler.Companion.findCommonParent(Arrays.asList(
 				XMLTester.getTestIdElement(doc, "inner"),
 				XMLTester.getTestIdElement(doc, "inner2"),
 				XMLTester.getTestIdElement(doc, "more")
 		)), XMLTester.getTestIdElement(doc, "contentRoot"));
 
-		Assert.assertEquals(XMLHandler.findCommonParent(Arrays.asList(
+		Assert.assertEquals(XMLHandler.Companion.findCommonParent(Arrays.asList(
 				XMLTester.getTestIdElement(doc, "inner"),
 				XMLTester.getTestIdElement(doc, "inner2")
 		)), XMLTester.getTestIdElement(doc, "outer"));
 
-		Assert.assertEquals(XMLHandler.findCommonParent(Arrays.asList(
+		Assert.assertEquals(XMLHandler.Companion.findCommonParent(Arrays.asList(
 				XMLTester.getTestIdElement(doc, "bold"),
 				XMLTester.getTestIdElement(doc, "bold2")
 		)), XMLTester.getTestIdElement(doc, "outer"));
 
-		Assert.assertEquals(XMLHandler.findCommonParent(Arrays.asList(
+		Assert.assertEquals(XMLHandler.Companion.findCommonParent(Arrays.asList(
 				XMLTester.getTestIdElement(doc, "bold"),
 				XMLTester.getTestIdElement(doc, "bold2"),
 				XMLTester.getTestIdElement(doc, "more")
@@ -101,7 +97,7 @@ public class XMLHandlerTest {
 				+ "<p testid='p2'>testing</p>");
 
 		List<Node> output = new ArrayList<>();
-		XMLHandler.followingVisitor(XMLTester.getTestIdElement(doc, "p1"), (Node curNode) -> {
+		XMLHandler.Companion.followingVisitor(XMLTester.getTestIdElement(doc, "p1"), (Node curNode) -> {
 			output.add(curNode);
 			return false;
 		});
@@ -123,7 +119,7 @@ public class XMLHandlerTest {
 				+ "<p testid='p2'>testing</p>");
 
 		List<Node> output = new ArrayList<>();
-		XMLHandler.followingVisitor(XMLTester.getTestIdElement(doc, "head"), (Node curNode) -> {
+		XMLHandler.Companion.followingVisitor(XMLTester.getTestIdElement(doc, "head"), (Node curNode) -> {
 			output.add(curNode);
 			return false;
 		});
@@ -146,23 +142,13 @@ public class XMLHandlerTest {
 	@Test
 	public void loadStreamTest() {
 		Document doc = null;
-		InputStream in = null;
-		try {
-		in = getClass().getResourceAsStream("/org/brailleblaster/utd/internal/xml/whitespaceLoadTest.xml");
-		doc = new XMLHandler().load(in);
-		} catch (Exception e) {
-			fail("Problem loading resource", e);
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e1) {
-					fail("Could not close resource stream", e1);
-				}
-			}
-		}
+        try (InputStream in = getClass().getResourceAsStream("/org/brailleblaster/utd/internal/xml/whitespaceLoadTest.xml")) {
+            doc = new XMLHandler().load(in);
+        } catch (Exception e) {
+            fail("Problem loading resource", e);
+        }
 		// Text in paragraphs should be maintained
-		Nodes results = doc.query("//*[@id='para1']");
+		Nodes results = Objects.requireNonNull(doc).query("//*[@id='para1']");
 		assertEquals(results.size(), 1);
 		Element e = (Element)results.get(0);
 		assertEquals(e.getChildCount(), 1);

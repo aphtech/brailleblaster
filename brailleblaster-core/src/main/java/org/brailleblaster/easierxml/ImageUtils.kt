@@ -127,11 +127,11 @@ object ImageUtils {
     val archiver: Archiver2
         get() = WPManager.getInstance().controller.archiver
 
-    fun isImage(node: Node?): Boolean {
+    fun isImage(node: Node): Boolean {
         return ((BBX.SPAN.IMAGE.isA(node) || BBX.CONTAINER.IMAGE.isA(node))
                 && XMLHandler.ancestorElementNot(
             node
-        ) { curAncestor: Element ->
+        ) { curAncestor ->
             curAncestor.getAttribute(
                 TableUtils.ATTRIB_TABLE_COPY,
                 UTD_NS
@@ -191,7 +191,7 @@ object ImageUtils {
      * @return
      */
 	@JvmStatic
-	fun getImageNavigateBlock(imageNode: Node?): Element? {
+	fun getImageNavigateBlock(imageNode: Node): Element? {
         return if (BBX.SPAN.IMAGE.isA(imageNode)) {
             var block = XMLHandler.ancestorVisitor(imageNode) { node: Node? -> BBX.BLOCK.isA(node) } as Element?
             // When not in a block treat the imageNode as the BLOCK, like a container.

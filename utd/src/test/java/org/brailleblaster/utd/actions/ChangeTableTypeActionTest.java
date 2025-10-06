@@ -29,7 +29,6 @@ import org.brailleblaster.utd.BrailleSettings;
 import org.brailleblaster.utd.ITranslationEngine;
 import org.brailleblaster.utd.TextSpan;
 import org.brailleblaster.utd.properties.BrailleTableType;
-import org.brailleblaster.utd.properties.UTDElements;
 import org.brailleblaster.utd.testutils.MockTranslatorFactory;
 import org.brailleblaster.utils.NamespacesKt;
 import org.mwhapples.jlouis.Louis;
@@ -49,7 +48,6 @@ public class ChangeTableTypeActionTest {
 	public void applyToBlock() throws TranslationException {
 		ITranslationEngine mockEngine = mock(ITranslationEngine.class);
 		BrailleSettings brailleSettings = new BrailleSettings();
-		brailleSettings.setUseLibLouisAPH(false);
 		brailleSettings.setUseAsciiBraille(true);
 		brailleSettings.setComputerBrailleTable("en-us-comp6.ctb");
 		when(mockEngine.getBrailleSettings()).thenReturn(brailleSettings);

@@ -24,7 +24,6 @@ import org.brailleblaster.utd.IStyle
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.internal.xml.XMLHandler2
 
 object BBXTo4Upgrader {
     @JvmStatic
@@ -105,7 +104,7 @@ object BBXTo4Upgrader {
                         BBX.BLOCK.isA(node)
                     }) { "Could not find suitable ancestor." }
                 BBX.transform(ancestorBlock, BBX.BLOCK.PAGE_NUM)
-                XMLHandler2.unwrapElement(curPage)
+                XMLHandler.unwrapElement(curPage)
             }
     }
 }
