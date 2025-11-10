@@ -19,7 +19,7 @@ import nu.xom.Element
 import org.brailleblaster.abstractClasses.BBEditorView
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.easierxml.ImageUtils.getImageNavigateBlock
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.BraillePageBrlMapElement
 import org.brailleblaster.perspectives.braille.mapping.elements.PageIndicator
@@ -29,11 +29,12 @@ import org.brailleblaster.perspectives.braille.views.wp.WPView
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.util.FormUIUtils
+import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.util.Utils.runtimeToString
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getBanaStyles
 import org.brailleblaster.utils.swt.AccessibilityUtils.setName
 import org.brailleblaster.utils.swt.DebugStyledText
+import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.StyledText
 import org.eclipse.swt.events.*
@@ -235,17 +236,15 @@ class StylePane(parent: Composite, private val m: Manager) : BBEditorView {
         var curLine = 0
         for ((key, value) in lines) {
             sb.append(
-                System.lineSeparator().toString().repeat(
+                LINE_BREAK.repeat(
                     max(0.0, (key!! - curLine).toDouble()).toInt()
                 )
-            )
-
-            sb.append(value).append(System.lineSeparator())
+            ).append(value).append(LINE_BREAK)
             curLine = key + 1
         }
 
         while (curLine - 1 != textViewWidget.lineCount) {
-            sb.append(System.lineSeparator())
+            sb.append(LINE_BREAK)
             curLine++
         }
 
@@ -267,8 +266,7 @@ class StylePane(parent: Composite, private val m: Manager) : BBEditorView {
             }
         }
 
-        styleName = m.document.settingsManager.getBaseStyle(styleName!!, ancestorBlock)
-        styleName = getBanaStyles()[styleName]
+        styleName = getBanaStyles()[m.document.settingsManager.getBaseStyle(styleName!!, ancestorBlock)]
         // Workaround for BLOCK.PAGE_NUM having a weird style
         if (BBX.BLOCK.PAGE_NUM.isA(ancestorBlock)) {
             styleName = "Print Page"
@@ -277,7 +275,7 @@ class StylePane(parent: Composite, private val m: Manager) : BBEditorView {
             styleName += " " + (BBX.BLOCK.IMAGE_PLACEHOLDER.ATTRIB_SKIP_LINES[ancestorBlock])
         }
         if (BBX.BLOCK.SPATIAL_MATH.isA(ancestorBlock)) {
-            styleName = MathModule.SPATIAL_MATH
+            styleName = MathModuleUtils.SPATIAL_MATH
         }
         return styleName
     }
@@ -289,7 +287,7 @@ class StylePane(parent: Composite, private val m: Manager) : BBEditorView {
         widget = DebugStyledText(parent, SWT.BORDER or SWT.H_SCROLL).apply {
             alignment = SWT.RIGHT
             editable = false
-            FormUIUtils.setGridData(this)
+            EasySWT.setGridData(this)
             (layoutData as GridData).grabExcessVerticalSpace = true
         }
     }

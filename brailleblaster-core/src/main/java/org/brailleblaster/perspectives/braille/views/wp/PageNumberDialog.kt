@@ -42,7 +42,6 @@ import org.brailleblaster.utd.utils.TextTranslator
 import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.utils.swt.EasySWT
-import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.utils.swt.EasyListeners
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
@@ -855,7 +854,7 @@ class PageNumberDialog(parent: Shell?) : Dialog(parent, SWT.NONE), MenuToolModul
         shell!!.text = "Page Number Dialog"
         shell!!.layout = GridLayout(1, true)
         createTabs()
-        FormUIUtils.setLargeDialogSize(shell!!)
+        EasySWT.setLargeDialogSize(shell!!)
         addKeyListeners()
         shell!!.open()
         shell!!.defaultButton = okButton

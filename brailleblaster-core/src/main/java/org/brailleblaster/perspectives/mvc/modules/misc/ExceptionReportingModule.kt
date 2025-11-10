@@ -20,6 +20,7 @@ import org.brailleblaster.BBIni
 import org.brailleblaster.userHelp.Project
 import org.brailleblaster.userHelp.javaVersion
 import org.brailleblaster.userHelp.oSVersion
+import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.util.Utils.httpPost
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -162,8 +163,8 @@ object ExceptionReportingModule /*implements SimpleListener*/ {
                     "%s%s%s%s%s",
                     if (ExceptionUtils.getRootCause(reportException) is ConnectException) "Cannot connect" else "Unknown error when reporting",
                     ERROR_SUFFIX,
-                    System.lineSeparator(),
-                    System.lineSeparator(),
+                    LINE_BREAK,
+                    LINE_BREAK,
                     ExceptionUtils.getRootCauseMessage(reportException)
                 ),
                 false
@@ -192,7 +193,7 @@ object ExceptionReportingModule /*implements SimpleListener*/ {
                     "versionLibLouis" to Project.LIBLOUIS.versionWithRev.split("]".toRegex(), limit = 2).toTypedArray()[0] + "]",
                 "versionOs" to oSVersion,
                 "versionJava" to javaVersion,
-                "newLineSize" to "" + System.lineSeparator().length,
+                "newLineSize" to "${LINE_BREAK.length}",
                 "userId" to userId,
                 )
         )

@@ -30,7 +30,7 @@ import org.brailleblaster.utd.ITranslationEngine;
 import org.brailleblaster.utd.TextSpan;
 import org.brailleblaster.utd.properties.BrailleTableType;
 import org.brailleblaster.utd.testutils.MockTranslatorFactory;
-import org.brailleblaster.utils.NamespacesKt;
+import org.brailleblaster.utils.xml.NamespacesKt;
 import org.mwhapples.jlouis.Louis;
 import org.mwhapples.jlouis.TranslationException;
 import org.mwhapples.jlouis.TranslationResult;

@@ -19,7 +19,7 @@ import nu.xom.Element
 import nu.xom.Node
 import org.brailleblaster.BBIni
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.numberLine.NumberLine
 import org.brailleblaster.math.spatial.Line.LineBreakSegment
 import org.brailleblaster.math.spatial.Passages.addGrade1MultipleRows
@@ -89,7 +89,7 @@ class Grid : ISpatialMathContainer {
     }
 
     override fun format() {
-        if (!MathModule.isNemeth){
+        if (!MathModuleUtils.isNemeth){
             //If translation mode is not nemeth, set passage settings to None, as this is not a relevant category anymore.
             //This should get rid of the nemeth indicators when the translation switches; fix for bug #6482
             settings.passage = Passage.NONE
@@ -397,13 +397,13 @@ class Grid : ISpatialMathContainer {
         }
 
         fun addStylesToGridElement(e: Element) {
-            addStyle(e, MathModule.STYLE_DEF_SPATIAL_GRID, WPManager.getInstance().controller)
+            addStyle(e, MathModuleUtils.STYLE_DEF_SPATIAL_GRID, WPManager.getInstance().controller)
             for (i in 0 until e.childCount) {
                 val child = e.getChild(i)
                 if (child is Element) {
-                    if (child.getAttributeValue(MathModule.STYLE_DEF_OPTION_LINES_AFTER) != null) {
+                    if (child.getAttributeValue(MathModuleUtils.STYLE_DEF_OPTION_LINES_AFTER) != null) {
                         addStyle(
-                            child, MathModule.STYLE_DEF_SPATIAL_BLOCK_BLANK_AFTER,
+                            child, MathModuleUtils.STYLE_DEF_SPATIAL_BLOCK_BLANK_AFTER,
                             WPManager.getInstance().controller
                         )
                     }

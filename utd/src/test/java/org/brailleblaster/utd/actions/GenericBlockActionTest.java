@@ -40,7 +40,7 @@ import org.brailleblaster.utd.properties.BrailleTableType;
 import org.brailleblaster.utd.properties.EmphasisType;
 import org.brailleblaster.utd.properties.UTDElements;
 import org.brailleblaster.utd.testutils.MockTranslatorFactory;
-import org.brailleblaster.utils.NamespacesKt;
+import org.brailleblaster.utils.xml.NamespacesKt;
 import org.mockito.Mockito;
 import org.mwhapples.jlouis.Louis;
 import org.mwhapples.jlouis.Louis.TypeForms;

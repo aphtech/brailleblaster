@@ -29,8 +29,8 @@ object NumericPassage {
     private val localeHandler = getDefault()
     const val BLOCK_BEGINNING_INDICATOR = "##"
     const val BLOCK_END_INDICATOR = "#'"
-    const val INLINE_BEGINNING_INDICATOR = BLOCK_BEGINNING_INDICATOR + MathModule.NBS
-    const val INLINE_END_INDICATOR = MathModule.NBS + BLOCK_END_INDICATOR
+    const val INLINE_BEGINNING_INDICATOR = BLOCK_BEGINNING_INDICATOR + MathModuleUtils.NBS
+    const val INLINE_END_INDICATOR = MathModuleUtils.NBS + BLOCK_END_INDICATOR
     val NUMERIC_PASSAGE_BLOCK = localeHandler["blockNumericPassage"]
     val NUMERIC_PASSAGE_INLINE = localeHandler["inlineNumericPassage"]
     private val log = LoggerFactory.getLogger(NumericPassage::class.java)

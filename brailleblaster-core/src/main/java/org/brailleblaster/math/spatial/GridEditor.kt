@@ -19,7 +19,7 @@ import nu.xom.Element
 import nu.xom.ParentNode
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.findBlock
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.numberLine.NumberLine
 import org.brailleblaster.math.spatial.SpatialMathEnum.Passage
 import org.brailleblaster.math.spatial.SpatialMathEnum.SpatialMathContainers
@@ -31,7 +31,6 @@ import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.perspectives.mvc.events.XMLCaretEvent
 import org.brailleblaster.perspectives.mvc.modules.views.DebugModule
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.util.Utils
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.utils.swt.EasySWT
@@ -99,7 +98,7 @@ class GridEditor : ISpatialMathDialog {
             addDebugMenu(menu)
         }
         _settingsMenu = createSettingsMenu(menu, shell)
-        if (MathModule.isNemeth && page!!.hasTemplate()) {
+        if (MathModuleUtils.isNemeth && page!!.hasTemplate()) {
             addIdentifierMenu()
         }
         addPassages(shell, _settingsMenu, page!!.settings, passagesClicked())
@@ -240,7 +239,7 @@ class GridEditor : ISpatialMathDialog {
             }
         }
         val gl = GridLayout(1, false)
-        shell!!.text = MathModule.SPATIAL_COMBO
+        shell!!.text = MathModuleUtils.SPATIAL_COMBO
         shell!!.layout = gl
         val outerContainer = Composite(shell, SWT.NONE)
         outerContainer.layout = GridLayout(1, false)
@@ -273,7 +272,7 @@ class GridEditor : ISpatialMathDialog {
             { ok() },
             { cancel() }
         )
-        FormUIUtils.addEscapeCloseListener(shell!!)
+        EasySWT.addEscapeCloseListener(shell!!)
         sc.content = innerContainer
         sc.setMinSize(innerContainer.computeSize(SWT.DEFAULT, SWT.DEFAULT))
         shell!!.pack()
@@ -558,7 +557,7 @@ class GridEditor : ISpatialMathDialog {
             val actionsGroup = EasySWT.makeGroup(gridGroup, 0, 3, false)
             EasySWT.makePushButton(actionsGroup, SpatialMathUtils.OK_LABEL, 1, onOk)
             EasySWT.makePushButton(actionsGroup, SpatialMathUtils.CANCEL_LABEL, 1, onCancel)
-            if (MathModule.currentIsSpatialMath()) {
+            if (MathModuleUtils.currentIsSpatialMath()) {
                 EasySWT.makePushButton(actionsGroup, SpatialMathUtils.DELETE_CONTAINER, 1, onDelete)
             }
         }

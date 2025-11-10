@@ -22,9 +22,9 @@ import org.brailleblaster.perspectives.mvc.XMLNodeCaret
 class XMLCaretEvent @JvmOverloads constructor(sender: Sender, start: XMLNodeCaret?, end: XMLNodeCaret? = start) :
     SimpleEvent(sender) {
     @JvmField
-	val start: XMLNodeCaret
+	  val start: XMLNodeCaret
     @JvmField
-	val end: XMLNodeCaret
+	  val end: XMLNodeCaret
 
     init {
         if (start == null) {

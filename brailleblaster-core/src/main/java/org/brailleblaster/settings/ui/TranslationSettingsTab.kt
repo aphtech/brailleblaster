@@ -21,10 +21,10 @@ import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.utd.UTDTranslationEngine
 import org.brailleblaster.utd.config.UTDConfig
 import org.brailleblaster.utd.properties.BrailleTableType
-import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.libembosser.spi.BrlCell
 import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
+import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.layout.RowLayout
 import org.eclipse.swt.widgets.*
@@ -57,18 +57,18 @@ class TranslationSettingsTab internal constructor(folder: TabFolder?, private va
         val standardsGroup = Group(parent, SWT.NONE)
         standardsGroup.layout = GridLayout(2, true)
         standardsGroup.text = "Standards"
-        FormUIUtils.setGridData(standardsGroup)
-        FormUIUtils.addLabel(standardsGroup, "Braille Standard")
+        EasySWT.setGridData(standardsGroup)
+        EasySWT.addLabel(standardsGroup, "Braille Standard")
         standardCombo = Combo(standardsGroup, SWT.READ_ONLY)
-        FormUIUtils.setGridData(standardCombo)
+        EasySWT.setGridData(standardCombo)
         EasySWT.addSwtBotKey(standardCombo, SWTBOT_STANDARD_COMBO)
 
         //Specific settings
         val settingsGroup = Group(parent, SWT.NONE)
         settingsGroup.layout = GridLayout(2, false)
         settingsGroup.text = "Selected Standard Settings"
-        FormUIUtils.setGridData(settingsGroup)
-        FormUIUtils.addLabel(settingsGroup, "Cell type")
+        EasySWT.setGridData(settingsGroup)
+        EasySWT.addLabel(settingsGroup, "Cell type")
         val cellTypeContainer = Composite(settingsGroup, SWT.NONE)
         cellTypeContainer.layout = RowLayout()
         for (curType in BrlCell.entries) {
@@ -80,29 +80,29 @@ class TranslationSettingsTab internal constructor(folder: TabFolder?, private va
             brailleCellRadios[curType.name] = typeButton
         }
 
-        FormUIUtils.addLabel(settingsGroup, "Main Translation Table")
+        EasySWT.addLabel(settingsGroup, "Main Translation Table")
         mainTableText = Text(settingsGroup, SWT.BORDER)
         mainTableText.isEnabled = false
-        FormUIUtils.setGridData(mainTableText)
-        FormUIUtils.addLabel(settingsGroup, "Computer Braille Table")
+        EasySWT.setGridData(mainTableText)
+        EasySWT.addLabel(settingsGroup, "Computer Braille Table")
         compTableText = Text(settingsGroup, SWT.BORDER)
         compTableText.isEnabled = false
-        FormUIUtils.setGridData(compTableText)
-        FormUIUtils.addLabel(settingsGroup, "Uncontracted Table")
+        EasySWT.setGridData(compTableText)
+        EasySWT.addLabel(settingsGroup, "Uncontracted Table")
         unconTableText = Text(settingsGroup, SWT.BORDER)
         unconTableText.isEnabled = false
-        FormUIUtils.setGridData(unconTableText)
-        FormUIUtils.addLabel(settingsGroup, "Math Text Table")
+        EasySWT.setGridData(unconTableText)
+        EasySWT.addLabel(settingsGroup, "Math Text Table")
         mathTextTableText = Text(settingsGroup, SWT.BORDER)
         mathTextTableText.isEnabled = false
-        FormUIUtils.setGridData(mathTextTableText)
-        FormUIUtils.addLabel(settingsGroup, "Math Expression Table")
+        EasySWT.setGridData(mathTextTableText)
+        EasySWT.addLabel(settingsGroup, "Math Expression Table")
         mathExprTableText = Text(settingsGroup, SWT.BORDER)
         mathExprTableText.isEnabled = false
-        FormUIUtils.setGridData(mathExprTableText)
+        EasySWT.setGridData(mathExprTableText)
 
         //--Add listeners--
-        standardCombo.addSelectionListener(FormUIUtils.makeSelectedListener {
+        standardCombo.addSelectionListener(EasySWT.makeSelectedListener { it: SelectionEvent ->
             updateUI(
                 standardCombo.text
             )

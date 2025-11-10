@@ -25,7 +25,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.brailleblaster.utils.NamespacesKt;
+import org.brailleblaster.utils.xml.NamespacesKt;
 import org.jetbrains.annotations.Nullable;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
@@ -33,7 +33,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.brailleblaster.bbx.parsers.ImportParserUtils;
-import org.brailleblaster.math.mathml.MathModule;
+import org.brailleblaster.math.mathml.MathModuleUtils;
 import org.brailleblaster.math.numberLine.NumberLine;
 import org.brailleblaster.math.numberLine.NumberLineConstants;
 import org.brailleblaster.math.numberLine.NumberLineJson;
@@ -603,7 +603,7 @@ public class BBX {
 
             public Element create(NumberLine numberLine) {
                 Element elem = super.create();
-                String version = MathModule.SPATIAL_MATH_BBX_VERSION;
+                String version = MathModuleUtils.SPATIAL_MATH_BBX_VERSION;
                 JSON_NUMBER_LINE.set(elem, numberLine.getJson());
                 ATTRIB_VERSION.set(elem, version);
                 return elem;
@@ -637,7 +637,7 @@ public class BBX {
             public Element create(Matrix matrix) {
                 Element elem = super.create();
                 JSON_MATRIX.set(elem, matrix.getJson());
-                String version = MathModule.SPATIAL_MATH_BBX_VERSION;
+                String version = MathModuleUtils.SPATIAL_MATH_BBX_VERSION;
                 ATTRIB_VERSION.set(elem, version);
                 return elem;
             }
@@ -673,7 +673,7 @@ public class BBX {
 
             public Element create(Template template) {
                 Element elem = super.create();
-                String version = MathModule.SPATIAL_MATH_BBX_VERSION;
+                String version = MathModuleUtils.SPATIAL_MATH_BBX_VERSION;
                 JSON_TEMPLATE.set(elem, template.getJson());
                 ATTRIB_VERSION.set(elem, version);
                 return elem;
@@ -705,7 +705,7 @@ public class BBX {
             public Element create(Grid grid) {
                 Element elem = super.create();
                 JSON_GRID.set(elem, grid.getJson());
-                String version = MathModule.SPATIAL_MATH_BBX_VERSION;
+                String version = MathModuleUtils.SPATIAL_MATH_BBX_VERSION;
                 ATTRIB_VERSION.set(elem, version);
                 return elem;
             }
@@ -738,7 +738,7 @@ public class BBX {
             public Element create(ConnectingContainer container) {
                 Element elem = super.create();
                 JSON_CONNECTING_CONTAINER.set(elem, container.getJson());
-                String version = MathModule.SPATIAL_MATH_BBX_VERSION;
+                String version = MathModuleUtils.SPATIAL_MATH_BBX_VERSION;
                 ATTRIB_VERSION.set(elem, version);
                 return elem;
             }
@@ -819,8 +819,9 @@ public class BBX {
     }
 
     public enum VolumeType {
-        VOLUME_PRELIMINARY("Preliminary Volume", "Preliminary", "Preliminary"), VOLUME("Volume", "Volume",
-                "Normal"), VOLUME_SUPPLEMENTAL("Supplemental Volume", "Supplemental", "Supplemental");
+      VOLUME_PRELIMINARY("Preliminary Volume", "Preliminary", "Preliminary"),
+      VOLUME("Volume", "Volume", "Normal"),
+      VOLUME_SUPPLEMENTAL("Supplemental Volume", "Supplemental", "Supplemental");
 
         public final String volumeName, volumeNameShort, volumeMenuName;
 
@@ -1046,10 +1047,11 @@ public class BBX {
     public static class InlineElement extends CoreType {
         public final EmphasisSubType EMPHASIS = new EmphasisSubType(this);
         public final MathSubType MATHML = new MathSubType(this);
+        public final LinkSubType LINK = new LinkSubType(this);
 
         public static class EmphasisSubType extends InlineSubType {
-            public final EnumSetAttribute<EmphasisType> ATTRIB_EMPHASIS = new EnumSetAttribute<>("emphasis",
-                    EmphasisType.class);
+            public final EnumSetAttribute<EmphasisType> ATTRIB_EMPHASIS =
+                new EnumSetAttribute<>("emphasis", EmphasisType.class);
 
             private EmphasisSubType(InlineElement coreType) {
                 super(coreType, "EMPHASIS");
@@ -1111,11 +1113,29 @@ public class BBX {
             }
         }
 
+        public static class LinkSubType extends InlineSubType{
+
+          public final StringAttribute ATTRIB_HREF = new StringAttribute("href");
+          public final BooleanAttribute IS_EXTERNAL = new BooleanAttribute("external");
+
+          private LinkSubType(InlineElement coreType) {
+            super(coreType, "LINK");
+          }
+
+          @Override
+          protected String subValidate(Element elem) {
+            if (ATTRIB_HREF.has(elem) && IS_EXTERNAL.has(elem)) {
+              return null;
+            }
+            return "Link must have href and external attributes";
+          }
+        }
+
         public final InlineSubType LINE_BREAK = new InlineSubType(this, "LINE_BREAK");
 
         private InlineElement() {
             super("INLINE", true);
-            subTypes = List.of(EMPHASIS, MATHML, LINE_BREAK);
+            subTypes = List.of(EMPHASIS, MATHML, LINE_BREAK, LINK);
         }
 
         @Override
@@ -1267,8 +1287,8 @@ public class BBX {
         }
     }
 
-    public static final List<BBX.@NotNull CoreType> CORE_TYPES = List.of(SECTION, CONTAINER, BLOCK, INLINE,
-            SPAN);
+    public static final List<BBX.@NotNull CoreType> CORE_TYPES =
+        List.of(SECTION, CONTAINER, BLOCK, INLINE, SPAN);
 
     public static CoreType getType(Element elem) {
         CoreType result = getTypeOrNull(elem);

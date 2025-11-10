@@ -19,7 +19,7 @@ import nu.xom.Node
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.findBlock
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.ui.WrapSelectionInTextSymbols.TextWrapCallBack
 import org.brailleblaster.utd.internal.xml.XMLHandler
@@ -55,8 +55,8 @@ object BlockSelectionInTextSymbols {
         val startnewBlock = BBX.BLOCK.DEFAULT.create()
         var startbegInd: Node = Text(startText)
         startnewBlock.appendChild(startbegInd)
-        if (MathModule.isSpatialMath(startparent)) {
-            val mathParent = MathModule.getSpatialMathParent(startparent)
+        if (MathModuleUtils.isSpatialMath(startparent)) {
+            val mathParent = MathModuleUtils.getSpatialMathParent(startparent)
             startparent = mathParent.parent
             startb = mathParent.parent.indexOf(mathParent)
         }
@@ -71,8 +71,8 @@ object BlockSelectionInTextSymbols {
         val endnewBlock = BBX.BLOCK.DEFAULT.create()
         var endbegInd: Node = Text(endText)
         endnewBlock.appendChild(endbegInd)
-        if (MathModule.isSpatialMath(endparent)) {
-            val mathParent = MathModule.getSpatialMathParent(endparent)
+        if (MathModuleUtils.isSpatialMath(endparent)) {
+            val mathParent = MathModuleUtils.getSpatialMathParent(endparent)
             endparent = mathParent.parent
             endb = mathParent.parent.indexOf(mathParent)
         }

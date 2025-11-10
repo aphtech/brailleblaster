@@ -37,10 +37,9 @@ import org.brailleblaster.tools.MenuTool
 import org.brailleblaster.tools.RepeatSearchTool
 import org.brailleblaster.utd.Style
 import org.brailleblaster.utd.properties.EmphasisType.Companion.getEmphasisType
-import org.brailleblaster.util.FormUIUtils.makeDialogFloating
-import org.brailleblaster.util.FormUIUtils.setLargeDialogSize
 import org.brailleblaster.util.Notify
 import org.brailleblaster.util.Notify.notify
+import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.utils.swt.EasySWT.addSelectionListener
 import org.brailleblaster.utils.swt.EasySWT.makeCheckBox
 import org.brailleblaster.utils.swt.EasySWT.makeComboDropdown
@@ -59,6 +58,7 @@ import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Combo
 import org.eclipse.swt.widgets.Dialog
+import org.eclipse.swt.widgets.Display
 import org.eclipse.swt.widgets.Group
 import org.eclipse.swt.widgets.Shell
 import java.util.*
@@ -77,7 +77,7 @@ class SearchDialog(parent: Shell?, style: Int) : Dialog(parent, style),
     private var findList: org.eclipse.swt.widgets.List? = null
     private var replaceList: org.eclipse.swt.widgets.List? = null
     private var sc = SearchCriteria()
-    private val location = Point(0, 0)
+    private val location = Point.WithMonitor(0, 0, Display.getCurrent().primaryMonitor)
 
     private var findObj: Find? = null
     private var replaceObj: Replace? = null
@@ -122,7 +122,7 @@ class SearchDialog(parent: Shell?, style: Int) : Dialog(parent, style),
         createContents()
         Companion.shell!!.open()
         Companion.shell!!.layout()
-        setLargeDialogSize(Companion.shell!!)
+        EasySWT.setLargeDialogSize(Companion.shell!!)
     }
 
     private fun createContents() {
@@ -145,7 +145,7 @@ class SearchDialog(parent: Shell?, style: Int) : Dialog(parent, style),
             Companion.shell!!.close()
         }
 
-        Companion.shell = makeDialogFloating(parent)
+        Companion.shell = EasySWT.makeDialogFloating(parent)
         Companion.shell!!.location = location
         Companion.shell!!.text = SearchConstants.FIND_REPLACE_SHELL
         Companion.shell!!.layout = GridLayout(1, false)

@@ -19,14 +19,14 @@ import nu.xom.Element
 import nu.xom.Node
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.mvc.modules.misc.StylesMenuModule
 import org.brailleblaster.search.SearchCriteria.*
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.EmphasisType
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utd.utils.UTDHelper.Companion.stripUTDRecursive
+import org.brailleblaster.utd.utils.UTDHelper.stripUTDRecursive
 import org.brailleblaster.utils.xom.childNodes
 import org.brailleblaster.util.Notify
 import org.brailleblaster.util.Notify.notify
@@ -247,7 +247,7 @@ On node $node"""
     }
 
     internal fun isUneditable(node: Node): Boolean {
-        return XMLHandler.ancestorVisitor(node) { n: Node? -> BBX.CONTAINER.TABLE.isA(n) } != null || MathModule.isMath(
+        return XMLHandler.ancestorVisitor(node) { n: Node? -> BBX.CONTAINER.TABLE.isA(n) } != null || MathModuleUtils.isMath(
             node
         )
     }

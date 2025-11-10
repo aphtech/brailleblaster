@@ -16,7 +16,7 @@
 package org.brailleblaster.perspectives.braille.toolbar
 
 import org.apache.commons.lang3.StringUtils
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.perspectives.braille.toolbar.ToolBarSettings.saveUserSettings
 import org.brailleblaster.perspectives.braille.toolbar.ToolBarSettings.scale
 import org.brailleblaster.perspectives.braille.toolbar.ToolBarSettings.userSettings
@@ -103,29 +103,29 @@ class ToolBarBuilder(
 
     private fun createMath(): ToolBarSection {
         val section = ToolBarSection(ToolBarSettings.Settings.MATH)
-        section.addItem(getImage(MathModule.MATH_TOGGLE_KEY), MathModule.MATH_TOGGLE, SharedItem.MATH_TOGGLE)
-        section.addItem(getImage(MathModule.NUMERIC_SERIES_KEY), MathModule.NUMERIC_SERIES, SharedItem.NUMERIC_SERIES)
-        section.addItem(getImage(MathModule.ASCII_EDITOR_KEY), MathModule.ASCII_EDITOR, SharedItem.ASCII_EDITOR)
-        section.addItem(getImage(MathModule.SPATIAL_MATH_KEY), MathModule.SPATIAL_COMBO, SharedItem.SPATIAL_COMBO)
-        section.addItem(getImage(MathModule.NEMETH_BLOCK_KEY), MathModule.NEMETH_BLOCK, SharedItem.NEMETH_BLOCK)
-        section.addItem(getImage(MathModule.NEMETH_INLINE_KEY), MathModule.NEMETH_INLINE, SharedItem.NEMETH_INLINE)
+        section.addItem(getImage(MathModuleUtils.MATH_TOGGLE_KEY), MathModuleUtils.MATH_TOGGLE, SharedItem.MATH_TOGGLE)
+        section.addItem(getImage(MathModuleUtils.NUMERIC_SERIES_KEY), MathModuleUtils.NUMERIC_SERIES, SharedItem.NUMERIC_SERIES)
+        section.addItem(getImage(MathModuleUtils.ASCII_EDITOR_KEY), MathModuleUtils.ASCII_EDITOR, SharedItem.ASCII_EDITOR)
+        section.addItem(getImage(MathModuleUtils.SPATIAL_MATH_KEY), MathModuleUtils.SPATIAL_COMBO, SharedItem.SPATIAL_COMBO)
+        section.addItem(getImage(MathModuleUtils.NEMETH_BLOCK_KEY), MathModuleUtils.NEMETH_BLOCK, SharedItem.NEMETH_BLOCK)
+        section.addItem(getImage(MathModuleUtils.NEMETH_INLINE_KEY), MathModuleUtils.NEMETH_INLINE, SharedItem.NEMETH_INLINE)
         section.addItem(
-            getImage(MathModule.NUMERIC_PASSAGE_BLOCK_KEY),
-            MathModule.NUMERIC_BLOCK,
+            getImage(MathModuleUtils.NUMERIC_PASSAGE_BLOCK_KEY),
+            MathModuleUtils.NUMERIC_BLOCK,
             SharedItem.NUMERIC_BLOCK
         )
         section.addItem(
-            getImage(MathModule.NUMERIC_PASSAGE_INLINE_KEY),
-            MathModule.NUMERIC_INLINE,
+            getImage(MathModuleUtils.NUMERIC_PASSAGE_INLINE_KEY),
+            MathModuleUtils.NUMERIC_INLINE,
             SharedItem.NUMERIC_INLINE
         )
         //always make the help section last
-        section.addItem(getImage(MathModule.MATH_HELP_KEY), MathModule.MATH_HELP, SharedItem.ABOUT_MATH)
+        section.addItem(getImage(MathModuleUtils.MATH_HELP_KEY), MathModuleUtils.MATH_HELP, SharedItem.ABOUT_MATH)
         if (DebugModule.enabled) {
             /*
              * if you take one out of debug, enable it in the Math Module
              */
-            section.addItem(getImage(MathModule.MATH_TABLE_KEY), MathModule.MATH_TABLE, SharedItem.MATH_TABLE)
+            section.addItem(getImage(MathModuleUtils.MATH_TABLE_KEY), MathModuleUtils.MATH_TABLE, SharedItem.MATH_TABLE)
         }
         return section
     }
@@ -246,7 +246,7 @@ class ToolBarBuilder(
             cursorLoc = cursorControl.bounds //Should be the toolbar
         }
 
-        if (cursorLoc == null) cursorLoc = Rectangle(0, 0, 0, 0)
+        if (cursorLoc == null) cursorLoc = Rectangle.WithMonitor(0, 0, 0, 0, Display.getCurrent().primaryMonitor)
         val toolItem = (event.widget as ToolItem).bounds
         menu.setLocation(toolBarHolder.toDisplay(cursorLoc.x + toolItem.x, cursorLoc.y + toolItem.height))
         menu.isVisible = true
@@ -303,11 +303,12 @@ class ToolBarBuilder(
                 val endOfToolbar = lastSection.x + lastSection.width
                 relocBounds.add(
                     RelocatorRectangle(
-                        Rectangle(
+                        Rectangle.WithMonitor(
                             endOfToolbar,
                             lastSection.y,
                             lastSection.dockPoint.width,
-                            lastSection.height
+                            lastSection.height,
+                            Display.getCurrent().primaryMonitor
                         ), toolBar
                     )
                 )
@@ -517,13 +518,13 @@ class ToolBarBuilder(
         val bottomDockPoint: Rectangle
         if (lastToolBar === toolBar) {
             bottomDockPoint =
-                Rectangle(0, toolBar.bounds.height, toolBar.shell.clientArea.width, toolBar.bounds.height / 2)
+                Rectangle.WithMonitor(0, toolBar.bounds.height, toolBar.shell.clientArea.width, toolBar.bounds.height / 2, Display.getCurrent().primaryMonitor)
         } else {
             var bottomStart = (widgets.size - widgets.indexOf(toolBar)) * toolBar.bounds.height
             if (toolBar.parent.layout is GridLayout) bottomStart += (toolBar.parent.layout as GridLayout).verticalSpacing * (widgets.size - widgets.indexOf(
                 toolBar
             ))
-            bottomDockPoint = Rectangle(0, bottomStart, toolBar.shell.clientArea.width, toolBar.bounds.height / 2)
+            bottomDockPoint = Rectangle.WithMonitor(0, bottomStart, toolBar.shell.clientArea.width, toolBar.bounds.height / 2, Display.getCurrent().primaryMonitor)
         }
         return bottomDockPoint
     }

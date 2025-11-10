@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory
 object NemethIndicators {
     const val BEGINNING_INDICATOR = "_%"
     const val END_INDICATOR = "_:"
-    const val INLINE_BEGINNING_INDICATOR = BEGINNING_INDICATOR + MathModule.NBS
-    const val INLINE_END_INDICATOR = MathModule.NBS + END_INDICATOR
+    const val INLINE_BEGINNING_INDICATOR = BEGINNING_INDICATOR + MathModuleUtils.NBS
+    const val INLINE_END_INDICATOR = MathModuleUtils.NBS + END_INDICATOR
     private val log = LoggerFactory.getLogger(NemethIndicators::class.java)
     @JvmStatic
 	fun block(m: Manager) {

@@ -25,6 +25,7 @@ import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.braille.messages.TabInsertionMessage
 import org.brailleblaster.perspectives.braille.viewInitializer.ViewInitializer
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
+import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.utils.xom.TextSplitter
 
 class TabInsertionHandler(manager: Manager?, vi: ViewInitializer?, list: MapList?) : Handler(
@@ -99,8 +100,7 @@ class TabInsertionHandler(manager: Manager?, vi: ViewInitializer?, list: MapList
     }
 
     private fun calculateLineBreaks(t: TextMapElement?, pos: Int): Int {
-        val lineBreak = System.lineSeparator()
         val text = manager.text.view.getTextRange(t!!.getStart(list), pos)
-        return text.length - text.replace(lineBreak, "").length
+        return text.length - text.replace(LINE_BREAK, "").length
     }
 }

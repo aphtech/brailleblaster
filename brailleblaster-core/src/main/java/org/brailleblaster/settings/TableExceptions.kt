@@ -16,11 +16,12 @@
 package org.brailleblaster.settings
 
 import org.brailleblaster.BBIni
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.settings.UTDManager.BBUTDTranslationEngine
 import org.brailleblaster.utd.BrailleSettings
 import org.brailleblaster.exceptions.BBRuntimeException
+import org.brailleblaster.util.LINE_BREAK
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
@@ -33,10 +34,7 @@ object TableExceptions {
     const val EXCEPTIONS_TABLE_EXTENSION = "-bb-exceptions.ctb"
     @JvmField
 	  var UNIVERSAL_EXCEPTION_FILE_HEADING =
-            ("# Translation exception table " + System.lineSeparator()
-            + "# for users of brailleblaster " + System.lineSeparator()
-            + "sign \\xf000 4-46-126 transcriber start indicator" + System.lineSeparator()
-            + "sign \\xf001 4-46-354 transcriber end indicator")
+            ("# Translation exception table $LINE_BREAK# for users of brailleblaster ${LINE_BREAK}sign \\xf000 4-46-126 transcriber start indicator${LINE_BREAK}sign \\xf001 4-46-354 transcriber end indicator")
 
     private val log = LoggerFactory.getLogger(TableExceptions::class.java)
     private var mainTranslationStandardFile: File? = null
@@ -160,7 +158,7 @@ object TableExceptions {
 
     @JvmStatic
 	  fun getCurrentStandardName(m: Manager): String {
-        return if (MathModule.isMath(m.mapList.current.node) &&
+        return if (MathModuleUtils.isMath(m.mapList.current.node) &&
             MATH_EXCEPTION_TABLES
         ) {
             MathTranslationSettings.getMathTable(m.document.settingsManager.engine.brailleSettings)
@@ -171,7 +169,7 @@ object TableExceptions {
 
     @JvmStatic
 	  fun getCurrentExceptionFile(m: Manager): File? {
-        return if (MathModule.isMath(m.mapList.current.node) &&
+        return if (MathModuleUtils.isMath(m.mapList.current.node) &&
             MATH_EXCEPTION_TABLES
         ) {
             MATH_TRANSLATION_STANDARD_FILE
@@ -182,7 +180,7 @@ object TableExceptions {
 
     @JvmStatic
 	  fun getCurrentExceptionTable(m: Manager): String {
-        return if (MathModule.isMath(m.mapList.current.node)
+        return if (MathModuleUtils.isMath(m.mapList.current.node)
             && MATH_EXCEPTION_TABLES
         ) {
             m.document.settingsManager.engine.brailleSettings.mathExpressionTable

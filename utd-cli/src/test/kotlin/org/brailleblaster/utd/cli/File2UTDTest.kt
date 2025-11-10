@@ -15,11 +15,15 @@
  */
 package org.brailleblaster.utd.cli
 
-import org.brailleblaster.utd.testutils.UTDConfigUtils
 import org.slf4j.LoggerFactory
 import org.testng.annotations.Test
 import java.io.File
 import java.io.FileOutputStream
+
+private val TEST_FOLDER = File("../utd/src/test/resources/org/brailleblaster/utd/testutils")
+private val TEST_ACTION_FILE = File(TEST_FOLDER, "test.actionMap.xml")
+private val TEST_STYLE_FILE = File(TEST_FOLDER, "test.styleMap.xml")
+private val TEST_STYLEDEFS_FILE = File(TEST_FOLDER, "styleDefs.xml")
 
 class File2UTDTest {
     @Test
@@ -38,9 +42,9 @@ class File2UTDTest {
 
         val app = File2UTD(
             input, output, null,
-            UTDConfigUtils.TEST_ACTION_FILE.absolutePath,
-            UTDConfigUtils.TEST_STYLE_FILE.absolutePath,
-            UTDConfigUtils.TEST_STYLEDEFS_FILE.absolutePath, false
+            TEST_ACTION_FILE.absolutePath,
+            TEST_STYLE_FILE.absolutePath,
+            TEST_STYLEDEFS_FILE.absolutePath, false
         )
         app.run()
     }

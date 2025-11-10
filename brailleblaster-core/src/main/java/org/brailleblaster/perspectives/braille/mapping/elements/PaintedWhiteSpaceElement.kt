@@ -16,6 +16,7 @@
 package org.brailleblaster.perspectives.braille.mapping.elements
 
 import org.brailleblaster.perspectives.braille.mapping.maps.MapList
+import org.brailleblaster.util.LINE_BREAK
 
 /*
  * Running heads and guide words are painted to the view and leave a newline 
@@ -29,7 +30,7 @@ class PaintedWhiteSpaceElement : FormattingWhiteSpaceElement {
 
     override fun getStart(list: MapList): Int {
         if (list.indexOf(this) > 0) {
-            return list[list.indexOf(this) - 1].getEnd(list) + System.lineSeparator().length
+            return list[list.indexOf(this) - 1].getEnd(list) + LINE_BREAK.length
         }
         return 0
     }

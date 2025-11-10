@@ -35,12 +35,10 @@ import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.ALL_VOLUMES
 import org.brailleblaster.utd.utils.convertBBX2PEF
-import org.brailleblaster.util.FormUIUtils.addSelectionListener
-import org.brailleblaster.util.FormUIUtils.makeDialog
-import org.brailleblaster.util.FormUIUtils.setGridData
-import org.brailleblaster.util.FormUIUtils.setLargeDialogSize
+import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.util.Notify.showMessage
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
+import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.utils.swt.EasySWT.addSwtBotKey
 import org.brailleblaster.utils.swt.EasySWT.buildGridData
 import org.brailleblaster.utils.swt.EasySWT.makeComposite
@@ -84,7 +82,7 @@ class VolumeSaveDialog(
     init {
         val volumes = getVolumeElements(doc)
 
-        shell = makeDialog(parent)
+        shell = EasySWT.makeDialog(parent)
         shell.text = localeHandler["&SaveVolumeBRFPEF"]
         shell.setLayout(GridLayout(2, false))
 
@@ -113,22 +111,22 @@ class VolumeSaveDialog(
             val saveSingle = Button(shell, SWT.NONE)
             addSwtBotKey(saveSingle, SWTBOT_SAVE_SINGLE)
             saveSingle.setText("Save All to Single File")
-            setGridData(saveSingle)
+            EasySWT.setGridData(saveSingle)
 
             val saveFolder = Button(shell, SWT.NONE)
             addSwtBotKey(saveFolder, SWTBOT_SAVE_FOLDER)
             saveFolder.setText("Save Selected to Folder")
-            setGridData(saveFolder)
+            EasySWT.setGridData(saveFolder)
 
             val saveFolderAll = Button(shell, SWT.NONE)
             addSwtBotKey(saveFolderAll, SWTBOT_SAVE_FOLDER_ALL)
             saveFolderAll.setText("Save All to Folder")
-            setGridData(saveFolderAll)
+            EasySWT.setGridData(saveFolderAll)
 
             // ----------------- Listeners --------------------
-            addSelectionListener(saveSingle) { _: SelectionEvent? -> clickSaveSingle() }
-            addSelectionListener(saveFolder) { _: SelectionEvent? -> clickSaveFolder(false) }
-            addSelectionListener(saveFolderAll) { clickSaveFolder(true) }
+            EasySWT.addSelectionListener(saveSingle) { _: SelectionEvent? -> clickSaveSingle() }
+            EasySWT.addSelectionListener(saveFolder) { _: SelectionEvent? -> clickSaveFolder(false) }
+            EasySWT.addSelectionListener(saveFolderAll) { it: SelectionEvent -> clickSaveFolder(true) }
 
             // -------------------- Data ---------------------
             for (curVolume in VolumeUtils.getVolumeNames(volumes)) {
@@ -137,7 +135,7 @@ class VolumeSaveDialog(
                 entry.setData(KEY_VOLUME_DATA, curVolume)
             }
 
-            setLargeDialogSize(shell)
+            EasySWT.setLargeDialogSize(shell)
             shell.open()
         }
     }
@@ -538,7 +536,7 @@ class VolumeSaveDialog(
             }
 
             val finalBrf = finalBrfMut!!
-            check(!finalBrf.isBlank()) { "No finalBrf?! " + System.lineSeparator() + finalBrf + System.lineSeparator() + "=------=" }
+            check(!finalBrf.isBlank()) { "No finalBrf?! $LINE_BREAK$finalBrf$LINE_BREAK=------=" }
 
             //Remove lingering empty page from resetting the page to restart the BRF output
             val linesPerPage = engine.brailleSettings.cellType.getLinesForHeight(

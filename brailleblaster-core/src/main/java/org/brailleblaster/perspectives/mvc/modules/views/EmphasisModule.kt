@@ -20,7 +20,7 @@ import nu.xom.Node
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.isPageNumAncestor
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.mvc.BBSimpleManager
 import org.brailleblaster.perspectives.mvc.BBSimpleManager.SimpleListener
@@ -146,11 +146,12 @@ object EmphasisModule : AbstractModule(), SimpleListener {
                             currentSelection.end.offset, removeEmphasis
                         )
                     }
-                } else {
+                }
+                else {
                     //Element is selected. Apply emphasis to all descendant text nodes
                     FastXPath.descendant(currentSelection.start.node)
                         .filterIsInstance<Text>()
-                        .filter { n -> !MathModule.isMath(n) }
+                        .filter { n -> !MathModuleUtils.isMath(n) }
                         .forEach { n ->
                             callback.emphasize(
                                 emphasisType,
@@ -161,7 +162,8 @@ object EmphasisModule : AbstractModule(), SimpleListener {
                             )
                         }
                 }
-            } else {
+            }
+            else {
                 modifiedBlocks.forEach(Consumer { rootRaw -> UTDHelper.stripUTDRecursive(rootRaw) })
                 var startNode: Node? = currentSelection.start.node
 
@@ -171,7 +173,7 @@ object EmphasisModule : AbstractModule(), SimpleListener {
                 if (currentSelection.end.node is Text) {
                     finalTextOffset = (currentSelection.end as XMLTextCaret).offset
                 }
-                if (startNode is Text && !MathModule.isMath(startNode)) { //Apply the emphasis to the first node
+                if (startNode is Text && !MathModuleUtils.isMath(startNode)) { //Apply the emphasis to the first node
                     if ((currentSelection.start as XMLTextCaret).offset != startNode.value.length) {
                         startNode = callback.emphasize(
                             emphasisType,
@@ -188,14 +190,14 @@ object EmphasisModule : AbstractModule(), SimpleListener {
                 //as each text node is found
                 while (startNode !== finalTextNode) {
                     startNode =
-                        XMLHandler.followingWithSelfVisitor(startNode) { n: Node -> n is Text && !MathModule.isMath(n) || n === finalTextNode }
+                        XMLHandler.followingWithSelfVisitor(startNode) { n: Node -> n is Text && !MathModuleUtils.isMath(n) || n === finalTextNode }
                     if (startNode != null && startNode !== finalTextNode) {
                         startNode =
                             callback.emphasize(emphasisType, startNode as Text, NO_OFFSET, NO_OFFSET, removeEmphasis)
                         startNode = XMLHandler.followingNode(startNode)
                     }
                 }
-                if (finalTextNode is Text && !MathModule.isMath(finalTextNode)) callback.emphasize(
+                if (finalTextNode is Text && !MathModuleUtils.isMath(finalTextNode)) callback.emphasize(
                     emphasisType,
                     finalTextNode,
                     NO_OFFSET,
@@ -215,13 +217,6 @@ object EmphasisModule : AbstractModule(), SimpleListener {
             }
             manager.dispatchEvent(ModifyEvent(Sender.EMPHASIS, modifiedNodes, true))
         }
-
-
-
-
-
-
-
 
     /*
  * Check if this emphasis item is a numbering of some sort for a list.
@@ -359,17 +354,6 @@ object EmphasisModule : AbstractModule(), SimpleListener {
         private fun emphasize(emphasis: EmphasisType, node: Text, start: Int, end: Int, remove: Boolean): Text {
             return emphasize(EnumSet.of(emphasis), node, start, end, remove)
         }
-
-
-
-
-
-
-
-
-
-
-
 
 }
 object RemoveAllEmphasisTool : MenuToolModule {
@@ -563,7 +547,7 @@ private fun emphasize(
     end: Int,
     remove: Boolean
 ): Text {
-    if (node.isPageNumAncestor() || MathModule.isMath(node) || !validateEmphasis(
+    if (node.isPageNumAncestor() || MathModuleUtils.isMath(node) || !validateEmphasis(
             node.value.length,
             start,
             end
@@ -583,27 +567,29 @@ private fun emphasize(
         node
     }
 }
+
 private fun hasEmphasis(node: Text, emphasisTypes: EnumSet<EmphasisType>): Boolean {
     val parent = getEmphasisInline(node)
     return parent != null && BBX.INLINE.EMPHASIS.ATTRIB_EMPHASIS[parent].containsAll(emphasisTypes)
 }
+
 private fun isAllEmphasized(selection: XMLSelection, emphasisType: EmphasisType): Boolean {
     var startNode = getFirstTextNode(selection.start.node)
     val endNode = getFinalTextNode(selection.end.node)
     val endNodeSelected = selection.end !is XMLTextCaret || selection.end.offset > 0
-    if (startNode is Text && !MathModule.isMath(startNode) && !BBX.BLOCK.PAGE_NUM.isA(startNode.parent) && !BBX.SPAN.PAGE_NUM.isA(
+    if (startNode is Text && !MathModuleUtils.isMath(startNode) && !BBX.BLOCK.PAGE_NUM.isA(startNode.parent) && !BBX.SPAN.PAGE_NUM.isA(
             startNode.parent
         ) && !hasEmphasis(
             startNode, emphasisType
         )
-        && !MathModule.isMath(startNode)
+        && !MathModuleUtils.isMath(startNode)
     ) {
         return false
     }
     //Iterate through all text nodes between startNode and endNode
     while (startNode !== endNode) {
         startNode = XMLHandler.followingVisitor(startNode) { n: Node -> n is Text || n === endNode }!!
-        if (startNode !== endNode && !MathModule.isMath(startNode) && !BBX.BLOCK.PAGE_NUM.isA(startNode.parent) && !BBX.SPAN.PAGE_NUM.isA(
+        if (startNode !== endNode && !MathModuleUtils.isMath(startNode) && !BBX.BLOCK.PAGE_NUM.isA(startNode.parent) && !BBX.SPAN.PAGE_NUM.isA(
                 startNode.parent
             ) && !hasEmphasis(startNode as Text, emphasisType)
         ) {
@@ -611,7 +597,7 @@ private fun isAllEmphasized(selection: XMLSelection, emphasisType: EmphasisType)
         }
     }
     return (!endNodeSelected || endNode !is Text
-            || MathModule.isMath(startNode) || BBX.BLOCK.PAGE_NUM.isA(startNode.parent) || BBX.SPAN.PAGE_NUM.isA(
+            || MathModuleUtils.isMath(startNode) || BBX.BLOCK.PAGE_NUM.isA(startNode.parent) || BBX.SPAN.PAGE_NUM.isA(
         startNode.parent
     ) || hasEmphasis(startNode as Text, emphasisType))
 }

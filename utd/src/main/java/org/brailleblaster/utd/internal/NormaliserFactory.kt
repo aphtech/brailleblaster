@@ -17,8 +17,8 @@ package org.brailleblaster.utd.internal
 
 import nu.xom.*
 import org.brailleblaster.utd.config.DocumentUTDConfig
-import org.brailleblaster.utd.utils.UTDHelper.Companion.endsWithWhitespace
-import org.brailleblaster.utd.utils.UTDHelper.Companion.startsWithWhitespace
+import org.brailleblaster.utd.utils.UTDHelper.endsWithWhitespace
+import org.brailleblaster.utd.utils.UTDHelper.startsWithWhitespace
 import org.brailleblaster.utils.xom.attributes
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

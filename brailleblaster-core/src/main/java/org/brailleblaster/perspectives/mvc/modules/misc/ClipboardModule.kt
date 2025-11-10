@@ -24,10 +24,10 @@ import org.brailleblaster.bbx.BBXUtils.findBlockChild
 import org.brailleblaster.bbx.findBlockOrNull
 import org.brailleblaster.bbx.fixers.NodeTreeSplitter.split
 import org.brailleblaster.bbx.fixers2.LiveFixer
-import org.brailleblaster.math.mathml.MathModule.Companion.getMathText
-import org.brailleblaster.math.mathml.MathModule.Companion.isMath
-import org.brailleblaster.math.mathml.MathModule.Companion.makeMathFromSelection
-import org.brailleblaster.math.mathml.MathModule.Companion.selectionContainsMath
+import org.brailleblaster.math.mathml.MathModuleUtils.getMathText
+import org.brailleblaster.math.mathml.MathModuleUtils.isMath
+import org.brailleblaster.math.mathml.MathModuleUtils.makeMathFromSelection
+import org.brailleblaster.math.mathml.MathModuleUtils.selectionContainsMath
 import org.brailleblaster.math.mathml.MathSubject
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.TextMapElement
@@ -51,7 +51,9 @@ import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.TableUtils
-import org.brailleblaster.utd.utils.UTDHelper.Companion.stripUTDRecursive
+import org.brailleblaster.utd.utils.UTDHelper.stripUTDRecursive
+import org.brailleblaster.util.LINE_BREAK
+import org.brailleblaster.util.PILCROW
 import org.brailleblaster.util.Utils.combineAdjacentTextNodes
 import org.brailleblaster.utils.braille.BrailleUnicodeConverter.asciiToUnicodeLouis
 import org.eclipse.swt.SWT
@@ -234,7 +236,7 @@ class ClipboardModule(private val manager: BBSimpleManager) : SimpleListener {
                 // Convert it to BBX
                 clips.clear()
                 val blocks =
-                    cbString.split(System.lineSeparator().toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                    cbString.split(LINE_BREAK).dropLastWhile { it.isEmpty() }.toTypedArray()
                 for (block in blocks) {
                     var block = block
                     val newBlock = BBX.BLOCK.DEFAULT.create()
@@ -969,7 +971,7 @@ class ClipboardModule(private val manager: BBSimpleManager) : SimpleListener {
              * removes it
              */
             val event = Event()
-            event.character = LiveFixer.PILCROW.first()
+            event.character = PILCROW.first()
             if (manager.text.view.isFocusControl) {
                 manager.text.view.notifyListeners(SWT.KeyDown, event)
                 manager.text.update(false)

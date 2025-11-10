@@ -21,8 +21,9 @@ import nu.xom.Element
 import org.assertj.core.api.Assertions
 import org.brailleblaster.utd.internal.elements.*
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utils.BB_NS
-import org.brailleblaster.utils.DC_NS
+import org.brailleblaster.utils.xml.BB_NS
+import org.brailleblaster.utils.xml.DC_NS
+import org.brailleblaster.utils.xml.PEFNamespaceContext
 import org.testng.Assert
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test

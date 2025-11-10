@@ -21,7 +21,7 @@ import nu.xom.Node
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.fixers2.ImportFixerCommon
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.utd.exceptions.UTDInterruption
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.utils.TableUtils
@@ -39,7 +39,7 @@ class TableImportFixer : AbstractFixer() {
         XMLHandler.childrenRecursiveNodeVisitor(table) {
             // Not sure if this stripping of spaces is wise
             // Certainly should not be done for MathML.
-            if (it is Text && it.value.isBlank() && !MathModule.isMath(it)) {
+            if (it is Text && it.value.isBlank() && !MathModuleUtils.isMath(it)) {
                 it.value = ""
             }
             false

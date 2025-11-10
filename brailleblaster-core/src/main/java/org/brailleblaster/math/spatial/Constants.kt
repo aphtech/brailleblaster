@@ -16,7 +16,7 @@
 package org.brailleblaster.math.spatial
 
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.template.TemplateConstants
 
 private val localeHandler = getDefault()
@@ -146,7 +146,7 @@ object MatrixConstants {
 
     companion object {
       fun getLeft(b: BracketType): String {
-        return if (MathModule.isNemeth) {
+        return if (MathModuleUtils.isNemeth) {
           b.nemethLeft
         } else {
           b.uebLeft
@@ -154,7 +154,7 @@ object MatrixConstants {
       }
 
       fun getRight(b: BracketType): String {
-        return if (MathModule.isNemeth) {
+        return if (MathModuleUtils.isNemeth) {
           b.nemethRight
         } else {
           b.uebRight
@@ -172,9 +172,9 @@ object SpatialMathEnum {
   }
 
   enum class SpatialMathContainers(s: String, val id: Int) {
-    NUMBER_LINE(MathModule.NUMBER_LINE_KEY, 0),
-    MATRIX(MathModule.MATRIX_KEY, 1),
-    TEMPLATE(MathModule.TEMPLATES_KEY, 2),
+    NUMBER_LINE(MathModuleUtils.NUMBER_LINE_KEY, 0),
+    MATRIX(MathModuleUtils.MATRIX_KEY, 1),
+    TEMPLATE(MathModuleUtils.TEMPLATES_KEY, 2),
     CONNECTING(ConnectingContainer.KEY, 3),
     GRID(Grid.KEY, 4);
 

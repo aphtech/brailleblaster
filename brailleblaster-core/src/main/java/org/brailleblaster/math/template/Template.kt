@@ -19,7 +19,7 @@ import nu.xom.Element
 import nu.xom.Node
 import org.brailleblaster.BBIni
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.spatial.*
 import org.brailleblaster.math.spatial.SpatialMathEnum.Passage
 import org.brailleblaster.math.spatial.SpatialMathEnum.SpatialMathContainers
@@ -51,7 +51,7 @@ class Template : ISpatialMathContainer {
   }
 
   override fun format() {
-    val template = if (MathModule.isNemeth) {
+    val template = if (MathModuleUtils.isNemeth) {
       when (settings.type) {
           SpatialMathEnum.TemplateType.SIMPLE_ENUM -> {
             NemethTemplate().format(this)
@@ -80,7 +80,7 @@ class Template : ISpatialMathContainer {
   }
 
   val brailleOperator: String
-    get() = MathModule.translateMathPrint(settings.operator.symbol)
+    get() = MathModuleUtils.translateMathPrint(settings.operator.symbol)
 
   var printOperands: List<String>
     get() = operands.flatMap {
@@ -96,12 +96,12 @@ class Template : ISpatialMathContainer {
         var i = 0
         while (i < value.size) {
           var whole = MathText(print=value[i],
-            braille=MathModule.translateAsciiMath(value[i]))
+            braille=MathModuleUtils.translateAsciiMath(value[i]))
           if (whole.print == "") whole = MathText(print="", braille="")
-          var numerator = MathText(print=value[i + 1],braille=MathModule.translateAsciiMath(value[i + 1]))
+          var numerator = MathText(print=value[i + 1],braille=MathModuleUtils.translateAsciiMath(value[i + 1]))
           if (numerator.print == "") numerator = MathText(print="", braille="")
           var denominator = MathText(print=value[i + 2],
-            braille=MathModule.translateAsciiMath(value[i + 2]))
+            braille=MathModuleUtils.translateAsciiMath(value[i + 2]))
           if (denominator.print == "") denominator = MathText(print="", braille="")
           operands.add(
             TemplateOperandBuilder().whole(whole).numerator(numerator)
@@ -112,7 +112,7 @@ class Template : ISpatialMathContainer {
       } else {
         for (i in value.indices) {
           var whole = MathText(print=value[i],
-            braille=MathModule.translateAsciiMath(value[i]))
+            braille=MathModuleUtils.translateAsciiMath(value[i]))
           if (whole.print == "") whole = MathText(print="", braille="")
           operands.add(TemplateOperandBuilder().whole(whole).build())
         }
@@ -141,11 +141,11 @@ class Template : ISpatialMathContainer {
         var i = 0
         while (i < value.size) {
           val whole = MathText(print=value[i],
-            braille=MathModule.translateAsciiMath(value[i]))
+            braille=MathModuleUtils.translateAsciiMath(value[i]))
           val numerator = MathText(print=value[i + 1],
-            braille=MathModule.translateAsciiMath(value[i + 1]))
+            braille=MathModuleUtils.translateAsciiMath(value[i + 1]))
           val denominator = MathText(print=value[i + 2],
-            braille=MathModule.translateAsciiMath(value[i + 2]))
+            braille=MathModuleUtils.translateAsciiMath(value[i + 2]))
           solutions.add(
             TemplateOperandBuilder().whole(whole).numerator(numerator).denominator(denominator).build()
           )
@@ -156,7 +156,7 @@ class Template : ISpatialMathContainer {
           if (value[i].isNotBlank()) {
             val whole = MathText(
               print = value[i],
-              braille = MathModule.translateAsciiMath(value[i])
+              braille = MathModuleUtils.translateAsciiMath(value[i])
             )
             solutions.add(TemplateOperandBuilder().whole(whole).build())
           }
@@ -248,7 +248,7 @@ class Template : ISpatialMathContainer {
       )
 
     var identifier = java.lang.Boolean.valueOf(identifierString)
-    if (identifier && !MathModule.isNemeth) {
+    if (identifier && !MathModuleUtils.isNemeth) {
       identifier = false
     }
     val linear = BBIni.propertyFileManager.getProperty(TemplateConstants.USER_SETTINGS_LINEAR, "true")
@@ -385,8 +385,8 @@ class Template : ISpatialMathContainer {
 
     fun translateIdentifier(string: String, template: Template): String {
       return if (template.settings.isTranslateIdentifierAsMath)
-        MathModule.translateAsciiMath(string)
-        else MathModule.translateMainPrint(string)
+        MathModuleUtils.translateAsciiMath(string)
+        else MathModuleUtils.translateMainPrint(string)
     }
 
     fun hasRemainder(t: Template): Boolean {

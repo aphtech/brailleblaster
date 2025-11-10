@@ -30,7 +30,7 @@ import org.brailleblaster.utd.internal.xml.FastXPath;
 import org.brailleblaster.utd.internal.xml.XMLHandler;
 import org.brailleblaster.utd.properties.UTDElements;
 import org.brailleblaster.utd.utils.TableUtils;
-import org.brailleblaster.utils.NamespacesKt;
+import org.brailleblaster.utils.xml.NamespacesKt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

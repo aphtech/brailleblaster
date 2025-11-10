@@ -22,9 +22,10 @@ import org.eclipse.swt.custom.VerifyKeyListener
 import org.eclipse.swt.events.KeyEvent
 import org.eclipse.swt.events.KeyListener
 import org.eclipse.swt.events.VerifyEvent
+import org.eclipse.swt.events.VerifyListener
 import org.eclipse.swt.widgets.Text
 
-class SixKeyHandler(private val keyListener: KeyListener?, private val verifyKeyListener: VerifyKeyListener?, var sixKeyMode: Boolean = false) : KeyListener, VerifyKeyListener {
+class SixKeyHandler(private val keyListener: KeyListener?, private val verifyKeyListener: VerifyKeyListener?, var sixKeyMode: Boolean = false) : KeyListener, VerifyKeyListener, VerifyListener {
     private var dotState = 0
     private var dotChar = 0
     override fun keyPressed(event: KeyEvent) {
@@ -57,6 +58,9 @@ class SixKeyHandler(private val keyListener: KeyListener?, private val verifyKey
         }
     }
 
+    override fun verifyText(event: VerifyEvent) {
+        verifyKey(event)
+    }
     override fun verifyKey(event: VerifyEvent) {
         verifyKeyListener?.verifyKey(event)
         if (sixKeyMode && UCharacter.isPrintable(event.character.code)) {

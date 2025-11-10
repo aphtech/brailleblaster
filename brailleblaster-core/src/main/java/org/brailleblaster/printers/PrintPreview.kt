@@ -31,13 +31,14 @@ import org.brailleblaster.settings.ui.BrailleSettingsDialog
 import org.brailleblaster.settings.ui.EmbosserSettingsTab
 import org.brailleblaster.utd.BRFWriter
 import org.brailleblaster.utd.BRFWriter.PageListener
-import org.brailleblaster.util.FormUIUtils
+import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.util.Notify.showMessage
 import org.brailleblaster.util.WorkingDialog
 import org.brailleblaster.utils.braille.BrailleUnicodeConverter
 import org.brailleblaster.utils.braille.BrailleUnicodeConverter.unicodeToAsciiLouis
 import org.brailleblaster.utils.braille.BrailleUnicodeConverter.unicodeToAsciiUppercase
 import org.brailleblaster.utils.swt.AccessibilityUtils.setName
+import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.wordprocessor.FontManager
 import org.brailleblaster.wordprocessor.FontManager.Companion.decreaseFontSetting
 import org.brailleblaster.wordprocessor.FontManager.Companion.increaseFontSetting
@@ -171,7 +172,8 @@ class PrintPreview private constructor(
             pageNavPanel.layout = rowLayout
 
             curPage =
-                FormUIUtils.makeText(pageNavPanel).rowDataWidth(FormUIUtils.calcAverageCharWidth(shell) * 5).get()
+                EasySWT.makeTextBuilder(pageNavPanel, SWT.BORDER or SWT.SINGLE)
+                    .rowDataWidth(EasySWT.calcAverageCharWidth(shell) * 5).get()
 
             val pageOf = Label(pageNavPanel, SWT.NONE)
             pageOf.text = "of"
@@ -203,10 +205,11 @@ class PrintPreview private constructor(
             rowLayout.center = true
             findPanel.layout = rowLayout
 
-            FormUIUtils.newLabel(findPanel, "Find:")
+            EasySWT.newLabel(findPanel, "Find:")
 
             searchText =
-                FormUIUtils.makeText(findPanel).rowDataWidth(FormUIUtils.calcAverageCharWidth(shell) * 20).get()
+                EasySWT.makeTextBuilder(findPanel, SWT.BORDER or SWT.SINGLE)
+                    .rowDataWidth(EasySWT.calcAverageCharWidth(shell) * 20).get()
 
             val searchPrev = Button(findPanel, SWT.NONE)
             searchPrev.text = "Previous"
@@ -288,25 +291,40 @@ class PrintPreview private constructor(
                 currentViewMode.goToOffset(offset)
             }
             // emboss
-            FormUIUtils.addSelectionListener(embossMenuItem) { fileEmbossNow() }
+            EasySWT.addSelectionListener(embossMenuItem) { fileEmbossNow() }
 
-            FormUIUtils.addSelectionListener(nextPageButton) { jumpToAdjacentPage(1) }
-            FormUIUtils.addSelectionListener(previousPageButton) { jumpToAdjacentPage(-1) }
-            FormUIUtils.addSelectionListener(brlPageButton) { updateCurrentPage() }
-            FormUIUtils.addSelectionListener(printPageButton) { updateCurrentPage() }
-            FormUIUtils.addSelectionListener(rawPageButton) { updateCurrentPage() }
+            EasySWT.addSelectionListener(nextPageButton) { jumpToAdjacentPage(1) }
+            EasySWT.addSelectionListener(previousPageButton) { jumpToAdjacentPage(-1) }
+            EasySWT.addSelectionListener(brlPageButton) { updateCurrentPage() }
+            EasySWT.addSelectionListener(printPageButton) { updateCurrentPage() }
+            EasySWT.addSelectionListener(rawPageButton) { updateCurrentPage() }
 
-            FormUIUtils.addSelectionListener(
+            EasySWT.addSelectionListener(
                 brlPageButton
-            ) { BBIni.propertyFileManager.save(SETTINGS_KEY_PAGE_TYPE, "braillePage") }
-            FormUIUtils.addSelectionListener(
+            ) {
+                BBIni.propertyFileManager.save(
+                    SETTINGS_KEY_PAGE_TYPE,
+                    "braillePage"
+                )
+            }
+            EasySWT.addSelectionListener(
                 printPageButton
-            ) { BBIni.propertyFileManager.save(SETTINGS_KEY_PAGE_TYPE, "printPage") }
-            FormUIUtils.addSelectionListener(
+            ) {
+                BBIni.propertyFileManager.save(
+                    SETTINGS_KEY_PAGE_TYPE,
+                    "printPage"
+                )
+            }
+            EasySWT.addSelectionListener(
                 rawPageButton
-            ) { BBIni.propertyFileManager.save(SETTINGS_KEY_PAGE_TYPE, "rawPage") }
+            ) {
+                BBIni.propertyFileManager.save(
+                    SETTINGS_KEY_PAGE_TYPE,
+                    "rawPage"
+                )
+            }
 
-            FormUIUtils.addSelectionListener(dualViewMenuItem) {
+            EasySWT.addSelectionListener(dualViewMenuItem) {
                 BBIni.propertyFileManager.save(
                     SETTINGS_KEY_DUAL_VIEW,
                     dualViewMenuItem.selection.toString()
@@ -324,19 +342,19 @@ class PrintPreview private constructor(
                 shell.pack(true)
             }
 
-            FormUIUtils.addSelectionListener(searchPrev) { searchPrev() }
-            FormUIUtils.addSelectionListener(searchNext) { searchNext() }
+            EasySWT.addSelectionListener(searchPrev) { searchPrev() }
+            EasySWT.addSelectionListener(searchNext) { searchNext() }
             val skh = SixKeyHandler(null, null, searchSixKey.selection)
             searchText.addKeyListener(skh)
-            searchText.addVerifyListener { event: VerifyEvent? -> skh.verifyKey(event!!) }
-            FormUIUtils.addSelectionListener(searchSixKey) {
+            searchText.addVerifyListener(skh)
+            EasySWT.addSelectionListener(searchSixKey) {
                 val sixKeyMode = searchSixKey.selection
                 BBIni.propertyFileManager.saveAsBoolean(SETTINGS_KEY_SEARCH_SIX_KEY, sixKeyMode)
                 skh.sixKeyMode = sixKeyMode
                 searchText.text = ""
             }
 
-            FormUIUtils.addSelectionListener(unicodeMenuItem) {
+            EasySWT.addSelectionListener(unicodeMenuItem) {
                 val isUnicodeSelected = unicodeMenuItem.selection
                 BBIni.propertyFileManager.save(SETTINGS_KEY_UNICODE, isUnicodeSelected.toString())
                 try {
@@ -352,11 +370,11 @@ class PrintPreview private constructor(
             }
 
             viewLeft.addCaretListener { updateCurrentPage() }
-            FormUIUtils.addSelectionListener(viewLeft.verticalBar) { updateCurrentPage() }
+            EasySWT.addSelectionListener(viewLeft.verticalBar) { updateCurrentPage() }
 
             // Font
-            FormUIUtils.addSelectionListener(increaseFontMenuItem) { updateFont(true) }
-            FormUIUtils.addSelectionListener(decreaseFontMenuItem) { updateFont(false) }
+            EasySWT.addSelectionListener(increaseFontMenuItem) { updateFont(true) }
+            EasySWT.addSelectionListener(decreaseFontMenuItem) { updateFont(false) }
 
             // ------------------ Data ------------------------
             unicodeMenuItem.selection = userSettings.getProperty(SETTINGS_KEY_UNICODE, "false").toBoolean()
@@ -387,7 +405,7 @@ class PrintPreview private constructor(
                 viewLeft.setFocus()
             }
 
-            FormUIUtils.setLargeDialogSize(shell)
+            EasySWT.setLargeDialogSize(shell)
             shell.open()
         }
     }
@@ -408,7 +426,7 @@ class PrintPreview private constructor(
         }
         setFontsInView()
 
-        FormUIUtils.setLargeDialogSize(shell)
+        EasySWT.setLargeDialogSize(shell)
     }
 
     private fun setFontsInView() {
@@ -435,8 +453,8 @@ class PrintPreview private constructor(
         viewData.grabExcessVerticalSpace = true
         view.layoutData = viewData
 
-        val marginH = FormUIUtils.calcAverageCharHeight(shell) * MARGIN_LINES
-        val marginW = FormUIUtils.calcAverageCharWidth(shell) * MARGIN_CELLS
+        val marginH = EasySWT.calcAverageCharHeight(shell) * MARGIN_LINES
+        val marginW = EasySWT.calcAverageCharWidth(shell) * MARGIN_CELLS
         view.setMargins(marginW, marginH, marginW, marginH)
 
         view.addVerifyKeyListener { e: VerifyEvent ->
@@ -965,10 +983,9 @@ class PrintPreview private constructor(
         } else {
             // Compute the number of lines and cells per page.
             // This is reliant on the first page of the brf being representative of the rest of the document.
-            val newline = System.lineSeparator()
             //Split the first page of text into lines, then find the longest line.
             val firstPage = brfOutput.substring(0, pageStartOffsets[1])
-            val lines = firstPage.split(newline)
+            val lines = firstPage.split(LINE_BREAK)
             val longestLine = lines.maxByOrNull { it.length }
             //I'm assuming there's a check somewhere along the way to prevent embossing a blank brf.
             val cellsPerLine = longestLine!!.length

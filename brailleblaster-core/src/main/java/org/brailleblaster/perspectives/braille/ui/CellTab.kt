@@ -17,7 +17,7 @@ package org.brailleblaster.perspectives.braille.ui
 
 import nu.xom.Element
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.TextMapElement
 import org.brailleblaster.perspectives.braille.messages.TabInsertionMessage
@@ -59,7 +59,7 @@ class CellTab(var manager: Manager, var currentElement: TextMapElement, var text
         buttonOK.text = "OK"
         if (textView.view.caretOffset == currentElement.getEnd(manager.mapList)) {
             throw BBNotifyException("Cannot apply to end of line")
-        } else if (MathModule.isMath(currentElement.node)) {
+        } else if (MathModuleUtils.isMath(currentElement.node)) {
             throw BBNotifyException("Cannot apply to math")
         } else if (textView.view.caretOffset == currentElement.getStart(manager.mapList)) {
             existingTab = (FastXPath.preceding(currentElement.node)

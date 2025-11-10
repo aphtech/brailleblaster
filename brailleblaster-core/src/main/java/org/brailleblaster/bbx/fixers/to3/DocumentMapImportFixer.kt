@@ -30,7 +30,7 @@ import org.brailleblaster.utd.config.DocumentUTDConfig
 import org.brailleblaster.utd.config.UTDConfig
 import org.brailleblaster.utd.matchers.INodeMatcher
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utils.xml.UTD_NS
 import org.brailleblaster.utils.xom.childNodes
 import java.util.*
 import java.util.function.Consumer

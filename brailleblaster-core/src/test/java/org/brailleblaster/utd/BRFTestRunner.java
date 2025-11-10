@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import org.brailleblaster.settings.UTDManager;
 import org.brailleblaster.utd.internal.xml.XMLHandler;
-import org.brailleblaster.utils.NamespacesKt;
+import org.brailleblaster.utils.xml.NamespacesKt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

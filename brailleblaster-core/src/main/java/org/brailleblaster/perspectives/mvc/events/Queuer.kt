@@ -20,8 +20,8 @@ import nu.xom.Node
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.eventQueue.EventFrame
 import org.brailleblaster.perspectives.braille.messages.Sender
-import org.brailleblaster.utils.BB_NS
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utils.xml.BB_NS
+import org.brailleblaster.utils.xml.UTD_NS
 
 class Queuer(val manager: Manager) {
     fun handleEvent(f: EventFrame, sender: Sender) {

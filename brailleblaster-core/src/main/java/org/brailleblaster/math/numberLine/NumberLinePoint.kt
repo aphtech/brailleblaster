@@ -16,7 +16,7 @@
 package org.brailleblaster.math.numberLine
 
 import org.apache.commons.lang3.math.Fraction
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.spatial.MathText
 import org.brailleblaster.math.spatial.NemethTranslations
 import org.brailleblaster.math.spatial.UebTranslations
@@ -33,7 +33,7 @@ class NumberLinePoint(
     var rightPadding: Int = 0
 
     override fun toString(): String {
-        return if (MathModule.isNemeth) {
+        return if (MathModuleUtils.isNemeth) {
             ""
         } else if (rightDec.isEmpty() && leftDec.isEmpty()) {
             ""
@@ -53,10 +53,10 @@ class NumberLinePoint(
             this.leftDec = ""
             this.rightDec = ""
         } else if (format) {
-            val split = if (MathModule.isNemeth) wholeString.indexOf(NemethTranslations.MINUS)
+            val split = if (MathModuleUtils.isNemeth) wholeString.indexOf(NemethTranslations.MINUS)
             else wholeString.indexOf(UebTranslations.PRINT_MINUS)
             if (split != -1) {
-                if (!MathModule.isNemeth) {
+                if (!MathModuleUtils.isNemeth) {
                     this.leftDec = wholeString.take(split + 1)
                     this.rightDec = wholeString.drop(split + 2)
                 } else {
@@ -65,7 +65,7 @@ class NumberLinePoint(
                 }
             } else {
                 this.leftDec = ""
-                if (MathModule.isNemeth) {
+                if (MathModuleUtils.isNemeth) {
                     this.rightDec = wholeString
                 } else {
                     this.rightDec = wholeString.substring(1)

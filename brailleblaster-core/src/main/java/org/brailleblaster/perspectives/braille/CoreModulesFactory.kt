@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.perspectives.braille
 
-import org.brailleblaster.math.mathml.MathModule
 import org.brailleblaster.perspectives.braille.spellcheck.SpellCheckTool
 import org.brailleblaster.perspectives.braille.ui.CellTabTool
 import org.brailleblaster.perspectives.braille.ui.CorrectTranslationDialog
@@ -30,6 +29,7 @@ import org.brailleblaster.settings.ResetBB
 import org.brailleblaster.settings.ui.PrivacyTool
 import org.brailleblaster.spi.ModuleFactory
 import org.brailleblaster.tools.BlankPrintPageIndicatorTool
+import org.brailleblaster.tools.InsertLinkTool
 import org.brailleblaster.tools.LineBreakTool
 import org.brailleblaster.tools.PageBreakTool
 import org.brailleblaster.userHelp.AboutTool
@@ -82,12 +82,12 @@ class CoreModulesFactory : ModuleFactory {
         add(PageBreakTool)
         add(LineBreakTool)
         add(BreadcrumbsToolbar(manager))
-        add(MathModule())
         add(CellTabTool)
         add(BlankPrintPageIndicatorTool)
         addAll(ElementNavigationModule.tools)
         add(PageDownUpModule(manager))
         add(InsertUnicode(manager.wpManager.shell))
         add(ContractionRelaxer(manager.wpManager.shell))
+        add(InsertLinkTool(manager.wpManager.shell))
     }
 }

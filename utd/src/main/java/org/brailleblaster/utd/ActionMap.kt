@@ -25,7 +25,7 @@ import org.brailleblaster.utd.actions.IAction
 import org.brailleblaster.utd.actions.SkipAction
 import org.brailleblaster.utd.internal.ActionMapAdapter
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utils.xml.UTD_NS
 import kotlin.jvm.Throws
 
 @XmlJavaTypeAdapter(ActionMapAdapter::class)

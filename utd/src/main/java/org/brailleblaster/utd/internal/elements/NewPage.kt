@@ -20,7 +20,7 @@ import nu.xom.Element
 import org.brailleblaster.utd.properties.UTDElements
 import kotlin.jvm.JvmOverloads
 import org.brailleblaster.utd.properties.PageNumberType
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utils.xml.UTD_NS
 
 class NewPage : Element {
     @JvmOverloads

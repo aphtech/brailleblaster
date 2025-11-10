@@ -21,9 +21,10 @@ import org.brailleblaster.embossers.EmbosserEditDialog
 import org.brailleblaster.embossers.EmbossingUtils.embossersFile
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.utd.UTDTranslationEngine
-import org.brailleblaster.util.FormUIUtils
+import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.jface.window.Window
 import org.eclipse.swt.SWT
+import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.layout.RowLayout
@@ -47,8 +48,8 @@ class EmbosserSettingsTab(folder: TabFolder?) : SettingsUITab {
         defaultEmbosserGroup.text = localeHandler["EmbosserSettingsTab.defaultEmbosserSettings"]
         defaultEmbosserGroup.text = localeHandler["EmbosserSettingsTab.defaultEmbosserSettings"]
         defaultEmbosserGroup.layout = GridLayout(2, true)
-        FormUIUtils.addLabel(defaultEmbosserGroup, localeHandler["EmbosserSettingsTab.defaultEmbosser"])
-        var embosserComboBuilder = FormUIUtils.makeComboDropdown(defaultEmbosserGroup)
+        EasySWT.addLabel(defaultEmbosserGroup, localeHandler["EmbosserSettingsTab.defaultEmbosser"])
+        var embosserComboBuilder = EasySWT.makeComboDropdown(defaultEmbosserGroup)
             .add(localeHandler["EmbosserSettingsTab.lastUsedEmbosser"])
         embosserList = EmbosserConfigList.loadEmbossers(embossersFile)
         val defaultSelection =
@@ -63,18 +64,20 @@ class EmbosserSettingsTab(folder: TabFolder?) : SettingsUITab {
         val gd = GridData(SWT.RIGHT, SWT.CENTER, true, true, 2, 1)
         embosserButtonsContainer.layoutData = gd
         embosserButtonsContainer.layout = RowLayout()
-        FormUIUtils.makeButton(embosserButtonsContainer).text(localeHandler["EmbosserSettingsTab.addEmbosser"])
+        EasySWT.makeButton(embosserButtonsContainer, SWT.PUSH).text(localeHandler["EmbosserSettingsTab.addEmbosser"])
             .onSelection { addEmbosser() }
             .get()
         btnEditEmbosser =
-            FormUIUtils.makeButton(embosserButtonsContainer).text(localeHandler["EmbosserSettingsTab.editEmbosser"])
+            EasySWT.makeButton(embosserButtonsContainer, SWT.PUSH)
+                .text(localeHandler["EmbosserSettingsTab.editEmbosser"])
                 .onSelection { editEmbosser() }
                 .get()
         btnRemoveEmbosser =
-            FormUIUtils.makeButton(embosserButtonsContainer).text(localeHandler["EmbosserSettingsTab.removeEmbosser"])
+            EasySWT.makeButton(embosserButtonsContainer, SWT.PUSH)
+                .text(localeHandler["EmbosserSettingsTab.removeEmbosser"])
                 .onSelection { removeEmbosser() }
                 .get()
-        FormUIUtils.addSelectionListener(defaultEmbosserCombo) { defaultEmbosserSelected() }
+        EasySWT.addSelectionListener(defaultEmbosserCombo) { it: SelectionEvent -> defaultEmbosserSelected() }
         // make sure add/edit/remove buttons match current selection.
         defaultEmbosserSelected()
     }

@@ -23,7 +23,7 @@ import org.brailleblaster.bbx.BBX;
 import org.brailleblaster.frontmatter.TOCBuilderBBX;
 import org.brailleblaster.math.ascii.ASCIIMathEditorDialog;
 import org.brailleblaster.math.ascii.MathDialogSettings.CATEGORIES;
-import org.brailleblaster.math.mathml.MathModule;
+import org.brailleblaster.math.mathml.MathModuleUtils;
 import org.brailleblaster.math.mathml.NumericSeries;
 import org.brailleblaster.perspectives.mvc.menu.TopMenu;
 import org.brailleblaster.settings.ui.TranslationSettingsTab;
@@ -91,19 +91,19 @@ public class MathMLASCIIEditTest {
     }
 
     public void clickMakeMath(BBTestRunner bb) {
-        bb.openMenuItem(TopMenu.MATH, MathModule.MATH_TOGGLE);
+        bb.openMenuItem(TopMenu.MATH, MathModuleUtils.MATH_TOGGLE);
     }
 
     public void clickOpenAsciiEditor(BBTestRunner bb) {
-        bb.openMenuItem(TopMenu.MATH, MathModule.ASCII_EDITOR);
+        bb.openMenuItem(TopMenu.MATH, MathModuleUtils.ASCII_EDITOR);
     }
 
     public void clickToggleNumericSeries(BBTestRunner bb) {
-        bb.openMenuItem(TopMenu.MATH, MathModule.NUMERIC_SERIES);
+        bb.openMenuItem(TopMenu.MATH, MathModuleUtils.NUMERIC_SERIES);
     }
 
     public void clickNemethIndicators(BBTestRunner bb) {
-        bb.openMenuItem(TopMenu.MATH, MathModule.NEMETH_TOGGLE);
+        bb.openMenuItem(TopMenu.MATH, MathModuleUtils.NEMETH_TOGGLE);
     }
 
     @Test(enabled = false)

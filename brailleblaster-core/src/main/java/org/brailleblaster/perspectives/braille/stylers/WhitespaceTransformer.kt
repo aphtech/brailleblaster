@@ -21,7 +21,7 @@ import nu.xom.Text
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.exceptions.EditingException
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.numberLine.NumberLine.Companion.getNumberLineParent
 import org.brailleblaster.math.numberLine.NumberLine.Companion.isNumberLine
 import org.brailleblaster.math.spatial.Matrix
@@ -133,7 +133,7 @@ class WhitespaceTransformer(manager: Manager) : Handler(manager, manager.viewIni
         }
 
         val parent = targetElement!!.parent
-        if (MathModule.isSpatialMath(targetElement) && betweenSpatialMath) {
+        if (MathModuleUtils.isSpatialMath(targetElement) && betweenSpatialMath) {
             offset = 0
         }
         val insertIndex = if (atBeginning) parent.indexOf(targetElement) else parent.indexOf(targetElement) + offset

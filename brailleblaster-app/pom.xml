@@ -36,6 +36,12 @@
         </dependency>
         <dependency>
             <groupId>org.brailleblaster</groupId>
+            <artifactId>brailleblaster-math-tools</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.brailleblaster</groupId>
             <artifactId>brailleblaster-java-checker</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>

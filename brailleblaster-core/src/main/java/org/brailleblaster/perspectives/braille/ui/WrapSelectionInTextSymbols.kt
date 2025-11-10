@@ -20,7 +20,7 @@ import nu.xom.Text
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBXUtils
 import org.brailleblaster.bbx.findBlockOrNull
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.mvc.XMLNodeCaret
@@ -55,8 +55,8 @@ class WrapSelectionInTextSymbols(
         }
         val startIsText = startNode is XMLTextCaret
         val endIsText = endNode is XMLTextCaret
-        val startIsMath = MathModule.isMath(startNode.node)
-        val endIsMath = MathModule.isMath(endNode.node)
+        val startIsMath = MathModuleUtils.isMath(startNode.node)
+        val endIsMath = MathModuleUtils.isMath(endNode.node)
         val singleNode = m.simpleManager.currentSelection.isSingleNode
         if (singleNode && startIsText && endIsText) {
             modifySameNodeText(startNode, endNode)

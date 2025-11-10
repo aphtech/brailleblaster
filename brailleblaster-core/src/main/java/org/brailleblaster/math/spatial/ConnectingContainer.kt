@@ -24,6 +24,7 @@ import org.brailleblaster.math.spatial.SpatialMathEnum.HorizontalJustify
 import org.brailleblaster.math.spatial.SpatialMathEnum.SpatialMathContainers
 import org.brailleblaster.math.spatial.SpatialMathEnum.VerticalJustify
 import org.brailleblaster.math.spatial.VersionConverter.convertConnectingContainer
+import org.brailleblaster.util.LINE_BREAK
 import java.util.*
 
 class ConnectingContainer : ISpatialMathContainer {
@@ -39,7 +40,7 @@ class ConnectingContainer : ISpatialMathContainer {
     fun fillPageInfo(spatialMathContainer: ISpatialMathContainer?, page: Grid, row: Int, col: Int) {
         lines.clear()
         val text = brailleText
-        val textLines: Array<String> = text.split(System.lineSeparator().toRegex()).dropLastWhile { it.isEmpty() }
+        val textLines: Array<String> = text.split(LINE_BREAK).dropLastWhile { it.isEmpty() }
             .toTypedArray()
         val totalLines = page.getLinesForRow(row)
         val linesWithNewLine = addNewLines(textLines, this, page)

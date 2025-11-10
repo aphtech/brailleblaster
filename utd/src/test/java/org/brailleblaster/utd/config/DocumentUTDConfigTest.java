@@ -35,7 +35,7 @@ import org.brailleblaster.utd.matchers.NodeNameMatcher;
 import org.brailleblaster.utd.matchers.XPathMatcher;
 import org.brailleblaster.utd.properties.PageNumberPosition;
 import org.brailleblaster.utd.properties.UTDElements;
-import org.brailleblaster.utils.NamespacesKt;
+import org.brailleblaster.utils.xml.NamespacesKt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static org.testng.Assert.*;

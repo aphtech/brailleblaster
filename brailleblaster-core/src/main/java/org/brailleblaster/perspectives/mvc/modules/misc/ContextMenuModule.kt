@@ -17,7 +17,7 @@ package org.brailleblaster.perspectives.mvc.modules.misc
 
 import nu.xom.Element
 import nu.xom.Node
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.numberLine.NumberLine.Companion.currentIsNumberLine
 import org.brailleblaster.math.spatial.Matrix
 import org.brailleblaster.math.spatial.SpatialMathUtils.currentIsSpatialGrid
@@ -208,10 +208,10 @@ class ContextMenuModule(private val manager: Manager) : SimpleListener {
         EDIT_PAGE_NUMBER(PageNumberDialog.MENU_NAME),
         EDIT_TABLE(LocaleHandler.getDefault()["editTable"]),
         CHANGE_TRANSLATION(LocaleHandler.getDefault()["ChangeTranslation"]),
-        MATH_TOGGLE(MathModule.MATH_TOGGLE),
-        NUMBER_LINE(MathModule.NUMBER_LINE),
-        MATRIX(MathModule.MATRIX),
-        SPATIAL_COMBO(MathModule.SPATIAL_COMBO);
+        MATH_TOGGLE(MathModuleUtils.MATH_TOGGLE),
+        NUMBER_LINE(MathModuleUtils.NUMBER_LINE),
+        MATRIX(MathModuleUtils.MATRIX),
+        SPATIAL_COMBO(MathModuleUtils.SPATIAL_COMBO);
     }
 
     private open class ContextItem(

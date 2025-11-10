@@ -25,8 +25,7 @@ import java.util.List;
 import org.brailleblaster.utd.ITranslationEngine;
 import org.brailleblaster.utd.TextSpan;
 import org.brailleblaster.utd.UTDTranslationEngine;
-import org.brailleblaster.utd.properties.UTDElements;
-import org.brailleblaster.utils.NamespacesKt;
+import org.brailleblaster.utils.xml.NamespacesKt;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 

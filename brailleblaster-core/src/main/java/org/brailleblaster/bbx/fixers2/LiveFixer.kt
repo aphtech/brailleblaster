@@ -21,45 +21,22 @@ import nu.xom.Text
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
+import org.brailleblaster.util.PILCROW
 
 /**
  * Cleanup documents while user is editing them
  */
 object LiveFixer {
-    const val PILCROW = "\u00B6"
     const val NEWPAGE_PLACEHOLDER_ATTRIB = "newPagePlaceholder"
     @JvmStatic
 	fun fix(root: Element) {
         ImportFixerCommon.applyToDescendantBlocks(
             root,
-            { obj: Element, block: MutableList<Text>, descendantTextNodes: MutableList<Node> ->
-                detachEmptyBlocks(
-                    obj,
-                    block,
-                    descendantTextNodes
-                )
-            },
-            { obj: Element, block: MutableList<Text>, descendantTextNodes: MutableList<Node> ->
-                trimBlockText(
-                    obj,
-                    block,
-                    descendantTextNodes
-                )
-            },
-            { obj: Element, block: List<Text>, descendantTextNodes: List<Node> ->
-                cleanupNewPagePlaceholder(
-                    obj,
-                    block,
-                    descendantTextNodes
-                )
-            },
-            { obj: Element, block: MutableList<Text>, descendantTextNodes: MutableList<Node> ->
-                detachEmptyTextNodes(
-                    obj,
-                    block,
-                    descendantTextNodes
-                )
-            })
+            ::detachEmptyBlocks,
+            ::trimBlockText,
+            ::cleanupNewPagePlaceholder,
+            ::detachEmptyTextNodes
+        )
         removeEmptyContainers(root)
     }
 
@@ -147,7 +124,7 @@ object LiveFixer {
         var stripped = false
         for (descendantTextNode in descendantTextNodes) {
             var value = descendantTextNode.value
-            if (value.length > 1 && value.contains("" + PILCROW)) {
+            if (value.length > 1 && value.contains(PILCROW)) {
                 value = value.replace(PILCROW, "")
                 descendantTextNode.value = value
                 stripped = true

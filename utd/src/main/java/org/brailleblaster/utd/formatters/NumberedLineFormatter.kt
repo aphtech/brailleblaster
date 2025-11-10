@@ -30,9 +30,9 @@ import org.brailleblaster.utd.utils.PageBuilderHelper.applySkipLinesNode
 import org.brailleblaster.utd.utils.PageBuilderHelper.handlePageIndicator
 import org.brailleblaster.utd.utils.PageBuilderHelper.isPageIndicator
 import org.brailleblaster.utd.utils.PageBuilderHelper.isSkipLinesNode
-import org.brailleblaster.utd.utils.UTDHelper.Companion.getAssociatedBrlElement
-import org.brailleblaster.utd.utils.UTDHelper.Companion.getDescendantBrlFast
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utd.utils.UTDHelper.getAssociatedBrlElement
+import org.brailleblaster.utd.utils.UTDHelper.getDescendantBrlFast
+import org.brailleblaster.utils.xml.UTD_NS
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*

@@ -19,7 +19,7 @@ import nu.xom.Element
 import nu.xom.Node
 import org.brailleblaster.BBIni
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.spatial.MatrixConstants.BracketType
 import org.brailleblaster.math.spatial.MatrixConstants.BracketType.Companion.getLeft
 import org.brailleblaster.math.spatial.MatrixConstants.BracketType.Companion.getRight
@@ -174,7 +174,7 @@ class Matrix : ISpatialMathContainer {
         l.elements.add(l.getTextSegment(getRight(settings.bracketType)))
         lines.add(l)
       }
-      if (!MathModule.isNemeth) {
+      if (!MathModuleUtils.isNemeth) {
         //If not Nemeth, add extra blank line if not the next-to-last row
         if (i + 1 < settings.rows) {
           val l = Line()
@@ -227,7 +227,7 @@ class Matrix : ISpatialMathContainer {
     for (s in array) {
       val mt = MathText(
         s!!,
-        MathModule.translateMathPrint(s), false
+        MathModuleUtils.translateMathPrint(s), false
       )
       cells.add(mt)
     }
@@ -243,34 +243,34 @@ class Matrix : ISpatialMathContainer {
         if (Translation.ASCII_MATH == settings.translation) {
           if (s.isBlank() && settings.isAddEllipses) {
             settings.model[i][j].isEllipsis = true
-            mt = if (MathModule.isNemeth) {
+            mt = if (MathModuleUtils.isNemeth) {
               MathText(
                 NemethTranslations.PRINT_ELLIPSIS,
-                MathModule.translateAsciiMath(NemethTranslations.BRAILLE_ELLIPSIS),
+                MathModuleUtils.translateAsciiMath(NemethTranslations.BRAILLE_ELLIPSIS),
                 false
               )
             } else {
               MathText(
                 UebTranslations.ELLIPSIS,
-                MathModule.translateAsciiMath(UebTranslations.ELLIPSIS), false
+                MathModuleUtils.translateAsciiMath(UebTranslations.ELLIPSIS), false
               )
             }
           } else {
-            mt = MathText(s, MathModule.translateAsciiMath(s), false)
+            mt = MathText(s, MathModuleUtils.translateAsciiMath(s), false)
           }
         } else if (Translation.DIRECT == settings.translation) {
           if (s.isBlank() && settings.isAddEllipses) {
             settings.model[i][j].isEllipsis = true
-            mt = if (MathModule.isNemeth) {
+            mt = if (MathModuleUtils.isNemeth) {
               MathText(
                 NemethTranslations.PRINT_ELLIPSIS,
-                MathModule.translateAsciiMath(NemethTranslations.BRAILLE_ELLIPSIS),
+                MathModuleUtils.translateAsciiMath(NemethTranslations.BRAILLE_ELLIPSIS),
                 false
               )
             } else {
               MathText(
                 UebTranslations.ELLIPSIS,
-                MathModule.translateAsciiMath(UebTranslations.ELLIPSIS), false
+                MathModuleUtils.translateAsciiMath(UebTranslations.ELLIPSIS), false
               )
             }
           } else {
@@ -279,31 +279,31 @@ class Matrix : ISpatialMathContainer {
         } else {
           if (s.isBlank() && settings.isAddEllipses) {
             settings.model[i][j].isEllipsis = true
-            mt = if (MathModule.isNemeth) {
+            mt = if (MathModuleUtils.isNemeth) {
               MathText(
                 NemethTranslations.PRINT_ELLIPSIS,
-                MathModule.translateMathPrint(NemethTranslations.BRAILLE_ELLIPSIS),
+                MathModuleUtils.translateMathPrint(NemethTranslations.BRAILLE_ELLIPSIS),
                 false
               )
             } else {
               MathText(
                 UebTranslations.ELLIPSIS,
-                MathModule.translateMainPrint(UebTranslations.ELLIPSIS), false
+                MathModuleUtils.translateMainPrint(UebTranslations.ELLIPSIS), false
               )
             }
           } else {
-            mt = if (MathModule.isNemeth || settings.passage == Passage.NUMERIC) {
+            mt = if (MathModuleUtils.isNemeth || settings.passage == Passage.NUMERIC) {
               if (ellipsis) {
                 MathText(
                   NemethTranslations.PRINT_ELLIPSIS,
-                  MathModule.translateMathPrint(NemethTranslations.BRAILLE_ELLIPSIS),
+                  MathModuleUtils.translateMathPrint(NemethTranslations.BRAILLE_ELLIPSIS),
                   false
                 )
               } else {
-                MathText(s, MathModule.translateMathPrint(s), false)
+                MathText(s, MathModuleUtils.translateMathPrint(s), false)
               }
             } else {
-              MathText(s, MathModule.translateMainPrint(s), false)
+              MathText(s, MathModuleUtils.translateMainPrint(s), false)
             }
           }
         }

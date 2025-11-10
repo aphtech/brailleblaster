@@ -19,7 +19,7 @@ import nu.xom.Document
 import nu.xom.Element
 import nu.xom.Node
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.interfaces.Uneditable
 import org.brailleblaster.perspectives.mvc.modules.misc.TableSelectionModule.Companion.displayInvalidTableMessage
@@ -105,7 +105,7 @@ open class TableCellTextMapElement : TextMapElement, ITableCell, Uneditable {
                     endingVPos = vPos
                 } else {
                     if (ancestorIsMath(node)) {
-                        val brailleLength = MathModule.getMathText(node)
+                        val brailleLength = MathModuleUtils.getMathText(node)
                         printValue += brailleLength
                         endingVPos = vPos
                     } else {

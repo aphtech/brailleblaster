@@ -164,7 +164,6 @@ object Utils {
 
     private fun httpRun(requestURL: String, firstLineOnly: Boolean, callback: (HttpURLConnection) -> Unit): String {
         val requestMethod = "POST"
-        var response: String
         try {
             val uri = URI(requestURL)
             val url = uri.toURL()
@@ -177,18 +176,13 @@ object Utils {
 
             callback(conn)
             val responseCode = conn.responseCode
-            var line: String?
+            val response: String
             BufferedReader(InputStreamReader(conn.inputStream)).use { br ->
-                if (!firstLineOnly) {
-                    val sb = StringBuilder()
-                    while ((br.readLine().also { line = it }) != null) {
-                        sb.append(line).append(System.lineSeparator())
-                    }
-                    response = sb.toString()
+                response = if (!firstLineOnly) {
+                    br.readLines().joinToString(separator = LINE_BREAK)
                 } else {
-                    response = br.readLine()
+                    br.readLine()
                 }
-                response = response.trimEnd(*System.lineSeparator().toCharArray())
             }
             if (responseCode != HttpsURLConnection.HTTP_OK) {
                 throw RuntimeException("Error $responseCode when connecting to $requestURL")

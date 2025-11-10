@@ -19,14 +19,13 @@ import nu.xom.Node
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.math.ascii.MathDialogSettings.CATEGORIES
 import org.brailleblaster.math.mathml.ImageCreator
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.mathml.MathSubject
 import org.brailleblaster.math.mathml.MathUtils
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.views.wp.MathEditHandler
 import org.brailleblaster.utils.swt.AccessibilityUtils.setName
 import org.brailleblaster.utils.swt.EasySWT
-import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.util.Notify
 import org.brailleblaster.utils.swt.SizeAndLocation
 import org.brailleblaster.wordprocessor.WPManager
@@ -36,6 +35,7 @@ import org.eclipse.swt.custom.ScrolledComposite
 import org.eclipse.swt.custom.StyledText
 import org.eclipse.swt.events.KeyEvent
 import org.eclipse.swt.events.KeyListener
+import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.events.VerifyEvent
 import org.eclipse.swt.graphics.Font
 import org.eclipse.swt.graphics.GC
@@ -63,111 +63,111 @@ class ASCIIMathEditorDialog(m: Manager) {
   init {
     settings.loadSettings()
     open()
-    putAttributeInTextBox(m.mapList.current.node)
+    putAttributeInTextBox(m.simpleManager.currentCaret.node)
   }
 
   fun open() {
-    val m = WPManager.getInstance().controller
-    if (shell == null || shell!!.isDisposed) {
-      shell = Shell(m.display.activeShell, SWT.DIALOG_TRIM)
-    } else {
-      sizeLocation = EasySWT.saveLocation(shell!!)
-      val length = shell!!.children.size
-      for (i in 0 until length) {
-        shell!!.children[0].dispose()
+      val m = WPManager.getInstance().controller
+      if (shell == null || shell!!.isDisposed) {
+          shell = Shell(m.display.activeShell, SWT.DIALOG_TRIM)
+      } else {
+          sizeLocation = EasySWT.saveLocation(shell!!)
+          val length = shell!!.children.size
+          for (i in 0 until length) {
+              shell!!.children[0].dispose()
+          }
       }
-    }
-    shell!!.text = MathModule.ASCII_EDITOR
-    shell!!.layout = GridLayout(2, false)
-    if (settings.isFullScreen) {
-      EasySWT.setFullScreen(shell!!)
-    } else if (sizeLocation != null) {
-      EasySWT.setSizeAndLocation(shell!!, sizeLocation!!)
-    } else {
-      EasySWT.setSizeAndLocationHalfScreen(shell!!)
-    }
-    determineDialogProportions()
-    val menuBar = Menu(shell, SWT.BAR)
-    val settingsFileMenu = MenuItem(menuBar, SWT.CASCADE)
-    settingsFileMenu.text = SETTINGS
-    addSettingsDropDown(shell, settingsFileMenu, menuBar)
-    val leftPanel = EasySWT.makeGroup(shell, 0, 1, true)
-    val rightPanel = EasySWT.makeGroup(shell, 0, 1, true)
-    makeCombo(leftPanel)
-    makeButtons(leftPanel)
-    makeBrowserView(rightPanel)
-    makeTextBox(rightPanel)
-
-    val options = Group(rightPanel, SWT.NONE)
-    val optionsGrid = GridData(4, 4, true, true)
-    options.data = optionsGrid
-    options.layout = GridLayout(5, false)
-
-    val apply = Button(options, SWT.PUSH)
-    apply.text = INSERT_MATH
-    val grid = GridData(4, 4, true, true)
-    apply.data = grid
-    FormUIUtils.addSelectionListener(apply) { insert() }
-
-    val replace = Button(options, SWT.PUSH)
-    replace.text = REPLACE_CURRENT_MATH
-    replace.data = grid
-    FormUIUtils.addSelectionListener(replace) { replace() }
-
-    val previous = Button(options, SWT.PUSH)
-    previous.text = PREVIOUS_MATH
-    previous.data = grid
-    FormUIUtils.addSelectionListener(previous) { previous() }
-
-    val next = Button(options, SWT.PUSH)
-    next.text = NEXT_MATH
-    next.data = grid
-    FormUIUtils.addSelectionListener(next) { next() }
-
-    val clear = Button(options, SWT.PUSH)
-    clear.text = CLEAR_MATH
-    clear.data = grid
-    FormUIUtils.addSelectionListener(clear) { clear() }
-    FormUIUtils.addEscapeCloseListener(shell!!)
-
-    val fontControls = Group(rightPanel, SWT.NONE)
-    val fontControlsGrid = GridData(3,1,false, false)
-    fontControls.data = fontControlsGrid
-    fontControls.layout = GridLayout(3, false)
-
-    val fontSizeLabel = Label(fontControls, SWT.NONE)
-    fontSizeLabel.text = "Font Size: "
-
-    val fontPlus = Button(fontControls, SWT.PUSH)
-    fontPlus.text = " + "
-    EasySWT.addSelectionListener(fontPlus){
-      if (fontScale < fontScaleMax) {
-        fontScale++
+      shell!!.text = MathModuleUtils.ASCII_EDITOR
+      shell!!.layout = GridLayout(2, false)
+      if (settings.isFullScreen) {
+          EasySWT.setFullScreen(shell!!)
+      } else if (sizeLocation != null) {
+          EasySWT.setSizeAndLocation(shell!!, sizeLocation!!)
+      } else {
+          EasySWT.setSizeAndLocationHalfScreen(shell!!)
       }
-      shell!!.close()
-      open()
-    }
+      determineDialogProportions()
+      val menuBar = Menu(shell, SWT.BAR)
+      val settingsFileMenu = MenuItem(menuBar, SWT.CASCADE)
+      settingsFileMenu.text = SETTINGS
+      addSettingsDropDown(shell, settingsFileMenu, menuBar)
+      val leftPanel = EasySWT.makeGroup(shell, 0, 1, true)
+      val rightPanel = EasySWT.makeGroup(shell, 0, 1, true)
+      makeCombo(leftPanel)
+      makeButtons(leftPanel)
+      makeBrowserView(rightPanel)
+      makeTextBox(rightPanel)
 
-    val fontMinus = Button(fontControls, SWT.PUSH)
-    fontMinus.text = " - "
-    EasySWT.addSelectionListener(fontMinus){
-      if (fontScale > fontScaleMin){
-        fontScale--
+      val options = Group(rightPanel, SWT.NONE)
+      val optionsGrid = GridData(4, 4, true, true)
+      options.data = optionsGrid
+      options.layout = GridLayout(5, false)
+
+      val apply = Button(options, SWT.PUSH)
+      apply.text = INSERT_MATH
+      val grid = GridData(4, 4, true, true)
+      apply.data = grid
+      EasySWT.addSelectionListener(apply) { it: SelectionEvent -> insert() }
+
+      val replace = Button(options, SWT.PUSH)
+      replace.text = REPLACE_CURRENT_MATH
+      replace.data = grid
+      EasySWT.addSelectionListener(replace) { it: SelectionEvent -> replace() }
+
+      val previous = Button(options, SWT.PUSH)
+      previous.text = PREVIOUS_MATH
+      previous.data = grid
+      EasySWT.addSelectionListener(previous) { it: SelectionEvent -> previous() }
+
+      val next = Button(options, SWT.PUSH)
+      next.text = NEXT_MATH
+      next.data = grid
+      EasySWT.addSelectionListener(next) { it: SelectionEvent -> next() }
+
+      val clear = Button(options, SWT.PUSH)
+      clear.text = CLEAR_MATH
+      clear.data = grid
+      EasySWT.addSelectionListener(clear) { it: SelectionEvent -> clear() }
+      EasySWT.addEscapeCloseListener(shell!!)
+
+      val fontControls = Group(rightPanel, SWT.NONE)
+      val fontControlsGrid = GridData(3, 1, false, false)
+      fontControls.data = fontControlsGrid
+      fontControls.layout = GridLayout(3, false)
+
+      val fontSizeLabel = Label(fontControls, SWT.NONE)
+      fontSizeLabel.text = "Font Size: "
+
+      val fontPlus = Button(fontControls, SWT.PUSH)
+      fontPlus.text = " + "
+      EasySWT.addSelectionListener(fontPlus) {
+          if (fontScale < fontScaleMax) {
+              fontScale++
+          }
+          shell!!.close()
+          open()
       }
-      shell!!.close()
-      open()
-    }
 
-    EasySWT.addEscapeCloseListener(shell!!)
+      val fontMinus = Button(fontControls, SWT.PUSH)
+      fontMinus.text = " - "
+      EasySWT.addSelectionListener(fontMinus) {
+          if (fontScale > fontScaleMin) {
+              fontScale--
+          }
+          shell!!.close()
+          open()
+      }
 
-    shell!!.pack()
-    shell!!.layout(true)
-    shell!!.setSize(panelWidth * 3, panelHeight * 3)
-    shell!!.open()
-    textBox!!.setFocus()
-    if (settings.currentName == CATEGORIES.SEARCH) {
-      setSearchBox()
-    }
+      EasySWT.addEscapeCloseListener(shell!!)
+
+      shell!!.pack()
+      shell!!.layout(true)
+      shell!!.setSize(panelWidth * 3, panelHeight * 3)
+      shell!!.open()
+      textBox!!.setFocus()
+      if (settings.currentName == CATEGORIES.SEARCH) {
+          setSearchBox()
+      }
   }
 
   private fun clear() {
@@ -264,11 +264,11 @@ class ASCIIMathEditorDialog(m: Manager) {
         val data = GridData()
         data.horizontalSpan = 2
         button.layoutData = data
-        FormUIUtils.addSelectionListener(button) {
-          settings.currentAscii = entry.entry
-          updateTextAndBrowser()
-        }
-        button.image = im
+          EasySWT.addSelectionListener(button) { it: SelectionEvent ->
+              settings.currentAscii = entry.entry
+              updateTextAndBrowser()
+          }
+          button.image = im
         addAltText(entry, button)
         addHoverText(entry, button)
       }
@@ -278,11 +278,11 @@ class ASCIIMathEditorDialog(m: Manager) {
         val data = GridData()
         data.horizontalAlignment = GridData.FILL
         button.layoutData = data
-        FormUIUtils.addSelectionListener(button) {
-          settings.currentAscii = entry.entry
-          updateTextAndBrowser()
-        }
-        val fontdata = button.font.fontData
+          EasySWT.addSelectionListener(button) { it: SelectionEvent ->
+              settings.currentAscii = entry.entry
+              updateTextAndBrowser()
+          }
+          val fontdata = button.font.fontData
         fontdata[0].setHeight(fontScale * 2)
         val font = Font(Display.getCurrent(), fontdata)
         button.font = font
@@ -390,11 +390,10 @@ class ASCIIMathEditorDialog(m: Manager) {
   }
 
   private fun putAttributeInTextBox(startNode: Node?) {
-    if (startNode != null) {
-      textBox!!.text = if (MathModule.isMath(startNode)) MathModule.getMathText(startNode) else ""
-    }
-    else{
-      textBox!!.text = ""
+    textBox!!.text = if (startNode != null && MathModuleUtils.isMath(startNode)) {
+      MathModuleUtils.getMathText(startNode)
+    } else{
+      ""
     }
   }
 
@@ -467,13 +466,13 @@ class ASCIIMathEditorDialog(m: Manager) {
     val combo = Combo(g, SWT.DROP_DOWN or SWT.READ_ONLY)
     combo.data = GridData(SWT.FILL, SWT.NONE, true, true)
     combo.setItems(*settings.categoriesEnumStringArray)
-    FormUIUtils.addSelectionListener(combo) {
-      extractText()
-      settings.currentName = settings.getCategoryPrettyName(combo.text)!!
-      settings.saveSettings()
-      open()
-    }
-    combo.select(combo.indexOf(settings.currentName.prettyName))
+      EasySWT.addSelectionListener(combo) { it: SelectionEvent ->
+          extractText()
+          settings.currentName = settings.getCategoryPrettyName(combo.text)!!
+          settings.saveSettings()
+          open()
+      }
+      combo.select(combo.indexOf(settings.currentName.prettyName))
   }
 
   private fun getSearchResults(text: String): ArrayList<ASCIIEntry> {

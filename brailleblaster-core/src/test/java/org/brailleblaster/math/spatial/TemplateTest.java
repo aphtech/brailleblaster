@@ -15,7 +15,7 @@
  */
 package org.brailleblaster.math.spatial;
 
-import org.brailleblaster.math.mathml.MathModule;
+import org.brailleblaster.math.mathml.MathModuleUtils;
 import org.brailleblaster.math.spatial.SpatialMathEnum.Passage;
 import org.brailleblaster.math.template.TemplateConstants;
 import org.brailleblaster.perspectives.mvc.menu.TopMenu;
@@ -113,7 +113,7 @@ public class TemplateTest {
     }
 
     private void openTemplateDialog(BBTestRunner bb) {
-        bb.openMenuItem(TopMenu.MATH, MathModule.SPATIAL_COMBO);
+        bb.openMenuItem(TopMenu.MATH, MathModuleUtils.SPATIAL_COMBO);
         bb.bot.activeShell().bot().menu(GridEditor.CONTAINER_TYPE_LABEL)
                 .menu(SpatialMathEnum.SpatialMathContainers.TEMPLATE.prettyName).click();
     }

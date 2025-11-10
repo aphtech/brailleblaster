@@ -27,10 +27,10 @@ import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.PageBuilderHelper.getBraillePageNumberAt
 import org.brailleblaster.utd.utils.PageBuilderHelper.getPrintPageNumberAt
 import org.brailleblaster.utd.utils.PageBuilderHelper.setPageNumberType
-import org.brailleblaster.utd.utils.UTDHelper.Companion.containsBrl
-import org.brailleblaster.utd.utils.UTDHelper.Companion.getDescendantBrlFast
+import org.brailleblaster.utd.utils.UTDHelper.containsBrl
+import org.brailleblaster.utd.utils.UTDHelper.getDescendantBrlFast
 import org.brailleblaster.libembosser.spi.BrlCell
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utils.xml.UTD_NS
 import java.util.*
 import kotlin.math.max
 
@@ -182,10 +182,10 @@ class TPageFormatter : LiteraryFormatter() {
                             formatSelector!!.engine.pageSettings, pageBuilder.braillePageNumber.pageNumber
                         )
                         var pageNumberSize = 0
-                        if (braillePosition == PageNumberPosition.BOTTOM_LEFT || braillePosition == PageNumberPosition.BOTTOM_RIGHT) {
+                        if (pageBuilder.braillePageNum.isNotEmpty() && (braillePosition == PageNumberPosition.BOTTOM_LEFT || braillePosition == PageNumberPosition.BOTTOM_RIGHT)) {
                             pageNumberSize += pageBuilder.braillePageNum.length + pageBuilder.padding
                         }
-                        if (printPosition == PageNumberPosition.BOTTOM_LEFT || printPosition == PageNumberPosition.BOTTOM_RIGHT) {
+                        if (pageBuilder.printPageNumber.isNotEmpty() && (printPosition == PageNumberPosition.BOTTOM_LEFT || printPosition == PageNumberPosition.BOTTOM_RIGHT)) {
                             pageNumberSize += pageBuilder.printPageNumber.length + pageBuilder.padding
                         }
                         val lineLengthStyle = Style()

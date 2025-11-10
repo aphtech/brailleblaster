@@ -15,7 +15,7 @@
  */
 package org.brailleblaster.math.spatial
 
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.mathml.NemethIndicators
 import org.brailleblaster.math.mathml.NumericPassage
 
@@ -93,11 +93,11 @@ object Passages {
     fun addGrade1OneRow(lines: ArrayList<Line>) {
         val startLine = Line()
         startLine.isPassageLine = true
-        startLine.elements.add(startLine.getTextSegment(MathModule.GRADE_1_PASSAGE_START))
+        startLine.elements.add(startLine.getTextSegment(MathModuleUtils.GRADE_1_PASSAGE_START))
         lines.add(0, startLine)
         val endLine = Line()
         endLine.isPassageLine = true
-        endLine.elements.add(endLine.getTextSegment(MathModule.GRADE_1_PASSAGE_END))
+        endLine.elements.add(endLine.getTextSegment(MathModuleUtils.GRADE_1_PASSAGE_END))
         lines.add(endLine)
     }
 
@@ -105,12 +105,12 @@ object Passages {
         if (end) {
             val endLine = Line()
             endLine.isPassageLine = true
-            endLine.elements.add(endLine.getTextSegment(MathModule.GRADE_1_PASSAGE_END))
+            endLine.elements.add(endLine.getTextSegment(MathModuleUtils.GRADE_1_PASSAGE_END))
             lines.add(endLine)
         } else {
             val startLine = Line()
             startLine.isPassageLine = true
-            startLine.elements.add(startLine.getTextSegment(MathModule.GRADE_1_PASSAGE_START))
+            startLine.elements.add(startLine.getTextSegment(MathModuleUtils.GRADE_1_PASSAGE_START))
             lines.add(0, startLine)
         }
     }

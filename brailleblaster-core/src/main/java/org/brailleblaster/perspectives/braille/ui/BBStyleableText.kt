@@ -19,7 +19,7 @@ import nu.xom.Element
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.utd.BBXDynamicOptionStyleMap
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.mathml.MathUtils.wrapInMath
 import org.brailleblaster.perspectives.braille.views.wp.TextRenderer
 import org.brailleblaster.perspectives.mvc.modules.misc.ChangeTranslationModule
@@ -31,9 +31,10 @@ import org.brailleblaster.utd.utils.TableUtils
 import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.utils.xom.detachAll
 import org.brailleblaster.util.ColorManager
+import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.util.Notify.showMessage
-import org.brailleblaster.utils.BB_NS
+import org.brailleblaster.utils.xml.BB_NS
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.ExtendedModifyEvent
@@ -222,16 +223,16 @@ class BBStyleableText(parent: Composite, buttonPanel: Composite?, buttons: Int, 
             }
         })
         text.addExtendedModifyListener { event: ExtendedModifyEvent ->
-            if (event.replacedText.contains(System.lineSeparator())) {
+            if (event.replacedText.contains(LINE_BREAK)) {
                 val startLine = text.getLineAtOffset(event.start) + 1
                 var index = 0
-                while (event.replacedText.indexOf(System.lineSeparator(), index) != -1) {
+                while (event.replacedText.indexOf(LINE_BREAK, index) != -1) {
                     if (startLine >= margins.size) {
                         log.error("Tried to delete a margin that did not exist. StartLine: " + startLine + " margins size:" + margins.size)
                         break
                     }
                     margins.removeAt(startLine)
-                    index = event.replacedText.indexOf(System.lineSeparator(), index) + 1
+                    index = event.replacedText.indexOf(LINE_BREAK, index) + 1
                 }
             }
         }
@@ -296,14 +297,14 @@ class BBStyleableText(parent: Composite, buttonPanel: Composite?, buttons: Int, 
                     val end = startOffset + sb.length
                     styles.add(Range(start, end, relevantTag))
                 } else sb.append(child.value)
-            } else if (MathModule.isMathParent(child)) {
+            } else if (MathModuleUtils.isMathParent(child)) {
                 val start = startOffset + sb.length
-                sb.append(MathModule.getMathText(child))
+                sb.append(MathModuleUtils.getMathText(child))
                 val end = startOffset + sb.length
                 styles.add(Range(start, end, tags.first { n: Tag? -> n is MathTag }))
             } else if (child is Element) {
                 if (newLineWrap && BBX.BLOCK.isA(child) && sb.isNotEmpty()) {
-                    sb.append(System.lineSeparator())
+                    sb.append(LINE_BREAK)
                     computeMargin(child)
                 }
                 sb.append(extractTextFromXML(child, tags, startOffset + sb.length))
@@ -334,7 +335,7 @@ class BBStyleableText(parent: Composite, buttonPanel: Composite?, buttons: Int, 
             }
         }
         val allText = text.text
-        val lines = allText.split(SEP.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val lines = allText.split(LINE_BREAK.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         var startOffset = 0
         for (line in lines) {
             val ranges = getRangesInRange(startOffset, startOffset + line.length)
@@ -378,7 +379,7 @@ class BBStyleableText(parent: Composite, buttonPanel: Composite?, buttons: Int, 
                     parent.appendChild(allText.substring(curOffset, line.length + startOffset))
                 }
             }
-            startOffset += line.length + SEP.length
+            startOffset += line.length + LINE_BREAK.length
             if (newLineWrap) {
                 root.appendChild(parent)
                 parent = BBX.BLOCK.STYLE.create(newLineStyle)
@@ -519,7 +520,7 @@ class BBStyleableText(parent: Composite, buttonPanel: Composite?, buttons: Int, 
 
     private fun toggleTag(tag: Tag) {
         if (text.selectionCount != 0) {
-            val split = splitSelection(SEP)
+            val split = splitSelection(LINE_BREAK)
             var cont = true
             var i = 0
             while (i < split.size) {
@@ -1022,7 +1023,6 @@ class BBStyleableText(parent: Composite, buttonPanel: Composite?, buttons: Int, 
     }
 
     companion object {
-        val SEP: String = System.lineSeparator()
         private val log = LoggerFactory.getLogger(BBStyleableText::class.java)
 
         /**

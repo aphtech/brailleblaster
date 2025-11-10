@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory
 
 class MathMLElement(math: Node?) : TextMapElement(math) {
     override fun getText(): String {
-        val string = MathModule.getMathText(node)
+        val string = MathModuleUtils.getMathText(node)
         if (string.isEmpty()) {
             log.error("AsciiMath attribute is empty on a math tag")
         }

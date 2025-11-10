@@ -44,7 +44,7 @@ object MathUtils {
             if (XMLHandler.ancestorElementIs(text) { n -> UTDElements.BRL.isA(n) }) {
                 continue
             }
-            val thisMathParent = MathModule.getMathParent(text)
+            val thisMathParent = MathModuleUtils.getMathParentOrNull(text)
             if (thisMathParent == null) {
                 return false
             } else if (thisMathParent != mathParent) {
@@ -109,15 +109,8 @@ object MathUtils {
         return mathNode
     }
 
-    fun getBlocksFromTextMapElements(mapElements: List<TextMapElement>): ArrayList<Node> {
-        val array = ArrayList<Node>()
-        for (mapElement in mapElements) {
-            val block: Node = mapElement.node.findBlock()
-            if (!array.contains(block)) {
-                array.add(block)
-            }
-        }
-        return array
+    fun getBlocksFromTextMapElements(mapElements: List<TextMapElement>): List<Node> {
+        return mapElements.map { it.node.findBlock() }.distinct()
     }
 
     @JvmStatic
@@ -247,7 +240,7 @@ object MathUtils {
      */
     fun removeAllBBMarkupFromMathML(bbNode: Node): Node? {
         var mathNode: Node? = null
-        if (MathModule.isMath(bbNode)) {
+        if (MathModuleUtils.isMath(bbNode)) {
             UTDHelper.stripUTDRecursive(bbNode as Element)
             mathNode = bbNode.copy()
             removeAltText(mathNode)

@@ -26,7 +26,7 @@ import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.PageBuilderHelper
 import org.brailleblaster.utd.utils.TableUtils.copyTable
 import org.brailleblaster.utd.utils.TableUtils.deleteExistingTable
-import org.brailleblaster.utd.utils.UTDHelper.Companion.containsBrl
+import org.brailleblaster.utd.utils.UTDHelper.containsBrl
 import java.util.*
 import java.util.function.Consumer
 import kotlin.math.max
@@ -121,7 +121,7 @@ class FacingTableFormatter : SimpleTableFormatter() {
             val startingSize = mutPageBuilders.size
             try {
                 if (leftHeadingY != -1) addHeadings(mutPageBuilders, leftPage, leftCells[0], leftWidths, 1, leftHeadingY)
-            } catch (e: BadSimpleTableException) {
+            } catch (_: BadSimpleTableException) {
                 return handleBadFacingTable(
                     leftTable,
                     rightTable,
@@ -174,7 +174,7 @@ class FacingTableFormatter : SimpleTableFormatter() {
                     1,
                     rightHeadingY
                 )
-            } catch (e: BadSimpleTableException) {
+            } catch (_: BadSimpleTableException) {
                 return handleBadFacingTable(
                     leftTable,
                     rightTable,
@@ -263,7 +263,7 @@ class FacingTableFormatter : SimpleTableFormatter() {
                         lastRow = lastRow
                     )
                 )
-            } catch (e: BadSimpleTableException) {
+            } catch (_: BadSimpleTableException) {
                 return handleBadFacingTable(
                     leftTable,
                     rightTable,
@@ -304,7 +304,7 @@ class FacingTableFormatter : SimpleTableFormatter() {
                             lastRow = lastRow
                         )
                     )
-                } catch (e: BadSimpleTableException) {
+                } catch (_: BadSimpleTableException) {
                     return handleBadFacingTable(
                         leftTable,
                         rightTable,
@@ -339,7 +339,7 @@ class FacingTableFormatter : SimpleTableFormatter() {
                         lastRow = lastRow
                     )
                 )
-            } catch (e: BadSimpleTableException) {
+            } catch (_: BadSimpleTableException) {
                 return handleBadFacingTable(
                     leftTable,
                     rightTable,

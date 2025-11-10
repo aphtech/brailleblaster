@@ -20,11 +20,12 @@ import org.brailleblaster.BBIni
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.tools.MenuToolModule
-import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.util.Notify.notify
 import org.brailleblaster.utils.BBData.getBrailleblasterPath
+import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.StyledText
+import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.layout.RowLayout
@@ -86,22 +87,22 @@ private fun showAbout() {
         val text = Label(shell, SWT.PUSH)
         text.text = "APH Logo"
         text.image = img
-        FormUIUtils.setGridDataVertical(text)
+        EasySWT.setGridDataVertical(text)
     }
     val sidePanel = Composite(shell, SWT.NONE)
-    FormUIUtils.setGridDataVertical(sidePanel)
+    EasySWT.setGridDataVertical(sidePanel)
     sidePanel.layout = GridLayout()
-    FormUIUtils.newLabel(
+    EasySWT.newLabel(
         sidePanel,
         "For more information or to report bugs visit ${AppProperties.websiteUrl}"
     )
     run {
         val text = StyledText(sidePanel, SWT.BORDER or SWT.READ_ONLY)
         text.text = versionsSimple
-        FormUIUtils.setGridDataVertical(text)
+        EasySWT.setGridDataVertical(text)
     }
     val bottomPanel = Composite(sidePanel, SWT.NONE)
-    FormUIUtils.setGridDataVertical(bottomPanel)
+    EasySWT.setGridDataVertical(bottomPanel)
     //		((GridData) bottomPanel.getLayoutData()).horizontalSpan = 2;
     val rowLayout = RowLayout(SWT.HORIZONTAL)
     rowLayout.center = true
@@ -114,7 +115,7 @@ private fun showAbout() {
     privacyPolicy.text = "APH Privacy Policy"
 
     // ------ Listeners ------
-    FormUIUtils.addSelectionListener(license) {
+    EasySWT.addSelectionListener(license) { it: SelectionEvent ->
         val licensePath = getBrailleblasterPath("LICENSE.txt")
         val text: String = try {
             licensePath.readText(Charsets.UTF_8)
@@ -123,7 +124,7 @@ private fun showAbout() {
         }
         notify(text, "License")
     }
-    FormUIUtils.addSelectionListener(privacyPolicy) {
+    EasySWT.addSelectionListener(privacyPolicy) { it: SelectionEvent ->
         val licensePath = getBrailleblasterPath("APH_Privacy_Policy.txt")
         val text: String = try {
             licensePath.readText(Charsets.UTF_8)

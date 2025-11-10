@@ -89,7 +89,7 @@ class ToolBarSection(val name: ToolBarSettings.Settings) : IToolBarElement {
             i.sharedItem?.let { sharedToolBars[it] = newItem }
             newItem.image = i.image
             newItem.toolTipText = i.toolTip
-            if (checkItem) newItem.selection = (i as TBCheckItem).selected
+            if (checkItem) newItem.selection = i.selected
             newItem.addSelectionListener(object : SelectionAdapter() {
                 override fun widgetSelected(e: SelectionEvent) {
                     val data = BBSelectionData(newItem, WPManager.getInstance())
@@ -110,11 +110,12 @@ class ToolBarSection(val name: ToolBarSettings.Settings) : IToolBarElement {
         })
         draw(parent)
         drawRelocator(parent)
-        dockPoint = Rectangle(
+        dockPoint = Rectangle.WithMonitor(
             relocator.bounds.x,
             relocator.bounds.y,
             relocator.width - RELOCATOR_WIDTH,
-            relocator.bounds.height
+            relocator.bounds.height,
+            Display.getCurrent().primaryMonitor
         )
         return parent
     }

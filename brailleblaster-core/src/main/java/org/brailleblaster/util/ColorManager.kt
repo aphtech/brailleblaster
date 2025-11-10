@@ -170,6 +170,7 @@ object ColorManager {
         ORANGE(254, 204, 152),
         GREEN(0, 254, 0),
         BLUE(0, 254, 254),
+        DARK_BLUE(0, 0, 255),
         LIGHT_PURPLE(254, 152, 204),
         BROWN(192, 80, 76),
         PURPLE(254, 0, 254),

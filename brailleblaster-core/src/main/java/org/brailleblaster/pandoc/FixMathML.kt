@@ -17,8 +17,8 @@ package org.brailleblaster.pandoc
 
 import nu.xom.Element
 import nu.xom.XPathContext
-import org.brailleblaster.math.mathml.MathModule
-import org.brailleblaster.utils.MATHML_NS
+import org.brailleblaster.math.mathml.MathModuleUtils
+import org.brailleblaster.utils.xml.MATHML_NS
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -39,7 +39,7 @@ class FixMathML : FixerInf {
         val mathElements = rootElement!!.query("descendant-or-self::m:math", xpathContext)
         mathElements.forEach {
             try {
-                MathModule.setASCIIText(it as Element)
+                MathModuleUtils.setASCIIText(it as Element)
             } catch(e: Exception) {
                 logger.error("Problem generating ASCIIMath", e)
             }

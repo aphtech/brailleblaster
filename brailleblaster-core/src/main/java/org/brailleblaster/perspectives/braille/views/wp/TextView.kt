@@ -17,6 +17,7 @@ package org.brailleblaster.perspectives.braille.views.wp
 
 import nu.xom.Element
 import nu.xom.Node
+import org.brailleblaster.bbx.BBX
 import org.brailleblaster.exceptions.CursorMovementException
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.*
@@ -32,8 +33,10 @@ import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.perspectives.mvc.events.XMLCaretEvent
 import org.brailleblaster.utd.actions.GenericBlockAction
 import org.brailleblaster.utd.properties.Align
-import org.brailleblaster.utils.swt.AccessibilityUtils.setName
 import org.brailleblaster.util.FormUIUtils
+import org.brailleblaster.utils.xml.BB_NS
+import org.brailleblaster.utils.swt.AccessibilityUtils.setName
+import org.brailleblaster.util.LINE_BREAK
 import org.eclipse.swt.SWT
 import org.eclipse.swt.accessibility.AccessibleAdapter
 import org.eclipse.swt.accessibility.AccessibleEvent
@@ -46,8 +49,12 @@ import org.eclipse.swt.dnd.Transfer
 import org.eclipse.swt.events.*
 import org.eclipse.swt.graphics.Point
 import org.eclipse.swt.widgets.Composite
+import org.eclipse.swt.widgets.Display
 import org.eclipse.swt.widgets.Listener
 import org.slf4j.LoggerFactory
+import java.awt.Desktop
+import java.net.URI
+import kotlin.coroutines.CoroutineContext
 
 class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
     val state: ViewStateObject = ViewStateObject()
@@ -172,12 +179,54 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
         }.also { caretListener = it })
         view.addMouseListener(object : MouseAdapter() {
             override fun mouseDown(e: MouseEvent) {
+                if (e.button == 1 && e.stateMask == SWT.MOD1){
+                  //Basically, check if selection is a link, get the href attribute, open it in browser
+                  //If it's an internal link, find whatever node it points to and move the cursor there
+                  //Still not sure about how to handle internal links - don't know if I want them pointing to a node
+                  // or an absolute position in the document. Both have pros and cons. Namely, I'm concerned about how nodes
+                  // could break; absolute positions would be easier to manage but could lead to broken links if text is heavily edited.
+                  // This will need to be discussed...
+                  val current = manager.mapList.current
+                  if (BBX.INLINE.LINK.isA(current.nodeParent)){
+                    //Need to work on attribute lookup. Checking node parent for Link works...
+                    //println("Link clicked")
+                    val el = current.node.parent as Element
+                    val isExternal = el.getAttributeValue("external", BB_NS).toBoolean()
+                    val href = el.getAttributeValue("href", BB_NS)
+                    //Get the href attribute and open it in a browser
+                    try {
+                      if (isExternal) {
+                        if (!href.isNullOrBlank()) {
+                          //Need a method for URL checking, for now just assume it's valid
+                          Desktop.getDesktop().browse(URI(href.toString()))
+                        }
+                        else{
+                          logger.warn("Tried to open a link with no href attribute")
+                        }
+                      }
+                      else {
+                        //Figure out internal navigation system with the href
+                        //Maybe block hash? Managing that might prove difficult to manage...
+                        //Gotta try something though!
+                        //println("Internal link clicked, navigation not yet implemented")
+                        //Maybe a line number or positon? Would be simpler, but not as robust when the document is edited
+                      }
+                    }
+                    catch (e: Exception){
+                      //println("Error opening link: " + e.message)
+                    }
+                  }
+                  else{
+                    //Do nothing
+                    //println("Clicked element is not a link")
+                  }
+                }
                 if (e.button == 2) return
                 if (e.button == 3 && !view.isTextSelected) {
                     //Original code in Kotlin, from V2 some time in Dec. 2021 - MNS
                     //This fixes the bug where right-clicking in the indent margin would send the caret to the doc start.
                     try {
-                        val offsetPoint = view.getOffsetAtPoint(Point(e.x, e.y))
+                        val offsetPoint = view.getOffsetAtPoint(Point.WithMonitor(e.x, e.y, Display.getCurrent().primaryMonitor))
                         view.caretOffset = offsetPoint
                         if (offsetPoint < 0) {
                             val line = view.getLineIndex(e.y)
@@ -300,7 +349,7 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
                 // reason this listener fires multiple times, adding the page number each time.
                 // Only add the page number if we're looking at the end of the line.
                 if (e.end == view.getOffsetAtLine(line) + view.getLine(line).length
-                    || e.end == view.getOffsetAtLine(line) + view.getLine(line).length + System.lineSeparator().length
+                    || e.end == view.getOffsetAtLine(line) + view.getLine(line).length + LINE_BREAK.length
                 ) {
                     if (offsetIsPrintPageNumberLine(e.start)) {
                         val pageNum = getPreviousPageIndicator(e.start)!!.printPageNum
@@ -340,7 +389,7 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
         val changedTextLength = state.originalEnd - state.originalStart - (currentEnd - currentStart)
         val updateMessage: Message = if (currentElement is WhiteSpaceElement) WhitespaceMessage(
             currentIndex, view.caretOffset, getString(currentStart, currentEnd - currentStart).replace(
-                System.lineSeparator().toRegex(), ""
+                LINE_BREAK, ""
             ), state.originalEnd - state.originalStart
         ) else UpdateMessage(
             view.caretOffset,
@@ -553,10 +602,10 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
 
     fun setCursor(offset: Int): Int {
         var offset = offset
-        if (System.lineSeparator().length == 2 && offset + 1 < view.charCount && view.getTextRange(
+        if (LINE_BREAK.length == 2 && offset + 1 < view.charCount && view.getTextRange(
                 offset,
                 1
-            ) == System.lineSeparator().substring(1)
+            ) == LINE_BREAK.substring(1)
         ) {
             offset++
         }

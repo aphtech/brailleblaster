@@ -16,7 +16,6 @@
 package org.brailleblaster.perspectives.braille.views.wp.tableEditor
 
 import org.brailleblaster.utils.swt.EasySWT
-import org.brailleblaster.util.FormUIUtils
 import org.eclipse.swt.SWT
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Shell
@@ -43,11 +42,11 @@ internal class ConversionColumnSelectorDialog {
                 shell.close()
             }
             this.addButton(TableEditor.CANCEL_BUTTON, 1) {
-                    callback.accept(null)
-                    shell.close()
-                }
+                callback.accept(null)
+                shell.close()
+            }
         }.build()
         shell.open()
-        FormUIUtils.setLargeDialogSize(shell)
+        EasySWT.setLargeDialogSize(shell)
     }
 }

@@ -16,7 +16,7 @@
 package org.brailleblaster.math.spatial
 
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.spatial.SpatialMathEnum.HorizontalJustify
 import org.brailleblaster.math.spatial.SpatialMathEnum.VerticalJustify
 import org.eclipse.swt.SWT
@@ -34,7 +34,7 @@ class ConnectingContainerWidget : ISpatialMathWidget {
         cc = t as ConnectingContainer
         cc!!.text = MathText(print=DEBUG_TEXT,
             braille=
-                if (cc!!.settings.isTranslateAsMath) MathModule.translateMathPrint(DEBUG_TEXT) else MathModule.translateMainPrint(
+                if (cc!!.settings.isTranslateAsMath) MathModuleUtils.translateMathPrint(DEBUG_TEXT) else MathModuleUtils.translateMainPrint(
                     DEBUG_TEXT
                 )
             )
@@ -55,10 +55,10 @@ class ConnectingContainerWidget : ISpatialMathWidget {
     override fun extractText() {
         if (cc!!.settings.isTranslateAsMath) {
             cc!!.text = MathText(print=st!!.text,
-                braille=MathModule.translateMathPrint(st!!.text))
+                braille=MathModuleUtils.translateMathPrint(st!!.text))
         } else {
             cc!!.text = MathText(print=st!!.text,
-                braille=MathModule.translateMainPrint(st!!.text))
+                braille=MathModuleUtils.translateMainPrint(st!!.text))
         }
     }
 

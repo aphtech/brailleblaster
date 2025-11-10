@@ -19,11 +19,11 @@ import nu.xom.Element
 import nu.xom.Node
 import org.brailleblaster.abstractClasses.ViewUtils
 import org.brailleblaster.bbx.BBX
+import org.brailleblaster.libembosser.spi.BrlCell
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.*
 import org.brailleblaster.perspectives.braille.mapping.maps.MapList
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.libembosser.spi.BrlCell
 
 open class Renderer(@JvmField protected var manager: Manager, private val wpView: WPView) {
     protected var spaceBeforeText = 0
@@ -227,9 +227,5 @@ open class Renderer(@JvmField protected var manager: Manager, private val wpView
 
     private fun getFinalNonWhiteSpaceElement(list: MapList): TextMapElement? {
         return list.lastOrNull { it !is FormattingWhiteSpaceElement }
-    }
-
-    companion object {
-        protected var lineBreak: String = System.lineSeparator()
     }
 }

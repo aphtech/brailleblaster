@@ -24,7 +24,7 @@ import org.brailleblaster.utd.properties.BrailleTableType
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utils.braille.BrailleUnicodeConverter
 import org.brailleblaster.utd.utils.TextTranslator.translateTextWithEmpArray
-import org.brailleblaster.utd.utils.UTDHelper.Companion.getAssociatedBrlElement
+import org.brailleblaster.utd.utils.UTDHelper.getAssociatedBrlElement
 import org.mwhapples.jlouis.Louis
 import org.slf4j.LoggerFactory
 import java.util.*

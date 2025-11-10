@@ -22,7 +22,7 @@ import org.brailleblaster.utd.actions.IAction
 import org.brailleblaster.utd.config.StyleDefinitions
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.matchers.INodeMatcher
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utils.xml.UTD_NS
 import kotlin.jvm.Throws
 
 /**

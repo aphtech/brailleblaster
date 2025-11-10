@@ -18,8 +18,8 @@ package org.brailleblaster.perspectives.braille.ui
 import com.sun.jna.Platform
 import org.brailleblaster.BBIni
 import org.brailleblaster.perspectives.braille.Manager
-import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.utils.swt.EasyListeners
+import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.KeyEvent
@@ -50,7 +50,7 @@ class ImagePlaceholder(parent: Shell?, manager: Manager, private val callback: C
         lines = null
         shell = Shell(parent, SWT.RESIZE or SWT.CLOSE or SWT.APPLICATION_MODAL)
         shell.text = "Insert Image Placeholder"
-        FormUIUtils.addEscapeCloseListener(shell)
+        EasySWT.addEscapeCloseListener(shell)
         val layout = GridLayout(2, false)
         shell.layout = layout
         val label = Label(shell, SWT.NONE)

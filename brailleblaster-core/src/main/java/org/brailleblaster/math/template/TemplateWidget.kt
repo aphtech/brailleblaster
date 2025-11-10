@@ -15,14 +15,14 @@
  */
 package org.brailleblaster.math.template
 
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.spatial.*
 import org.brailleblaster.math.spatial.SpatialMathEnum.OPERATOR
 import org.brailleblaster.math.spatial.SpatialMathEnum.OPERATOR.Companion.stringArray
 import org.brailleblaster.math.template.Template.Companion.translateIdentifier
 import org.brailleblaster.utils.swt.EasySWT
-import org.brailleblaster.util.FormUIUtils
 import org.eclipse.swt.SWT
+import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.widgets.*
 
@@ -179,7 +179,7 @@ class TemplateWidget : ISpatialMathWidget {
         val operatorCombo = Combo(parent, SWT.DROP_DOWN or SWT.READ_ONLY)
         operatorCombo.data = GridData(SWT.FILL, SWT.FILL, true, true)
         operatorCombo.setItems(*stringArray())
-        FormUIUtils.addSelectionListener(operatorCombo) {
+        EasySWT.addSelectionListener(operatorCombo) { it: SelectionEvent ->
             template!!.settings.operator = TemplateSettings.enumifyOperator(operatorCombo.text)
             extractFromTextBoxes()
             SpatialMathDispatcher.dispatch()
@@ -274,7 +274,7 @@ class TemplateWidget : ISpatialMathWidget {
     }
 
     private fun addOptionsMenu(shell: Shell, settingsMenu: Menu) {
-        if (MathModule.isNemeth) {
+        if (MathModuleUtils.isNemeth) {
             val b = MenuItem(settingsMenu, SWT.CHECK)
             b.text = TemplateConstants.STRAIGHT_VERTICAL
             b.selection = template!!.settings.isStraightRadicalSymbol

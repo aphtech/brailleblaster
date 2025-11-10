@@ -18,7 +18,7 @@ package org.brailleblaster.utd.toc
 import nu.xom.Attribute
 import nu.xom.Element
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utils.xml.UTD_NS
 
 enum class TOCAttributes(@JvmField val origName: String) {
     TYPE("toc-type");

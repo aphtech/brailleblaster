@@ -16,7 +16,7 @@
 package org.brailleblaster.math.spatial;
 
 import org.brailleblaster.TestUtils;
-import org.brailleblaster.math.mathml.MathModule;
+import org.brailleblaster.math.mathml.MathModuleUtils;
 import org.brailleblaster.math.numberLine.*;
 import org.brailleblaster.math.spatial.SpatialMathEnum.BlankOptions;
 import org.brailleblaster.math.spatial.SpatialMathEnum.NumberLineOptions;
@@ -158,7 +158,7 @@ public class NumberLineTest {
     }
 
     public void openNumberLineEditor(BBTestRunner bb) {
-        bb.openMenuItem(TopMenu.MATH, MathModule.SPATIAL_COMBO);
+        bb.openMenuItem(TopMenu.MATH, MathModuleUtils.SPATIAL_COMBO);
         bb.bot
                 .activeShell()
                 .bot()
@@ -169,7 +169,7 @@ public class NumberLineTest {
     }
 
     public void setPassage(BBTestRunner bb) {
-        if (!MathModule.isNemeth()) {
+        if (!MathModuleUtils.isNemeth()) {
             bb.bot
                     .activeShell()
                     .bot()
@@ -696,7 +696,7 @@ public class NumberLineTest {
             Assert.fail(); // should have thrown an exception
         } catch (Exception e) {
             String dialog = e.getMessage();
-            Assert.assertTrue(dialog.contains(MathModule.LONG_LINE_WARNING));
+            Assert.assertTrue(dialog.contains(MathModuleUtils.LONG_LINE_WARNING));
             for (int i = 0; i < answers.length; i++) {
                 String st = bb.textViewBot.getTextOnLine(i).trim();
                 Assert.assertEquals(st, answers[i]);

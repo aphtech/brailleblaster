@@ -26,7 +26,7 @@ fun interface GetMathString {
     companion object {
         @JvmField
 		val fromNode: GetMathString = GetMathString { n: Any ->
-            if (n is Element && n.getAttributeValue("alttext") != null) MathModule.getMathText(n as Node) else getStringValueFromNode(
+            if (n is Element && n.getAttributeValue("alttext") != null) MathModuleUtils.getMathText(n as Node) else getStringValueFromNode(
                 n as Node,
                 ""
             )

@@ -28,7 +28,7 @@ import org.brailleblaster.utd.IStyle
 import org.brailleblaster.utd.Style.StyleOption
 import org.brailleblaster.utd.config.StyleDefinitions
 import org.brailleblaster.utd.properties.NumberLinePosition
-import org.brailleblaster.util.FormUIUtils
+import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.widgets.*
@@ -302,10 +302,10 @@ open class StylesBuilder(val shell: Shell, private val manager: Manager) {
     const val OPTIONS_CATEGORY_NAME = "options"
     var sep: String = FileSystems.getDefault().separator
     fun newMenuItem(parent: Menu?, text: String?, onSelect: Consumer<SelectionEvent>): MenuItem {
-      val item = MenuItem(parent, SWT.PUSH)
-      item.text = text
-      FormUIUtils.addSelectionListener(item, onSelect)
-      return item
+        val item = MenuItem(parent, SWT.PUSH)
+        item.text = text
+        EasySWT.addSelectionListener(item, onSelect)
+        return item
     }
 
     private const val DONT_SPLIT_STYLE_ID: String = "internal/dontSplit"

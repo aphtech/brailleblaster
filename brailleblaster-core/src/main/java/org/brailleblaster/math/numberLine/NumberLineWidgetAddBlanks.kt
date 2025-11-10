@@ -21,8 +21,8 @@ import org.brailleblaster.math.spatial.SpatialMathEnum.BlankOptions
 import org.brailleblaster.math.spatial.SpatialMathEnum.NumberLineSection
 import org.brailleblaster.math.spatial.UebTranslations
 import org.brailleblaster.utils.swt.EasySWT
-import org.brailleblaster.util.FormUIUtils
 import org.eclipse.swt.SWT
+import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Menu
 import org.eclipse.swt.widgets.Shell
@@ -56,7 +56,7 @@ class NumberLineWidgetAddBlanks : NumberLineWidget() {
             for (j in BlankOptions.entries.toTypedArray().indices) {
                 val option = BlankOptions.entries[j]
                 val b = EasySWT.makeRadioButton(g2, option.prettyName, 1) { }
-                FormUIUtils.addSelectionListener(b) {
+                EasySWT.addSelectionListener(b) { it: SelectionEvent ->
                     if (b.selection) {
                         interval.blankType = option
                     }

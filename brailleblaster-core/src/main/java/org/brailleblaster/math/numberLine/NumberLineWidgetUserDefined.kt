@@ -21,8 +21,8 @@ import org.brailleblaster.math.spatial.SpatialMathDispatcher
 import org.brailleblaster.math.spatial.SpatialMathEnum.NumberLineSection
 import org.brailleblaster.math.spatial.SpatialMathUtils.translate
 import org.brailleblaster.utils.swt.EasySWT
-import org.brailleblaster.util.FormUIUtils
 import org.eclipse.swt.SWT
+import org.eclipse.swt.events.ModifyEvent
 import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.events.SelectionListener
 import org.eclipse.swt.layout.GridData
@@ -133,7 +133,7 @@ class NumberLineWidgetUserDefined : NumberLineWidget() {
             c.data = GridData(SWT.FILL, SWT.FILL, true, true)
             c.setItems(*items)
             c.select(c.indexOf(NumberLineConstants.MARKER_LABEL + " " + point.interval))
-            FormUIUtils.addSelectionListener(c) {
+            EasySWT.addSelectionListener(c) { it: SelectionEvent ->
                 val index = c.selectionIndex
                 point.interval = index + 1
             }
@@ -148,7 +148,7 @@ class NumberLineWidgetUserDefined : NumberLineWidget() {
             if (numberLine.settings.userDefinedArray.size > i) {
                 t.text = numberLine.settings.userDefinedArray[i].userText.print
             }
-            FormUIUtils.addModifyListener(t) {
+            EasySWT.addModifyListener(t) { it: ModifyEvent ->
                 val print = t.text
                 val braille = translate(
                     numberLine.settings.translationUserDefined,

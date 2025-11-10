@@ -39,6 +39,7 @@ import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.matchers.INodeMatcher
 import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.utils.xom.childNodes
 import org.brailleblaster.util.Utils
 import org.slf4j.LoggerFactory
@@ -369,7 +370,7 @@ class BookToBBXConverter(
                 val configElement = DocumentUTDConfig.NIMAS.getConfigElement(doc, NormaliserFactory.IS_NORMALISED_KEY)
                 configElement?.detach()
                 val serializer = Serializer(FileOutputStream(out), "UTF-8")
-                serializer.lineSeparator = System.lineSeparator()
+                serializer.lineSeparator = LINE_BREAK
                 serializer.indent = 2
                 serializer.write(doc)
             } catch (e: Exception) {

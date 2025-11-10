@@ -23,8 +23,8 @@ import org.brailleblaster.math.spatial.SpatialMathEnum.LabelPosition
 import org.brailleblaster.math.spatial.SpatialMathEnum.NumberLineSection
 import org.brailleblaster.math.spatial.SpatialMathUtils.translate
 import org.brailleblaster.utils.swt.EasySWT
-import org.brailleblaster.util.FormUIUtils
 import org.eclipse.swt.SWT
+import org.eclipse.swt.events.ModifyEvent
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Menu
 import org.eclipse.swt.widgets.MenuItem
@@ -58,15 +58,15 @@ class NumberLineWidgetAddLabels : NumberLineWidget() {
                 t.text = interval.userText.print
             }
             val t2 = EasySWT.makeText(g, 50, 1)
-            FormUIUtils.addModifyListener(
+            EasySWT.addModifyListener(
                 t2
-            ) {
+            ) { it: ModifyEvent ->
                 interval.labelText = NumberLinePoint(
-                    format=false,
-                    mathText=
+                    format = false,
+                    mathText =
                         MathText(
-                            print=t2.text,
-                            braille=translate(numberLine.settings.translationLabel, t2.text)
+                            print = t2.text,
+                            braille = translate(numberLine.settings.translationLabel, t2.text)
                         )
                 )
             }

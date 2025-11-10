@@ -28,10 +28,10 @@ import org.brailleblaster.utd.properties.Align
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.PageBuilderHelper.handlePageIndicator
 import org.brailleblaster.utd.utils.PageBuilderHelper.isPageIndicator
-import org.brailleblaster.utd.utils.UTDHelper.Companion.getAssociatedBrlElement
-import org.brailleblaster.utd.utils.UTDHelper.Companion.getDescendantBrlFast
-import org.brailleblaster.utd.utils.UTDHelper.Companion.getFirstTextDescendant
-import org.brailleblaster.utd.utils.UTDHelper.Companion.stripBRLOnly
+import org.brailleblaster.utd.utils.UTDHelper.getAssociatedBrlElement
+import org.brailleblaster.utd.utils.UTDHelper.getDescendantBrlFast
+import org.brailleblaster.utd.utils.UTDHelper.getFirstTextDescendant
+import org.brailleblaster.utd.utils.UTDHelper.stripBRLOnly
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

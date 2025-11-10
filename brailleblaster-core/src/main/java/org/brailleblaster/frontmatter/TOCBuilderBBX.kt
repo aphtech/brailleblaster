@@ -31,7 +31,7 @@ import org.brailleblaster.frontmatter.VolumeUtils.VolumeData
 import org.brailleblaster.frontmatter.VolumeUtils.getOrCreateTOC
 import org.brailleblaster.frontmatter.VolumeUtils.getVolumeElements
 import org.brailleblaster.frontmatter.VolumeUtils.getVolumeNames
-import org.brailleblaster.math.mathml.MathModule.Companion.blockContainsMath
+import org.brailleblaster.math.mathml.MathModuleUtils.blockContainsMath
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.braille.searcher.Searcher
@@ -55,18 +55,14 @@ import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.toc.TOCAttributes
 import org.brailleblaster.utd.toc.TOCAttributes.Companion.removeAll
-import org.brailleblaster.utd.utils.UTDHelper.Companion.getTextChild
-import org.brailleblaster.utd.utils.UTDHelper.Companion.stripUTDRecursive
+import org.brailleblaster.utd.utils.UTDHelper.getTextChild
+import org.brailleblaster.utd.utils.UTDHelper.stripUTDRecursive
 import org.brailleblaster.utils.xom.childNodes
 import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.perspectives.mvc.menu.MenuManager
-import org.brailleblaster.util.FormUIUtils.makeButton
-import org.brailleblaster.util.FormUIUtils.makeCheckbox
-import org.brailleblaster.util.FormUIUtils.makeComboDropdown
-import org.brailleblaster.util.FormUIUtils.makeText
-import org.brailleblaster.util.FormUIUtils.newLabel
 import org.brailleblaster.util.Notify.notify
 import org.brailleblaster.utils.swt.ButtonBuilder
+import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.utils.swt.EasySWT.getWidthOfText
 import org.brailleblaster.utils.swt.EasySWT.makeEasyYesNoDialog
 import org.brailleblaster.wordprocessor.WPManager.Companion.getInstance
@@ -135,12 +131,12 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
         //TODO: numColumns is 0 by default, is this a bug?
         (parent.layout as GridLayout).numColumns = 99
 
-        val entryButton: ButtonBuilder = makeButton(parent)
+        val entryButton: ButtonBuilder = EasySWT.makeButton(parent, SWT.PUSH)
             .text("TOC Entry (F4)")
             .swtBotId(SWTBOT_TOC_ENTRY_BUTTON)
             .onSelection { pressedApplyTitle() }
 
-        overrideLevel = makeCheckbox(parent)
+        overrideLevel = EasySWT.makeCheckbox(parent)
             .text("Override Margin:")
             .onSelection {
                 val isSelected: Boolean = overrideLevel!!.selection
@@ -155,21 +151,21 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
             .swtBotId(SWTBOT_OVERRIDE_LEVEL)
             .get()
 
-        indentText = makeText(parent)
+        indentText = EasySWT.makeTextBuilder(parent, SWT.BORDER or SWT.SINGLE)
             .text(CUR_INDENT.toString())
             .swtBotId(SWTBOT_INDENT_TEXT)
             .gridDataWidth(getWidthOfText("WW"))
             .get()
 
-        newLabel(parent, "-")
+        EasySWT.newLabel(parent, "-")
 
-        runoverText = makeText(parent)
+        runoverText = EasySWT.makeTextBuilder(parent, SWT.BORDER or SWT.SINGLE)
             .text(CUR_RUNOVER.toString())
             .swtBotId(SWTBOT_RUNOVER_TEXT)
             .gridDataWidth(getWidthOfText("WW"))
             .get()
 
-        findPageCheck = makeCheckbox(parent)
+        findPageCheck = EasySWT.makeCheckbox(parent)
             .text("Find Page | Page Prefix")
             .onSelection {
                 val isSelected: Boolean = findPageCheck!!.selection
@@ -183,7 +179,7 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
             .swtBotId(SWTBOT_PAGE_PREFIX_CHECK)
             .get()
 
-        pageNumberPrefix = makeText(parent)
+        pageNumberPrefix = EasySWT.makeTextBuilder(parent, SWT.BORDER or SWT.SINGLE)
             .text(findPagePrefix)
             .onModify {
                 propertyFileManager.save(
@@ -195,9 +191,9 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
             .gridDataWidth(getWidthOfText("WW"))
             .get()
 
-        newLabel(parent, "|")
+        EasySWT.newLabel(parent, "|")
 
-        headerCombo = makeComboDropdown(parent)
+        headerCombo = EasySWT.makeComboDropdown(parent)
             .add("Headings...")
             .add("Centered")
             .add("Centered NB")
@@ -207,7 +203,7 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
             .swtBotId(SWTBOT_HEADING_COMBO)
             .get()
 
-        makeButton(parent)
+        EasySWT.makeButton(parent, SWT.PUSH)
             .text("Apply Heading")
             .onSelection {
                 pressedApplyHeading(
@@ -218,21 +214,21 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
             }
             .swtBotId(SWTBOT_HEADING_BUTTON)
 
-        newLabel(parent, "|")
+        EasySWT.newLabel(parent, "|")
 
-        makeButton(parent)
+        EasySWT.makeButton(parent, SWT.PUSH)
             .text("Page Number")
             .onSelection { pressedApplyPage() }
             .swtBotId(SWTBOT_PAGE_NUM_BUTTON)
 
-        newLabel(parent, "|")
+        EasySWT.newLabel(parent, "|")
 
-        makeButton(parent)
+        EasySWT.makeButton(parent, SWT.PUSH)
             .text("Volume Split")
             .onSelection { pressedInsertVolumeSplit() }
             .swtBotId(SWTBOT_VOLUME_SPLIT_BUTTON)
 
-        makeButton(parent)
+        EasySWT.makeButton(parent, SWT.PUSH)
             .text("Disperse to Volumes")
             .onSelection {
                 regenerateAllTOC(
@@ -241,7 +237,7 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
             }
             .swtBotId(SWTBOT_DISPERSE_VOLUMES_BUTTON)
 
-        makeButton(parent)
+        EasySWT.makeButton(parent, SWT.PUSH)
             .text("X")
             .setAccessibleName("Close TOC Builder")
             .onSelection { close() }
@@ -698,7 +694,7 @@ class TOCBuilderBBX(private var manager: Manager) : MenuToolModule, BBViewListen
             .filter { node -> BBX.BLOCK.isA(node) }
             .map { node ->
                 Searcher.Mappers.toElement(
-                    node!!
+                    node
                 )
             }
             .firstOrNull()

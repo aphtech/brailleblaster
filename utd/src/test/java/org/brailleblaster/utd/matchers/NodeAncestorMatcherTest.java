@@ -23,7 +23,7 @@ import nu.xom.Node;
 import nu.xom.Nodes;
 import org.brailleblaster.utd.NamespaceMap;
 import org.brailleblaster.utd.internal.xml.XMLHandler;
-import org.brailleblaster.utils.NamespacesKt;
+import org.brailleblaster.utils.xml.NamespacesKt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

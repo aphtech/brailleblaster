@@ -20,6 +20,7 @@ import org.brailleblaster.BBIni
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.tools.MenuToolModule
+import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.util.Notify.showMessage
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
@@ -51,13 +52,7 @@ object ResetBB : MenuToolModule {
     }
 
     private fun ask(): Boolean {
-        val messageStr = ("WARNING: DO NOT CONTINUE UNLESS INSTRUCTED"
-                + System.lineSeparator() + System.lineSeparator()
-                + "This will DELETE ALL user profile data, including logs and UNSAVED work. "
-                + System.lineSeparator()
-                + "This should only be a LAST RESORT. Please report bugs first!"
-                + System.lineSeparator() + System.lineSeparator()
-                + "Continue?")
+        val messageStr = ("WARNING: DO NOT CONTINUE UNLESS INSTRUCTED$LINE_BREAK${LINE_BREAK}This will DELETE ALL user profile data, including logs and UNSAVED work. ${LINE_BREAK}This should only be a LAST RESORT. Please report bugs first!${LINE_BREAK}${LINE_BREAK}Continue?")
         val d = WPManager.display
         val s = Shell(d)
         val msgB = MessageBox(s, SWT.APPLICATION_MODAL or SWT.YES or SWT.NO)

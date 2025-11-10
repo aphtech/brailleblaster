@@ -22,6 +22,7 @@ import org.brailleblaster.perspectives.braille.views.style.BreadcrumbsToolbar
 import org.brailleblaster.perspectives.braille.views.wp.listeners.WPPaintListener
 import org.brailleblaster.perspectives.braille.views.wp.listeners.WPScrollListener
 import org.brailleblaster.perspectives.mvc.events.XMLCaretEvent
+import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.utils.swt.AccessibilityUtils.setName
 import org.eclipse.swt.SWT
 import org.eclipse.swt.accessibility.AccessibleAdapter
@@ -226,11 +227,10 @@ class BrailleView(manager: Manager, sash: Composite) : WPView(manager, sash) {
   }
 
   fun setPositionFromStart() {
-    val lineBreak = System.lineSeparator()
-    positionFromStart = view.caretOffset - stateObj.currentStart
+      positionFromStart = view.caretOffset - stateObj.currentStart
     if (positionFromStart > 0 && stateObj.currentStart + positionFromStart <= stateObj.currentEnd) {
       val text = view.getTextRange(stateObj.currentStart, positionFromStart)
-      val count = text.length - text.replace(lineBreak.toRegex(), "").length
+      val count = text.length - text.replace(LINE_BREAK.toRegex(), "").length
       positionFromStart -= count
       positionFromStart -= checkPageRange(stateObj.currentStart, stateObj.currentStart + positionFromStart)
       cursorOffset = count

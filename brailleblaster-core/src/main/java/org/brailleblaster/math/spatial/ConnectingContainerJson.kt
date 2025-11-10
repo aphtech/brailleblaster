@@ -15,7 +15,7 @@
  */
 package org.brailleblaster.math.spatial
 
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.spatial.SpatialMathEnum.HorizontalJustify
 import org.brailleblaster.math.spatial.SpatialMathEnum.VerticalJustify
 
@@ -37,7 +37,7 @@ class ConnectingContainerJson : ISpatialMathContainerJson {
         cc.text = MathText(
             print = connectingContainerJson.printText,
             braille =
-            if (isMath) MathModule.translateMathPrint(connectingContainerJson.printText) else MathModule.translateMainPrint(
+            if (isMath) MathModuleUtils.translateMathPrint(connectingContainerJson.printText) else MathModuleUtils.translateMainPrint(
                 connectingContainerJson.printText
             )
         )

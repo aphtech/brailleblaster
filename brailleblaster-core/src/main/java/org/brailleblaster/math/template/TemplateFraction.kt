@@ -15,7 +15,7 @@
  */
 package org.brailleblaster.math.template
 
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.spatial.Line
 import org.brailleblaster.math.spatial.NemethTranslations
 import org.brailleblaster.math.spatial.SpatialMathEnum.Passage
@@ -65,12 +65,12 @@ class TemplateFraction(
     }
 
     val wholeStart: String
-        get() = if (!MathModule.isNemeth && passage != Passage.NUMERIC && whole!!.toStringPart().isNotEmpty()) {
+        get() = if (!MathModuleUtils.isNemeth && passage != Passage.NUMERIC && whole!!.toStringPart().isNotEmpty()) {
             UebTranslations.NUMBER_CHAR
         } else ""
     val fractionStart: String
         get() {
-            if (MathModule.isNemeth) {
+            if (MathModuleUtils.isNemeth) {
                 if (num!!.toStringPart().isNotBlank()) {
                     return if (isMixed) {
                         NemethTranslations.NEMETH_START_MIXED_FRAC
@@ -104,7 +104,7 @@ class TemplateFraction(
         get() = if (num!!.toStringPart().isNotEmpty()) fractionString else ""
     val fractionEnd: String
         get() {
-            if (MathModule.isNemeth) {
+            if (MathModuleUtils.isNemeth) {
                 if (num!!.toStringPart().isNotBlank()) {
                     return if (isMixed) {
                         NemethTranslations.NEMETH_END_MIXED_FRAC
@@ -125,7 +125,7 @@ class TemplateFraction(
         }
 
     override fun toString(): String {
-        return if (MathModule.isNemeth) {
+        return if (MathModuleUtils.isNemeth) {
             val fractionStart = fractionStart
             val fractionSymbol = if (num!!.toStringPart().isNotEmpty()) fractionString else ""
             val fractionEnd = fractionEnd

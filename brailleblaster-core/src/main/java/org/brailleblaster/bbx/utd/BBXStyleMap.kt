@@ -28,8 +28,8 @@ import org.brailleblaster.utd.Style
 import org.brailleblaster.utd.config.StyleDefinitions
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.FastXPath
-import org.brailleblaster.utils.BB_NS
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utils.xml.BB_NS
+import org.brailleblaster.utils.xml.UTD_NS
 
 /**
  * Auto-generated style map for

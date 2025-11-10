@@ -25,9 +25,9 @@ import org.brailleblaster.bbx.BBXUtils
 import org.brailleblaster.bbx.findBlock
 import org.brailleblaster.bbx.findBlockChildOrNull
 import org.brailleblaster.bbx.findBlockOrNull
-import org.brailleblaster.math.mathml.MathModule
-import org.brailleblaster.math.mathml.MathModule.Companion.isMath
-import org.brailleblaster.math.mathml.MathModule.Companion.isSpatialMath
+import org.brailleblaster.math.mathml.MathModuleUtils
+import org.brailleblaster.math.mathml.MathModuleUtils.isMath
+import org.brailleblaster.math.mathml.MathModuleUtils.isSpatialMath
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.mvc.BBSimpleManager.SimpleListener
@@ -51,14 +51,14 @@ import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.EmphasisType
 import org.brailleblaster.utd.utils.TableUtils
 import org.brailleblaster.utd.utils.TableUtils.isTableCopy
-import org.brailleblaster.utd.utils.UTDHelper.Companion.stripUTDRecursive
+import org.brailleblaster.utd.utils.UTDHelper.stripUTDRecursive
 import org.brailleblaster.utd.utils.dom.BoxUtils.unbox
 import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.perspectives.mvc.menu.BBSeparator
 import org.brailleblaster.util.Notify
 import org.brailleblaster.util.Notify.notify
-import org.brailleblaster.utils.BB_NS
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utils.xml.BB_NS
+import org.brailleblaster.utils.xml.UTD_NS
 import org.brailleblaster.utils.swt.EasySWT.setSizeAndLocationMiddleScreen
 import org.brailleblaster.wordprocessor.WPManager
 import org.brailleblaster.wordprocessor.WPManager.Companion.getInstance
@@ -251,7 +251,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
             isSpatialMath(endSelection)
         ) {
             if (style.id != "miscellaneous/doubleLine") {
-                notify(MathModule.SPATIAL_MATH_WARNING, Notify.ALERT_SHELL_NAME)
+                notify(MathModuleUtils.SPATIAL_MATH_WARNING, Notify.ALERT_SHELL_NAME)
                 return ArrayList()
             }
         }

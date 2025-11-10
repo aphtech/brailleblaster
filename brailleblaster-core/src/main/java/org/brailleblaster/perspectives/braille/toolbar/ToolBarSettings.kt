@@ -16,6 +16,7 @@
 package org.brailleblaster.perspectives.braille.toolbar
 
 import org.brailleblaster.BBIni
+import org.brailleblaster.util.LINE_BREAK
 import java.util.*
 
 object ToolBarSettings {
@@ -35,7 +36,7 @@ object ToolBarSettings {
         get() {
             var settings = BBIni.propertyFileManager.getProperty("toolBar")
                 ?: return ArrayList(defaultSettings)
-            settings = settings.replace(" ".toRegex(), "").replace(System.lineSeparator().toRegex(), "")
+            settings = settings.replace(" ".toRegex(), "").replace(LINE_BREAK, "")
             val parsedSettings = parseToolBarSettings(settings)
             verifySettings(parsedSettings)
             return parsedSettings

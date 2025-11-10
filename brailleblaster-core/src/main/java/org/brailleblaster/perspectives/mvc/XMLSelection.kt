@@ -19,12 +19,12 @@ import nu.xom.Element
 import nu.xom.Node
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.utils.TableUtils.isTableCopy
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utils.xml.UTD_NS
 import org.brailleblaster.utils.xom.childNodes
 
 class XMLSelection(@JvmField val start: XMLNodeCaret, @JvmField val end: XMLNodeCaret) {
@@ -51,7 +51,7 @@ class XMLSelection(@JvmField val start: XMLNodeCaret, @JvmField val end: XMLNode
             val returnList: MutableList<Element> = ArrayList()
             var startBlock = start.node
             if (startBlock is Text || BBX.SPAN.isA(startBlock) || BBX.INLINE.isA(startBlock)
-                || MathModule.isMath(startBlock) || BBX.BLOCK.isA(startBlock)
+                || MathModuleUtils.isMath(startBlock) || BBX.BLOCK.isA(startBlock)
             ) {
                 while (startBlock !is Element || !BBX.BLOCK.isA(startBlock) && !BBX.CONTAINER.isA(startBlock) && !BBX.SECTION.isA(
                         startBlock

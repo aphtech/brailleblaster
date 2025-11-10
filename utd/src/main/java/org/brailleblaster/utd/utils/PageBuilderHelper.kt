@@ -26,7 +26,7 @@ import org.brailleblaster.utd.properties.PageNumberPosition
 import org.brailleblaster.utd.properties.PageNumberType
 import org.brailleblaster.utd.properties.PageNumberType.Companion.equivalentPage
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utils.xml.UTD_NS
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

@@ -19,7 +19,7 @@ import nu.xom.Element
 import nu.xom.Node
 import nu.xom.XPathContext
 import org.brailleblaster.utd.internal.elements.*
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utils.xml.UTD_NS
 
 enum class UTDElements(val elementName: String) {
     NEW_PAGE("newPage"),

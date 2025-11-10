@@ -17,7 +17,7 @@ package org.brailleblaster.math.spatial
 
 import nu.xom.Element
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.numberLine.*
 import org.brailleblaster.math.numberLine.NumberLine.Companion.getContainerFromElement
 import org.brailleblaster.math.spatial.MatrixSettings.Companion.combineCellComponents
@@ -294,10 +294,10 @@ object VersionConverter {
         val solutionNumbers = BBX.CONTAINER.TEMPLATE.SOLUTIONS[templateElement]
         template.printSolutions = solutionNumbers
         var p = BBX.CONTAINER.TEMPLATE.PASSAGE_MODE[templateElement]
-        if (MathModule.isNemeth && p == Passage.NUMERIC) {
+        if (MathModuleUtils.isNemeth && p == Passage.NUMERIC) {
             p = Passage.NONE
         }
-        if (!MathModule.isNemeth && p == Passage.NEMETH) {
+        if (!MathModuleUtils.isNemeth && p == Passage.NEMETH) {
             p = Passage.NONE
         }
         template.settings.passage = p
@@ -305,7 +305,7 @@ object VersionConverter {
         template.settings.solutions = template.solutions.size
         template.settings.isStraightRadicalSymbol = BBX.CONTAINER.TEMPLATE.STRAIGHT_RADICAL[templateElement]
         var identifier = (BBX.CONTAINER.TEMPLATE.IDENTIFER_AS_MATH[templateElement])
-        if (identifier && !MathModule.isNemeth) {
+        if (identifier && !MathModuleUtils.isNemeth) {
             identifier = false
         }
         template.settings.isTranslateIdentifierAsMath = identifier
@@ -353,7 +353,7 @@ object VersionConverter {
             container.settings.vertical = vertical
             container.settings.isTranslateAsMath = isMath
             container.text = MathText(print=text,
-                braille=if (isMath) MathModule.translateMathPrint(text) else MathModule.translateMainPrint(text))
+                braille=if (isMath) MathModuleUtils.translateMathPrint(text) else MathModuleUtils.translateMainPrint(text))
         }
         return BBX.CONTAINER.CONNECTING_CONTAINER.create(container)
     }
@@ -393,7 +393,7 @@ object VersionConverter {
                 }
             }
             var passage = false
-            val passageType = if (MathModule.isNemeth) {
+            val passageType = if (MathModuleUtils.isNemeth) {
                 Passage.NEMETH
             } else {
                 Passage.NUMERIC

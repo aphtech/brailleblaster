@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.util
 
+import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
 import org.eclipse.swt.layout.GridLayout
@@ -37,7 +38,7 @@ class WorkingDialog(message: String?) : AutoCloseable {
         shellMessage = Text(shell, SWT.NONE)
         updateMessage(message)
 
-        FormUIUtils.setLargeDialogSize(shell)
+        EasySWT.setLargeDialogSize(shell)
 
         shell.open()
         doPendingSWTWork()

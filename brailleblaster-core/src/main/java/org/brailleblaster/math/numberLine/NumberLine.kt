@@ -20,7 +20,7 @@ import nu.xom.Node
 import org.apache.commons.lang3.math.Fraction
 import org.brailleblaster.BBIni
 import org.brailleblaster.bbx.BBX
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.spatial.*
 import org.brailleblaster.math.spatial.SpatialMathEnum.BlankOptions
 import org.brailleblaster.math.spatial.SpatialMathEnum.Fill
@@ -228,7 +228,7 @@ class NumberLine : ISpatialMathContainer {
         }
         if (!formatter.format()) {
             if (!hush) {
-                Notify.notify(MathModule.LONG_LINE_WARNING, Notify.ALERT_SHELL_NAME)
+                Notify.notify(MathModuleUtils.LONG_LINE_WARNING, Notify.ALERT_SHELL_NAME)
             }
             return false
         }

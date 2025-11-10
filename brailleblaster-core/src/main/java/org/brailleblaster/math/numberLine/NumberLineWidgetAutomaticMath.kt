@@ -24,10 +24,9 @@ import org.brailleblaster.math.spatial.SpatialMathDispatcher
 import org.brailleblaster.math.spatial.SpatialMathEnum.IntervalType
 import org.brailleblaster.math.spatial.SpatialMathEnum.NumberLineSection
 import org.brailleblaster.perspectives.mvc.modules.views.DebugModule
-import org.brailleblaster.utils.swt.EasySWT
-import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.util.Notify
 import org.brailleblaster.util.Notify.notify
+import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.FocusEvent
 import org.eclipse.swt.events.FocusListener
@@ -239,7 +238,7 @@ class NumberLineWidgetAutomaticMath : NumberLineWidget() {
                 combo.setItems(*getPotentialPointsStringArray(numberLine))
             } catch (_: MathFormattingException) {
             }
-            FormUIUtils.addSelectionListener(
+            EasySWT.addSelectionListener(
                 combo
             ) {
                 val newPoint: NumberLineSegmentPoint
@@ -272,7 +271,7 @@ class NumberLineWidgetAutomaticMath : NumberLineWidget() {
     private fun makeStartSegmentGroup(startSegmentGroup: Composite) {
         EasySWT.makeLabel(startSegmentGroup, NumberLineConstants.SEGMENT_START_LABEL, 1)
         val whole = EasySWT.makeText(startSegmentGroup, 50, 1)
-        FormUIUtils.addModifyListener(
+        EasySWT.addModifyListener(
             whole
         ) {
             if (!parseEntry(whole.text)) {
@@ -291,7 +290,7 @@ class NumberLineWidgetAutomaticMath : NumberLineWidget() {
     private fun makeEndSegmentGroup(endSegmentGroup: Composite) {
         EasySWT.makeLabel(endSegmentGroup, NumberLineConstants.SEGMENT_END_LABEL, 1)
         val whole = EasySWT.makeText(endSegmentGroup, 50, 1)
-        FormUIUtils.addModifyListener(
+        EasySWT.addModifyListener(
             whole
         ) {
             if (!parseEntry(whole.text)) {
@@ -306,7 +305,7 @@ class NumberLineWidgetAutomaticMath : NumberLineWidget() {
     private fun makeStartLineGroup(shell: Composite) {
         EasySWT.makeLabel(shell, NumberLineConstants.LINE_START_LABEL, 1)
         val whole = EasySWT.makeText(shell, 50, 1)
-        FormUIUtils.addModifyListener(
+        EasySWT.addModifyListener(
             whole
         ) {
             if (!parseEntry(whole.text)) {
@@ -321,7 +320,7 @@ class NumberLineWidgetAutomaticMath : NumberLineWidget() {
     private fun makeEndLineGroup(shell: Composite) {
         EasySWT.makeLabel(shell, NumberLineConstants.LINE_END_LABEL, 1)
         val whole = EasySWT.makeText(shell, 50, 1)
-        FormUIUtils.addModifyListener(
+        EasySWT.addModifyListener(
             whole
         ) {
             if (!parseEntry(whole.text)) {
@@ -336,7 +335,7 @@ class NumberLineWidgetAutomaticMath : NumberLineWidget() {
     private fun intervalGroup(shell: Composite) {
         EasySWT.makeLabel(shell, NumberLineConstants.INTERVAL_LABEL, 1)
         val whole = EasySWT.makeText(shell, 50, 1)
-        FormUIUtils.addModifyListener(
+        EasySWT.addModifyListener(
             whole
         ) {
             if (!parseEntry(whole.text)) {

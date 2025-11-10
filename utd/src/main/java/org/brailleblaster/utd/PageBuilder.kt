@@ -900,32 +900,31 @@ class PageBuilder {
 
     val cornerPageLength: Int
         get() {
-            val printPageLength = printPageValue.length + 3
             if (_y == 0 || _y > linesPerPage) {
                 if (PageBuilderHelper.getPrintPageNumberAt(
                         pageSettings,
                         braillePageNumber.pageNumber
-                    ) == PageNumberPosition.TOP_LEFT
+                    ) == PageNumberPosition.TOP_LEFT && printPageValue.isNotEmpty()
                 ) {
-                    return printPageLength
+                    return printPageValue.length + padding
                 } else if (PageBuilderHelper.getBraillePageNumberAt(
                         pageSettings,
                         braillePageNumber.pageNumber
-                    ) == PageNumberPosition.TOP_LEFT
+                    ) == PageNumberPosition.TOP_LEFT && braillePageNum.isNotEmpty()
                 ) {
-                    return braillePageNum.length + 3
+                    return braillePageNum.length + padding
                 }
             } else if (_y == linesPerPage || _y + lineSpacing == linesPerPage) {
                 if (PageBuilderHelper.getPrintPageNumberAt(
                         pageSettings,
                         braillePageNumber.pageNumber
-                    ) == PageNumberPosition.BOTTOM_LEFT
+                    ) == PageNumberPosition.BOTTOM_LEFT && printPageValue.isNotEmpty()
                 ) {
-                    return printPageLength
+                    return printPageValue.length + padding
                 } else if (PageBuilderHelper.getBraillePageNumberAt(
                         pageSettings,
                         braillePageNumber.pageNumber
-                    ) == PageNumberPosition.BOTTOM_LEFT
+                    ) == PageNumberPosition.BOTTOM_LEFT && braillePageNum.isNotEmpty()
                 ) {
                     return braillePageNum.length + 3
                 }
@@ -1863,15 +1862,11 @@ class PageBuilder {
         } else if (hasRunningHead()) {
             updateRunningHead()
         }
-        var pageNum = getPrintPageBrl(true)
+        // Protect against long page numbers, probably wrong mark up
+        val pageNum = getPrintPageBrl(true).take(cellsPerLine)
         //pageNumber is correct, but doesn't actually show on the print page. It shows in the braille though!
         val pageNumber: PageNumber
         val position = PageBuilderHelper.getPrintPageNumberAt(pageSettings, braillePageNumber.pageNumber)
-
-        // Protect against long page numbers, probably wrong mark up
-        if (pageNum.length > cellsPerLine) {
-            pageNum = pageNum.take(cellsPerLine)
-        }
 
         if (pageNum.isNotEmpty() && pageNumberType != PageNumberType.T_PAGE) {
             pageNumber = PrintPageNumber(pageNum)
@@ -1888,11 +1883,12 @@ class PageBuilder {
             pageNumber.addAttribute(Attribute("pageType", pageNumberType.toString()))
 
             if (verifyPageNumberProperty()) {
-                var padding = padding
-                if (pageNum.length + this.padding >= cellsPerLine) {
-                    padding = 0
+                placePageNumber(pageNumber, position, if (pageNum.length + padding >= cellsPerLine) {
+                    0
+                } else {
+                    padding
                 }
-                placePageNumber(pageNumber, position, padding)
+                )
             }
         }
     }
@@ -2157,7 +2153,7 @@ class PageBuilder {
             var numLength: Int
             // Remember both print and Braille page numbers may be on the same line
             // Therefore we must allow accounting for both.
-            if (brlPagePos.isTop) {
+            if (brlPagePos.isTop && braillePageNum.isNotEmpty()) {
                 numLength = braillePageNum.length
                 pageLength += numLength + padding
             }
@@ -3827,13 +3823,17 @@ class PageBuilder {
         for (i in guideWord.indices) {
             guideWordCells[i] = getCellInstance(guideWords, i)
         }
-        var startingCell = padding
         val centerPad = (length - guideWord.length) / 2
-        startingCell += centerPad
-        if (printPos == PageNumberPosition.BOTTOM_LEFT) {
-            startingCell += printPage.length
-        } else if (brlPos == PageNumberPosition.BOTTOM_LEFT) {
-            startingCell += braillePageNum.length
+        val startingCell = centerPad + when {
+            printPos == PageNumberPosition.BOTTOM_LEFT && printPage.isNotEmpty() -> {
+                printPage.length + padding
+            }
+            brlPos == PageNumberPosition.BOTTOM_LEFT && braillePageNum.isNotEmpty() -> {
+                braillePageNum.length + padding
+            }
+            else -> {
+                0
+            }
         }
         pageGrid.setCells(startingCell, pageGrid.height - 1, guideWordCells)
     }

@@ -27,7 +27,7 @@ class MathMLTableElement(var math: MathMLElement, n: Node?) : TableCellTextMapEl
     }
 
     override fun getText(): String {
-        val attribute = (node as Element).getAttribute(MathModule.MATH_ATTRIBUTE)
+        val attribute = (node as Element).getAttribute(MathModuleUtils.MATH_ATTRIBUTE)
         return if (attribute == null) {
             log.error("AsciiMath attribute is null on a math tag")
             ""

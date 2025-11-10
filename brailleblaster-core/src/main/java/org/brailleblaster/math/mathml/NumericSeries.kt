@@ -55,8 +55,8 @@ object NumericSeries {
         val endParent: Node = end.findBlock().parent
         val startIsText = start is Text
         val endIsText = end is Text
-        val startIsMath = MathModule.isMath(start)
-        val endIsMath = MathModule.isMath(end)
+        val startIsMath = MathModuleUtils.isMath(start)
+        val endIsMath = MathModuleUtils.isMath(end)
         var mathStartIndex = 0
         var mathEndIndex = 0
         if (startIsText) {
@@ -79,8 +79,8 @@ object NumericSeries {
         }
         var current = start
         while (current !== end) {
-            if (MathModule.isMath(current)) {
-                addNotAlreadyThere(mathArray, MathModule.getMathParent(current))
+            if (MathModuleUtils.isMath(current)) {
+                addNotAlreadyThere(mathArray, MathModuleUtils.getMathParent(current))
             } else {
                 addNotAlreadyThere(textArray, current)
             }
@@ -108,7 +108,7 @@ object NumericSeries {
         }
         for (i in mathArray.indices) {
             val n = mathArray[i]
-            val nodeLength = MathModule.getMathText(n).length
+            val nodeLength = MathModuleUtils.getMathText(n).length
             if (n == start) {
                 if (mathArray.size == 1) {
                     toggleMath(mathStartIndex, mathEndIndex, n, toggleOn)
@@ -132,7 +132,7 @@ object NumericSeries {
 
     private fun toggleMath(start: Int, end: Int, n: Node, on: Boolean) {
         if (DebugModule.enabled) {
-            val asciiMath = MathModule.getMathText(n)
+            val asciiMath = MathModuleUtils.getMathText(n)
             val b = asciiMath.take(start)
             var s = asciiMath.substring(start, end)
             val a = asciiMath.drop(end)

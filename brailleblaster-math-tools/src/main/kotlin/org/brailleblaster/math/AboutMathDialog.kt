@@ -13,15 +13,14 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.brailleblaster.math.ascii
+package org.brailleblaster.math
 
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
-import org.brailleblaster.math.mathml.MathModule
-import org.brailleblaster.math.mathml.MathModule.MathOption
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.perspectives.braille.toolbar.ToolBarBuilder
 import org.brailleblaster.perspectives.mvc.modules.views.DebugModule
-import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.util.ImageHelper
+import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.ScrolledComposite
 import org.eclipse.swt.custom.StyledText
@@ -39,7 +38,7 @@ object AboutMathDialog {
         val shell = Shell(parent, SWT.DIALOG_TRIM or SWT.RESIZE)
         shell.data = GridData(4, 4, true, true)
         shell.layout = GridLayout(1, false)
-        shell.text = MathModule.MATH_HELP
+        shell.text = MathModuleUtils.MATH_HELP
         val outer = Composite(shell, SWT.NONE)
         outer.layout = GridLayout(1, false)
         outer.layoutData = GridData(4, 4, true, true)
@@ -65,7 +64,7 @@ object AboutMathDialog {
                 }
 
                 // get description
-                val description = localeHandler[MathModule.HELP_PREFIX_KEY + item.key]
+                val description = localeHandler[MathModuleUtils.HELP_PREFIX_KEY + item.key]
                 val textLabel = StyledText(comp, SWT.NONE)
                 textLabel.data = GridData()
                 textLabel.text = wrapText(description, 80)
@@ -73,7 +72,7 @@ object AboutMathDialog {
             }
         }
         addResizeListener(shell, sc, comp)
-        FormUIUtils.addEscapeCloseListener(shell)
+        EasySWT.addEscapeCloseListener(shell)
         sc.content = comp
         shell.pack()
         shell.layout(true)

@@ -20,6 +20,7 @@ import org.brailleblaster.BBIni
 import org.brailleblaster.utd.UTDTranslationEngine
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.libembosser.spi.BrlCell
+import org.brailleblaster.util.LINE_BREAK
 import java.util.*
 import java.util.function.Consumer
 import kotlin.math.max
@@ -124,10 +125,10 @@ class RendererState(engine: UTDTranslationEngine) {
         get() {
             val lastLine = previousLine
             val text = StringBuilder()
-            for (`object` in lines) {
-                if (`object` is Line) {
-                    `object`.startOffset = text.length
-                    val lineText = if (lastLine === `object`) `object`.text else `object`.text + System.lineSeparator()
+            for (line in lines) {
+                if (line is Line) {
+                    line.startOffset = text.length
+                    val lineText = if (lastLine === line) line.text else "${line.text}$LINE_BREAK"
                     text.append(lineText)
                 }
             }
@@ -151,7 +152,7 @@ class RendererState(engine: UTDTranslationEngine) {
 
     val charCount: Int
         get() {
-            return (_charCount + (System.lineSeparator().length * max(
+            return (_charCount + (LINE_BREAK.length * max(
                 (lineCount - 1).toDouble(),
                 0.0
             ))).toInt()
@@ -175,7 +176,7 @@ class RendererState(engine: UTDTranslationEngine) {
                     }
                     continue
                 }
-                count += curLine.text.length + System.lineSeparator().length
+                count += curLine.text.length + LINE_BREAK.length
             }
         }
         return count
@@ -220,7 +221,6 @@ class RendererState(engine: UTDTranslationEngine) {
     fun applyEmphasis(emphasisNode: Element?) {
         this.emphasisNode = emphasisNode
     }
-
 
     /*
      * Table mode allows the state to move backwards without requiring a newPage element

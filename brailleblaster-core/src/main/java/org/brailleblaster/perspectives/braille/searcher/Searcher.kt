@@ -25,7 +25,7 @@ import org.brailleblaster.perspectives.braille.mapping.elements.TextMapElement
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utils.xml.UTD_NS
 
 /**
  * Common MapList and Element search util methods

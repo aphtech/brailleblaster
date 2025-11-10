@@ -19,7 +19,7 @@ import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
 import org.brailleblaster.TestUtils;
-import org.brailleblaster.math.mathml.MathModule;
+import org.brailleblaster.math.mathml.MathModuleUtils;
 import org.brailleblaster.math.spatial.MatrixConstants.Wide;
 import org.brailleblaster.math.spatial.SpatialMathEnum.Passage;
 import org.brailleblaster.math.template.TemplateConstants;
@@ -57,14 +57,14 @@ public class MatrixTest {
     final int tooWideForIndent = 40;
 
     public void openMatrixBuilder(BBTestRunner bb) {
-        bb.openMenuItem(TopMenu.MATH, MathModule.SPATIAL_COMBO);
+        bb.openMenuItem(TopMenu.MATH, MathModuleUtils.SPATIAL_COMBO);
         bb.bot.activeShell().bot().menu(GridEditor.CONTAINER_TYPE_LABEL)
                 .menu(SpatialMathEnum.SpatialMathContainers.MATRIX.prettyName).click();
         setNoPassage(bb);
     }
 
     public void setNoPassage(BBTestRunner bb) {
-        if (!MathModule.isNemeth()) {
+        if (!MathModuleUtils.isNemeth()) {
             bb.bot.activeShell().bot().menu(TemplateConstants.SETTINGS).menu(GridConstants.PASSAGE_TYPE).menu(Passage.NONE.getPrettyName())
                     .click();
         }
@@ -111,10 +111,10 @@ public class MatrixTest {
     @Test(enabled = false)
     public void nemethEllipsis() {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
-        if (!MathModule.isNemeth()) {
+        if (!MathModuleUtils.isNemeth()) {
             TestUtils.changeSettings(bb, TranslationSettingsTab.UEB_PLUS_NEMETH);
         }
-        Assert.assertTrue(MathModule.isNemeth(), "Settings should be nemeth");
+        Assert.assertTrue(MathModuleUtils.isNemeth(), "Settings should be nemeth");
         bb.textViewTools.navigateToEndOfLine();
         openMatrixBuilder(bb);
         clickFillEllipsis(bb);
@@ -129,10 +129,10 @@ public class MatrixTest {
     @Test(enabled = false)
     public void skinnyMatrixNemeth() {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
-        if (!MathModule.isNemeth()) {
+        if (!MathModuleUtils.isNemeth()) {
             TestUtils.changeSettings(bb, TranslationSettingsTab.UEB_PLUS_NEMETH);
         }
-        Assert.assertTrue(MathModule.isNemeth(), "Settings should be nemeth");
+        Assert.assertTrue(MathModuleUtils.isNemeth(), "Settings should be nemeth");
         bb.textViewTools.navigateToEndOfLine();
         openMatrixBuilder(bb);
         fillSkinnyEntries(bb);
@@ -146,10 +146,10 @@ public class MatrixTest {
     @Test(enabled = false)
     public void skinnyMatrixUeb() {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
-        if (MathModule.isNemeth()) {
+        if (MathModuleUtils.isNemeth()) {
             TestUtils.changeSettings(bb, TranslationSettingsTab.UEB);
         }
-        Assert.assertFalse(MathModule.isNemeth(), "Settings should be Ueb");
+        Assert.assertFalse(MathModuleUtils.isNemeth(), "Settings should be Ueb");
         bb.textViewTools.navigateToEndOfLine();
         openMatrixBuilder(bb);
         fillSkinnyEntries(bb);
@@ -163,10 +163,10 @@ public class MatrixTest {
     @Test
     public void blankBlockMatrixNemeth() {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
-        if (!MathModule.isNemeth()) {
+        if (!MathModuleUtils.isNemeth()) {
             TestUtils.changeSettings(bb, TranslationSettingsTab.UEB_PLUS_NEMETH);
         }
-        Assert.assertTrue(MathModule.isNemeth(), "Settings should be nemeth");
+        Assert.assertTrue(MathModuleUtils.isNemeth(), "Settings should be nemeth");
         bb.textViewTools.navigateToEndOfLine();
         openMatrixBuilder(bb);
         setWideType(bb, Wide.BLOCK_BLANK);
@@ -181,10 +181,10 @@ public class MatrixTest {
     @Test(enabled = false)
     public void blankBlockMatrixUeb() {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
-        if (MathModule.isNemeth()) {
+        if (MathModuleUtils.isNemeth()) {
             TestUtils.changeSettings(bb, TranslationSettingsTab.UEB);
         }
-        Assert.assertFalse(MathModule.isNemeth(), "Settings should be ueb");
+        Assert.assertFalse(MathModuleUtils.isNemeth(), "Settings should be ueb");
         bb.textViewTools.navigateToEndOfLine();
         openMatrixBuilder(bb);
         setWideType(bb, Wide.BLOCK_BLANK);
@@ -199,10 +199,10 @@ public class MatrixTest {
     @Test(enabled = false)
     public void indentMatrixNemeth() {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
-        if (!MathModule.isNemeth()) {
+        if (!MathModuleUtils.isNemeth()) {
             TestUtils.changeSettings(bb, TranslationSettingsTab.UEB_PLUS_NEMETH);
         }
-        Assert.assertTrue(MathModule.isNemeth(), "Settings should be nemeth");
+        Assert.assertTrue(MathModuleUtils.isNemeth(), "Settings should be nemeth");
         bb.textViewTools.navigateToEndOfLine();
         openMatrixBuilder(bb);
         setWideType(bb, Wide.INDENT_COLUMN);
@@ -217,10 +217,10 @@ public class MatrixTest {
     @Test(enabled = false)
     public void indentMatrixUeb() {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
-        if (MathModule.isNemeth()) {
+        if (MathModuleUtils.isNemeth()) {
             TestUtils.changeSettings(bb, TranslationSettingsTab.UEB);
         }
-        Assert.assertFalse(MathModule.isNemeth(), "Settings should be ueb");
+        Assert.assertFalse(MathModuleUtils.isNemeth(), "Settings should be ueb");
         bb.textViewTools.navigateToEndOfLine();
         openMatrixBuilder(bb);
         setWideType(bb, Wide.INDENT_COLUMN);

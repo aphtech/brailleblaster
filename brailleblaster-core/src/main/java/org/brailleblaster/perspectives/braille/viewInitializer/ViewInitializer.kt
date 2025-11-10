@@ -27,6 +27,7 @@ import org.brailleblaster.perspectives.braille.views.wp.BrailleView
 import org.brailleblaster.perspectives.braille.views.wp.TextRenderer
 import org.brailleblaster.perspectives.braille.views.wp.TextView
 import org.brailleblaster.utd.exceptions.NodeException
+import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.util.WhitespaceUtils.countLineBreaks
 
 abstract class ViewInitializer(val document: BrailleDocument, val text: TextView, val braille: BrailleView) :
@@ -367,12 +368,12 @@ abstract class ViewInitializer(val document: BrailleDocument, val text: TextView
                     next = list.getNext(list.indexOf(next), true)
                 }
 
-                var start = if (prev == null) 0 else prev.getEnd(list) + breakLength
-                var end = if (next == null) text.view.charCount else next.getStart(list) - breakLength
+                var start = if (prev == null) 0 else prev.getEnd(list) + LINE_BREAK.length
+                var end = if (next == null) text.view.charCount else next.getStart(list) - LINE_BREAK.length
                 if (next != null) {
                     //Subtract the end of the image placeholder by the number of line breaks between
                     //it and the following non-whitespace TME
-                    end -= (countLineBreaks(t, next, list, false) * breakLength)
+                    end -= (countLineBreaks(t, next, list, false) * LINE_BREAK.length)
                 }
                 //This can happen when two image placeholders are next to each other (the second one will get ignored)
                 if (start > end) {
@@ -396,30 +397,30 @@ abstract class ViewInitializer(val document: BrailleDocument, val text: TextView
             //Fill in the difference between this tme and the next with whitespace
             val start = list[i].getEnd(list)
             val end = list[i + 1].getStart(list)
-            val brailleStart = getBrailleEnd(list, i) + breakLength
+            val brailleStart = getBrailleEnd(list, i) + LINE_BREAK.length
             if (end - start > 1) {
                 //If the two TMEs are on the same line, make this a Horizontal WSE
                 if (//Safety check
                     start < end && end > 0 && start > 0 && end < text.view.charCount && !text.view.getText(start, end)
                         .contains(
-                            System.lineSeparator()
+                            LINE_BREAK
                         )
                 ) { //Check for newline between TMEs
                     val hwse = HorizontalFormattingWhiteSpaceElement(start, end)
                     list.add(i + 1, hwse)
                 } else {
-                    addWhiteSpaceElements(i + 1, start + breakLength, end, brailleStart)
+                    addWhiteSpaceElements(i + 1, start + LINE_BREAK.length, end, brailleStart)
                 }
             }
         }
 
         val t = list.last()
-        var i = t.getEnd(list) + breakLength
+        var i = t.getEnd(list) + LINE_BREAK.length
         while (i <= text.view.charCount) {
             val wse = FormattingWhiteSpaceElement(i, i)
             wse.brailleList.add(BrailleWhiteSpaceElement(braille.view.charCount, braille.view.charCount))
             list.add(wse)
-            i += breakLength
+            i += LINE_BREAK.length
         }
     }
 
@@ -478,9 +479,9 @@ abstract class ViewInitializer(val document: BrailleDocument, val text: TextView
                     viewList.add(index, wse)
                 }
             }
-            start += breakLength
+            start += LINE_BREAK.length
             index++
-            brailleStart += breakLength
+            brailleStart += LINE_BREAK.length
         }
     }
 
@@ -516,8 +517,4 @@ abstract class ViewInitializer(val document: BrailleDocument, val text: TextView
         return searcher.search(n)
     }
 
-    companion object {
-        private val lineBreak: String = System.lineSeparator()
-        private val breakLength = lineBreak.length
-    }
 }

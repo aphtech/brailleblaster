@@ -15,7 +15,7 @@
  */
 package org.brailleblaster.math.spatial
 
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.spatial.SpatialMathEnum.Passage
 import org.brailleblaster.math.template.TemplateConstants
 import org.eclipse.swt.SWT
@@ -44,7 +44,7 @@ interface ISpatialMathDialog {
     }
 
     fun addPassages(shell: Shell, menu: Menu, settings: ISpatialMathSettings, callback: Consumer<Passage>) {
-        if (MathModule.isNemeth) {
+        if (MathModuleUtils.isNemeth) {
             val nemethButton = MenuItem(menu, SWT.CHECK)
             nemethButton.text = Passage.NEMETH.prettyName
             nemethButton.selection = settings.passage == Passage.NEMETH

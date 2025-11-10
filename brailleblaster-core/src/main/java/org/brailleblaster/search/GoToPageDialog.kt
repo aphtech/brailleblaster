@@ -21,7 +21,7 @@ import org.brailleblaster.BBIni
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.frontmatter.VolumeUtils
 import org.brailleblaster.frontmatter.VolumeUtils.VolumeData
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.TextMapElement
 import org.brailleblaster.perspectives.braille.messages.Sender
@@ -34,6 +34,7 @@ import org.brailleblaster.utd.properties.UTDElements.Companion.getByName
 import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.util.FormUIUtils
+import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.SelectionAdapter
 import org.eclipse.swt.events.SelectionEvent
@@ -59,73 +60,73 @@ class GoToPageDialog(private val m: Manager) {
   private var volumeData: List<VolumeData>? = null
 
   init {
-    //------------------- Contents -----------------------
-    dialog.text = "Go To"
-    val dialogLayout = RowLayout()
-    dialogLayout.center = true
-    dialog.layout = dialogLayout
-    volumeSelect = Combo(dialog, SWT.READ_ONLY or SWT.DROP_DOWN)
-    pageText = Text(dialog, SWT.BORDER)
-    printPageButton = Button(dialog, SWT.RADIO)
-    printPageButton.text = "Print Page"
-    braillePageButton = Button(dialog, SWT.RADIO)
-    braillePageButton.text = "Braille Page"
-    rawPageButton = Button(dialog, SWT.RADIO)
-    rawPageButton.text = "Ordinal Page"
-    val submitButton = Button(dialog, SWT.NONE)
-    submitButton.text = "Go to"
-    //		submitButton.setEnabled(false);
+      //------------------- Contents -----------------------
+      dialog.text = "Go To"
+      val dialogLayout = RowLayout()
+      dialogLayout.center = true
+      dialog.layout = dialogLayout
+      volumeSelect = Combo(dialog, SWT.READ_ONLY or SWT.DROP_DOWN)
+      pageText = Text(dialog, SWT.BORDER)
+      printPageButton = Button(dialog, SWT.RADIO)
+      printPageButton.text = "Print Page"
+      braillePageButton = Button(dialog, SWT.RADIO)
+      braillePageButton.text = "Braille Page"
+      rawPageButton = Button(dialog, SWT.RADIO)
+      rawPageButton.text = "Ordinal Page"
+      val submitButton = Button(dialog, SWT.NONE)
+      submitButton.text = "Go to"
+      //		submitButton.setEnabled(false);
 
-    //--------------------- Listeners -----------------------
-    //Save user state
-    FormUIUtils.addSelectionListener(printPageButton) { savePageType(PageType.PRINT) }
-    FormUIUtils.addSelectionListener(braillePageButton) { savePageType(PageType.BRAILLE) }
-    FormUIUtils.addSelectionListener(rawPageButton) { savePageType(PageType.ORDINAL) }
-    FormUIUtils.addSelectionListener(volumeSelect) {
-      val isVolumeSelected = volumeSelect.selectionIndex != 0
-      printPageButton.isEnabled = !isVolumeSelected
-      rawPageButton.isEnabled = !isVolumeSelected
-      //Issue #4341: Default select braille page
-      if (isVolumeSelected) {
-        printPageButton.selection = false
-        braillePageButton.selection = true
-        rawPageButton.selection = false
+      //--------------------- Listeners -----------------------
+      //Save user state
+      EasySWT.addSelectionListener(printPageButton) { it: SelectionEvent -> savePageType(PageType.PRINT) }
+      EasySWT.addSelectionListener(braillePageButton) { it: SelectionEvent -> savePageType(PageType.BRAILLE) }
+      EasySWT.addSelectionListener(rawPageButton) { it: SelectionEvent -> savePageType(PageType.ORDINAL) }
+      EasySWT.addSelectionListener(volumeSelect) { it: SelectionEvent ->
+          val isVolumeSelected = volumeSelect.selectionIndex != 0
+          printPageButton.isEnabled = !isVolumeSelected
+          rawPageButton.isEnabled = !isVolumeSelected
+          //Issue #4341: Default select braille page
+          if (isVolumeSelected) {
+              printPageButton.selection = false
+              braillePageButton.selection = true
+              rawPageButton.selection = false
+          }
       }
-    }
 
-    //Submit when user presses enter inside page field
-    pageText.addSelectionListener(object : SelectionAdapter() {
-      override fun widgetDefaultSelected(e: SelectionEvent) {
-        onSubmit()
-      }
-    })
-    FormUIUtils.addSelectionListener(submitButton) { onSubmit() }
+      //Submit when user presses enter inside page field
+      pageText.addSelectionListener(object : SelectionAdapter() {
+          override fun widgetDefaultSelected(e: SelectionEvent) {
+              onSubmit()
+          }
+      })
+      EasySWT.addSelectionListener(submitButton) { it: SelectionEvent -> onSubmit() }
 
-    // ------------------------ data ----------------------
-    val volumeElements = VolumeUtils.getVolumeElements(m.doc)
-    if (volumeElements.isEmpty()) {
-      log.trace("Disabling volume nav, no volumes found")
-      volumeSelect.isEnabled = false
-      volumeData = null
-    } else {
-      log.trace("Enabling volume nav, found " + volumeElements.size)
-      volumeSelect.add("")
-      volumeData = VolumeUtils.getVolumeNames(volumeElements).onEach { vol -> volumeSelect.add(vol.nameLong) }
-    }
-    val lastPageType = BBIni.propertyFileManager.getProperty(SETTING_PAGE_TYPE)
-    if (lastPageType != null) {
-      when (PageType.valueOf(lastPageType)) {
-        PageType.PRINT -> printPageButton.selection = true
-        PageType.BRAILLE -> braillePageButton.selection = true
-        PageType.ORDINAL -> rawPageButton.selection = true
+      // ------------------------ data ----------------------
+      val volumeElements = VolumeUtils.getVolumeElements(m.doc)
+      if (volumeElements.isEmpty()) {
+          log.trace("Disabling volume nav, no volumes found")
+          volumeSelect.isEnabled = false
+          volumeData = null
+      } else {
+          log.trace("Enabling volume nav, found " + volumeElements.size)
+          volumeSelect.add("")
+          volumeData = VolumeUtils.getVolumeNames(volumeElements).onEach { vol -> volumeSelect.add(vol.nameLong) }
       }
-    } else {
-      printPageButton.selection = true
-    }
-    FormUIUtils.setLargeDialogSize(dialog)
-    dialog.open()
-    //Issue #4341: Default select text box as that's what user will be doing most of the time
-    pageText.setFocus()
+      val lastPageType = BBIni.propertyFileManager.getProperty(SETTING_PAGE_TYPE)
+      if (lastPageType != null) {
+          when (PageType.valueOf(lastPageType)) {
+              PageType.PRINT -> printPageButton.selection = true
+              PageType.BRAILLE -> braillePageButton.selection = true
+              PageType.ORDINAL -> rawPageButton.selection = true
+          }
+      } else {
+          printPageButton.selection = true
+      }
+      EasySWT.setLargeDialogSize(dialog)
+      dialog.open()
+      //Issue #4341: Default select text box as that's what user will be doing most of the time
+      pageText.setFocus()
   }
 
   fun onSubmit() {
@@ -218,7 +219,7 @@ class GoToPageDialog(private val m: Manager) {
                 false
             }
                     &&
-                    !MathModule.isMath(curNode))
+                    !MathModuleUtils.isMath(curNode))
         }.first()
       val (_, value) = m.getBraillePageElementByUntranslatedPage(brlPage, textAfterVolume)
         ?: throw BBNotifyException(

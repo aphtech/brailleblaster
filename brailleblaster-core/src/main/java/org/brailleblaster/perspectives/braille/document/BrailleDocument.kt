@@ -21,7 +21,7 @@ import org.brailleblaster.bbx.BBX.SubType
 import org.brailleblaster.bbx.BBXUtils
 import org.brailleblaster.bbx.findBlockOrNull
 import org.brailleblaster.document.BBDocument
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.mathml.MathSubject
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.BoxLineTextMapElement
@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory
 
 class BrailleDocument(dm: Manager, doc: Document) : BBDocument(dm, doc) {
     init {
-        engine.callback = object : UTDTranslationEngineCallback() {
+        engine.callback = object : UTDTranslationEngineCallback {
             override fun onUpdateNode(n: Node) {
                 // //Reduce unnessesary logging
                 // if (n instanceof Document)
@@ -75,7 +75,7 @@ class BrailleDocument(dm: Manager, doc: Document) : BBDocument(dm, doc) {
             ?: throw NullPointerException("CurrentNode is null. TME: " + list.current)
         val block = engine.findTranslationBlock(currentNode)
         findAndRemoveBrailleElement(block as Element)
-        if (currentNode is Element && MathModule.isMath(currentNode)) {
+        if (currentNode is Element && MathModuleUtils.isMath(currentNode)) {
             log.debug("Insert new into math from Braille Document")
             translateAndReplaceAtCursor(MathSubject(text))
             return
@@ -191,9 +191,8 @@ class BrailleDocument(dm: Manager, doc: Document) : BBDocument(dm, doc) {
                 val parent = n.parent
                 val index = parent.indexOf(n)
                 if (parent.childCount - index > 1 && BBX.SPAN.PAGE_NUM.isA(parent.getChild(index + 1))) {
-                    val copy = parent.getChild(index + 1).copy()
+                    val copy = parent.removeChild(index + 1)
                     parent.insertChild(copy, index)
-                    parent.getChild(index + 2).detach()
                 }
             }
             n.value = text
@@ -364,7 +363,9 @@ class BrailleDocument(dm: Manager, doc: Document) : BBDocument(dm, doc) {
                             if (e1.childCount > 0 && e1.getChild(0) is Text && e2.childCount > 0 && e2.getChild(0) is Text) {
                                 (e1.getChild(0) as Text).value = e1.getChild(0).value + e2.getChild(0).value
                                 val els = e2.childElements
-                                for (i in 0 until els.size()) e1.appendChild(e2.removeChild(els[0]))
+                                repeat(els.size()) {
+                                    e1.appendChild(e2.removeChild(els.first()))
+                                }
                                 e2.parent.removeChild(e2)
                                 merged = true
                             }

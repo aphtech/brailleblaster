@@ -35,7 +35,7 @@ import nu.xom.Node;
 import nu.xom.ParentNode;
 import nu.xom.Text;
 import org.brailleblaster.bbx.BBX;
-import org.brailleblaster.utils.NamespacesKt;
+import org.brailleblaster.utils.xml.NamespacesKt;
 
 /**
  * Utilities for XML..m

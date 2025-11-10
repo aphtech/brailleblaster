@@ -15,7 +15,7 @@
  */
 package org.brailleblaster.math.numberLine
 
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.spatial.NemethTranslations
 import org.brailleblaster.math.spatial.UebTranslations
 
@@ -40,34 +40,34 @@ class NumberLineLine {
                 var s = ""
                 when (c) {
                     ARROW_END -> s =
-                        if (MathModule.isNemeth) NemethTranslations.END_ARROW else UebTranslations.END_ARROW
+                        if (MathModuleUtils.isNemeth) NemethTranslations.END_ARROW else UebTranslations.END_ARROW
 
                     ARROW_START -> s =
-                        if (MathModule.isNemeth) NemethTranslations.BEGIN_ARROW else UebTranslations.BEGIN_ARROW
+                        if (MathModuleUtils.isNemeth) NemethTranslations.BEGIN_ARROW else UebTranslations.BEGIN_ARROW
 
                     DOUBLE_ARROW_END -> s =
-                        if (MathModule.isNemeth) NemethTranslations.DOUBLE_END_ARROW else UebTranslations.END_ARROW
+                        if (MathModuleUtils.isNemeth) NemethTranslations.DOUBLE_END_ARROW else UebTranslations.END_ARROW
 
                     DOUBLE_ARROW_START -> s =
-                        if (MathModule.isNemeth) NemethTranslations.DOUBLE_BEGIN_ARROW else UebTranslations.BEGIN_ARROW
+                        if (MathModuleUtils.isNemeth) NemethTranslations.DOUBLE_BEGIN_ARROW else UebTranslations.BEGIN_ARROW
 
                     EMPTY_CIRCLE -> s =
-                        if (MathModule.isNemeth) NemethTranslations.EMPTY_CIRCLE_ASCII else UebTranslations.EMPTY_ASCII
+                        if (MathModuleUtils.isNemeth) NemethTranslations.EMPTY_CIRCLE_ASCII else UebTranslations.EMPTY_ASCII
 
                     FILL_CIRCLE -> s =
-                        if (MathModule.isNemeth) NemethTranslations.FILL_CIRCLE_ASCII else UebTranslations.FILL_ASCII
+                        if (MathModuleUtils.isNemeth) NemethTranslations.FILL_CIRCLE_ASCII else UebTranslations.FILL_ASCII
 
                     HORIZONTAL_MODE -> s =
-                        if (MathModule.isNemeth) NemethTranslations.LINE_ASCII else UebTranslations.HORIZONTAL_MODE
+                        if (MathModuleUtils.isNemeth) NemethTranslations.LINE_ASCII else UebTranslations.HORIZONTAL_MODE
 
                     INTERVAL -> s =
-                        if (MathModule.isNemeth) NemethTranslations.INTERVAL_ASCII else UebTranslations.INTERVAL_ASCII
+                        if (MathModuleUtils.isNemeth) NemethTranslations.INTERVAL_ASCII else UebTranslations.INTERVAL_ASCII
 
                     LINE_EMPTY -> s =
-                        if (MathModule.isNemeth) NemethTranslations.LINE_ASCII else UebTranslations.LINE_ASCII
+                        if (MathModuleUtils.isNemeth) NemethTranslations.LINE_ASCII else UebTranslations.LINE_ASCII
 
                     LINE_FILL -> s =
-                        if (MathModule.isNemeth) NemethTranslations.LINE_FILLED_ASCII else UebTranslations.LINE_ASCII
+                        if (MathModuleUtils.isNemeth) NemethTranslations.LINE_FILLED_ASCII else UebTranslations.LINE_ASCII
 
                     else -> {}
                 }

@@ -72,13 +72,12 @@ abstract class BBSimpleManager {
 
         //TODO: validation
         if (event is XMLCaretEvent) {
-
-            //			if (currentSelection != null && (cEvent.start != cEvent.end)) {
-//				currentSelection = new XMLSelection(currentSelection.start, cEvent.end);
-//			}
-//			else {
+    //			if (currentSelection != null && (cEvent.start != cEvent.end)) {
+    //				currentSelection = new XMLSelection(currentSelection.start, cEvent.end);
+    //			}
+    //			else {
             privCurrentSelection = XMLSelection(event.start, event.end)
-            //			}
+    //			}
             checkSelection()
         }
 

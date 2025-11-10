@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.file.Paths
 import java.util.function.Consumer
-import java.util.stream.Stream
 
 /**
  * UTD settings, translation, and applying styles and actions management all in
@@ -514,10 +513,10 @@ class UTDManager @JvmOverloads constructor(styleDefs: StyleDefinitions = loadSty
 
       else -> {
           val baseStyle = getBaseStyle(curStyle)
-          log.debug("Got base style {} frorm {}", baseStyle!!.name, curStyle.name)
+          log.debug("Got base style {} frorm {}", baseStyle.name, curStyle.name)
 
           // Extend default style if possible instead of changing to a BBX.BLOCK.STYLE with overrideStyle
-          if (getBaseStyle(engine.getStyle(element) as Style?) != baseStyle) {
+          if (getBaseStyle(engine.getStyle(element) as Style) != baseStyle) {
             applyStyle(baseStyle, element, element.document,  /*keep styling*/false)
           }
           BBXDynamicOptionStyleMap.setStyleOptionAttrib(element, styleOption, value)
@@ -536,10 +535,10 @@ class UTDManager @JvmOverloads constructor(styleDefs: StyleDefinitions = loadSty
   /**
    * @see .getBaseStyle
    */
-  fun getBaseStyle(styleName: String, node: Node?): String {
+  fun getBaseStyle(styleName: String, node: Node): String {
     //Wrap with if to avoid relatively expensive getStyle()
     return if (styleName.startsWith(DOCUMENT_STYLE_NAME_PREFIX)) {
-      getBaseStyle(engine.getStyle(node!!) as Style?)!!.name
+      getBaseStyle(engine.getStyle(node) as Style).name
     } else styleName
   }
 
@@ -651,11 +650,8 @@ class UTDManager @JvmOverloads constructor(styleDefs: StyleDefinitions = loadSty
     }
 
     @JvmStatic
-    fun getBaseStyle(style: Style?): Style? {
-      return Stream.iterate(
-        style,
-        { baseStyle: Style? -> baseStyle!!.name.startsWith(DOCUMENT_STYLE_NAME_PREFIX) }) { baseStyle: Style? -> baseStyle!!.baseStyle }
-        .findFirst().orElse(style)
+    fun getBaseStyle(style: Style): Style {
+        return generateSequence(style) { it.baseStyle }.firstOrNull { !it.name.startsWith(DOCUMENT_STYLE_NAME_PREFIX) } ?: style
     }
 
     @JvmStatic

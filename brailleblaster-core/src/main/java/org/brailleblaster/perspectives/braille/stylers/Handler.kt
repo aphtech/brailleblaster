@@ -88,8 +88,4 @@ abstract class Handler(@JvmField protected val manager: Manager, @JvmField prote
         return manager.document.getParent(t.node)
     }
 
-    companion object {
-        @JvmField
-		val LINE_BREAK: String = System.lineSeparator()
-    }
 }

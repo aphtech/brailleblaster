@@ -19,7 +19,7 @@ import nu.xom.Element
 import nu.xom.Node
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.parsers.ImportParser.OldDocumentAction
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -30,7 +30,7 @@ class MathMLImportParser : ImportParser {
         if (oldNode is Element) {
             val newMathML = oldNode.copy()
             try {
-                MathModule.setASCIIText(newMathML)
+                MathModuleUtils.setASCIIText(newMathML)
             } catch (e: Exception) {
                 logger.error("Problem generating ASCIIMath", e)
             }

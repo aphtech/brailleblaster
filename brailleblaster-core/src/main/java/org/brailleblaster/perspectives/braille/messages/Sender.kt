@@ -16,5 +16,24 @@
 package org.brailleblaster.perspectives.braille.messages
 
 enum class Sender {
-    TEXT, BRAILLE, TREE, HANDLER, STYLE, DEBUG, EMPHASIS, SEARCH, SIMPLEMANAGER, UNDO_QUEUE, REDO_QUEUE, BREADCRUMBS, GO_TO_PAGE, TOC, MATH, IMAGE_DESCRIBER, VOLUME_CHANGE, TAB, SIX_KEY, NO_SENDER /* Used if dispatching module should process its own event */
+  TEXT,
+  BRAILLE,
+  TREE,
+  HANDLER,
+  STYLE,
+  DEBUG,
+  EMPHASIS,
+  SEARCH,
+  SIMPLEMANAGER,
+  UNDO_QUEUE,
+  REDO_QUEUE,
+  BREADCRUMBS,
+  GO_TO_PAGE,
+  TOC,
+  MATH,
+  IMAGE_DESCRIBER,
+  VOLUME_CHANGE,
+  TAB,
+  SIX_KEY,
+  NO_SENDER /* Used if dispatching module should process its own event */
 }

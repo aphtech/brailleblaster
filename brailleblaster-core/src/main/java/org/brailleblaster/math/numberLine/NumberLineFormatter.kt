@@ -15,7 +15,7 @@
  */
 package org.brailleblaster.math.numberLine
 
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.numberLine.NumberLineLine.LineChar
 import org.brailleblaster.math.spatial.*
 import org.brailleblaster.math.spatial.SpatialMathEnum.BlankOptions
@@ -37,7 +37,7 @@ class NumberLineFormatter(private val numberLine: NumberLine) {
     ) {
       numberLine.setSegmentIntervals()
     }
-    return if (MathModule.isNemeth) {
+    return if (MathModuleUtils.isNemeth) {
       if (numberLine.settings.type == NumberLineType.USER_DEFINED) {
         NemethUserDefinedFormatter.format(numberLine)
       } else {
@@ -68,7 +68,7 @@ class NumberLineFormatter(private val numberLine: NumberLine) {
 
           BlankOptions.NONE -> {}
           BlankOptions.OMISSION -> if (points.size > j) {
-            val omission = if (MathModule.isNemeth) NemethTranslations.OMISSION else UebTranslations.OMISSION
+            val omission = if (MathModuleUtils.isNemeth) NemethTranslations.OMISSION else UebTranslations.OMISSION
             val newPoint = NumberLinePoint(
               mathText=MathText(braille=omission, print=omission))
             points[j] = newPoint
@@ -86,33 +86,33 @@ class NumberLineFormatter(private val numberLine: NumberLine) {
 
     fun getSegmentBeginning(numberLine: NumberLine): String {
       return when (numberLine.segment.startSegmentCircle) {
-        Fill.EMPTY -> if (MathModule.isNemeth) NemethTranslations.EMPTY_CIRCLE_ASCII else UebTranslations.EMPTY_ASCII
-        Fill.FULL -> if (MathModule.isNemeth) NemethTranslations.FILL_CIRCLE_ASCII else UebTranslations.FILL_ASCII
-        else -> if (MathModule.isNemeth) NemethTranslations.LINE_ASCII else UebTranslations.HORIZONTAL_MODE
+        Fill.EMPTY -> if (MathModuleUtils.isNemeth) NemethTranslations.EMPTY_CIRCLE_ASCII else UebTranslations.EMPTY_ASCII
+        Fill.FULL -> if (MathModuleUtils.isNemeth) NemethTranslations.FILL_CIRCLE_ASCII else UebTranslations.FILL_ASCII
+        else -> if (MathModuleUtils.isNemeth) NemethTranslations.LINE_ASCII else UebTranslations.HORIZONTAL_MODE
       }
     }
 
     fun getSegmentEnding(numberLine: NumberLine): String {
       return when (numberLine.segment.endSegmentCircle) {
-        Fill.EMPTY -> if (MathModule.isNemeth) NemethTranslations.EMPTY_CIRCLE_ASCII else UebTranslations.EMPTY_ASCII
-        Fill.FULL -> if (MathModule.isNemeth) NemethTranslations.FILL_CIRCLE_ASCII else UebTranslations.FILL_ASCII
-        else -> if (MathModule.isNemeth) NemethTranslations.LINE_ASCII else UebTranslations.LINE_ASCII
+        Fill.EMPTY -> if (MathModuleUtils.isNemeth) NemethTranslations.EMPTY_CIRCLE_ASCII else UebTranslations.EMPTY_ASCII
+        Fill.FULL -> if (MathModuleUtils.isNemeth) NemethTranslations.FILL_CIRCLE_ASCII else UebTranslations.FILL_ASCII
+        else -> if (MathModuleUtils.isNemeth) NemethTranslations.LINE_ASCII else UebTranslations.LINE_ASCII
       }
     }
 
     fun getSegmentBeginning(point: NumberLineSegmentPoint): String {
       return when (point.circle) {
-        Fill.EMPTY -> if (MathModule.isNemeth) NemethTranslations.EMPTY_CIRCLE_ASCII else UebTranslations.EMPTY_ASCII
-        Fill.FULL -> if (MathModule.isNemeth) NemethTranslations.FILL_CIRCLE_ASCII else UebTranslations.FILL_ASCII
-        else -> if (MathModule.isNemeth) NemethTranslations.LINE_ASCII else UebTranslations.HORIZONTAL_MODE
+        Fill.EMPTY -> if (MathModuleUtils.isNemeth) NemethTranslations.EMPTY_CIRCLE_ASCII else UebTranslations.EMPTY_ASCII
+        Fill.FULL -> if (MathModuleUtils.isNemeth) NemethTranslations.FILL_CIRCLE_ASCII else UebTranslations.FILL_ASCII
+        else -> if (MathModuleUtils.isNemeth) NemethTranslations.LINE_ASCII else UebTranslations.HORIZONTAL_MODE
       }
     }
 
     fun getSegmentEnding(point: NumberLineSegmentPoint): String {
       return when (point.circle) {
-        Fill.EMPTY -> if (MathModule.isNemeth) NemethTranslations.EMPTY_CIRCLE_ASCII else UebTranslations.EMPTY_ASCII
-        Fill.FULL -> if (MathModule.isNemeth) NemethTranslations.FILL_CIRCLE_ASCII else UebTranslations.FILL_ASCII
-        else -> if (MathModule.isNemeth) NemethTranslations.LINE_ASCII else UebTranslations.LINE_ASCII
+        Fill.EMPTY -> if (MathModuleUtils.isNemeth) NemethTranslations.EMPTY_CIRCLE_ASCII else UebTranslations.EMPTY_ASCII
+        Fill.FULL -> if (MathModuleUtils.isNemeth) NemethTranslations.FILL_CIRCLE_ASCII else UebTranslations.FILL_ASCII
+        else -> if (MathModuleUtils.isNemeth) NemethTranslations.LINE_ASCII else UebTranslations.LINE_ASCII
       }
     }
 
@@ -135,7 +135,7 @@ class NumberLineFormatter(private val numberLine: NumberLine) {
         log.debug("Number of intervals and points do not match")
         return
       }
-      val numberChar = if (MathModule.isNemeth) 0 else 1
+      val numberChar = if (MathModuleUtils.isNemeth) 0 else 1
       for (i in 0 until numIntervals) {
         val label = numberLine.settings.userDefinedArray[i].labelText
         val point = numberLine.points[i]
@@ -184,13 +184,13 @@ class NumberLineFormatter(private val numberLine: NumberLine) {
       val line = Line()
       if (numberLine.settings.isStartOverflow) {
         line.elements.add(
-          line.getWhitespaceSegment(if (MathModule.isNemeth) NemethTranslations.DOUBLE_BEGIN_ARROW.length else UebTranslations.BEGIN_ARROW.length)
+          line.getWhitespaceSegment(if (MathModuleUtils.isNemeth) NemethTranslations.DOUBLE_BEGIN_ARROW.length else UebTranslations.BEGIN_ARROW.length)
         )
       } else if (numberLine.settings.isArrow) {
         line.elements
-          .add(line.getWhitespaceSegment(if (MathModule.isNemeth) NemethTranslations.BEGIN_ARROW.length else UebTranslations.BEGIN_ARROW.length))
+          .add(line.getWhitespaceSegment(if (MathModuleUtils.isNemeth) NemethTranslations.BEGIN_ARROW.length else UebTranslations.BEGIN_ARROW.length))
       }
-      if (!MathModule.isNemeth) {
+      if (!MathModuleUtils.isNemeth) {
         line.elements.add(line.getWhitespaceSegment(UebTranslations.HORIZONTAL_MODE.length))
       }
       val points = numberLine.settings.userDefinedArray
@@ -210,10 +210,10 @@ class NumberLineFormatter(private val numberLine: NumberLine) {
       }
       if (numberLine.settings.isEndOverflow) {
         line.elements
-          .add(line.getWhitespaceSegment(if (MathModule.isNemeth) NemethTranslations.DOUBLE_END_ARROW.length else UebTranslations.END_ARROW.length))
+          .add(line.getWhitespaceSegment(if (MathModuleUtils.isNemeth) NemethTranslations.DOUBLE_END_ARROW.length else UebTranslations.END_ARROW.length))
       } else if (numberLine.settings.isArrow) {
         line.elements
-          .add(line.getWhitespaceSegment(if (MathModule.isNemeth) NemethTranslations.END_ARROW.length else UebTranslations.END_ARROW.length))
+          .add(line.getWhitespaceSegment(if (MathModuleUtils.isNemeth) NemethTranslations.END_ARROW.length else UebTranslations.END_ARROW.length))
       }
       if (numberLine.settings.labelPosition == LabelPosition.TOP) {
         numberLine.lines.add(0, line)
@@ -228,13 +228,13 @@ class NumberLineFormatter(private val numberLine: NumberLine) {
       val points = numberLine.points
       if (numberLine.settings.isStartOverflow) {
         line.elements.add(
-          line.getWhitespaceSegment(if (MathModule.isNemeth) NemethTranslations.DOUBLE_BEGIN_ARROW.length else UebTranslations.BEGIN_ARROW.length)
+          line.getWhitespaceSegment(if (MathModuleUtils.isNemeth) NemethTranslations.DOUBLE_BEGIN_ARROW.length else UebTranslations.BEGIN_ARROW.length)
         )
       } else if (numberLine.settings.isArrow) {
         line.elements
-          .add(line.getWhitespaceSegment(if (MathModule.isNemeth) NemethTranslations.BEGIN_ARROW.length else UebTranslations.BEGIN_ARROW.length))
+          .add(line.getWhitespaceSegment(if (MathModuleUtils.isNemeth) NemethTranslations.BEGIN_ARROW.length else UebTranslations.BEGIN_ARROW.length))
       }
-      if (!MathModule.isNemeth) {
+      if (!MathModuleUtils.isNemeth) {
         line.elements.add(line.getWhitespaceSegment(UebTranslations.HORIZONTAL_MODE.length))
       }
       for (i in points.indices) {
@@ -253,10 +253,10 @@ class NumberLineFormatter(private val numberLine: NumberLine) {
       }
       if (numberLine.settings.isEndOverflow) {
         line.elements
-          .add(line.getWhitespaceSegment(if (MathModule.isNemeth) NemethTranslations.DOUBLE_END_ARROW.length else UebTranslations.END_ARROW.length))
+          .add(line.getWhitespaceSegment(if (MathModuleUtils.isNemeth) NemethTranslations.DOUBLE_END_ARROW.length else UebTranslations.END_ARROW.length))
       } else if (numberLine.settings.isArrow) {
         line.elements
-          .add(line.getWhitespaceSegment(if (MathModule.isNemeth) NemethTranslations.END_ARROW.length else UebTranslations.END_ARROW.length))
+          .add(line.getWhitespaceSegment(if (MathModuleUtils.isNemeth) NemethTranslations.END_ARROW.length else UebTranslations.END_ARROW.length))
       }
       if (line.toString().length > cellsPerLine) {
         log.error("Points are longer than cells per line, points are {}", line.toString().length)

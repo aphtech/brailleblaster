@@ -18,7 +18,7 @@ package org.brailleblaster.perspectives.braille.mapping.elements;
 import nu.xom.Element;
 import nu.xom.Node;
 import nu.xom.ParentNode;
-import org.brailleblaster.math.mathml.MathModule;
+import org.brailleblaster.math.mathml.MathModuleUtils;
 import org.brailleblaster.utd.internal.xml.XMLHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,8 +78,9 @@ public class TextMapElement extends AbstractMapElement {
 
 	public boolean isSpatialMath() {
 		Node node = getNode();
-		return getNode() != null && node.getDocument() != null && MathModule.isSpatialMath(node);
+		return getNode() != null && node.getDocument() != null && MathModuleUtils.isSpatialMath(node);
 	}
+
 	public boolean isMathML(){
 		Node node = getNode();
 		return node instanceof Element && (((Element) node).getLocalName().equals("math"));

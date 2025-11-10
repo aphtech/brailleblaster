@@ -22,7 +22,7 @@ import org.brailleblaster.utd.IStyle
 import org.brailleblaster.utd.PageBuilder
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.PageBuilderHelper
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utils.xml.UTD_NS
 import kotlin.math.max
 
 /**

@@ -18,6 +18,7 @@ package org.brailleblaster.perspectives.braille.mapping.elements
 import nu.xom.Element
 import org.brailleblaster.perspectives.braille.mapping.maps.MapList
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.util.LINE_BREAK
 
 class LineBreakElement(lineBreak: Element) : WhiteSpaceElement(lineBreak) {
     /**
@@ -46,7 +47,7 @@ class LineBreakElement(lineBreak: Element) : WhiteSpaceElement(lineBreak) {
         return if (isEndOfLine || !isFullyVisible) {
             list[index - 1].getEnd(list)
         } else {
-            list[index - 1].getEnd(list) + System.lineSeparator().length
+            list[index - 1].getEnd(list) + LINE_BREAK.length
         }
     }
 

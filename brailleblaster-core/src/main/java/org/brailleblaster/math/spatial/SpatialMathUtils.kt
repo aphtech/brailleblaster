@@ -19,7 +19,7 @@ import nu.xom.Element
 import nu.xom.Node
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.spatial.SpatialMathEnum.Translation
 import org.brailleblaster.perspectives.braille.mapping.elements.LineBreakElement
 import org.brailleblaster.perspectives.braille.mapping.elements.TextMapElement
@@ -33,10 +33,10 @@ object SpatialMathUtils {
     @JvmStatic
     fun translate(translation: Translation, input: String): String {
         return when (translation) {
-            Translation.ASCII_MATH -> MathModule.translateAsciiMath(input)
+            Translation.ASCII_MATH -> MathModuleUtils.translateAsciiMath(input)
             Translation.DIRECT -> input
-            Translation.LITERARY -> MathModule.translateMainPrint(input)
-            Translation.UNCONTRACTED -> MathModule.translateUncontracted(input)
+            Translation.LITERARY -> MathModuleUtils.translateMainPrint(input)
+            Translation.UNCONTRACTED -> MathModuleUtils.translateUncontracted(input)
         }
     }
 

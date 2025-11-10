@@ -27,7 +27,7 @@ import org.brailleblaster.utd.Style
 import org.brailleblaster.utd.Style.StyleOption
 import org.brailleblaster.utd.config.StyleDefinitions
 import org.brailleblaster.utd.internal.DynamicOptionStyleMap
-import org.brailleblaster.utils.BB_NS
+import org.brailleblaster.utils.xml.BB_NS
 import org.brailleblaster.utils.xom.attributes
 import java.util.function.Supplier
 

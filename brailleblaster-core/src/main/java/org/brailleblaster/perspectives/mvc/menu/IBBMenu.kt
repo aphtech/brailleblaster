@@ -17,7 +17,7 @@ package org.brailleblaster.perspectives.mvc.menu
 
 import org.brailleblaster.perspectives.mvc.menu.MenuManager.addToListenerMap
 import org.brailleblaster.perspectives.mvc.menu.MenuManager.menuItemAcceleratorSuffix
-import org.brailleblaster.util.FormUIUtils
+import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.SelectionEvent
@@ -50,7 +50,7 @@ interface IBBMenuItem : IBBMenu {
             item.accelerator = accelerator
         }
         item.text = textBuilder.toString()
-        FormUIUtils.addSelectionListener(item) { e: SelectionEvent ->
+        EasySWT.addSelectionListener(item) { e: SelectionEvent ->
             //SWT dispatches two selection events when a radio button is clicked, one for the new selection
             //and one for the previous selection
             if (this !is IBBRadioMenuItem || (e.widget as MenuItem).selection) {

@@ -17,7 +17,7 @@ package org.brailleblaster.utd
 
 import nu.xom.Node
 
-abstract class UTDTranslationEngineCallback {
-    abstract fun onUpdateNode(n: Node)
-    abstract fun onFormatComplete(root: Node)
+interface UTDTranslationEngineCallback {
+    fun onUpdateNode(n: Node)
+    fun onFormatComplete(root: Node)
 }

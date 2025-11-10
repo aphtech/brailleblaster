@@ -260,7 +260,7 @@ class SelectionHandler(manager: Manager?, vi: ViewInitializer?, list: MapList?) 
                 if (mutStart <= t.getStart(list)) mutStart = t.getStart(list)
 
                 if (t.getEnd(list) != mutStart) {
-                    val rTxt = replacedText.take(t.getEnd(list) - mutStart).replace(LINE_BREAK.toRegex(), "")
+                    val rTxt = replacedText.take(t.getEnd(list) - mutStart).replace(org.brailleblaster.util.LINE_BREAK.toRegex(), "")
                     val selStart = t.text.indexOf(rTxt)
                     var unEditedText = ""
                     if (0 <= selStart) {
@@ -302,7 +302,7 @@ class SelectionHandler(manager: Manager?, vi: ViewInitializer?, list: MapList?) 
                 val offset = end - t.getStart(list)
                 val startOffset = t.getStart(list) - start
                 val lineBreaks = (replacedText.substring(startOffset).length
-                        - replacedText.substring(startOffset).replace(LINE_BREAK.toRegex(), "").length)
+                        - replacedText.substring(startOffset).replace(org.brailleblaster.util.LINE_BREAK.toRegex(), "").length)
                 newText = t.text.substring(offset - lineBreaks)
                 val node = t.node as Text
                 node.value = newText

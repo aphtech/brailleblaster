@@ -16,7 +16,7 @@
 package org.brailleblaster.math.numberLine
 
 import org.apache.commons.lang3.math.Fraction
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.numberLine.NumberLineFormatter.Companion.addLabels
 import org.brailleblaster.math.numberLine.NumberLineFormatter.Companion.addLine
 import org.brailleblaster.math.numberLine.NumberLineFormatter.Companion.addPoints
@@ -226,7 +226,7 @@ open class UebNumberLineFormatter {
       var string: String
         return if (numberLine.settings.intervalType == SpatialMathEnum.IntervalType.WHOLE) {
         string = fraction.toInt().toString()
-        val ascii = MathModule.translateAsciiMath(string)
+        val ascii = MathModuleUtils.translateAsciiMath(string)
         if (numberLine.settings.passage == Passage.NUMERIC) {
           ascii.replace(UebTranslations.NUMBER_CHAR.toRegex(), "")
         } else ascii
@@ -242,7 +242,7 @@ open class UebNumberLineFormatter {
         } else {
           string = fraction.toDouble().toString()
         }
-        val ascii = MathModule.translateAsciiMath(string)
+        val ascii = MathModuleUtils.translateAsciiMath(string)
         if (numberLine.settings.passage == Passage.NUMERIC) {
           ascii.replace(UebTranslations.NUMBER_CHAR.toRegex(), "")
         } else ascii

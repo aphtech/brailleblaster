@@ -17,7 +17,7 @@ package org.brailleblaster.utd.internal.elements
 
 import nu.xom.Element
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utils.xml.UTD_NS
 
 class BrlOnly : Element(PROTOTYPE) {
     companion object {

@@ -25,7 +25,7 @@ import org.testng.annotations.Test
 class BenchmarkTest {
     @DataProvider
     fun pageSizeDataProvider(): Array<Array<Any?>?> {
-        val result: MutableList<Array<Any?>?> = ArrayList<Array<Any?>?>()
+        val result: MutableList<Array<Any?>?> = ArrayList()
         for (i in 1..49) {
             result.add(arrayOf(i))
         }

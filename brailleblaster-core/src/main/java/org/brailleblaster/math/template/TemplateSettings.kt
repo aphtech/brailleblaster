@@ -15,7 +15,7 @@
  */
 package org.brailleblaster.math.template
 
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.spatial.ISpatialMathSettings
 import org.brailleblaster.math.spatial.SpatialMathEnum
 import org.brailleblaster.math.spatial.SpatialMathEnum.OPERATOR
@@ -40,7 +40,7 @@ class TemplateSettings : ISpatialMathSettings {
 
     @JvmStatic
     fun shouldFormatLinear(template: Template): Boolean {
-      return MathModule.isNemeth
+      return MathModuleUtils.isNemeth
           && template.settings.isLinear
           && template.settings.type == SpatialMathEnum.TemplateType.RADICAL_ENUM
           && (template.brailleSolutions.isEmpty()

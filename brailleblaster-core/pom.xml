@@ -12,9 +12,8 @@
 
     <properties>
         <!-- Versioning -->
-        <miglayoutswt.version>11.3</miglayoutswt.version>
-        <jeuclid.version>c79273c782dbaccafafb5f92b53f353dbe52218d</jeuclid.version>
-        <xmlgraphicscommons.version>2.8</xmlgraphicscommons.version>
+        <miglayoutswt.version>11.4.2</miglayoutswt.version>
+        <jeuclid.version>3dd136499d543bf4863e05a94b8b1169834cf963</jeuclid.version>
 
         <!-- For exec:java, put here so mainClass can be overridden with -Dexec.mainClass -->
         <exec.mainClass>org.brailleblaster.Main</exec.mainClass>
@@ -152,17 +151,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <!-- Fix dependency conflicts -->
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.apache.xmlgraphics</groupId>
-                <artifactId>xmlgraphics-commons</artifactId>
-                <version>${xmlgraphicscommons.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <build>
         <directory>${alt.build.dir}</directory>

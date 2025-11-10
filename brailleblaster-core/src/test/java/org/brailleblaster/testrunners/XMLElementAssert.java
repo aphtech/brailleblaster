@@ -37,7 +37,7 @@ import org.brailleblaster.utd.internal.xml.FastXPath;
 import org.brailleblaster.utd.internal.xml.XMLHandler;
 import org.brailleblaster.utd.properties.EmphasisType;
 import org.brailleblaster.utd.utils.UTDHelper;
-import org.brailleblaster.utils.NamespacesKt;
+import org.brailleblaster.utils.xml.NamespacesKt;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.slf4j.Logger;

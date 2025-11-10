@@ -26,7 +26,7 @@ import org.brailleblaster.perspectives.braille.messages.InsertNodeMessage
 import org.brailleblaster.perspectives.braille.viewInitializer.ViewInitializer
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.EmphasisType
-import org.brailleblaster.utils.UTD_NS
+import org.brailleblaster.utils.xml.UTD_NS
 
 class InsertElementHandler(manager: Manager, vi: ViewInitializer?, list: MapList?) : Handler(manager, vi!!, list!!) {
     val doc: BrailleDocument = manager.document

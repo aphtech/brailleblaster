@@ -19,6 +19,7 @@ package org.brailleblaster.userHelp
 import com.sun.jna.Platform
 import org.apache.commons.lang3.SystemUtils
 import org.brailleblaster.AppProperties
+import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.util.PANDOC_VERSION
 import org.mwhapples.jlouis.Louis
 import java.io.IOException
@@ -39,7 +40,7 @@ private fun createSummaryString(generator: Generator): String = (ALL_PROJECTS.ma
     } catch (e: Exception) {
         throw RuntimeException("Failed to load project " + curProj.name, e)
     }
-} + listOf(javaVersion, oSVersion)).joinToString(separator = System.lineSeparator())
+} + listOf(javaVersion, oSVersion)).joinToString(separator = LINE_BREAK)
 
 val javaVersion: String
     get() = "Java ${System.getProperty("java.version")} ${if (Platform.is64Bit()) "64-bit" else "32-bit"} ${Locale.getDefault()}"

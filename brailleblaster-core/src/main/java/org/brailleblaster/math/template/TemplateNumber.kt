@@ -15,7 +15,7 @@
  */
 package org.brailleblaster.math.template
 
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.spatial.NemethTranslations
 import org.brailleblaster.math.spatial.SpatialMathEnum.Passage
 import org.brailleblaster.math.spatial.UebTranslations
@@ -33,7 +33,7 @@ class TemplateNumber private constructor(
 
   //Is this the source of unclear symbols (bug 52355?)
   fun toStringPart(): String {
-    return if (MathModule.isNemeth) {
+    return if (MathModuleUtils.isNemeth) {
       (" ".repeat(leftPadding) + leftDec
           + (if (isDecimal) NemethTranslations.NEMETH_DECIMAL
       else if (isColumnHasDecimal) " " else "") + rightDec
@@ -47,7 +47,7 @@ class TemplateNumber private constructor(
   }
 
   fun toStringWhole(template: Template): String {
-    return if (MathModule.isNemeth) {
+    return if (MathModuleUtils.isNemeth) {
       ((if (isMinus) NemethTranslations.MINUS
       else if (isColumnHasMinus) " ".repeat(NemethTranslations.MINUS.length)
       else "")
@@ -98,27 +98,27 @@ class TemplateNumber private constructor(
     fun wholeNum(string: String): TemplateNumberBuilder {
       var wholeString = string
       wholeString = wholeString.replace(UebTranslations.NUMBER_CHAR.toRegex(), "")
-      val decimal = if (MathModule.isNemeth) NemethTranslations.NEMETH_DECIMAL else UebTranslations.UEB_DECIMAL
+      val decimal = if (MathModuleUtils.isNemeth) NemethTranslations.NEMETH_DECIMAL else UebTranslations.UEB_DECIMAL
       val split = wholeString.indexOf(decimal)
       if (split != -1) {
         this.leftDec = wholeString.take(split)
         this.rightDec = wholeString.drop(split + 1)
         this.decimal = true
-        val minusSplit = if (MathModule.isNemeth) leftDec.indexOf(NemethTranslations.MINUS)
+        val minusSplit = if (MathModuleUtils.isNemeth) leftDec.indexOf(NemethTranslations.MINUS)
         else leftDec.indexOf(UebTranslations.PRINT_MINUS)
         if (minusSplit != -1) {
           this.minus = true
-          if (!MathModule.isNemeth) {
+          if (!MathModuleUtils.isNemeth) {
             this.leftDec = leftDec.substring(minusSplit + 1)
           }
         }
       } else {
         this.leftDec = wholeString
-        val minusSplit = if (MathModule.isNemeth) leftDec.indexOf(NemethTranslations.MINUS)
+        val minusSplit = if (MathModuleUtils.isNemeth) leftDec.indexOf(NemethTranslations.MINUS)
         else leftDec.indexOf(UebTranslations.PRINT_MINUS)
         if (minusSplit != -1) {
           this.minus = true
-          if (!MathModule.isNemeth) {
+          if (!MathModuleUtils.isNemeth) {
             this.leftDec = leftDec.substring(minusSplit + 1)
           }
         }

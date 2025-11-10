@@ -20,7 +20,7 @@ import nu.xom.Text
 import org.brailleblaster.BBIni
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
-import org.brailleblaster.math.mathml.MathModule
+import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.braille.toolbar.CustomToolBarBuilder
@@ -39,7 +39,7 @@ import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.utils.TextTranslator
 import org.brailleblaster.utd.utils.UTDHelper
-import org.brailleblaster.utils.BB_NS
+import org.brailleblaster.utils.xml.BB_NS
 import org.brailleblaster.utils.swt.AccessibilityUtils.setName
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
@@ -333,12 +333,12 @@ class ProseBuilder : MenuToolModule {
         startNode = manager!!.simpleManager.currentSelection.start.node
         var endNode = manager!!.simpleManager.currentSelection.end.node
         if (startNode is Text
-            || MathModule.isMath(startNode)
+            || MathModuleUtils.isMath(startNode)
         ) {
             startNode = getBlockParent(startNode)
         }
         if (endNode is Text
-            || MathModule.isMath(endNode)
+            || MathModuleUtils.isMath(endNode)
         ) {
             endNode = getBlockParent(endNode)
         }

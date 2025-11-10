@@ -32,7 +32,7 @@ import org.brailleblaster.embossers.EmbossingUtils;
 import org.brailleblaster.exceptions.*;
 import org.brailleblaster.frontmatter.VolumeUtils;
 import org.brailleblaster.utils.localization.LocaleHandler;
-import org.brailleblaster.math.mathml.MathModule;
+import org.brailleblaster.math.mathml.MathModuleUtils;
 import org.brailleblaster.perspectives.Controller;
 import org.brailleblaster.perspectives.braille.document.BrailleDocument;
 import org.brailleblaster.perspectives.braille.eventQueue.EventFrame;
@@ -72,6 +72,7 @@ import org.brailleblaster.utd.properties.UTDElements;
 import org.brailleblaster.utd.utils.TableUtils;
 import org.brailleblaster.utd.utils.UTDHelper;
 import org.brailleblaster.util.*;
+import org.brailleblaster.utils.swt.EasySWT;
 import org.brailleblaster.wordprocessor.BBStatusBar;
 import org.brailleblaster.wordprocessor.FontManager;
 import org.brailleblaster.wordprocessor.RecentDocs;
@@ -203,7 +204,7 @@ public class Manager extends Controller {
                 if (mEvent.translate) {
                     List<Element> changedNodes = new ArrayList<>();
 
-                    // Used to comminicate information before a formatting stage
+                    // Used to communicate information before a formatting stage
                     // Can't just apply to mEvent.changedNodes as these might be added to a parent
                     StreamSupport.stream(FastXPath.descendant(getDoc()).spliterator(), false).filter(Searcher.Filters::isElement)
                             .map(Searcher.Mappers::toElement)
@@ -516,7 +517,7 @@ public class Manager extends Controller {
     }
 
     private void initializeAllViews() {
-        MathModule.retranslateSpatial(document);
+        MathModuleUtils.retranslateSpatial(document);
         try (WorkingDialog ignored = new WorkingDialog(
                 archiver != null ? "Parsing book " + getArchiver().getPath() : "Starting BrailleBlaster")) {
             document.translateDocument();
@@ -664,7 +665,7 @@ public class Manager extends Controller {
                 Text workingText = new Text(working, SWT.NONE);
                 workingText.setText("Formatting, please wait...");
 
-                FormUIUtils.setLargeDialogSize(working);
+                EasySWT.INSTANCE.setLargeDialogSize(working);
 
                 working.open();
                 finishFormattingLatch.await();
