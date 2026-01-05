@@ -17,7 +17,6 @@ package org.brailleblaster.utd.internal.xml
 
 import nu.xom.*
 import org.apache.commons.io.input.BOMInputStream
-import org.apache.commons.lang3.StringUtils
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.exceptions.UTDException
 import org.brailleblaster.utd.properties.UTDElements
@@ -35,9 +34,21 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.*
 import java.util.function.Predicate
 import javax.xml.parsers.ParserConfigurationException
+
+private val log: Logger = LoggerFactory.getLogger(XMLHandler::class.java)
+
+private fun checkSortedAndUniqueSplitPositions(splitPos: IntArray): Boolean {
+    var lastPos = 0
+    for (curSplitPos in splitPos) {
+        if (curSplitPos <= lastPos) {
+            return false
+        }
+        lastPos = curSplitPos
+    }
+    return true
+}
 
 /**
  * Handles processing of XML documents from and to the disk
@@ -86,45 +97,7 @@ open class XMLHandler {
     fun load(xmlFileInput: File): Document {
         val xmlFile = xmlFileInput.getAbsoluteFile()
         if (!xmlFile.exists()) throw RuntimeException("XML File $xmlFile does not exist")
-        try {
-            val builder = createXomBuilder(false)
-            return builder.build(xmlFile)
-        } catch (e: ValidityException) {
-            throw RuntimeException("The document failed to validate in $xmlFileInput", e)
-        } catch (e: ParsingException) {
-            throw RuntimeException("The document XML is malformed in $xmlFileInput", e)
-        } catch (e: IOException) {
-            throw RuntimeException("Problem reading file $xmlFileInput", e)
-        } catch (e: SAXException) {
-            throw RuntimeException(
-                "Problem creating the XML parser, may be Apache Xerces is not installed", e
-            )
-        } catch (e: ParserConfigurationException) {
-            throw RuntimeException(
-                "Problem creating the XML parser, may be Apache Xerces is not installed", e
-            )
-        }
-    }
-
-    fun load(input: InputStream?): Document? {
-        try {
-            val builder = createXomBuilder(false)
-            return builder.build(input)
-        } catch (e: ValidityException) {
-            throw RuntimeException("The document failed to validate", e)
-        } catch (e: ParsingException) {
-            throw RuntimeException("The document XML is malformed", e)
-        } catch (e: IOException) {
-            throw RuntimeException("Problem reading file", e)
-        } catch (e: SAXException) {
-            throw RuntimeException(
-                "Problem creating the XML parser, may be Apache Xerces is not installed", e
-            )
-        } catch (e: ParserConfigurationException) {
-            throw RuntimeException(
-                "Problem creating the XML parser, may be Apache Xerces is not installed", e
-            )
-        }
+        return load(xmlFile.toPath())
     }
 
     fun load(input: Reader?): Document {
@@ -187,7 +160,6 @@ open class XMLHandler {
     }
 
     companion object {
-        private val log: Logger = LoggerFactory.getLogger(XMLHandler::class.java)
         private val FIELD_XPATHCONTEXT_NAMESPACES: Field
 
         init {
@@ -227,19 +199,6 @@ open class XMLHandler {
                 }
             }
             elem.detach()
-        }
-
-        /**
-         * Avoids potentially expensive deep copies
-         */
-        fun shallowCopy(elem: Element): Element {
-            try {
-                val method = Element::class.java.getDeclaredMethod("copyTag", Element::class.java)
-                method.setAccessible(true)
-                return method.invoke(null, elem) as Element
-            } catch (e: Exception) {
-                throw UTDException("Failed to invoke writeStartTag method", e)
-            }
         }
 
         /**
@@ -337,7 +296,7 @@ open class XMLHandler {
 
             // Reassign default namespace to book
             val bookNS = element.namespaceURI
-            if (StringUtils.isNotBlank(bookNS)) {
+            if (bookNS.isNotBlank()) {
                 context.addNamespace("book", bookNS)
             } else {
                 // Doc doesn't have a namespace, but its needed for queries using book: NS prefix
@@ -358,58 +317,6 @@ open class XMLHandler {
             context.addNamespace("m", "http://www.w3.org/1998/Math/MathML")
 
             return context
-        }
-
-        /**
-         * Split a text node at the given positions
-         */
-        fun splitTextNode(textNode: Text, vararg splitPos: Int): List<Text> {
-            log.trace("Input string '{}' split {}", textNode.value, splitPos.contentToString())
-            requireNotNull(textNode.parent) { "TextNode must have parent" }
-            require(splitPos.isNotEmpty()) { "Must specify Positions to split" }
-            var lastPos = -2
-            for (curSplitPos in splitPos) {
-                // Below useless so tidying up
-                // if (curSplitPos <= 0) {
-                //					throw new NodeException("Postion " + curSplitPos + " must be greater than 0",
-                // textNode);
-                //				} else
-                if (curSplitPos in 1..lastPos) {
-                    throw NodeException("Positions must sorted and uniq", textNode)
-                }
-                lastPos = curSplitPos
-            }
-
-            val replacementNodes: MutableList<Text> = mutableListOf()
-
-            // do splitting
-            val text = textNode.value
-            var lastStart = 0
-            var insertIndex = textNode.parent.indexOf(textNode)
-            val splitPosItr: MutableIterator<Int?> = Arrays.stream(splitPos).iterator()
-            while (lastStart != text.length) {
-                var finished = false
-                val textPart: String?
-                if (splitPosItr.hasNext()) {
-                    val curSplitPos: Int = splitPosItr.next()!!
-                    textPart = text.substring(lastStart, curSplitPos)
-                    lastStart = curSplitPos
-                } else {
-                    textPart = text.substring(lastStart)
-                    finished = true
-                }
-
-                val replacementNode = Text(textPart)
-                textNode.parent.insertChild(replacementNode, insertIndex++)
-                replacementNodes.add(replacementNode)
-
-                if (finished) {
-                    break
-                }
-            }
-            textNode.detach()
-
-            return replacementNodes.toList()
         }
 
         /**
@@ -435,7 +342,7 @@ open class XMLHandler {
                 }
 
                 else -> {
-                    node.parent as Element?
+                    node.parent as? Element
                 }
             }
         }
@@ -528,7 +435,7 @@ open class XMLHandler {
             var counter = 1
             val doc = curParent.document
             while (true) {
-                val remainingElements: MutableSet<Element?> = HashSet<Element?>(elements)
+                val remainingElements: MutableSet<Element?> = HashSet(elements)
                 val curCounter = counter
                 childrenRecursiveVisitor(
                     (curParent as Element?)!!
@@ -665,4 +572,54 @@ open class XMLHandler {
             return null
         }
     }
+}
+
+fun Element.shallowcopy(): Element {
+    try {
+        val method = Element::class.java.getDeclaredMethod("copyTag", Element::class.java)
+        method.setAccessible(true)
+        return method.invoke(null, this) as Element
+    } catch (e: Exception) {
+        throw UTDException("Failed to invoke writeStartTag method", e)
+    }
+}
+
+fun Text.splitNode(vararg splitPos: Int): List<Text> {
+    log.trace("Input string '{}' split {}", this.value, splitPos.contentToString())
+    requireNotNull(this.parent) { "TextNode must have parent" }
+    require(splitPos.isNotEmpty()) { "Must specify Positions to split" }
+    if (!checkSortedAndUniqueSplitPositions(splitPos)) {
+        throw NodeException("Positions must be sorted and unique, positions=$splitPos", this)
+    }
+
+    val replacementNodes: MutableList<Text> = mutableListOf()
+
+    // do splitting
+    val text = this.value
+    var lastStart = 0
+    var insertIndex = this.parent.indexOf(this)
+    val splitPosItr: IntIterator = splitPos.iterator()
+    while (lastStart != text.length) {
+        var finished = false
+        val textPart: String?
+        if (splitPosItr.hasNext()) {
+            val curSplitPos: Int = splitPosItr.next()
+            textPart = text.substring(lastStart, curSplitPos)
+            lastStart = curSplitPos
+        } else {
+            textPart = text.substring(lastStart)
+            finished = true
+        }
+
+        val replacementNode = Text(textPart)
+        this.parent.insertChild(replacementNode, insertIndex++)
+        replacementNodes.add(replacementNode)
+
+        if (finished) {
+            break
+        }
+    }
+    detach()
+
+    return replacementNodes.toList()
 }

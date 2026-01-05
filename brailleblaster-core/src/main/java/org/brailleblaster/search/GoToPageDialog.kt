@@ -33,7 +33,6 @@ import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.UTDElements.Companion.getByName
 import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.exceptions.BBNotifyException
-import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.SelectionAdapter
@@ -46,8 +45,8 @@ import org.eclipse.swt.widgets.Text
 import org.slf4j.LoggerFactory
 
 class GoToPageDialog(private val m: Manager) {
-  @JvmField
-  val dialog: Shell = FormUIUtils.makeDialog(m)
+    @JvmField
+    val dialog: Shell = EasySWT.makeDialog(m.wpManager.shell)
   private val pageText: Text
   val rawPageButton: Button
 

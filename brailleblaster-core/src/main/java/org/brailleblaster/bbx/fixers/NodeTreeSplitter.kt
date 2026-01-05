@@ -21,6 +21,7 @@ import nu.xom.Node
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
+import org.brailleblaster.utd.internal.xml.shallowcopy
 import org.slf4j.LoggerFactory
 
 object NodeTreeSplitter {
@@ -89,7 +90,7 @@ object NodeTreeSplitter {
             if (splitStart - 1 < parent.childCount) {
                 // recreate parent
                 val prevNewRoot = newRoot
-                newRoot = XMLHandler.shallowCopy(parent)
+                newRoot = parent.shallowcopy()
                 //			root.getParent().insertChild(newRoot, root.getParent().indexOf(root) + 1);
                 log.trace("Making root " + newRoot.toXML())
                 if (prevNewRoot != null) {

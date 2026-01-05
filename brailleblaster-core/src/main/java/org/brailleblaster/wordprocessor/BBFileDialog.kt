@@ -15,9 +15,10 @@
  */
 package org.brailleblaster.wordprocessor
 
-import com.sun.jna.Platform
 import org.brailleblaster.BBIni
+import org.brailleblaster.utils.OS
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
+import org.brailleblaster.utils.os
 import org.eclipse.swt.SWT
 import org.eclipse.swt.widgets.FileDialog
 import org.eclipse.swt.widgets.MessageBox
@@ -41,8 +42,8 @@ class BBFileDialog @JvmOverloads constructor(
             w.fileName = suggestedFileName
         }
         w.filterPath = filterPath
-        w.filterNames = filterNames
-        w.filterExtensions = filterExtensions
+        w.setFilterNames(*filterNames)
+        w.setFilterExtensions(*filterExtensions)
         w.overwrite = true
         w.filterPath = filterPath
     }
@@ -108,7 +109,7 @@ class BBFileDialog @JvmOverloads constructor(
         private val log = LoggerFactory.getLogger(BBFileDialog::class.java)
         private const val LAST = "lastFileLocation"
         private fun getDefaultFilterPath(): String = (BBIni.propertyFileManager.getProperty(LAST)
-            ?: if (Platform.isWindows()) {
+            ?: if (OS.Windows == os) {
                 System.getProperty("user.home", "c:\\")
             } else {
                 "/"

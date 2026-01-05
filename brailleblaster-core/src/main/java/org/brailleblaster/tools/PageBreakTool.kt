@@ -49,8 +49,6 @@ object PageBreakTool : MenuToolModule {
     }
 
     private fun existsFollowingText(m: Manager, currentSelection: XMLSelection): Boolean {
-        val lastNode = currentSelection.end.node
-        val moreNodes = lastNode.query("following::text()")
         if (inBlock(m)) {
             return true
         }
@@ -59,12 +57,8 @@ object PageBreakTool : MenuToolModule {
                 return true
             }
         }
-        for (i in 0 until moreNodes.size()) {
-            if (!isBraille(moreNodes[i])) {
-                return true
-            }
-        }
-        return false
+        val lastNode = currentSelection.end.node
+        return FastXPath.following(lastNode).filterIsInstance<Text>().any { !isBraille(it) }
     }
 
     private fun pageBreak(m: Manager) {
@@ -124,7 +118,7 @@ object PageBreakTool : MenuToolModule {
             }
         }?.let { nodeToBreak ->
             if (isBraille(nodeToBreak)) {
-                val nodes = m.simpleManager.currentSelection.start.node.query("following::text()")
+                val nodes = FastXPath.following(m.simpleManager.currentSelection.start.node).filterIsInstance<Text>().toList()
                 getFirstNonBraille(nodes, nodeToBreak)
             } else {
                 nodeToBreak
@@ -163,7 +157,7 @@ object PageBreakTool : MenuToolModule {
                 val pagesBefore = style.newPagesBefore + 1
                 m.dispatch(AdjustLocalStyleMessage.adjustPages(block as Element, pagesBefore, 0))
                 if (!BBX.CONTAINER.BOX.isA(nodeToBreak)) {
-                    nodeToBreak = block.query("descendant::text()")[0]
+                    nodeToBreak = FastXPath.descendant(block).filterIsInstance<Text>().first()
                 }
                 if (nodeToBreak != null && !isPage(nodeToBreak)) {
                     // simple table nodes are not in the maplist
@@ -188,13 +182,13 @@ object PageBreakTool : MenuToolModule {
         ) { node: Element? -> BBX.CONTAINER.TABLETN.isA(node) }
     }
 
-    private fun getFirstNonBraille(nodes: Nodes, startNode: Node?): Node? {
-        if (nodes.size() == 0) {
+    private fun getFirstNonBraille(nodes: List<Node>, startNode: Node?): Node? {
+        if (nodes.isEmpty()) {
             return null
         }
         var i = 0
         var returnNode = nodes[i]
-        while (i < nodes.size() && isBraille(returnNode)) {
+        while (i < nodes.size && isBraille(returnNode)) {
             returnNode = nodes[i]
             i++
         }
@@ -230,8 +224,7 @@ object PageBreakTool : MenuToolModule {
     private fun getLastTextNode(node: ParentNode): Text? {
         val children = FastXPath.descendant(node)
             .filterIsInstance<Text>()
-        for (i in children.indices.reversed()) {
-            val child = children[i]
+        for (child in children.asIterable().reversed()) {
             if (XMLHandler.ancestorElementIs(child) { e -> UTDElements.BRL.isA(e) }) {
                 continue
             }

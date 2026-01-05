@@ -16,11 +16,12 @@
 @file:JvmName("VersionInfo")
 package org.brailleblaster.userHelp
 
-import com.sun.jna.Platform
 import org.apache.commons.lang3.SystemUtils
 import org.brailleblaster.AppProperties
 import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.util.PANDOC_VERSION
+import org.brailleblaster.utils.Architecture
+import org.brailleblaster.utils.arch
 import org.mwhapples.jlouis.Louis
 import java.io.IOException
 import java.util.*
@@ -43,7 +44,7 @@ private fun createSummaryString(generator: Generator): String = (ALL_PROJECTS.ma
 } + listOf(javaVersion, oSVersion)).joinToString(separator = LINE_BREAK)
 
 val javaVersion: String
-    get() = "Java ${System.getProperty("java.version")} ${if (Platform.is64Bit()) "64-bit" else "32-bit"} ${Locale.getDefault()}"
+    get() = "Java ${System.getProperty("java.version")} ${if (arch in listOf(Architecture.X86_64, Architecture.AArch64)) "64-bit" else "32-bit"} ${Locale.getDefault()}"
 
 val oSVersion: String
     get() = "${SystemUtils.OS_NAME} Version ${SystemUtils.OS_VERSION}"

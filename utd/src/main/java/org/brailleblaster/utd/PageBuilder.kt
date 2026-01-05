@@ -1195,7 +1195,7 @@ class PageBuilder {
         maxLines = -1
         // Make sure pendingLines is at least the lineSpacing
         // Remember if pendingLines == 0 then it is not requesting insertion of new lines so should be exempt from increase to lineSpacing.
-        if (pendingLines in 1 until lineSpacing) {
+        if (pendingLines in 1..lineSpacing) {
             pendingLines = lineSpacing
         }
         var pendingPages = pendingSpacing.pages

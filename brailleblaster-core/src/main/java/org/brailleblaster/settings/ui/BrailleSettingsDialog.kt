@@ -22,7 +22,6 @@ import org.brailleblaster.settings.UTDManager.Companion.userPageSettingsFile
 import org.brailleblaster.utd.UTDTranslationEngine
 import org.brailleblaster.utd.config.DocumentUTDConfig
 import org.brailleblaster.utd.config.UTDConfig
-import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.util.Notify
 import org.brailleblaster.util.Notify.notify
 import org.brailleblaster.util.Notify.showMessage
@@ -70,7 +69,7 @@ class BrailleSettingsDialog(parent: Shell?, m: Manager?, tabToOpen: Class<out Se
             shell = if (parent != null) {
                 EasySWT.makeDialog(parent)
             } else {
-                FormUIUtils.makeDialog(m)
+                EasySWT.makeDialog(m.wpManager.shell)
             }
             shell.text = localeHandler["settings"]
             shell.layout = GridLayout(1, true)

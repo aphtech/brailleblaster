@@ -24,7 +24,7 @@ import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.util.FormUIUtils
+import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
 
 object PreviousElementTool : MenuToolModule {
@@ -72,7 +72,7 @@ object PreviousElementTool : MenuToolModule {
         }
         if (newTME != null) {
             bbData.manager.setTextCaret(newTME.getStart(bbData.manager.mapList))
-            FormUIUtils.scrollViewToCursor(bbData.manager.textView)
+            EasySWT.scrollViewToCursor(bbData.manager.textView)
         }
     }
 }
@@ -110,7 +110,7 @@ object NextElementTool : MenuToolModule {
         }
         if (newTME != null) {
             bbData.manager.text.setCurrentElement(newTME.getStart(bbData.manager.mapList))
-            FormUIUtils.scrollViewToCursor(bbData.manager.textView)
+            EasySWT.scrollViewToCursor(bbData.manager.textView)
         }
     }
 }

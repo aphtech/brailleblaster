@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
@@ -37,6 +38,7 @@ child.project.url.inherit.append.path="false">
         <module>brailleblaster-updater</module>
         <module>utd-cli</module>
         <module>brailleblaster-math-tools</module>
+        <module>brailleblaster-spellcheck-tools</module>
     </modules>
 
     <properties>
@@ -44,33 +46,33 @@ child.project.url.inherit.append.path="false">
         <app.vendor-fsname>aph</app.vendor-fsname>
         <app.contact-email>cs@aph.org</app.contact-email>
         <app.rdns-name>org.aph.brailleblaster</app.rdns-name>
-        <revision>3.1.0</revision>
+        <revision>3.2.0</revision>
         <sha1/>
         <changelist>-SNAPSHOT</changelist>
-        <wrappermavenplugin.version>3.3.2</wrappermavenplugin.version>
         <versions.plugin.version>2.18.0</versions.plugin.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>2.2.21</kotlin.version>
+        <kotlin.version>2.3.0</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <serialization.version>1.9.0</serialization.version>
         <jetbrains.annotations.version>26.0.2-1</jetbrains.annotations.version>
-        <graalvm.version>25.0.1</graalvm.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <logback-core.version>1.5.20</logback-core.version>
-        <logback-classic.version>1.5.20</logback-classic.version>
-        <icu4j.version>77.1</icu4j.version>
-        <mathcat4j.version>0.6.8-1</mathcat4j.version>
+        <logback-core.version>1.5.22</logback-core.version>
+        <logback-classic.version>1.5.22</logback-classic.version>
+        <icu4j.version>78.1</icu4j.version>
+        <mathcat4j.version>1.0.3</mathcat4j.version>
+        <mathcat4j-jni.version>0.7.2-2</mathcat4j-jni.version>
         <jlouis.version>c75db74718cea465f839f7cb5b4bcf716ba3e3e3</jlouis.version>
         <libembosser.version>1.4.3</libembosser.version>
         <jaxbapi.version>4.0.4</jaxbapi.version>
         <jaxbruntime.version>4.0.6</jaxbruntime.version>
         <activation.version>1.1</activation.version>
         <swt.platform>win32.win32.x86_64</swt.platform>
-        <swt.version>3.131.0</swt.version>
-        <orgeclipsejface.version>3.38.0</orgeclipsejface.version>
-        <org.eclipse.equinox.common.version>3.20.200</org.eclipse.equinox.common.version>
+        <swt.version>3.132.0</swt.version>
+        <swt.svg.version>3.131.0</swt.svg.version>
+        <orgeclipsejface.version>3.38.100</orgeclipsejface.version>
+        <org.eclipse.equinox.common.version>3.20.300</org.eclipse.equinox.common.version>
         <hamcrest.version>2.2</hamcrest.version>
         <testng.version>7.11.0</testng.version>
         <xercesimpl.version>2.12.2</xercesimpl.version>
@@ -78,26 +80,14 @@ child.project.url.inherit.append.path="false">
         <saxon.version>12.9</saxon.version>
         <jsoup.version>1.21.2</jsoup.version>
         <xom.version>1.3.9</xom.version>
-        <sqlite.version>3.50.3.0</sqlite.version>
         <requiremaven.version>3.0</requiremaven.version>
         <buildnumbermavenplugin.version>3.2.1</buildnumbermavenplugin.version>
         <mavendependencyplugin.version>3.8.1</mavendependencyplugin.version>
         <mavensurefireplugin.version>3.0.0-M6</mavensurefireplugin.version>
         <mavencompilerplugin.version>3.14.0</mavencompilerplugin.version>
         <downloadmavenplugin.version>2.0.0</downloadmavenplugin.version>
-        <guava.version>33.5.0-jre</guava.version>
-        <gson.version>2.13.2</gson.version>
-        <jcommander.version>3.0</jcommander.version>
         <mockitocore.version>5.6.0</mockitocore.version>
         <mavenenforcerplugin.version>3.0.0-M3</mavenenforcerplugin.version>
-        <!-- Batik wants commons io 1.3.1 -->
-        <commons-compress.version>1.28.0</commons-compress.version>
-        <commonsio.version>2.20.0</commonsio.version>
-        <commonstext.version>1.14.0</commonstext.version>
-        <commons-lang3.version>3.19.0</commons-lang3.version>
-        <commonsexec.version>1.5.0</commonsexec.version>
-        <commonscollections4.version>4.5.0</commonscollections4.version>
-        <jna.version>5.18.1</jna.version>
         <orgeclipseswtbotswtfinder.version>f5b2edaee2</orgeclipseswtbotswtfinder.version>
 
         <pandoc.version>3.6.4</pandoc.version>
@@ -124,30 +114,20 @@ child.project.url.inherit.append.path="false">
     <dependencies>
         <dependency>
             <groupId>onl.mdw</groupId>
-            <artifactId>mathcat4j-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>onl.mdw</groupId>
-            <artifactId>mathcat4j-core</artifactId>
-            <classifier>rules</classifier>
-            <type>zip</type>
+            <artifactId>mathcat4j-jni-loader-jna</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
+            <groupId>onl.mdw</groupId>
+            <artifactId>mathcat4j-jni</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
+            <groupId>onl.mdw</groupId>
+            <artifactId>mathcat4j-jni</artifactId>
+            <classifier>rules</classifier>
+            <type>zip</type>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.github.aphtech</groupId>
@@ -173,38 +153,6 @@ child.project.url.inherit.append.path="false">
             <artifactId>mockito-core</artifactId>
             <version>${mockitocore.version}</version>
             <scope>test</scope>
-        </dependency>
-
-        <!-- embosser support -->
-        <dependency>
-            <groupId>com.github.aphtech.libembosser</groupId>
-            <artifactId>libembosser-api</artifactId>
-            <version>${libembosser.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.aphtech.libembosser</groupId>
-            <artifactId>libembosser-aph-driver</artifactId>
-            <version>${libembosser.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.aphtech.libembosser</groupId>
-            <artifactId>libembosser-core-drivers</artifactId>
-            <version>${libembosser.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.aphtech.libembosser</groupId>
-            <artifactId>libembosser-braillo-driver</artifactId>
-            <version>${libembosser.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.aphtech.libembosser</groupId>
-            <artifactId>libembosser-viewplus-driver</artifactId>
-            <version>${libembosser.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.aphtech.libembosser</groupId>
-            <artifactId>libembosser-utils</artifactId>
-            <version>${libembosser.version}</version>
         </dependency>
 
         <!-- Unit Tests -->
@@ -252,10 +200,46 @@ child.project.url.inherit.append.path="false">
 
     <dependencyManagement>
         <dependencies>
+            <!-- embosser support -->
+            <dependency>
+                <groupId>com.github.aphtech.libembosser</groupId>
+                <artifactId>libembosser-api</artifactId>
+                <version>${libembosser.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.aphtech.libembosser</groupId>
+                <artifactId>libembosser-aph-driver</artifactId>
+                <version>${libembosser.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.aphtech.libembosser</groupId>
+                <artifactId>libembosser-core-drivers</artifactId>
+                <version>${libembosser.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.aphtech.libembosser</groupId>
+                <artifactId>libembosser-braillo-driver</artifactId>
+                <version>${libembosser.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.aphtech.libembosser</groupId>
+                <artifactId>libembosser-viewplus-driver</artifactId>
+                <version>${libembosser.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.aphtech.libembosser</groupId>
+                <artifactId>libembosser-utils</artifactId>
+                <version>${libembosser.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.swt</artifactId>
                 <version>${swt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.swt.svg</artifactId>
+                <version>${swt.svg.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
@@ -275,49 +259,49 @@ child.project.url.inherit.append.path="false">
             </dependency>
             <dependency>
                 <groupId>org.graalvm.polyglot</groupId>
-                <artifactId>js-community</artifactId>
-                <version>${graalvm.version}</version>
+                <artifactId>js</artifactId>
+                <version>25.0.1</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.graalvm.js</groupId>
                 <artifactId>js-scriptengine</artifactId>
-                <version>${graalvm.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.graalvm.compiler</groupId>
-                <artifactId>compiler</artifactId>
-                <version>${graalvm.version}</version>
+                <version>25.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
-                <version>${commonscollections4.version}</version>
+                <version>4.5.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
-                <version>${commons-compress.version}</version>
+                <version>1.28.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-exec</artifactId>
-                <version>${commonsexec.version}</version>
+                <version>1.6.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>${commons-lang3.version}</version>
+                <version>3.20.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-text</artifactId>
-                <version>${commonstext.version}</version>
+                <version>1.15.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>${commonsio.version}</version>
+                <version>2.21.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jtidy</groupId>
+                <artifactId>jtidy</artifactId>
+                <version>1.0.5</version>
             </dependency>
             <dependency>
                 <groupId>com.ibm.icu</groupId>
@@ -327,30 +311,35 @@ child.project.url.inherit.append.path="false">
             <dependency>
                 <groupId>net.java.dev.jna</groupId>
                 <artifactId>jna</artifactId>
-                <version>${jna.version}</version>
+                <version>5.18.1</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna-jpms</artifactId>
+                <version>5.18.1</version>
             </dependency>
             <dependency>
                 <groupId>onl.mdw</groupId>
-                <artifactId>mathcat4j-core</artifactId>
+                <artifactId>mathcat4j-api</artifactId>
                 <version>${mathcat4j.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jetbrains.kotlin</groupId>
-                        <artifactId>kotlin-stdlib</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>onl.mdw</groupId>
-                <artifactId>mathcat4j-core</artifactId>
-                <version>${mathcat4j.version}</version>
+                <artifactId>mathcat4j-jni-loader-jna</artifactId>
+                <version>${mathcat4j-jni.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>onl.mdw</groupId>
+                <artifactId>mathcat4j-jni</artifactId>
+                <version>${mathcat4j-jni.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>onl.mdw</groupId>
+                <artifactId>mathcat4j-jni</artifactId>
+                <version>${mathcat4j-jni.version}</version>
                 <classifier>rules</classifier>
                 <type>zip</type>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jetbrains.kotlin</groupId>
-                        <artifactId>kotlin-stdlib</artifactId>
-                    </exclusion></exclusions>
             </dependency>
             <dependency>
                 <groupId>org.jetbrains.kotlinx</groupId>
@@ -366,6 +355,7 @@ child.project.url.inherit.append.path="false">
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
                 <version>${jetbrains.annotations.version}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.jsoup</groupId>
@@ -391,7 +381,7 @@ child.project.url.inherit.append.path="false">
             <dependency>
                 <groupId>org.jcommander</groupId>
                 <artifactId>jcommander</artifactId>
-                <version>${jcommander.version}</version>
+                <version>3.0</version>
             </dependency>
             <dependency>
                 <groupId>xml-apis</groupId>
@@ -412,7 +402,7 @@ child.project.url.inherit.append.path="false">
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
+                <version>33.5.0-jre</version>
             </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
@@ -460,12 +450,12 @@ child.project.url.inherit.append.path="false">
             <dependency>
                 <groupId>org.xerial</groupId>
                 <artifactId>sqlite-jdbc</artifactId>
-                <version>${sqlite.version}</version>
+                <version>3.51.1.0</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
-                <version>${gson.version}</version>
+                <version>2.13.2</version>
             </dependency>
             <dependency>
                 <groupId>com.github.aphtech</groupId>
@@ -480,18 +470,17 @@ child.project.url.inherit.append.path="false">
                 <classifier>tables</classifier>
                 <scope>runtime</scope>
             </dependency>
+            <dependency>
+                <groupId>org.jspecify</groupId>
+                <artifactId>jspecify</artifactId>
+                <version>1.0.0</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
         <plugins>
-            <!-- Generate a maven wrapper script, similar to gradle wrapper -->
-            <!-- Regenerate with wrapper:wrapper -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-wrapper-plugin</artifactId>
-                <version>${wrappermavenplugin.version}</version>
-            </plugin>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>

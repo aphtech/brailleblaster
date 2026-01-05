@@ -29,14 +29,18 @@ import org.brailleblaster.perspectives.braille.views.wp.listeners.ImageDisposeLi
 import org.brailleblaster.perspectives.braille.views.wp.listeners.ImagePaintListener
 import org.brailleblaster.perspectives.braille.views.wp.listeners.WPPaintListener
 import org.brailleblaster.perspectives.braille.views.wp.listeners.WPScrollListener
+import org.brailleblaster.perspectives.mvc.XMLNodeCaret
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.perspectives.mvc.events.XMLCaretEvent
 import org.brailleblaster.utd.actions.GenericBlockAction
 import org.brailleblaster.utd.properties.Align
+import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.util.FormUIUtils
-import org.brailleblaster.utils.xml.BB_NS
-import org.brailleblaster.utils.swt.AccessibilityUtils.setName
 import org.brailleblaster.util.LINE_BREAK
+import org.brailleblaster.utils.swt.AccessibilityUtils.setName
+import org.brailleblaster.utils.swt.EasySWT
+import org.brailleblaster.utils.xml.BB_NS
+import org.brailleblaster.utils.xml.UTD_NS
 import org.eclipse.swt.SWT
 import org.eclipse.swt.accessibility.AccessibleAdapter
 import org.eclipse.swt.accessibility.AccessibleEvent
@@ -54,7 +58,6 @@ import org.eclipse.swt.widgets.Listener
 import org.slf4j.LoggerFactory
 import java.awt.Desktop
 import java.net.URI
-import kotlin.coroutines.CoroutineContext
 
 class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
     val state: ViewStateObject = ViewStateObject()
@@ -169,8 +172,7 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
                     }
                     sendStatusBarUpdate(view.getLineAtOffset(view.caretOffset))
                 }
-
-//					setCurrent(view.getCaretOffset());
+                //setCurrent(view.getCaretOffset());
                 if (view.getLineAtOffset(view.caretOffset) != currentLine) sendStatusBarUpdate(view.getLineAtOffset(view.caretOffset))
 
                 //Change context menu if cursor is in a table
@@ -182,39 +184,55 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
                 if (e.button == 1 && e.stateMask == SWT.MOD1){
                   //Basically, check if selection is a link, get the href attribute, open it in browser
                   //If it's an internal link, find whatever node it points to and move the cursor there
-                  //Still not sure about how to handle internal links - don't know if I want them pointing to a node
-                  // or an absolute position in the document. Both have pros and cons. Namely, I'm concerned about how nodes
-                  // could break; absolute positions would be easier to manage but could lead to broken links if text is heavily edited.
-                  // This will need to be discussed...
                   val current = manager.mapList.current
                   if (BBX.INLINE.LINK.isA(current.nodeParent)){
-                    //Need to work on attribute lookup. Checking node parent for Link works...
-                    //println("Link clicked")
                     val el = current.node.parent as Element
                     val isExternal = el.getAttributeValue("external", BB_NS).toBoolean()
                     val href = el.getAttributeValue("href", BB_NS)
                     //Get the href attribute and open it in a browser
                     try {
-                      if (isExternal) {
-                        if (!href.isNullOrBlank()) {
-                          //Need a method for URL checking, for now just assume it's valid
-                          Desktop.getDesktop().browse(URI(href.toString()))
+                      if (!href.isNullOrBlank()) {
+                        if (isExternal) {
+                          //Need a method for URL checking, for now just assume it's valid - browser can handle it.
+                          Desktop.getDesktop().browse(URI(href))
                         }
-                        else{
-                          logger.warn("Tried to open a link with no href attribute")
+                        else {
+                          //Find block with matching linkID and move the navigation pane to it.
+                          val xpath = """//*[@*[local-name() = 'linkID']]"""
+                          val internalLinkNodes = manager.simpleManager.doc.query(xpath).toList()
+                          //println("Found ${internalLinkNodes.size} bookmarks in doc")
+                          for (node in internalLinkNodes){
+                            val np = node as Element
+                            val linkID = np.getAttributeValue("linkID", BB_NS).toString()
+                            //println("Found internal link candidate with linkID: $linkID")
+                            if (linkID == href){
+                              //Found the target node, move the cursor there
+                              //println("Moving to internal link with linkID: $linkID\n node: ${np.toXML()}")
+                              manager.simpleManager.dispatchEvent(XMLCaretEvent(Sender.GO_TO_PAGE, XMLNodeCaret(np)))
+                              break
+                            }
+                          }
                         }
                       }
                       else {
-                        //Figure out internal navigation system with the href
-                        //Maybe block hash? Managing that might prove difficult to manage...
-                        //Gotta try something though!
-                        //println("Internal link clicked, navigation not yet implemented")
-                        //Maybe a line number or positon? Would be simpler, but not as robust when the document is edited
+                        logger.warn("Tried to open a link with no href attribute")
                       }
                     }
                     catch (e: Exception){
                       //println("Error opening link: " + e.message)
                     }
+                  }
+                  else if (BBX.BLOCK.IMAGE_PLACEHOLDER.isA(current.nodeParent)){
+                      //Open the image via the system default
+                      val src = current.nodeParent.getAttributeValue("src", UTD_NS)
+                      try {
+                          if (!src.isNullOrEmpty()) {
+                              println("Opening image placeholder with src: $src")
+                              Desktop.getDesktop().open(java.io.File(src))
+                          }
+                      } catch (ex: Exception) {
+                          logger.warn("Error opening image placeholder: " + ex.message)
+                      }
                   }
                   else{
                     //Do nothing
@@ -223,7 +241,6 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
                 }
                 if (e.button == 2) return
                 if (e.button == 3 && !view.isTextSelected) {
-                    //Original code in Kotlin, from V2 some time in Dec. 2021 - MNS
                     //This fixes the bug where right-clicking in the indent margin would send the caret to the doc start.
                     try {
                         val offsetPoint = view.getOffsetAtPoint(Point.WithMonitor(e.x, e.y, Display.getCurrent().primaryMonitor))
@@ -415,7 +432,7 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
                         ) - changedTextLength))
                     if (newOffset > 0 && newOffset < view.charCount) {
                         //Move cursor by how much it moved
-                        FormUIUtils.setCaretAfterLineBreaks(view, newOffset)
+                        EasySWT.setCaretAfterLineBreaks(view, newOffset)
                     }
                 }
             }
@@ -425,7 +442,7 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
     }
 
     fun scrollToCursor() {
-        FormUIUtils.scrollViewToCursor(view)
+        EasySWT.scrollViewToCursor(view)
     }
 
     fun setCurrentElement(pos: Int) {

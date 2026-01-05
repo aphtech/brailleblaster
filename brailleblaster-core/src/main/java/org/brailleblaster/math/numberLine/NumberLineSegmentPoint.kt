@@ -99,14 +99,11 @@ class NumberLineSegmentPoint(
 
     @JvmStatic
 		@Throws(MathFormattingException::class)
-    fun getPotentialPointsStringArray(numberLine: NumberLine): Array<String?> {
-      val array = getPotentialPoints(numberLine)
-      val stringArray = arrayOfNulls<String>(array.size)
-      for (i in array.indices) {
-        val fraction = array[i].point.fraction
-        stringArray[i] = NumberLineMathUtils.getFractionString(numberLine, fraction)
-      }
-      return stringArray
+    fun getPotentialPointsStringArray(numberLine: NumberLine): Array<String> {
+        return getPotentialPoints(numberLine).map {
+            val fraction = it.point.fraction
+            NumberLineMathUtils.getFractionString(numberLine, fraction)
+        }.toTypedArray()
     }
 
     @JvmStatic

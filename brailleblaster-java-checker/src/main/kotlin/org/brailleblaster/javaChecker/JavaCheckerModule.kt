@@ -42,6 +42,6 @@ object JavaCheckerModule : SimpleListener {
     }
 }
 
-class JavaCheckerModuleFactory() : ModuleFactory {
+class JavaCheckerModuleFactory : ModuleFactory {
     override fun createModules(manager: Manager): Iterable<SimpleListener> = listOf(JavaCheckerModule)
 }

@@ -17,6 +17,7 @@ package org.brailleblaster.perspectives.braille.document;
 
 import nu.xom.Document;
 import nu.xom.Element;
+import nu.xom.Node;
 import nu.xom.Text;
 import org.brailleblaster.bbx.BBX;
 import org.brailleblaster.bbx.utd.BBXDynamicOptionStyleMap;
@@ -267,7 +268,7 @@ public class TableTest {
         dialog.bot().button(TableEditor.SAVE_BUTTON).click();
         doPendingSWTWork();
 
-        Element[] rows = StreamSupport.stream(FastXPath.descendant(test.getDoc()).spliterator(), false)
+        Element[] rows = StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(test.getDoc())::iterator).spliterator(), false)
                 .filter(BBX.BLOCK.TABLE_CELL::isA)
                 .map(node -> (Element) node)
                 .toArray(Element[]::new);
@@ -366,14 +367,14 @@ public class TableTest {
         Text text = (Text) TestXMLUtils.getTestIdElements(doc, "first").get(0).getChild(0);
         assertEquals(
                 Manager.getTableParent(text),
-                TestXMLUtils.getTestIdElements(doc, "table").get(0),
+                TestXMLUtils.getTestIdElements(doc, "table").getFirst(),
                 XMLHandler.toXMLPrettyPrint(doc)
         );
 
         text = (Text) TestXMLUtils.getTestIdElements(doc, "first").get(1).getChild(0);
         assertEquals(
                 Manager.getTableParent(text),
-                TestXMLUtils.getTestIdElements(doc, "table").get(0),
+                TestXMLUtils.getTestIdElements(doc, "table").getFirst(),
                 XMLHandler.toXMLPrettyPrint(doc)
         );
     }

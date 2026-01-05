@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.perspectives.braille
 
-import org.brailleblaster.perspectives.braille.spellcheck.SpellCheckTool
 import org.brailleblaster.perspectives.braille.ui.CellTabTool
 import org.brailleblaster.perspectives.braille.ui.CorrectTranslationDialog
 import org.brailleblaster.perspectives.braille.ui.contractionRelaxer.ContractionRelaxer
@@ -29,6 +28,7 @@ import org.brailleblaster.settings.ResetBB
 import org.brailleblaster.settings.ui.PrivacyTool
 import org.brailleblaster.spi.ModuleFactory
 import org.brailleblaster.tools.BlankPrintPageIndicatorTool
+import org.brailleblaster.tools.InsertBookmarkTool
 import org.brailleblaster.tools.InsertLinkTool
 import org.brailleblaster.tools.LineBreakTool
 import org.brailleblaster.tools.PageBreakTool
@@ -54,7 +54,6 @@ class CoreModulesFactory : ModuleFactory {
         add(FontSizeModule)
         add(PageNumberDialog(manager.wpManager.shell))
         add(SearchDialog(manager.wpManager.shell, 0))
-        add(SpellCheckTool)
         addAll(NavigateModule.tools)
         add(CorrectTranslationDialog(manager.wpManager.shell, SWT.APPLICATION_MODAL))
         add(SixKeyModeModule(manager))
@@ -88,6 +87,7 @@ class CoreModulesFactory : ModuleFactory {
         add(PageDownUpModule(manager))
         add(InsertUnicode(manager.wpManager.shell))
         add(ContractionRelaxer(manager.wpManager.shell))
-        add(InsertLinkTool(manager.wpManager.shell))
+        add(InsertLinkTool(manager))
+        add(InsertBookmarkTool(manager))
     }
 }

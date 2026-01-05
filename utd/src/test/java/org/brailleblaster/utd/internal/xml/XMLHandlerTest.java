@@ -18,8 +18,9 @@ package org.brailleblaster.utd.internal.xml;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import org.brailleblaster.utd.testutils.XMLTester;
@@ -142,7 +143,7 @@ public class XMLHandlerTest {
 	@Test
 	public void loadStreamTest() {
 		Document doc = null;
-        try (InputStream in = getClass().getResourceAsStream("/org/brailleblaster/utd/internal/xml/whitespaceLoadTest.xml")) {
+        try (InputStreamReader in = new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream("/org/brailleblaster/utd/internal/xml/whitespaceLoadTest.xml")), StandardCharsets.UTF_8)) {
             doc = new XMLHandler().load(in);
         } catch (Exception e) {
             fail("Problem loading resource", e);

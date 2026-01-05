@@ -124,7 +124,7 @@ public class UTDDocumentAsserter {
      */
     private List<Element> findBrlElements(Document doc) {
         List<Element> returnList = new ArrayList<>();
-        StreamSupport.stream(FastXPath.descendant(doc.getRootElement()).spliterator(), false)
+        StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(doc.getRootElement())::iterator).spliterator(), false)
                 .filter(UTDElements.BRL::isA)
                 .forEach(n -> returnList.add((Element) n));
         return returnList;
@@ -143,7 +143,7 @@ public class UTDDocumentAsserter {
 
         for (Element brl : brlElements) {
             //Compile all descendants of the brl element into a list
-            List<Node> descendants = Lists.newArrayList(FastXPath.descendant(brl));
+            List<Node> descendants = Lists.newArrayList(FastXPath.descendant(brl)::iterator);
 
             for (Node child : descendants) {
                 if (child instanceof Element) {
@@ -179,7 +179,7 @@ public class UTDDocumentAsserter {
                         removePrevMoveTo(moveToList, (Text) child);
                     } else {
                         //Not a page number, add it to the previous moveToList
-                        moveToList.get(moveToList.size() - 1).addText((Text) child);
+                        moveToList.getLast().addText((Text) child);
                     }
                 }
             }
@@ -234,8 +234,8 @@ public class UTDDocumentAsserter {
      * Used to remove page numbers from a list of moveTos
      */
     private void removePrevMoveTo(ArrayList<MoveToPair> moveTos, Text pageNumber) {
-        if (moveTos.get(moveTos.size() - 1).moveTo.getValue().isEmpty()) {
-            moveTos.remove(moveTos.size() - 1);
+        if (moveTos.getLast().moveTo.getValue().isEmpty()) {
+            moveTos.removeLast();
         } else {
             throw new AssertionError("Page number " + pageNumber + " has no moveTo");
         }

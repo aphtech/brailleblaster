@@ -264,8 +264,8 @@ object EmbossingUtils {
             !parent.isDisposed
         ) { "Shell has been disposed, this manager is no longer valid for use." }
         val saveDialog = FileDialog(parent, SWT.SAVE)
-        saveDialog.filterNames = arrayOf(LocaleHandler.getDefault()["EmbossersManager.zipFiles"])
-        saveDialog.filterExtensions = arrayOf("*.zip")
+        saveDialog.setFilterNames(LocaleHandler.getDefault()["EmbossersManager.zipFiles"])
+        saveDialog.setFilterExtensions("*.zip")
         saveDialog.overwrite = true
         val fileName = saveDialog.open()
         if (fileName == null) {

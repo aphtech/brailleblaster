@@ -52,7 +52,8 @@ import javax.xml.transform.stream.StreamResult
 
 object ImageCreator {
     private val logger: Logger = LoggerFactory.getLogger(ImageCreator::class.java)
-    private val MATHJAX_PATH_BEG = BBIni.bbDistPath.resolve(Paths.get("lib", "META-INF", "resources", "webjars", "MathJax")).toString()
+    private val MATHJAX_PATH_BEG =
+        BBIni.bbDistPath.resolve(Paths.get("lib", "META-INF", "resources", "webjars", "MathJax")).toString()
     private const val MATHJAX_PATH_END = "MathJax.js?config=TeX-MML-AM_CHTML"
     private const val HTML_HEAD_BEG = "<!doctype html><html><head><script type='text/javascript' async src='"
     private const val HTML_HEAD_END = "'></script></head><body>"
@@ -156,18 +157,19 @@ object ImageCreator {
         imageHeight: Int
     ): Browser {
         // checkInternet();
-        val browser = Browser(rightPanel, SWT.NONE)
-        browser.data = GridData(4, 4, true, true)
-        browser.setSize(imageWidth, imageHeight)
-        browser.javascriptEnabled = true
-        if (mmlString.isEmpty()) {
-            browser.text = HTML_HEAD + HTML_PLACEHOLDER + HTML_TAIL
-        } else {
-            val math = translateUseHTML(mmlString)
-            val str = getHTMLString(math)
-            browser.text = HTML_HEAD + str + HTML_TAIL
+        return Browser(rightPanel, SWT.NONE).apply {
+            layoutData = GridData(SWT.FILL, SWT.FILL, true, true).apply {
+                widthHint = imageWidth
+                heightHint = imageHeight
+            }
+            javascriptEnabled = true
+            text = HTML_HEAD + if (mmlString.isEmpty()) {
+                HTML_PLACEHOLDER
+            } else {
+                val math = translateUseHTML(mmlString)
+                getHTMLString(math)
+            } + HTML_TAIL
         }
-        return browser
     }
 
 }

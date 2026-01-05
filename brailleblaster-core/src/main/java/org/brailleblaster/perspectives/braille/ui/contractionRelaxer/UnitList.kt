@@ -17,9 +17,8 @@ package org.brailleblaster.perspectives.braille.ui.contractionRelaxer
 
 import org.brailleblaster.perspectives.braille.ui.contractionRelaxer.ContractionRelaxer.Unit
 
-class UnitList() {
+object UnitList {
 
-  companion object {
     //Note that this omits math contractions, which are handled completely differently than text substitutions.
     //Honestly I'm not sure how we'd do math subs at all...this has creeped far beyond what I thought it would take.
 
@@ -245,7 +244,7 @@ class UnitList() {
       )
     )
 
-    val Unit2Pretty = listOf<String>(
+    val Unit2Pretty = listOf(
       "but -> ⠃",
       "can -> ⠉",
       "do -> ⠙",
@@ -366,7 +365,7 @@ class UnitList() {
       )
     )
 
-    val Unit3Pretty = listOf<String>(
+    val Unit3Pretty = listOf(
       "and -> ⠯",
       "for -> ⠿",
       "of -> ⠷",
@@ -405,7 +404,7 @@ class UnitList() {
       )
     )
 
-    val Unit5Pretty = listOf<String>(
+    val Unit5Pretty = listOf(
       ", -> ⠂",
       "“ -> ⠦",
       "” -> ⠴",
@@ -623,7 +622,7 @@ class UnitList() {
       )
     )
 
-    val Unit6Pretty = listOf<String>(
+    val Unit6Pretty = listOf(
       "ch -> ⠡",
       "sh -> ⠩",
       "th -> ⠹",
@@ -820,7 +819,7 @@ class UnitList() {
       )
     )
 
-    val Unit7Pretty = listOf<String>(
+    val Unit7Pretty = listOf(
       "ar -> ⠜",
       "ed -> ⠫",
       "er -> ⠻",
@@ -1199,7 +1198,7 @@ class UnitList() {
       )
     )
 
-    val Unit9Pretty = listOf<String>(
+    val Unit9Pretty = listOf(
       "day -> ⠐⠙",
       "ever -> ⠐⠑",
       "father -> ⠐⠋",
@@ -1281,7 +1280,7 @@ class UnitList() {
       )
     )
 
-    val Unit11Pretty = listOf<String>(
+    val Unit11Pretty = listOf(
       /*
       //Symbols are not actually listed in the table.
       "$ -> ⠈⠎",
@@ -1353,7 +1352,7 @@ class UnitList() {
       )
     )
 
-    val Unit12Pretty = listOf<String>(
+    val Unit12Pretty = listOf(
       "upon -> ⠘⠥",
       "word -> ⠘⠺",
       "these -> ⠘⠮",
@@ -1450,7 +1449,7 @@ class UnitList() {
       )
     )
 
-    val Unit14Pretty = listOf<String>(
+    val Unit14Pretty = listOf(
       "enough -> ⠢",
       "his -> ⠦",
       "was -> ⠴",
@@ -1813,7 +1812,7 @@ class UnitList() {
       )
     )
 
-    val Unit15Pretty = listOf<String>(
+    val Unit15Pretty = listOf(
       "in -> ⠔",
       "en -> ⠑",
       "be -> ⠆",
@@ -1958,7 +1957,7 @@ class UnitList() {
       )
     )
 
-    val Unit17Pretty = listOf<String>(
+    val Unit17Pretty = listOf(
       "ance -> ⠨⠑",
       "ound -> ⠨⠙",
       "less -> ⠨⠎",
@@ -2012,7 +2011,5 @@ class UnitList() {
       Unit17Pretty,
       EmptyUnit
     )
-
-  }
 
 }

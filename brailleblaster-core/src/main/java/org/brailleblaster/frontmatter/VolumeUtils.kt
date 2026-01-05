@@ -25,7 +25,7 @@ import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.EmphasisType
-import org.brailleblaster.util.FormUIUtils
+import org.brailleblaster.utils.swt.EasySWT
 import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.function.Predicate
@@ -38,7 +38,7 @@ object VolumeUtils {
     private val log = LoggerFactory.getLogger(VolumeUtils::class.java)
     @JvmStatic
 	fun getVolumeElements(doc: Document?): List<Element> {
-        return FastXPath.descendant(doc)
+        return FastXPath.descendant(doc).toList()
             .filterIsInstance<Element>()
             .filter { node -> BBX.CONTAINER.VOLUME.isA(node) }
     }
@@ -236,7 +236,7 @@ object VolumeUtils {
         textView.caretOffset = offset
 
         //Scroll if nessesary
-        FormUIUtils.scrollViewToCursor(textView)
+        EasySWT.scrollViewToCursor(textView)
         manager.text.setListenerLock(false)
         textView.setFocus()
         return offset

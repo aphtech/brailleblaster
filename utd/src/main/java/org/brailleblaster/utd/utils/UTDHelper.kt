@@ -27,7 +27,6 @@ import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utils.xml.UTD_NS
 import java.lang.reflect.Field
 import java.util.function.Consumer
-import java.util.function.Function
 
 object UTDHelper {
     fun hasBaseStyle(style: Style?, baseStyle: String): Boolean {
@@ -344,19 +343,6 @@ object UTDHelper {
         for (child in element.childElements) {
             stripBRLOnly(child)
         }
-    }
-
-    /**
-     * Generate debug string with given function, putting each entry on a new line
-     */
-    fun <V> debugCollection(list: Iterable<V>, toString: Function<V, String?>): String {
-        val builder = StringBuilder()
-        builder.append(System.lineSeparator())
-        for (curItem in list) {
-            builder.append(toString.apply(curItem))
-            builder.append(System.lineSeparator())
-        }
-        return builder.toString()
     }
 
     @JvmStatic

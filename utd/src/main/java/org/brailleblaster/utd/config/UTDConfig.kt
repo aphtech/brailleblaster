@@ -161,7 +161,7 @@ object UTDConfig {
 
     fun saveMappings(engine: UTDTranslationEngine, mappingsDir: File, mappingsPrefix: String) {
         require(mappingsDir.isDirectory) { "$mappingsDir for mappings is not a directory" }
-        require(!StringUtils.isBlank(mappingsPrefix)) { "Mapping file prefix cannot be blank" }
+        require(mappingsPrefix.isNotBlank()) { "Mapping file prefix cannot be blank" }
         saveStyle(File(mappingsDir, "$mappingsPrefix.styleMap.xml"), engine.styleMap)
         saveActions(File(mappingsDir, "$mappingsPrefix.actionMap.xml"), engine.actionMap)
     }

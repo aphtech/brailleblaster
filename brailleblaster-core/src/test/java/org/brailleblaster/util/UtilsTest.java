@@ -68,7 +68,7 @@ public class UtilsTest {
                                 )
                         ));
 
-        Node textNode = StreamSupport.stream(FastXPath.descendant(docFactory.root).spliterator(), false)
+        Node textNode = StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(docFactory.root)::iterator).spliterator(), false)
                 .filter(node -> node instanceof Text)
                 .findFirst()
                 .get();

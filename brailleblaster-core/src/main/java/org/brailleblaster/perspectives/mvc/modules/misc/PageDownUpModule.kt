@@ -21,7 +21,7 @@ import org.brailleblaster.perspectives.braille.views.wp.WPView
 import org.brailleblaster.perspectives.mvc.BBSimpleManager.SimpleListener
 import org.brailleblaster.perspectives.mvc.SimpleEvent
 import org.brailleblaster.perspectives.mvc.events.BBViewListener
-import org.brailleblaster.util.FormUIUtils
+import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.VerifyKeyListener
 import org.eclipse.swt.events.VerifyEvent
@@ -54,7 +54,7 @@ class PageDownUpModule(private val manager: Manager) : SimpleListener, VerifyKey
                 m.textView.caretOffset = m.textView.getOffsetAtLine(m.textView.content.lineCount - 1)
             }
         }
-        FormUIUtils.scrollViewToCursor(m.textView)
+        EasySWT.scrollViewToCursor(m.textView)
     }
 
     private fun previousPage(m: Manager) {
@@ -77,7 +77,7 @@ class PageDownUpModule(private val manager: Manager) : SimpleListener, VerifyKey
                 m.textView.caretOffset = m.textView.getOffsetAtLine(0)
             }
         }
-        FormUIUtils.scrollViewToCursor(m.textView)
+        EasySWT.scrollViewToCursor(m.textView)
     }
 
     private fun adjustLine(pageLine: Int, newPageLine: Int, m: Manager) {

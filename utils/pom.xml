@@ -12,6 +12,14 @@
     <artifactId>utils</artifactId>
     <dependencies>
         <dependency>
+            <groupId>onl.mdw</groupId>
+            <artifactId>mathcat4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.aphtech.libembosser</groupId>
+            <artifactId>libembosser-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>

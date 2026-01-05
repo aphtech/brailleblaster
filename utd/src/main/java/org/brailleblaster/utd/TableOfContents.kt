@@ -340,7 +340,7 @@ class TableOfContents {
                             val pageint = page!!.toInt()
                             val oldpageint = oldpage!!.toInt()
                             if (pageint < oldpageint) log.warn("Pages out of order old page {} page {}", oldpage, page)
-                        } catch (e: NumberFormatException) { // NOPMD
+                        } catch (_: NumberFormatException) { // NOPMD
                             //log.debug("Cannot parse old page {} page {}", oldpage, page);
                         }
                     }

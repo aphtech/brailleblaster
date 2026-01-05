@@ -72,7 +72,6 @@ object PandocArchiverLoader : ArchiverFactory.FileLoader {
     private fun pandocImport(filename: String, fromFormat: String?): Pair<String, String> {
         val wrkDir: File
         val outFilename: String
-        val env = arrayOfNulls<String>(1)
 
         // check the file encoding and convert if necessary
         checkFileEncoding(filename)
@@ -92,7 +91,6 @@ object PandocArchiverLoader : ArchiverFactory.FileLoader {
         // set the working dir and execute
         try {
             wrkDir = File(PANDOCLUA)
-            env[0] = "PANDOCCMD=$PANDOC_CMD"
             val outFile = File.createTempFile("bb-$outFilename-pandoc-err-", ".txt")
             outFile.deleteOnExit()
             val bbFile = File.createTempFile(newFilename, ".bbx")

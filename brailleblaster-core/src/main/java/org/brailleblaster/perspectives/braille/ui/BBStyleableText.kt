@@ -1051,11 +1051,6 @@ class BBStyleableText(parent: Composite, buttonPanel: Composite?, buttons: Int, 
         const val UNDERLINE = 1 shl 5
 
         /**
-         * Constant to include all possible buttons for emphasis
-         */
-        const val ALL_EMPHASIS = (1 shl 6) - 1
-
-        /**
          * Constant to include Create Heading button
          */
         const val CREATEHEADING = 1 shl 6

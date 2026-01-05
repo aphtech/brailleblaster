@@ -31,7 +31,7 @@ import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.utd.Style
 import org.brailleblaster.utd.internal.xml.FastXPath
-import org.brailleblaster.utd.internal.xml.XMLHandler
+import org.brailleblaster.utd.internal.xml.splitNode
 import org.brailleblaster.util.Utils
 
 object LineBreakTool : MenuToolModule {
@@ -95,20 +95,7 @@ object LineBreakTool : MenuToolModule {
                             .firstOrNull { node: Node? -> BBX.INLINE.LINE_BREAK.isA(node) }
                         if (previousNode != null && BBX.INLINE.LINE_BREAK.isA(previousNode) && previousNode.findBlock() == parent
                         ) {
-                            val style = manager.getStyle(previousNode)
-                            if (style != null) {
-                                try {
-                                    manager.dispatch(
-                                        AdjustLocalStyleMessage.AdjustLinesMessage(
-                                            previousNode as Element,
-                                            true,
-                                            style.linesBefore + 1
-                                        )
-                                    )
-                                } catch (e: RuntimeException) {
-                                    throw EditingException("An error occurred while adding Lines Before.", e)
-                                }
-                            }
+                            dispatchAdjustLinesMessage(manager, previousNode)
                         } else {
                             Utils.insertChildCountSafe(parent, lineBreak, index)
                         }
@@ -116,27 +103,13 @@ object LineBreakTool : MenuToolModule {
                         val nextNode = FastXPath.followingAndSelf(currentNode)
                             .firstOrNull { node: Node? -> BBX.INLINE.LINE_BREAK.isA(node) }
                         if (nextNode != null && BBX.INLINE.LINE_BREAK.isA(nextNode) && nextNode.findBlock() == parent) {
-                            val style = manager.getStyle(nextNode)
-                            if (style != null) {
-                                try {
-                                    manager.dispatch(
-                                        AdjustLocalStyleMessage.AdjustLinesMessage(
-                                            nextNode as Element,
-                                            true,
-                                            style.linesBefore + 1
-                                        )
-                                    )
-                                } catch (e: RuntimeException) {
-                                    throw EditingException("An error occurred while adding Lines Before.", e)
-                                }
-                            }
+                            dispatchAdjustLinesMessage(manager, nextNode)
                         } else {
                             Utils.insertChildCountSafe(parent, lineBreak, index + 1)
                         }
                     } else {
                         val splitTextNode =
-                            XMLHandler.splitTextNode(
-                                currentNode,
+                            currentNode.splitNode(
                                 offset
                             )
                         if (splitTextNode.size < 2) {
@@ -153,5 +126,21 @@ object LineBreakTool : MenuToolModule {
         }
         manager.stopFormatting()
         manager.simpleManager.dispatchEvent(ModifyEvent(Sender.NO_SENDER, true, parent))
+    }
+
+    private fun dispatchAdjustLinesMessage(manager: Manager, nextNode: Node) {
+        manager.getStyle(nextNode)?.let { style ->
+            try {
+                manager.dispatch(
+                    AdjustLocalStyleMessage.AdjustLinesMessage(
+                        nextNode as Element,
+                        true,
+                        style.linesBefore + 1
+                    )
+                )
+            } catch (e: RuntimeException) {
+                throw EditingException("An error occurred while adding Lines Before.", e)
+            }
+        }
     }
 }

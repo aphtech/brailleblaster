@@ -363,7 +363,7 @@ public class TableEditor extends Dialog {
             open((Node[] nodeList) -> {
                         if (manager.isEmptyDocument()) {
                             //Get rid of placeholder node
-                            StreamSupport.stream(FastXPath.descendant(manager.getDoc().getRootElement()).spliterator(), false)
+                            StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(manager.getDoc().getRootElement())::iterator).spliterator(), false)
                                     .filter(rootDesc -> BBX.BLOCK.isA(rootDesc) && BrailleDocument.isEmptyPlaceholder((Element) rootDesc))
                                     .findFirst().ifPresent(Node::detach);
                         }
@@ -396,7 +396,7 @@ public class TableEditor extends Dialog {
             int actualOffset = text.getOffset();
             int blockTextLength = 0;
             boolean pastOriginalText = false;
-            Iterator<Node> iter = StreamSupport.stream(FastXPath.descendant(block).spliterator(), false)
+            Iterator<Node> iter = StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(block)::iterator).spliterator(), false)
                     .filter(e -> e instanceof nu.xom.Text && !UTDElements.BRL.isA(e.getParent()))
                     .iterator();
             while (iter.hasNext()) {
@@ -1902,7 +1902,7 @@ public class TableEditor extends Dialog {
         //Strip UTD
         UTDHelper.stripUTDRecursive(containerCopy);
 
-        for (Node child : FastXPath.descendant(containerCopy)) {
+        for (Node child : (Iterable<Node>)FastXPath.descendant(containerCopy)::iterator) {
             if (BBX.SPAN.OTHER.isA(child)) {
                 if (type == TableType.LINEAR) {
                     //If linear, re-attach span tags as children of the container

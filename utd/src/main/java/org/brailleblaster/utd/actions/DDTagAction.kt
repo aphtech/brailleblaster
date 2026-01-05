@@ -21,6 +21,7 @@ import nu.xom.Node
 import nu.xom.Text
 import org.brailleblaster.utd.ITranslationEngine
 import org.brailleblaster.utd.TextSpan
+import org.brailleblaster.utd.internal.xml.FastXPath
 
 class DDTagAction : GenericAction() {
     override fun applyTo(node: Node, context: ITranslationEngine): List<TextSpan> {
@@ -53,10 +54,6 @@ class DDTagAction : GenericAction() {
 	 * 	This should find the first text node after the element
 	 */
     private fun findFirstTextAfter(dd: Element): Node? {
-        if (dd.query("descendant::text()").size() > 0) {
-            return dd.query("descendant::text()")[0]
-        }
-
-        return null
+        return FastXPath.descendant(dd).filterIsInstance<Text>().firstOrNull()
     }
 }

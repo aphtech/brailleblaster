@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.perspectives.mvc.modules.misc
 
-import com.sun.jna.Platform
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.perspectives.mvc.BBSimpleManager.SimpleListener
 import org.brailleblaster.perspectives.mvc.menu.MenuManager
@@ -24,6 +23,8 @@ import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.perspectives.mvc.SimpleEvent
 import org.brailleblaster.perspectives.mvc.events.BuildMenuEvent
 import org.brailleblaster.tools.MenuTool
+import org.brailleblaster.utils.OS
+import org.brailleblaster.utils.os
 import org.eclipse.swt.SWT
 
 private val localeHandler = getDefault()
@@ -38,7 +39,7 @@ object FontSizeModule : SimpleListener {
 
         //On Ubuntu 16.10 with i3wm shift must be pressed to trigger +
 		@JvmField
-		val HOTKEY_INCREASE_FONT = SWT.MOD1 + (if (Platform.isLinux()) '=' else '+').code
+		val HOTKEY_INCREASE_FONT = SWT.MOD1 + (if (OS.Linux == os) '=' else '+').code
         @JvmField
 		val HOTKEY_DECREASE_FONT = SWT.MOD1 + '-'.code
 }

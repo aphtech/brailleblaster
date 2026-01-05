@@ -131,7 +131,7 @@ class VolumeSaveDialog(
             // -------------------- Data ---------------------
             for (curVolume in VolumeUtils.getVolumeNames(volumes)) {
                 val entry = TableItem(volumesTable, SWT.NONE)
-                entry.setText(arrayOf<String>(curVolume.nameLong))
+                entry.setText(arrayOf(curVolume.nameLong))
                 entry.setData(KEY_VOLUME_DATA, curVolume)
             }
 

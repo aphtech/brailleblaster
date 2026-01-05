@@ -16,11 +16,9 @@
 package org.brailleblaster.utd.internal.xml
 
 import nu.xom.Attribute
-import nu.xom.Document
 import nu.xom.Element
 import nu.xom.Node
 import org.brailleblaster.utd.exceptions.NodeException
-import org.brailleblaster.utd.internal.xml.NodeIterator.Companion.itrNextNode
 import org.brailleblaster.utd.internal.xml.XMLHandler.Companion.nodeToElementOrParentOrDocRoot
 import org.brailleblaster.utils.xom.childNodes
 import java.util.concurrent.atomic.AtomicReference
@@ -31,8 +29,8 @@ import java.util.function.Predicate
  */
 object FastXPath {
     @JvmStatic
-    fun descendantOrSelf(startNode: Node?): Iterable<Node> {
-        return Iterable { NodeIterator(startNode, stayInsideStartNode = true, forward = true) }
+    fun descendantOrSelf(startNode: Node?): Sequence<Node> {
+        return nodeSequence(startNode, stayInsideStartNode = true, forward = true)
     }
 
     fun <N : Node> descendantFindList(
@@ -82,29 +80,25 @@ object FastXPath {
     }
 
     @JvmStatic
-    fun descendant(startNode: Node?): Iterable<Node> {
+    fun descendant(startNode: Node?): Sequence<Node> {
         return descendantOrSelf(startNode).drop(1)
     }
 
     @JvmStatic
-    fun following(startNode: Node): Iterable<Node> {
-        return Iterable {
-            NodeIterator(
-                itrNextNode(startNode, null, true),
-                stayInsideStartNode = false,
-                forward = true
-            )
-        }
+    fun following(startNode: Node): Sequence<Node> {
+        return nodeSequence(
+            itrNextNode(startNode, null, true),
+            stayInsideStartNode = false,
+            forward = true
+        )
     }
 
     fun followingAndSelf(startNode: Node?): Iterable<Node> {
-        return Iterable {
-            NodeIterator(
-                startNode,
-                stayInsideStartNode = false,
-                forward = true
-            )
-        }
+        return nodeSequence(
+            startNode,
+            stayInsideStartNode = false,
+            forward = true
+        ).asIterable()
     }
 
     /**
@@ -112,13 +106,11 @@ object FastXPath {
      * because it will match ancestors.
      */
     fun preceding(startNode: Node): Iterable<Node> {
-        return Iterable {
-            NodeIterator(
-                itrNextNode(startNode, null, false),
-                stayInsideStartNode = false,
-                forward = false
-            )
-        }
+        return nodeSequence(
+            itrNextNode(startNode, null, false),
+            stayInsideStartNode = false,
+            forward = false
+        ).asIterable()
     }
 
     /**
@@ -127,100 +119,60 @@ object FastXPath {
      * match ancestors.
      */
     fun precedingAndSelf(startNode: Node?): Iterable<Node> {
-        return Iterable { NodeIterator(startNode, stayInsideStartNode = false, forward = false) }
+        return nodeSequence(startNode, stayInsideStartNode = false, forward = false).asIterable()
     }
 
     @JvmStatic
     fun descendantAndFollowing(startNode: Node?): Iterable<Node> {
-        return Iterable { NodeIterator(startNode, stayInsideStartNode = false, forward = true) }
+        return nodeSequence(startNode, stayInsideStartNode = false, forward = true).asIterable()
     }
 
     @JvmStatic
-    fun ancestor(startNode: Node): Iterable<Element> {
-        return Iterable { ancestorIterator(
-                if (startNode.parent is Element)
-                    startNode.parent
-                else
-                    null
-            )
-        }.map { it as Element }
+    fun ancestor(startNode: Node): Sequence<Element> {
+        return generateSequence(startNode. parent as? Element) { it.parent as? Element }
     }
 
     @JvmStatic
-    fun ancestorOrSelf(startNode: Node?): Iterable<Node> {
-        return Iterable { ancestorIterator(startNode) }
+    fun ancestorOrSelf(startNode: Node?): Sequence<Node> {
+        return generateSequence(startNode) { it.parent }
     }
 
-    private fun ancestorIterator(actualStart: Node?): Iterator<Node> {
-        return object : Iterator<Node> {
-                var curElement: Node? = actualStart
-
-                override fun hasNext(): Boolean {
-                    return curElement != null
-                }
-
-                override fun next(): Node {
-                    return curElement?.also {
-                        val parent = it.parent
-                        curElement = if (parent is Document) {
-                            null
-                        } else {
-                            parent
-                        }
-                    } ?: throw NoSuchElementException()
-                }
+    private fun nodeSequence(startNode: Node?, stayInsideStartNode: Boolean, forward: Boolean): Sequence<Node> =
+        generateSequence(startNode) { node ->
+            if (node.childCount != 0) {
+                node.getChild(if (forward) 0 else node.childCount - 1)
+            } else {
+                itrNextNode(
+                    node,
+                    if (stayInsideStartNode) startNode else null,
+                    forward
+                )
             }
+        }
+
+    /**
+     * Safe following node impl that stops once outside of the given start node
+     *
+     * @param stopNode     Parent we are not escaping from
+     * @param inputCurNode Assumed to be some (maybe nested) child of startNode
+     */
+    private fun itrNextNode(inputCurNode: Node, stopNode: Node?, forward: Boolean): Node? {
+        var curNode: Node = inputCurNode
+        //TODO: This will break if inputCurNode is not descendant from stopNode
+        while (stopNode == null || stopNode !== curNode) {
+            val parent = curNode.parent ?: break
+            val index = parent.indexOf(curNode)
+            if (forward && index != parent.getChildCount() - 1) {
+                return parent.getChild(index + 1)
+            } else if (!forward && index > 0) {
+                return parent.getChild(index - 1)
+            }
+            //Last entry in parent, get parents sibling
+            curNode = parent
+        }
+        //Finished getting all childrens parents
+        return null
     }
+
 }
 
-private class NodeIterator(private val startNode: Node?, private val stayInsideStartNode: Boolean, private val forward: Boolean) :
-    Iterator<Node> {
-    private var nextNode: Node? = startNode
-
-    override fun hasNext(): Boolean {
-        return nextNode != null
-    }
-
-    override fun next(): Node {
-        return nextNode?.also { doAdvance() } ?: throw NoSuchElementException()
-    }
-
-    fun doAdvance() {
-        nextNode = if (nextNode!!.childCount != 0) {
-            nextNode!!.getChild(if (forward) 0 else nextNode!!.childCount - 1)
-        } else {
-            itrNextNode(
-                nextNode!!,
-                if (stayInsideStartNode) startNode else null,
-                forward
-            )
-        }
-    }
-
-    companion object {
-        /**
-         * Safe following node impl that stops once outside of the given start node
-         *
-         * @param stopNode     Parent we are not escaping from
-         * @param inputCurNode Assumed to be some (maybe nested) child of startNode
-         */
-        @JvmStatic
-        fun itrNextNode(inputCurNode: Node, stopNode: Node?, forward: Boolean): Node? {
-            var curNode: Node = inputCurNode
-            //TODO: This will break if inputCurNode is not descendant from stopNode
-            while (stopNode == null || stopNode !== curNode) {
-                val parent = curNode.parent ?: break
-                val index = parent.indexOf(curNode)
-                if (forward && index != parent.getChildCount() - 1) {
-                    return parent.getChild(index + 1)
-                } else if (!forward && index > 0) {
-                    return parent.getChild(index - 1)
-                }
-                //Last entry in parent, get parents sibling
-                curNode = parent
-            }
-            //Finished getting all childrens parents
-            return null
-        }
-    }
-}

@@ -958,10 +958,7 @@ class TPagesDialog : DebugMenuToolModule {
     private fun moveTableItemUp(symbolsTable: Table) {
         if (symbolsTable.selectionCount > 0 && symbolsTable.selectionIndex > 0) {
             val selectedItem = symbolsTable.selection[0]
-            val newText = arrayOfNulls<String>(symbolsTable.columnCount)
-            for (i in 0 until symbolsTable.columnCount) {
-                newText[i] = selectedItem.getText(i)
-            }
+            val newText = Array(symbolsTable.columnCount) { selectedItem.getText(it) }
             val index = symbolsTable.selectionIndex
             symbolsTable.remove(index)
             val copyItem = TableItem(symbolsTable, SWT.NONE, index - 1)
@@ -973,10 +970,7 @@ class TPagesDialog : DebugMenuToolModule {
     private fun moveTableItemDown(symbolsTable: Table) {
         if (symbolsTable.selectionCount > 0 && symbolsTable.selectionIndex < symbolsTable.itemCount - 1) {
             val selectedItem = symbolsTable.selection[0]
-            val newText = arrayOfNulls<String>(symbolsTable.columnCount)
-            for (i in 0 until symbolsTable.columnCount) {
-                newText[i] = selectedItem.getText(i)
-            }
+            val newText = Array(symbolsTable.columnCount) { selectedItem.getText(it) }
             val index = symbolsTable.selectionIndex
             symbolsTable.remove(index)
             val copyItem = TableItem(symbolsTable, SWT.NONE, index + 1)
@@ -1019,17 +1013,12 @@ class TPagesDialog : DebugMenuToolModule {
             }
         }
         //Dumb SWT manipulation
-        val keys = arrayOfNulls<String>(items.size)
-        val values = arrayOfNulls<String>(items.size)
-        for (i in items.indices) {
-            keys[i] = items[i].getText(0)
-            values[i] = items[i].getText(1)
-        }
+        val values = items.map { it.getText(0) to it.getText(1) }
         symbolsTable.removeAll()
-        for (i in keys.indices) {
+        for (i in values) {
             val newItem = TableItem(symbolsTable, SWT.NONE)
-            newItem.setText(0, keys[i])
-            newItem.setText(1, values[i])
+            newItem.setText(0, i.first)
+            newItem.setText(1, i.second)
         }
     }
 
@@ -1314,7 +1303,6 @@ class TPagesDialog : DebugMenuToolModule {
         const val SWTBOT_OK_BUTTON: String = "tpagesDialog.ok"
         private const val BUTTON_WIDTH = 100
         private const val TEXT_WIDTH = 400
-        private const val SHELL_HEIGHT = 500
         private const val TRANSCRIBER_NOTES_HEADING = "TRANSCRIBER'S NOTES"
         private const val SS_HEADING = "<Heading>"
         private const val TPAGE_HEADING_STYLE = "TPage Heading"

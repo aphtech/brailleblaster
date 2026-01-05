@@ -192,8 +192,8 @@ class WhitespaceTransformer(manager: Manager) : Handler(manager, manager.viewIni
             if (curElement != null) {
                 val block = curElement.block
                 val curStyle = block?.getAttributeValue("utd-style")
-                if (curStyle != null && !STYLES_NOT_TO_BE_RETAINED.contains(curStyle)) {
-                    style = curStyle
+                if (curStyle != null && curStyle !in STYLES_NOT_TO_BE_RETAINED) {
+                    style = manager.simpleManager.utdManager.getBaseStyle(curStyle, block)
                 }
             }
             val newElement = BBX.BLOCK.STYLE.create(style)

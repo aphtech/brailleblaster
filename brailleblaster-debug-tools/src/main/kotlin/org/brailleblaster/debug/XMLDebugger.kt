@@ -27,7 +27,6 @@ import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.util.ColorManager
-import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.utils.xml.UTD_NS
 import org.eclipse.swt.SWT
@@ -37,11 +36,7 @@ import org.eclipse.swt.events.*
 import org.eclipse.swt.graphics.Color
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
-import org.eclipse.swt.widgets.Button
-import org.eclipse.swt.widgets.Display
-import org.eclipse.swt.widgets.FileDialog
-import org.eclipse.swt.widgets.Shell
-import org.eclipse.swt.widgets.Text
+import org.eclipse.swt.widgets.*
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -95,14 +90,14 @@ class XMLDebugger(private val parent: Shell, private val simpleManager: BBSimple
         val showBrl = Button(dialog, SWT.CHECK)
         showBrl.text = "Show <brl> tags"
         showBrl.selection = showBrlValue
-        EasySWT.addSelectionListener(showBrl) { it: SelectionEvent ->
+        EasySWT.addSelectionListener(showBrl) {
             showBrlValue = !showBrlValue
             setNode(curNode)
         }
         colorTagsButton = Button(dialog, SWT.CHECK)
         colorTagsButton!!.text = "Show tags in different color"
         colorTagsButton!!.selection = true
-        EasySWT.addSelectionListener(colorTagsButton!!) { it: SelectionEvent ->
+        EasySWT.addSelectionListener(colorTagsButton!!) {
             setColorTagsEnabled(
                 colorTagsButton!!.selection
             )
@@ -110,20 +105,20 @@ class XMLDebugger(private val parent: Shell, private val simpleManager: BBSimple
         val formattedButton = Button(dialog, SWT.CHECK)
         formattedButton.text = "Format XML"
         formattedButton.selection = formatXML
-        EasySWT.addSelectionListener(formattedButton) { it: SelectionEvent ->
+        EasySWT.addSelectionListener(formattedButton) {
             formatXML = !formatXML
             setNode(curNode)
         }
         val warnEmptyTextButton = Button(dialog, SWT.CHECK)
         warnEmptyTextButton.text = "Warn Empty Text"
         warnEmptyTextButton.selection = warnEmptyText
-        EasySWT.addSelectionListener(warnEmptyTextButton) { it: SelectionEvent ->
+        EasySWT.addSelectionListener(warnEmptyTextButton) {
             warnEmptyText = !warnEmptyText
             setNode(curNode)
         }
         val saveButton = Button(dialog, SWT.PUSH)
         saveButton.text = "Save this to BBX File"
-        EasySWT.addSelectionListener(saveButton) { it: SelectionEvent -> save() }
+        EasySWT.addSelectionListener(saveButton) { save() }
         findButton = Text(dialog, SWT.BORDER)
         findButton.addKeyListener(object : KeyAdapter() {
             override fun keyPressed(e: KeyEvent) {
@@ -138,10 +133,10 @@ class XMLDebugger(private val parent: Shell, private val simpleManager: BBSimple
         })
         val nextButton = Button(dialog, SWT.NONE)
         nextButton.text = "Next"
-        EasySWT.addSelectionListener(nextButton) { it: SelectionEvent -> findNext() }
+        EasySWT.addSelectionListener(nextButton) { findNext() }
         val prevButton = Button(dialog, SWT.NONE)
         prevButton.text = "Previous"
-        EasySWT.addSelectionListener(prevButton) { it: SelectionEvent -> findPrev() }
+        EasySWT.addSelectionListener(prevButton) { findPrev() }
         dialog.open()
     }
 
@@ -156,7 +151,7 @@ class XMLDebugger(private val parent: Shell, private val simpleManager: BBSimple
         } else {
             findRed(false)
             xmlViewer!!.caretOffset += offset
-            FormUIUtils.scrollViewToCursor(xmlViewer!!)
+            EasySWT.scrollViewToCursor(xmlViewer!!)
             xmlViewer!!.setSelectionRange(xmlViewer!!.caretOffset, findButton.text.length)
             xmlViewer!!.setFocus()
         }
@@ -173,7 +168,7 @@ class XMLDebugger(private val parent: Shell, private val simpleManager: BBSimple
         } else {
             findRed(false)
             xmlViewer!!.caretOffset = offset
-            FormUIUtils.scrollViewToCursor(xmlViewer!!)
+            EasySWT.scrollViewToCursor(xmlViewer!!)
             xmlViewer!!.setSelectionRange(xmlViewer!!.caretOffset, findButton.text.length)
             xmlViewer!!.setFocus()
         }
@@ -201,7 +196,7 @@ class XMLDebugger(private val parent: Shell, private val simpleManager: BBSimple
         if (n is nu.xom.Text) n = n.parent
         if (n == null) return
         curNode = n
-        activeDocument = Document(n.copy() as Element)
+        activeDocument = n as? Document ?: Document(n.copy() as Element)
         if (!showBrlValue) UTDHelper.getDescendantBrlFast(activeDocument) { it.detach() }
         if (warnEmptyText) {
             FastXPath.descendant(activeDocument)
@@ -273,7 +268,7 @@ class XMLDebugger(private val parent: Shell, private val simpleManager: BBSimple
     private fun save() {
         //Restricted version of BBFileDialog
         val saveAs = FileDialog(dialog, SWT.SAVE)
-        saveAs.filterExtensions = arrayOf("*.xml")
+        saveAs.setFilterExtensions("*.xml")
         val path = saveAs.open()
         if (path == null) log.debug("canceled save") else {
             val doc = BBX.newDocument()

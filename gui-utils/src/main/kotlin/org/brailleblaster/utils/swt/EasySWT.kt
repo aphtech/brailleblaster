@@ -56,14 +56,14 @@ object EasySWT {
 
     @JvmStatic
     fun makeComposite(parent: Composite?, columns: Int): Composite {
-        return CompositeBuilder1(parent).apply {
+        return CompositeBuilder(parent).apply {
             this.columns = columns
         }.build()
     }
 
     @JvmStatic
-    fun buildComposite(parent: Composite?): CompositeBuilder1 {
-        return CompositeBuilder1(parent)
+    fun buildComposite(parent: Composite?): CompositeBuilder {
+        return CompositeBuilder(parent)
     }
 
     @JvmStatic
@@ -581,5 +581,38 @@ object EasySWT {
                 callback.accept(text)
             }
         })
+    }
+    fun getBottomIndex(text: StyledText): Int {
+        // From JFaceTextUtil.getPartialBottomIndex
+        val caHeight = text.clientArea.height
+        val lastPixel = caHeight - 1
+        // XXX what if there is a margin? can't take trim as this includes the
+        // scrollbars which are not part of the client area
+        return text.getLineIndex(lastPixel)
+    }
+
+    fun scrollViewToCursor(view: StyledText) {
+        val offsetLine = view.getLineAtOffset(view.caretOffset)
+        val topIndex = view.topIndex
+        val bottomIndex = getBottomIndex(view)
+        log.debug("Offset at line {}, currently between line {} and {}", offsetLine, topIndex, bottomIndex)
+        if (offsetLine !in (bottomIndex + 1)..<topIndex) {
+            log.debug("Scrolling")
+            view.topIndex = offsetLine - 10
+        }
+    }
+
+    fun getCaretAfterLineBreaks(view: StyledText, startPos: Int): Int {
+        var startPos = startPos
+        if (SWT.getPlatform() == "win32") {
+            if (startPos > 0) {
+                if (view.getTextRange(startPos - 1, 1) == "\r") startPos++
+            }
+        }
+        return startPos
+    }
+
+    fun setCaretAfterLineBreaks(view: StyledText, startPos: Int) {
+        view.caretOffset = getCaretAfterLineBreaks(view, startPos)
     }
 }

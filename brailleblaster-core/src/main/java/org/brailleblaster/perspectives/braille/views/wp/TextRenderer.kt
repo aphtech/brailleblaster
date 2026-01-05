@@ -493,11 +493,7 @@ class TextRenderer(manager: Manager, private val textView: TextView) : Renderer(
             }
         }
         //Convert list to array
-        val rangeArray = arrayOfNulls<StyleRange>(textView.ranges.size)
-        for (i in textView.ranges.indices) {
-            rangeArray[i] = textView.ranges[i]
-        }
-        textView.view.styleRanges = rangeArray
+        textView.view.styleRanges = textView.ranges.toTypedArray()
 
         // Highlight nbsp. Loop to prevent out of order errors or conflicts with existing style rnages
         for (curStyleRange in setNonBreakingSpaceEmphasis(

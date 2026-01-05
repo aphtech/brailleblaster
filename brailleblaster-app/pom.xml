@@ -21,6 +21,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.brailleblaster</groupId>
@@ -56,12 +57,33 @@
             <groupId>org.brailleblaster</groupId>
             <artifactId>brailleblaster-updater</artifactId>
             <version>${project.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.brailleblaster</groupId>
             <artifactId>utils</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.aphtech.libembosser</groupId>
+            <artifactId>libembosser-aph-driver</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.aphtech.libembosser</groupId>
+            <artifactId>libembosser-core-drivers</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.aphtech.libembosser</groupId>
+            <artifactId>libembosser-braillo-driver</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.aphtech.libembosser</groupId>
+            <artifactId>libembosser-viewplus-driver</artifactId>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
     <build>
@@ -259,8 +281,8 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>onl.mdw</groupId>
-                                    <artifactId>mathcat4j-core</artifactId>
-                                    <version>${mathcat4j.version}</version>
+                                    <artifactId>mathcat4j-jni</artifactId>
+                                    <version>${mathcat4j-jni.version}</version>
                                     <type>zip</type>
                                     <classifier>rules</classifier>
                                 </artifactItem>

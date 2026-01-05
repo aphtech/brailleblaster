@@ -18,7 +18,7 @@ package org.brailleblaster.bbx;
 import java.util.EnumSet;
 import java.util.stream.StreamSupport;
 
-import nu.xom.Attribute;
+import nu.xom.*;
 
 import org.brailleblaster.settings.DefaultNimasMaps;
 import org.brailleblaster.testrunners.TestXMLUtils;
@@ -31,9 +31,6 @@ import org.testng.ITestContext;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import nu.xom.Document;
-import nu.xom.Element;
-import nu.xom.Text;
 import org.brailleblaster.testrunners.BBTestRunner;
 
 public class BookToBBXConverterTest {
@@ -1991,7 +1988,7 @@ public class BookToBBXConverterTest {
 
 	public static XMLElementAssert convertAndAssert(BookToBBXConverter converter, IStyleMap map, String body) {
 		Document doc = TestXMLUtils.generateBookDoc("", body);
-		StreamSupport.stream(FastXPath.descendant(doc).spliterator(), false)
+		StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(doc)::iterator).spliterator(), false)
 				.filter(node -> node instanceof Text && node.getValue().isEmpty())
 				.forEach(node -> {
 					throw new NodeException("blank text node", node);
@@ -2005,7 +2002,7 @@ public class BookToBBXConverterTest {
 		Document bbxDoc = converter.convert(doc);
 		BookToBBXConverter.upgradeFormat(bbxDoc);
 
-		if (StreamSupport.stream(FastXPath.descendant(bbxDoc).spliterator(), false)
+		if (StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(bbxDoc)::iterator).spliterator(), false)
 				.filter(node -> node instanceof Element)
 				.anyMatch(BBX._ATTRIB_FIXER_TODO::has)) {
 			throw new NodeException("Document still contains fixerTodo attributes", bbxDoc);

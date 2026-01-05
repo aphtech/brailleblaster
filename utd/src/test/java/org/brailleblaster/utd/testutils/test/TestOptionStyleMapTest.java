@@ -20,6 +20,7 @@ import java.util.stream.StreamSupport;
 
 import nu.xom.Document;
 import nu.xom.Element;
+import nu.xom.Node;
 import org.brailleblaster.utd.IStyle;
 import org.brailleblaster.utd.Style;
 import org.brailleblaster.utd.internal.xml.FastXPath;
@@ -39,7 +40,7 @@ public class TestOptionStyleMapTest {
         Document doc = new XMLHandler().load(new StringReader("<root><p linesBefore='20' format='TOC'/></root>"));
         log.trace("yay");
 
-        Element pTag = StreamSupport.stream(FastXPath.descendant(doc).spliterator(), false)
+        Element pTag = StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(doc)::iterator).spliterator(), false)
                 .filter(curNode -> curNode instanceof Element && ((Element) curNode).getLocalName().equals("p"))
                 .findFirst()
                 .map(node -> (Element) node)

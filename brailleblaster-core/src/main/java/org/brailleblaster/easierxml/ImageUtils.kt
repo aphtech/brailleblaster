@@ -182,7 +182,7 @@ object ImageUtils {
                 curAncestor
                     .getAttribute(TableUtils.ATTRIB_TABLE_COPY, UTD_NS) != null
             }
-        }
+        }.toList()
     }
 
     /**

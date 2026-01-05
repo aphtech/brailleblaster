@@ -36,7 +36,7 @@ import java.util.function.Consumer
  * (ex. a text box that you need the text out of), other static methods inside EasySWT can
  * simplify that process </list>
  */
-class CompositeBuilder1(override var parent: Composite?) : ControlBuilder {
+class CompositeBuilder(override var parent: Composite?) : ControlBuilder {
     override var columns: Int? = null
     private val children: MutableList<ControlBuilder> = ArrayList()
     private var width: Int? = null
@@ -44,23 +44,23 @@ class CompositeBuilder1(override var parent: Composite?) : ControlBuilder {
     override var swtOptions: Int = 0
     private var equalColumnWidth = false
 
-    fun setEqualColumnWidth(equalColumnWidth: Boolean): CompositeBuilder1 {
+    fun setEqualColumnWidth(equalColumnWidth: Boolean): CompositeBuilder {
         this.equalColumnWidth = equalColumnWidth
         return this
     }
 
-    private fun add(control: ControlBuilder): CompositeBuilder1 {
+    private fun add(control: ControlBuilder): CompositeBuilder {
         children.add(control)
         return this
     }
 
-    fun addButton(text: String?, columns: Int, onClick: Consumer<SelectionEvent>?): CompositeBuilder1 {
+    fun addButton(text: String?, columns: Int, onClick: Consumer<SelectionEvent>?): CompositeBuilder {
         return add(ButtonBuilder1(text, columns, onClick))
     }
 
     fun addButton(
         text: String?, width: Int, columns: Int, onClick: Consumer<SelectionEvent>?
-    ): CompositeBuilder1 {
+    ): CompositeBuilder {
         return add(ButtonBuilder1(text, columns, onClick).setWidth(width))
     }
 
@@ -86,18 +86,18 @@ class CompositeBuilder1(override var parent: Composite?) : ControlBuilder {
             val childcols = child.columns
             when {
                 childcols != null -> childcols
-                child is CompositeBuilder1 -> child.calculateColumns()
+                child is CompositeBuilder -> child.calculateColumns()
                 else -> 0
             }
         }
     }
 
-    override fun setWidth(width: Int): CompositeBuilder1 {
+    override fun setWidth(width: Int): CompositeBuilder {
         this.width = width
         return this
     }
 
-    override fun setHeight(height: Int): CompositeBuilder1 {
+    override fun setHeight(height: Int): CompositeBuilder {
         this.height = height
         return this
     }

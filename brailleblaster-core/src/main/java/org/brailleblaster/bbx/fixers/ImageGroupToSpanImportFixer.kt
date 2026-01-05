@@ -52,13 +52,13 @@ class ImageGroupToSpanImportFixer : AbstractFixer() {
     }
 
     companion object {
-        private fun getDescendantBlock(node: Node): List<Element> {
+        private fun getDescendantBlock(node: Node): Sequence<Element> {
             return FastXPath.descendant(node)
                 .filterIsInstance<Element>()
                 .filter { BBX.BLOCK.isA(it) }
         }
 
-        private fun getDescendantContainer(node: Node): List<Element> {
+        private fun getDescendantContainer(node: Node): Sequence<Element> {
             return FastXPath.descendant(node)
                 .filterIsInstance<Element>()
                 .filter { BBX.CONTAINER.isA(it) }

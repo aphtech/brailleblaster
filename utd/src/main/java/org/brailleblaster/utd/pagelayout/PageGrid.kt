@@ -204,11 +204,13 @@ class PageGrid(val width: Int, val height: Int) {
         get() = Arrays.stream(grid)
     val brlElementsOnPage: Iterable<Element>
         get() = grid
-                .mapNotNull { it?.node }
-                .distinct()
-                .mapNotNull { it.parent}
+            .asSequence()
+            .mapNotNull { it?.node }
+            .distinct()
+            .mapNotNull { it.parent}
             .filterIsInstance<Element>()
-                .filter { UTDElements.BRL.isA(it) }
+            .filter { UTDElements.BRL.isA(it) }
+            .toList()
 
     fun getLine(i: Int): Stream<Cell?> {
         Preconditions.checkElementIndex(i, height)

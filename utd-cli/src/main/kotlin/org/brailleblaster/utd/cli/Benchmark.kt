@@ -298,23 +298,6 @@ object Benchmark {
         return engine
     }
 
-    fun setupEngine(engine: UTDTranslationEngine, cli: BenchmarkCLI) {
-        //Optionally add running head
-        if (!cli.runningHead.isNullOrBlank()) {
-            log.debug("Using running head " + cli.runningHead)
-            engine.pageSettings.runningHead = cli.runningHead!!
-        }
-
-        //Optionally change page size
-        val cell = engine.brailleSettings.cellType
-        if (cli.linesPerPage > 0) {
-            setNewPageHeight(engine.pageSettings, cell, cli.linesPerPage)
-        }
-        if (cli.cellsPerLine > 0) {
-            setNewPageWidth(engine.pageSettings, cell, cli.cellsPerLine)
-        }
-    }
-
     @JvmStatic
 	fun setNewPageHeight(pageSettings: PageSettings, cell: BrlCell, heightLines: Int) {
         pageSettings.paperHeight =

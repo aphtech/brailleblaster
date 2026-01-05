@@ -17,7 +17,6 @@ package org.brailleblaster.perspectives.braille.mapping.elements
 
 import nu.xom.Element
 import nu.xom.Node
-import org.apache.commons.lang3.StringUtils
 import org.brailleblaster.perspectives.braille.mapping.interfaces.Uneditable
 import org.brailleblaster.utd.actions.TransNoteAction
 import java.util.*
@@ -40,7 +39,7 @@ class BoxLineTextMapElement(n: Node, parent: Element, isStartSeparator: Boolean)
         val num = brailleList[boxText].node.value.length
         var color = ""
         if ((brailleList[boxText].node.parent as Element).getAttributeValue("color") != null
-            && !StringUtils.isEmpty((brailleList[boxText].node.parent as Element).getAttributeValue("color"))
+            && !(brailleList[boxText].node.parent as Element).getAttributeValue("color").isNullOrEmpty()
         ) {
             color = TransNoteAction.START + (brailleList[boxText].node.parent as Element)
                 .getAttributeValue("color") + TransNoteAction.END + " "

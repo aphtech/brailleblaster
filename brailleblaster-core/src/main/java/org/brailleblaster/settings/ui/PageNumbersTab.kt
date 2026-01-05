@@ -124,41 +124,27 @@ class PageNumbersTab internal constructor(folder: TabFolder, pageSettingsDefault
     @Throws(IllegalArgumentException::class)
     override fun updateEngine(engine: UTDTranslationEngine): Boolean {
         val pageSettings = engine.pageSettings
-        var updated = false
         val pageNumberLocations: MutableList<PageNumberPosition> = ArrayList()
         pageNumberLocations.add(PageNumberPosition.valueOf(evenPrintNumCombo.text))
         pageNumberLocations.add(PageNumberPosition.valueOf(oddPrintNumCombo.text))
         pageNumberLocations.add(PageNumberPosition.valueOf(evenBrailleNumCombo.text))
         pageNumberLocations.add(PageNumberPosition.valueOf(oddBrailleNumCombo.text))
-        updated = FormUIUtils.updateObject(
-            pageSettings::pageNumberLocations::get, pageSettings::pageNumberLocations::set,
-            pageNumberLocations, updated
+        return FormUIUtils.updateObject(
+            pageSettings::pageNumberLocations,
+            pageNumberLocations
+        ) || FormUIUtils.updateObject(
+            pageSettings::isPrintPageNumberRange,
+            continueSymbolsCombo.text == "Yes"
+        ) || FormUIUtils.updateObject(
+            pageSettings::isContinuePages,
+            continuePagesCombo.text == "Yes"
+        ) || FormUIUtils.updateObject(
+            pageSettings::isPrintPageLetterIndicator,
+            continuationIndicatorCombo.text == "Yes"
+        ) || FormUIUtils.updateObject(
+            pageSettings::isGuideWords,
+            guideWordsCombo.text == "Yes"
         )
-        updated = FormUIUtils.updateObject(
-            pageSettings::isPrintPageNumberRange::get,
-            pageSettings::isPrintPageNumberRange::set,
-            continueSymbolsCombo.text == "Yes",
-            updated
-        )
-        updated = FormUIUtils.updateObject(
-            pageSettings::isContinuePages::get,
-            pageSettings::isContinuePages::set,
-            continuePagesCombo.text == "Yes",
-            updated
-        )
-        updated = FormUIUtils.updateObject(
-            pageSettings::isPrintPageLetterIndicator::get,
-            pageSettings::isPrintPageLetterIndicator::set,
-            continuationIndicatorCombo.text == "Yes",
-            updated
-        )
-        updated = FormUIUtils.updateObject(
-            pageSettings::isGuideWords::get,
-            pageSettings::isGuideWords::set,
-            guideWordsCombo.text == "Yes",
-            updated
-        )
-        return updated
     }
 
     companion object {

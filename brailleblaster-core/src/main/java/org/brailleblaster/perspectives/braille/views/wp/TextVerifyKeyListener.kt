@@ -415,7 +415,13 @@ class TextVerifyKeyListener(
                     lastBlockParent = lastBlock!!.parent
                 }
 
-                val newBlock = BBX.BLOCK.DEFAULT.create()
+                val lastStyle = lastBlock.getAttributeValue("utd-style")
+                val newBlock = if (lastStyle != null) {
+                    val style = manager.simpleManager.utdManager.getBaseStyle(lastStyle, lastBlock)
+                    BBX.BLOCK.STYLE.create(style)
+                } else {
+                    BBX.BLOCK.DEFAULT.create()
+                }
                 newBlock.addAttribute(Attribute(LiveFixer.NEWPAGE_PLACEHOLDER_ATTRIB, "true"))
                 newBlock.appendChild(PILCROW)
                 lastBlock.parent.appendChild(newBlock)

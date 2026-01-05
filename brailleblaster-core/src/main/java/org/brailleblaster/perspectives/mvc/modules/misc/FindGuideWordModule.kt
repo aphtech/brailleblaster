@@ -23,6 +23,7 @@ import org.brailleblaster.bbx.BBX
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
+import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utils.xml.BB_NS
 
 object FindGuideWordModule {
@@ -94,7 +95,6 @@ object FindGuideWordModule {
     }
 
     private fun getFirstTextChild(element: Element): Text {
-        val text = element.query("descendant::text()")[0]
-        return text as Text
+        return FastXPath.descendant(element).filterIsInstance<Text>().first()
     }
 }

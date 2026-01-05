@@ -13,11 +13,14 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package org.brailleblaster.perspectives.braille.spellcheck
+package org.brailleblaster.spellcheck
 
-import com.sun.jna.Platform
 import org.brailleblaster.BBIni
+import org.brailleblaster.utils.Architecture
+import org.brailleblaster.utils.OS
+import org.brailleblaster.utils.arch
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
+import org.brailleblaster.utils.os
 import org.slf4j.LoggerFactory
 
 class SpellChecker(private val dictPath: String, private val affPath: String) {
@@ -26,12 +29,12 @@ class SpellChecker(private val dictPath: String, private val affPath: String) {
     init {
 
         //TODO: Remove when better hunspell library is chosen
-        if (!Platform.isWindows()) {
+        if (OS.Windows != os) {
             throw RuntimeException("Hunspell Spell Check is currently only supported on Windows.")
         }
         try {
             val path = BBIni.nativeLibraryPath.resolve("bbhunspell_"
-                    + (if (Platform.is64Bit()) "x86-64" else "x86")
+                    + (if (Architecture.X86_64 == arch) "x86-64" else "x86")
                     + BBIni.nativeLibrarySuffix
             ).toString()
             log.debug("Loading hunspell library at $path")

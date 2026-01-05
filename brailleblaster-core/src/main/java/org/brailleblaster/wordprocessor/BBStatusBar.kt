@@ -23,14 +23,12 @@ import org.eclipse.swt.widgets.Label
 import org.eclipse.swt.widgets.Shell
 
 class BBStatusBar(documentWindow: Shell?) {
-    private val statusBar: Label = Label(documentWindow, SWT.BORDER)
-
-    init {
+    private val statusBar: Label = Label(documentWindow, SWT.BORDER).apply {
         val location = FormData()
         location.left = FormAttachment(0)
         location.right = FormAttachment(75)
         location.bottom = FormAttachment(100)
-        statusBar.layoutData = location
+        layoutData = location
     }
 
     fun setColor(color: ColorManager.Colors) {

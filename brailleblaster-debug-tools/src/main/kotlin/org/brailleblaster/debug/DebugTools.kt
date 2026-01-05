@@ -89,7 +89,7 @@ object SaveWithBrlTool : DebugMenuToolModule {
     override val title = "Save Document w/ <brl>"
     override fun onRun(bbData: BBSelectionData) {
         val path = FileDialog(bbData.wpManager.shell, SWT.SAVE).run {
-            filterExtensions = arrayOf("*.xml")
+            setFilterExtensions("*.xml")
             open()
         }
         if (path == null) {
@@ -103,7 +103,7 @@ object SaveFormattedWithBrlTool : DebugMenuToolModule {
     override val title = "Save Document Formatted w/ <brl>"
     override fun onRun(bbData: BBSelectionData) {
         val path = FileDialog(bbData.wpManager.shell, SWT.SAVE).run {
-            filterExtensions = arrayOf("*.xml")
+            setFilterExtensions("*.xml")
             open()
         }
         if (path == null) {
@@ -117,7 +117,7 @@ object SaveFormattedWithoutBrlTool : DebugMenuToolModule {
     override val title = "Save Document Formatted w/o <brl>"
     override fun onRun(bbData: BBSelectionData) {
         val path = FileDialog(bbData.wpManager.shell, SWT.SAVE).run {
-            filterExtensions = arrayOf("*.xml")
+            setFilterExtensions("*.xml")
             open()
         }
         if (path == null) {

@@ -15,13 +15,13 @@
  */
 package org.brailleblaster.settings.ui
 
-import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.utd.UTDTranslationEngine
 import org.brailleblaster.utd.utils.Page
-import org.brailleblaster.utils.swt.AccessibilityUtils.appendName
-import org.brailleblaster.util.FormUIUtils.updateObject
+import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.utils.LengthUtils
 import org.brailleblaster.utils.UnitConverter
+import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
+import org.brailleblaster.utils.swt.AccessibilityUtils.appendName
 import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.*
@@ -165,7 +165,7 @@ class PagePropertiesTab private constructor(parent: Composite, engine: UTDTransl
         // ----Add listeners----
         // When the user selects a page from the drop down, fill out the width,
         // height, cells, and lines boxes
-        pageTypes.addSelectionListener(EasySWT.makeSelectedListener { it: SelectionEvent -> onStandardPageSelected() })
+        pageTypes.addSelectionListener(EasySWT.makeSelectedListener { onStandardPageSelected() })
 
         // Size fields
         // When a user types a digit, adjust cells, lines and page combo
@@ -503,24 +503,31 @@ class PagePropertiesTab private constructor(parent: Composite, engine: UTDTransl
         val pageSettings = engine.pageSettings
         val brailleSettings = engine.brailleSettings
 
-        var updated =
-            updateObject(brailleSettings::cellType::get, brailleSettings::cellType::set, brailleCell, false)
-        updated =
-            updateObject(pageSettings::paperHeight::get, pageSettings::paperHeight::set, pageHeight, updated)
-        updated =
-            updateObject(pageSettings::paperWidth::get, pageSettings::paperWidth::set, pageWidth, updated)
-        updated =
-            updateObject(pageSettings::topMargin::get, pageSettings::topMargin::set, marginTop, updated)
-        updated =
-            updateObject(pageSettings::bottomMargin::get, pageSettings::bottomMargin::set, marginBottom, updated)
-        updated =
-            updateObject(pageSettings::leftMargin::get, pageSettings::leftMargin::set, marginLeft, updated)
-        updated =
-            updateObject(pageSettings::rightMargin::get, pageSettings::rightMargin::set, marginRight, updated)
-        updated =
-            updateObject(pageSettings::interpoint::get, pageSettings::interpoint::set, interpointCombo.text == "Yes", updated)
-
-        return updated
+        return FormUIUtils.updateObject(
+            brailleSettings::cellType,
+            brailleCell
+        ) || FormUIUtils.updateObject(
+            pageSettings::paperHeight,
+            pageHeight
+        ) || FormUIUtils.updateObject(
+            pageSettings::paperWidth,
+            pageWidth
+        ) || FormUIUtils.updateObject(
+            pageSettings::topMargin,
+            marginTop
+        ) || FormUIUtils.updateObject(
+            pageSettings::bottomMargin,
+            marginBottom
+        ) || FormUIUtils.updateObject(
+            pageSettings::leftMargin,
+            marginLeft
+        ) || FormUIUtils.updateObject(
+            pageSettings::rightMargin,
+            marginRight
+        ) || FormUIUtils.updateObject(
+            pageSettings::interpoint,
+            interpointCombo.text == "Yes"
+        )
     }
 
     private fun makeFieldListener(

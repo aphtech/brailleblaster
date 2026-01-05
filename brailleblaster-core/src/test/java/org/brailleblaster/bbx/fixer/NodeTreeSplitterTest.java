@@ -414,7 +414,7 @@ public class NodeTreeSplitterTest {
 //	}
 	
 	private static void testNodeTreeSplit(Element root, Node splitAt) {
-		List<Node> allNodes = Lists.newArrayList(FastXPath.descendant(root.getDocument()));
+		List<Node> allNodes = Lists.newArrayList(FastXPath.descendant(root.getDocument())::iterator);
 		
 		NodeTreeSplitter.split(root, splitAt);
 		

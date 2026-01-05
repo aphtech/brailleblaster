@@ -16,12 +16,13 @@
 package org.brailleblaster.utils.braille
 
 import onl.mdw.mathcat4j.api.MathCat
-import onl.mdw.mathcat4j.core.mathCAT
+import onl.mdw.mathcat4j.api.MathCatLoader
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
+private val mcManager = MathCatLoader.INSTANCE.mathCatFactory.orElseThrow().create()
 private val mathCATExecutor = Executors.newSingleThreadExecutor().also {
     Runtime.getRuntime().addShutdownHook(Thread(it::shutdown))
 }
 
-fun <T> singleThreadedMathCAT(block: MathCat.() -> T): T = mathCATExecutor.submit(Callable { mathCAT(block) }).get()
+fun <T> singleThreadedMathCAT(block: MathCat.() -> T): T = mathCATExecutor.submit(Callable { mcManager.run { it.block() } }).get()

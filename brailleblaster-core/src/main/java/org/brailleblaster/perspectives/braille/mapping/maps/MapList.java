@@ -490,7 +490,7 @@ public class MapList extends LinkedList<@NotNull TextMapElement> {
         List<Node> children = new ArrayList<>();
         children.add(n);
         if (n instanceof Element && !BBX.CONTAINER.TABLE.isA(n)) {
-            children.addAll(StreamSupport.stream(FastXPath.descendant(n).spliterator(), false).filter(node ->
+            children.addAll(StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(n)::iterator).spliterator(), false).filter(node ->
                     XMLHandler.Companion.ancestorElementNot(node, UTDElements.BRL::isA)).toList());
         }
 

@@ -206,20 +206,20 @@ public class Manager extends Controller {
 
                     // Used to communicate information before a formatting stage
                     // Can't just apply to mEvent.changedNodes as these might be added to a parent
-                    StreamSupport.stream(FastXPath.descendant(getDoc()).spliterator(), false).filter(Searcher.Filters::isElement)
+                    StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(getDoc())::iterator).spliterator(), false).filter(Searcher.Filters::isElement)
                             .map(Searcher.Mappers::toElement)
                             .filter(BBX.PreFormatterMarker.ATTRIB_PRE_FORMATTER_MARKER::has).forEach(BBX.PreFormatterMarker.ATTRIB_PRE_FORMATTER_MARKER::detach);
 
                     Set<Element> liveFixedSections = new HashSet<>();
-                    mEvent.changedNodes.forEach(n -> {
+                    for (Node n : mEvent.changedNodes) {
                         if (n.getDocument() == null) {
-                            return;
+                            continue;
                         }
                         if (n instanceof Document || n.getDocument().getRootElement() == n) {
                             LiveFixer.fix(Objects.requireNonNull(XMLHandler.nodeToElementOrParentOrDocRoot(n)));
                             refresh(false);
                             changedNodes.clear();
-                            return;
+                            continue;
                         } else {
                             // Issue #6022 #5947: cleanup document to prevent weird state or formatting
                             Element section = XMLHandler.Companion.ancestorVisitorElement(n, BBX.SECTION::isA);
@@ -229,7 +229,7 @@ public class Manager extends Controller {
 
                                 if (n.getDocument() == null) {
                                     // was removed by fixer
-                                    return;
+                                    continue;
                                 }
                             }
                         }
@@ -242,12 +242,12 @@ public class Manager extends Controller {
                             // after reformat
                             changedNodes.add(tableParent);
                         } else if (BBX.SECTION.isA(n) || (BBX.CONTAINER.isA(n) && !BBX.CONTAINER.TABLE.isA(n))) {
-                            for (Node child : FastXPath.descendantOrSelf(n)) {
+                            for (Node child : (Iterable<Node>) FastXPath.descendantOrSelf(n)::iterator) {
                                 if (BBX.CONTAINER.TABLE.isA(child)
                                         && ((Element) child).getAttribute(TableUtils.ATTRIB_TABLE_COPY) == null
                                         && !changedNodes.contains(child)) {
                                     changedNodes.add((Element) child.getParent());
-                                } else if (!BBX.BLOCK.TABLE_CELL.isA(child) && BBX.BLOCK.isA(child) && !changedNodes.contains((Element) child)) {
+                                } else if (!BBX.BLOCK.TABLE_CELL.isA(child) && BBX.BLOCK.isA(child) && !changedNodes.contains((Element)child)) {
                                     changedNodes.add((Element) child);
                                 }
                             }
@@ -259,13 +259,13 @@ public class Manager extends Controller {
                             while (!BBX.BLOCK.isA(n)) {
                                 n = n.getParent();
                             }
-                            if (n instanceof Element && !changedNodes.contains((Element)n))
+                            if (n instanceof Element && !changedNodes.contains(n))
                                 changedNodes.add((Element) n);
                         } else {
-                            if (n instanceof Element && !changedNodes.contains((Element)n))
+                            if (n instanceof Element && !changedNodes.contains(n))
                                 changedNodes.add((Element) n);
                         }
-                    });
+                    }
 
                     mEvent.changedNodes.clear();
                     if (!changedNodes.isEmpty()) {
@@ -1127,17 +1127,14 @@ public class Manager extends Controller {
             throw new IllegalArgumentException("Node " + startPoint.toXML() + " has no parent");
         Element curElement = (Element) startPoint.getParent();
         int startIndex = curElement.indexOf(startPoint) - 1;
-        for (int i = startIndex; i >= 0; i--) {
-            if (test.test(curElement.getChild(i)))
-                return curElement.getChild(i);
-            if (curElement.getChild(i) instanceof Element) {
-                Node searchElement = searchDescendantsForNodeBackwards((Element) curElement.getChild(i), test);
-                if (searchElement != null)
-                    return searchElement;
-            }
+        Node searchResult = searchDescendantsForNodeBackwards(curElement, startIndex, test);
+        if (searchResult != null) {
+            return searchResult;
         }
-        if (curElement.getParent() instanceof Document)
+        ParentNode parent = curElement.getParent();
+        if (parent == null || parent instanceof Document) {
             return null;
+        }
         return searchForPreviousNode(curElement, test);
     }
 
@@ -1162,13 +1159,18 @@ public class Manager extends Controller {
     }
 
     private Node searchDescendantsForNodeBackwards(Element parent, Predicate<Node> test) {
-        for (int search = parent.getChildCount() - 1; search >= 0; search--) {
-            if (test.test(parent.getChild(search)))
-                return parent.getChild(search);
-            if (parent.getChild(search) instanceof Element) {
-                Node searchElement = searchDescendantsForNodeBackwards((Element) parent.getChild(search), test);
-                if (searchElement != null)
+        return searchDescendantsForNodeBackwards(parent, parent.getChildCount() - 1, test);
+    }
+    private Node searchDescendantsForNodeBackwards(Element parent, int startIndex, Predicate<Node> test) {
+        for (int i = startIndex; i >= 0; i--) {
+            Node child = parent.getChild(i);
+            if (test.test(child)) {
+                return child;
+            } else if (child instanceof Element) {
+                Node searchElement = searchDescendantsForNodeBackwards((Element) child, test);
+                if (searchElement != null) {
                     return searchElement;
+                }
             }
         }
         return null;

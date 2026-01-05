@@ -84,7 +84,7 @@ private fun translateMathML(mml: String, brailleCode: MathBraileCode): String = 
         singleThreadedMathCAT {
             setPreference("BrailleCode", brailleCode.preferenceName)
             setMathml(mml)
-            getBraille()
+            braille
         }
     } catch (ex: ExecutionException) {
         throw RuntimeException("Problem translating MathML \"$mml\"", ex.cause)

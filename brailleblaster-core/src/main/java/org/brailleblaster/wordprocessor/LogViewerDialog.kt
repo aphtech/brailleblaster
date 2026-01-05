@@ -72,8 +72,8 @@ class LogViewerDialog @JvmOverloads constructor(parent: Shell?, style: Int = SWT
         saveButton.addSelectionListener(object : SelectionAdapter() {
             override fun widgetSelected(arg0: SelectionEvent) {
                 val saveDialog = FileDialog(dialogShell, SWT.SAVE)
-                saveDialog.filterNames = arrayOf("Log file (*.log)")
-                saveDialog.filterExtensions = arrayOf("*.log")
+                saveDialog.setFilterNames("Log file (*.log)")
+                saveDialog.setFilterExtensions("*.log")
                 saveDialog.filterPath = System.getProperty("user.home")
                 saveDialog.overwrite = true
                 val saveResult = saveDialog.open()
@@ -84,7 +84,7 @@ class LogViewerDialog @JvmOverloads constructor(parent: Shell?, style: Int = SWT
                         savedMsg.text = localeHandler["LogViewer.SavedMsgBox.Title"]
                         savedMsg.message = localeHandler["LogViewer.SavedMsgBox.Message"]
                         savedMsg.open()
-                    } catch (e: IOException) {
+                    } catch (_: IOException) {
                         val saveErrorMsg = MessageBox(dialogShell, SWT.ICON_ERROR or SWT.OK)
                         saveErrorMsg.text = localeHandler["LogViewer.SaveErrorMsgBox.Title"]
                         saveErrorMsg.message = localeHandler["LogViewer.SaveErrorMsgBox.Message"]

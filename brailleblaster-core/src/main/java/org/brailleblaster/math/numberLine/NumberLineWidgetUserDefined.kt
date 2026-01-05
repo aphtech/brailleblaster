@@ -22,7 +22,6 @@ import org.brailleblaster.math.spatial.SpatialMathEnum.NumberLineSection
 import org.brailleblaster.math.spatial.SpatialMathUtils.translate
 import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
-import org.eclipse.swt.events.ModifyEvent
 import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.events.SelectionListener
 import org.eclipse.swt.layout.GridData
@@ -125,15 +124,12 @@ class NumberLineWidgetUserDefined : NumberLineWidget() {
         g.text = NumberLineConstants.POINT
         for (j in numberLine.numberLineText.points.indices) {
             val point = numberLine.segmentPoints[j]
-            val items = arrayOfNulls<String>(numberLine.settings.numUserDefinedIntervals)
-            for (i in 0 until numberLine.settings.numUserDefinedIntervals) {
-                items[i] = NumberLineConstants.MARKER_LABEL + " " + (i + 1)
-            }
+            val items = Array(numberLine.settings.numUserDefinedIntervals) { "${NumberLineConstants.MARKER_LABEL} ${it + 1}" }
             val c = Combo(g, SWT.DROP_DOWN or SWT.READ_ONLY)
             c.data = GridData(SWT.FILL, SWT.FILL, true, true)
             c.setItems(*items)
             c.select(c.indexOf(NumberLineConstants.MARKER_LABEL + " " + point.interval))
-            EasySWT.addSelectionListener(c) { it: SelectionEvent ->
+            EasySWT.addSelectionListener(c) {
                 val index = c.selectionIndex
                 point.interval = index + 1
             }
@@ -148,7 +144,7 @@ class NumberLineWidgetUserDefined : NumberLineWidget() {
             if (numberLine.settings.userDefinedArray.size > i) {
                 t.text = numberLine.settings.userDefinedArray[i].userText.print
             }
-            EasySWT.addModifyListener(t) { it: ModifyEvent ->
+            EasySWT.addModifyListener(t) {
                 val print = t.text
                 val braille = translate(
                     numberLine.settings.translationUserDefined,
@@ -168,42 +164,18 @@ class NumberLineWidgetUserDefined : NumberLineWidget() {
     }
 
     private fun makeEndSegmentCombo(shell: Composite) {
-        val g = EasySWT.makeGroup(shell, SWT.NONE, 2, true)
-        EasySWT.makeLabel(g, NumberLineConstants.SEGMENT_END_LABEL, 1)
-        val c = Combo(g, SWT.READ_ONLY or SWT.DROP_DOWN)
-        c.data = GridData(SWT.FILL, SWT.FILL, true, true)
-        val items = arrayOfNulls<String>(numberLine.settings.numUserDefinedIntervals)
-        for (i in 0 until numberLine.settings.numUserDefinedIntervals) {
-            items[i] = NumberLineConstants.MARKER_LABEL + " " + (i + 1)
-        }
-        c.setItems(*items)
-        c.select(
-            c.indexOf(
-                NumberLineConstants.MARKER_LABEL + " "
-                        + numberLine.settings.segmentEndInterval
-            )
-        )
-        c.addSelectionListener(object : SelectionListener {
-            override fun widgetSelected(e: SelectionEvent) {
-                val s = c.text
-                val i = s.substring(s.length - 1).toInt()
-                numberLine.settings.segmentEndInterval = i
-                numberLine.numberLineText.segment.endInterval = i
-            }
-
-            override fun widgetDefaultSelected(e: SelectionEvent) {}
-        })
+        makeSegmentCombo(shell, NumberLineConstants.SEGMENT_END_LABEL)
     }
 
     private fun makeStartSegmentCombo(shell: Composite) {
+        makeSegmentCombo(shell, NumberLineConstants.SEGMENT_START_LABEL)
+    }
+    private fun makeSegmentCombo(shell: Composite, label: String) {
         val g = EasySWT.makeGroup(shell, SWT.NONE, 2, true)
-        EasySWT.makeLabel(g, NumberLineConstants.SEGMENT_START_LABEL, 1)
+        EasySWT.makeLabel(g, label, 1)
         val c = Combo(g, SWT.READ_ONLY or SWT.DROP_DOWN)
         c.data = GridData(SWT.FILL, SWT.FILL, true, true)
-        val items = arrayOfNulls<String>(numberLine.settings.numUserDefinedIntervals)
-        for (i in 0 until numberLine.settings.numUserDefinedIntervals) {
-            items[i] = NumberLineConstants.MARKER_LABEL + " " + (i + 1)
-        }
+        val items = Array(numberLine.settings.numUserDefinedIntervals) { "${NumberLineConstants.MARKER_LABEL} ${it + 1}" }
         c.setItems(*items)
         c.select(
             c.indexOf(

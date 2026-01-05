@@ -160,6 +160,7 @@ abstract class WPView(manager: Manager, parent: Composite) : AbstractView(manage
         this.ranges.add(range)
     }
 
+    //TODO: Fix link styling when other emphasis types are added.
     fun addLinkStyleRange(start: Int, length: Int, inlineNode: Element?) {
         val ranges = view.getStyleRanges(start, length)
         val range = if (ranges.isNotEmpty()) ranges[0] else StyleRange()
@@ -315,6 +316,7 @@ abstract class WPView(manager: Manager, parent: Composite) : AbstractView(manage
         val showIndent = fileMgr.getPropertyAsBoolean("StatusBar.indents", true)
         val showAlignment = fileMgr.getPropertyAsBoolean("StatusBar.alignment", true)
         val showStyle = fileMgr.getPropertyAsBoolean("StatusBar.styles", true)
+        //TODO: Add properties for showing links and bookmarks
 
         //TODO: Localize strings
         if (showPrintPage) {
@@ -391,8 +393,15 @@ abstract class WPView(manager: Manager, parent: Composite) : AbstractView(manage
       if (manager.mapList.current.nodeParent != null) {
         if (BBX.INLINE.LINK.isA(manager.mapList.current.nodeParent)) {
           val href = manager.mapList.current.nodeParent.getAttributeValue("href", BB_NS)
-          if (!href.isNullOrEmpty()) {
-            statusBarText += "Link: $href | "
+          val isExternal = manager.mapList.current.nodeParent.getAttributeValue("isExternal", BB_NS).toBoolean()
+          if (!href.isNullOrEmpty())
+            statusBarText += if (isExternal) "Link: $href | "
+            else "Internal Link to Bookmark: \"$href\" | "
+        }
+        if (!(manager.mapList.current.node.parent as Element).getAttributeValue("linkID", BB_NS).isNullOrEmpty()) {
+          val linkID = manager.mapList.current.nodeParent.getAttributeValue("linkID", BB_NS)
+          if (!linkID.isNullOrEmpty()) {
+            statusBarText += "Bookmark ID: $linkID | "
           }
         }
       }

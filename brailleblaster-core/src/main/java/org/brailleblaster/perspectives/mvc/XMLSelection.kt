@@ -78,7 +78,7 @@ class XMLSelection(@JvmField val start: XMLNodeCaret, @JvmField val end: XMLNode
             if (BBX.CONTAINER.isA(endBlock) || BBX.SECTION.isA(endBlock)) { //Mark the final block in its descendants as the ending block
                 val childBlocks = FastXPath.descendant(endBlock)
                     .filter { node -> BBX.BLOCK.isA(node) }
-                if (childBlocks.isEmpty()) {
+                if (childBlocks.none()) {
                     for (next in FastXPath.precedingAndSelf(endBlock)) {
                         if (next === startBlock) {
                             returnList.add(startBlock as Element)
@@ -90,7 +90,7 @@ class XMLSelection(@JvmField val start: XMLNodeCaret, @JvmField val end: XMLNode
                         }
                     }
                 } else {
-                    endBlock = childBlocks[childBlocks.size - 1]
+                    endBlock = childBlocks.last()
                 }
             } else if (!BBX.BLOCK.isA(endBlock)) {
                 while (!BBX.BLOCK.isA(endBlock)) {

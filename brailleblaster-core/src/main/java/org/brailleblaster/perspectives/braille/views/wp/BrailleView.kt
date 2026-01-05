@@ -250,11 +250,14 @@ class BrailleView(manager: Manager, sash: Composite) : WPView(manager, sash) {
       val arr = getIndexArray(e)
       if (arr == null) {
         pos = if (lastPositon == 0) stateObj.currentStart else stateObj.currentEnd
-      } else {
-        if (lastPositon < 0 && stateObj.currentStart > 0)
+      }
+      else {
+        if (lastPositon < 0 && stateObj.currentStart > 0) {
           pos = stateObj.currentStart + lastPositon
-        else if (lastPositon == 99999)
+        }
+        else if (lastPositon == 99999) {
           pos = stateObj.currentEnd + offsetFromTMEStart
+        }
         else {
           pos = stateObj.currentStart + findCurrentPosition(arr, offsetFromTMEStart)
           pos += plusLineBreaks(stateObj.currentStart, pos)
@@ -263,11 +266,11 @@ class BrailleView(manager: Manager, sash: Composite) : WPView(manager, sash) {
       }
       if (pos <= view.charCount) {
         /*
-   * RT4647
-   * check line break on windows gets the line from offset from the view.
-   * this can be called with a position > the charcount due to a blank page
-   * with a pagenum at the bottom at the end of the document and throw an exception
-   */
+         * RT4647
+         * check line break on windows gets the line from offset from the view.
+         * this can be called with a position > the charcount due to a blank page
+         * with a pagenum at the bottom at the end of the document and throw an exception
+         */
         if (checkLineBreakOnWindows(pos)) pos++
       }
       view.caretOffset = pos
@@ -306,7 +309,9 @@ class BrailleView(manager: Manager, sash: Composite) : WPView(manager, sash) {
 
   private fun findCurrentPosition(indexes: IntArray, textPos: Int): Int {
     for (i in indexes.indices) {
-      if (textPos == indexes[i]) return i else if (textPos < indexes[i]) return i - 1
+      if (textPos == indexes[i]) return i
+      else if (textPos < indexes[i]) return (i - 1).coerceAtLeast(0)
+      //Don't return -1, this causes DebugStyledText to throw exceptions and messes up cursor position
     }
     return indexes.size
   }

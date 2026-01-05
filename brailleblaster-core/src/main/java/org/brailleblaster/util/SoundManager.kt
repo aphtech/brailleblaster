@@ -15,8 +15,9 @@
  */
 package org.brailleblaster.util
 
-import com.sun.jna.Platform
 import org.brailleblaster.BBIni
+import org.brailleblaster.utils.OS
+import org.brailleblaster.utils.os
 import org.slf4j.LoggerFactory
 import java.awt.Toolkit
 import java.io.BufferedInputStream
@@ -31,31 +32,24 @@ object SoundManager {
     private val log = LoggerFactory.getLogger(SoundManager::class.java)
     fun playSelectionBell() {
         // Sound is unreliable and may deadlock on Linux, see #4438
-        if (Platform.isLinux()) {
-            //Oof
-            return
-        } else if (Platform.isMac()) {
-            //Do something different? At least a different sound.
-            return
-        } else if (Platform.isAndroid()) {
-            //Who would run this on Android?
-            return
-        }
-        try {
-            val audioFile = BBIni.programDataPath.resolve(Paths.get("sounds", SELECTION_BELL))
-            val audioStream = AudioSystem.getAudioInputStream(BufferedInputStream(Files.newInputStream(audioFile)))
-            val format = audioStream.format
-            val info = DataLine.Info(Clip::class.java, format)
-            val audioClip = AudioSystem.getLine(info) as Clip
-            audioClip.addLineListener(getLineListener(audioClip))
-            audioClip.open(audioStream)
-            audioClip.start()
-        } catch (e: UnsupportedAudioFileException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: LineUnavailableException) {
-            e.printStackTrace()
+        // Not sure why not on Mac.
+        if (OS.Windows == os) {
+            try {
+                val audioFile = BBIni.programDataPath.resolve(Paths.get("sounds", SELECTION_BELL))
+                val audioStream = AudioSystem.getAudioInputStream(BufferedInputStream(Files.newInputStream(audioFile)))
+                val format = audioStream.format
+                val info = DataLine.Info(Clip::class.java, format)
+                val audioClip = AudioSystem.getLine(info) as Clip
+                audioClip.addLineListener(getLineListener(audioClip))
+                audioClip.open(audioStream)
+                audioClip.start()
+            } catch (e: UnsupportedAudioFileException) {
+                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } catch (e: LineUnavailableException) {
+                e.printStackTrace()
+            }
         }
     }
 

@@ -26,7 +26,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 import java.util.*
-import javax.xml.stream.XMLInputFactory
 
 /**
  * Handles opening book files and creating wrapping Archivers, converting to BBX
@@ -244,12 +243,8 @@ object ArchiverFactory {
     }
 
         private val log = LoggerFactory.getLogger(ArchiverFactory::class.java)
-        private val inputFactory = XMLInputFactory.newInstance().apply {
-            setProperty(XMLInputFactory.IS_VALIDATING, false)
-            setProperty(XMLInputFactory.SUPPORT_DTD, false)
-        }
 
-        init {
+    init {
             System.setProperty("PANDOC", "true")
         }
 }

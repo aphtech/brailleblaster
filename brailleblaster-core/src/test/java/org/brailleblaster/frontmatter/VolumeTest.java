@@ -155,7 +155,7 @@ public class VolumeTest {
 		BBTestRunner bbTest = new BBTestRunner(new File("/media/brailleblaster/nimas-books/9780133268195NIMAS_revised.xml"));
 		int NUM_VOLUMES = 20;
 
-		int textNodeCount = (int) StreamSupport.stream(FastXPath.descendant(BBX.getRoot(bbTest.getDoc())).spliterator(), false)
+		int textNodeCount = (int) StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(BBX.getRoot(bbTest.getDoc()))::iterator).spliterator(), false)
 				.filter(curNode -> curNode instanceof Text)
 				.count();
 		int textNodesPerVolume = textNodeCount / NUM_VOLUMES;
@@ -306,7 +306,7 @@ public class VolumeTest {
 		
 		volumeNames = VolumeUtils.INSTANCE.getVolumeNames(VolumeUtils.getVolumeElementsFatal(bbTest.getDoc()));
 		assertEquals(volumeNames.size(), 2);
-		VolumeUtils.VolumeData volumeData = volumeNames.get(0);
+		VolumeUtils.VolumeData volumeData = volumeNames.getFirst();
 		assertEquals(volumeData.volumeTypeIndex, 1);
 		UTDHelper.stripUTDRecursive(volumeData.element);
 		assertEquals(volumeData.element.getChild(0).getValue(), "END OF VOLUME 1");

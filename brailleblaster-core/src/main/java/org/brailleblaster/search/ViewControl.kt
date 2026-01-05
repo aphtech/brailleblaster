@@ -30,6 +30,7 @@ import org.brailleblaster.search.SearchUtils.checkCorrectAttributes
 import org.brailleblaster.search.SearchUtils.checkUneditable
 import org.brailleblaster.search.SearchUtils.isBraille
 import org.brailleblaster.search.SearchUtils.matchPhrase
+import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.utils.UTDHelper.stripUTDRecursive
 import org.brailleblaster.util.Utils.insertChildCountSafe
@@ -138,13 +139,13 @@ class ViewControl(val m: Manager, val click: Click) {
             logIt("Node unattached to document")
             return
         }
-        var siblings = node.query("following::text()")
+        var siblings: List<Node> = FastXPath.following(node).filterIsInstance<Text>().toList()
         siblings = removeBraille(siblings)
-        if (siblings.size() > 0) {
+        if (siblings.isNotEmpty()) {
             var unexaminedChildren = true
             var siblingsExamined = 0
             var previous: Node? = node
-            while (unexaminedChildren && siblingsExamined < siblings.size()) {
+            while (unexaminedChildren && siblingsExamined < siblings.size) {
                 val child = siblings[siblingsExamined]
                 if (parentChildRelationship(child, block)) {
                     siblingsExamined++
@@ -182,14 +183,8 @@ class ViewControl(val m: Manager, val click: Click) {
         m.text.highlight(start, curEnd)
     }
 
-    private fun removeBraille(siblings: Nodes): Nodes {
-        val notBraille = Nodes()
-        for (i in 0 until siblings.size()) {
-            if (!XMLHandler.ancestorElementIs(siblings[i]) { obj: Element -> isBraille(obj) }) {
-                notBraille.append(siblings[i])
-            }
-        }
-        return notBraille
+    private fun removeBraille(siblings: List<Node>): List<Node> {
+        return siblings.filterNot { XMLHandler.ancestorElementIs(it) { obj: Element -> isBraille(obj) } }
     }
 
     private fun parentChildRelationship(child: Node?, block: Node): Boolean {
@@ -348,7 +343,7 @@ class ViewControl(val m: Manager, val click: Click) {
         if (blocks.size > 1) {
             for (block in blocks) {
                 stripUTDRecursive(block)
-                for (i in 0 until block.childCount) {
+                repeat(block.childCount) {
                     val n = block.getChild(0)
                     n.detach()
                     parent.appendChild(n)

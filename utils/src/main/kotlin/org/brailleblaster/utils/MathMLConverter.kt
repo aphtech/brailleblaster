@@ -102,19 +102,19 @@ object MathMLConverter {
     }
 
     private fun convert1WithIndicators(
-        elements: Elements, begin: String, end: String, indicators: Array<String?>?): String? {
+        elements: Elements, begin: String, end: String, indicators: Array<String>?): String? {
         val string: String = convertElement(elements[0], elements, 0, indicators) ?: return null
         return "$begin$string$end"
     }
 
     private fun convert1WithIndicators(
-        element: Element, begin: String, end: String, indicators: Array<String?>?): String? {
+        element: Element, begin: String, end: String, indicators: Array<String>?): String? {
         val elements = element.childElements
         return if (elements.size() < 1) null else convert1WithIndicators(elements, begin, end, indicators)
     }
 
     private fun convert2WithIndicators(
-        elements: Elements, begin: String?, separator: String, end: String?, indicators: Array<String?>?): String? {
+        elements: Elements, begin: String?, separator: String, end: String?, indicators: Array<String>?): String? {
         val stringBuilder = StringBuilder()
         stringBuilder.append(begin)
 
@@ -138,13 +138,13 @@ object MathMLConverter {
     }
 
     private fun convert2WithIndicators(
-        element: Element, begin: String, separator: String, end: String, indicators: Array<String?>?): String? {
+        element: Element, begin: String, separator: String, end: String, indicators: Array<String>?): String? {
         val elements = element.childElements
         return if (elements.size() < 2) null else convert2WithIndicators(elements, begin, separator, end, indicators)
     }
 
     private fun convert3WithIndicators(
-        elements: Elements, begin: String, separator: String, end: String, indicators: Array<String?>?): String? {
+        elements: Elements, begin: String, separator: String, end: String, indicators: Array<String>?): String? {
         var string: String? = convertElement(elements[0], elements, 0, indicators) ?: return null
         val stringBuilder = StringBuilder()
         stringBuilder.append(begin).append(string).append(separator)
@@ -158,12 +158,12 @@ object MathMLConverter {
     }
 
     private fun convert3WithIndicators(
-        element: Element, begin: String, separator: String, end: String, indicators: Array<String?>?): String? {
+        element: Element, begin: String, separator: String, end: String, indicators: Array<String>?): String? {
         val elements = element.childElements
         return if (elements.size() < 3) null else convert3WithIndicators(elements, begin, separator, end, indicators)
     }
 
-    fun convertElement(element: Element, siblings: Elements, index: Int, indicators: Array<String?>?): String? {
+    fun convertElement(element: Element, siblings: Elements, index: Int, indicators: Array<String>?): String? {
         val elements: Elements
         val sibling: Element
         val node: Node
@@ -264,23 +264,22 @@ object MathMLConverter {
                 if (begin == null) return null
                 end = getSiblingsValue(siblings, index + 1)
                 if (end == null) return null
-                val tableOps = arrayOfNulls<String>(2)
-                when (begin) {
-                    "(" -> tableOps[0] = TABLE_ROUND_BEGIN
-                    "[" -> tableOps[0] = TABLE_SQUARE_BEGIN
-                    "{" -> tableOps[0] = TABLE_CURLY_BEGIN
-                    "<" -> tableOps[0] = TABLE_ANGLED_BEGIN
-                    "|" -> tableOps[0] = TABLE_BAR
-                    else -> tableOps[0] = begin
-                }
+                val tableOps = arrayOf(when (begin) {
+                    "(" -> TABLE_ROUND_BEGIN
+                    "[" -> TABLE_SQUARE_BEGIN
+                    "{" -> TABLE_CURLY_BEGIN
+                    "<" -> TABLE_ANGLED_BEGIN
+                    "|" -> TABLE_BAR
+                    else -> begin
+                },
                 when (end) {
-                    "(" -> tableOps[1] = TABLE_ROUND_END
-                    "[" -> tableOps[1] = TABLE_SQUARE_END
-                    "{" -> tableOps[1] = TABLE_CURLY_END
-                    "<" -> tableOps[1] = TABLE_ANGLED_END
-                    "|" -> tableOps[1] = TABLE_BAR
-                    else -> tableOps[1] = end
-                }
+                    "(" -> TABLE_ROUND_END
+                    "[" -> TABLE_SQUARE_END
+                    "{" -> TABLE_CURLY_END
+                    "<" -> TABLE_ANGLED_END
+                    "|" -> TABLE_BAR
+                    else -> end
+                })
                 TABLE_BEGIN + convertElementChildren(element, tableOps) + TABLE_END
             }
             "mtr" -> {
@@ -302,7 +301,7 @@ object MathMLConverter {
         }
     }
 
-    fun convertElementChildren(parent: Element, indicators: Array<String?>?): String? {
+    fun convertElementChildren(parent: Element, indicators: Array<String>?): String? {
         var string: String?
         val result = StringBuilder()
         val children = parent.childElements

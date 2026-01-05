@@ -65,7 +65,7 @@ class ConnectingContainer : ISpatialMathContainer {
             }
 
         }
-        for (i in 0 until topLines) {
+        repeat(topLines) {
             val topLineBreakLine = Line()
             topLineBreakLine.elements.add(topLineBreakLine.lineBreakSegment)
             lines.add(topLineBreakLine)
@@ -105,7 +105,7 @@ class ConnectingContainer : ISpatialMathContainer {
             }
             lines.add(line)
         }
-        for (i in 0 until bottomLines) {
+        repeat(bottomLines) {
             val bottomLineBreakLine = Line()
             bottomLineBreakLine.elements.add(bottomLineBreakLine.lineBreakSegment)
             lines.add(bottomLineBreakLine)

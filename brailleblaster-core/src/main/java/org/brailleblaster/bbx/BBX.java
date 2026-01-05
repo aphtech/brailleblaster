@@ -131,11 +131,6 @@ public class BBX {
      */
     public static final int FORMAT_VERSION = 6;
     /**
-     * Internal marker used for multi-step importers, aids debugging and bug
-     * hunting, should not exist in final document
-     */
-    public static final StringAttribute _ATTRIB_TODO = new StringAttribute("todo");
-    /**
      * Marker used by parsers to trigger fixers, should not exist in final
      * document
      */
@@ -841,6 +836,7 @@ public class BBX {
     public static class BlockElement extends CoreType {
         public final ListItemSubType LIST_ITEM = new ListItemSubType(this);
         public final BooleanAttribute ATTRIB_BLANKDOC_PLACEHOLDER = new BooleanAttribute("blankDocPlaceholder");
+        public final StringAttribute LINKID = new StringAttribute("linkID");
 
         public static class ListItemSubType extends BlockSubType {
             public final IntAttribute ATTRIB_ITEM_LEVEL = new IntAttribute("itemLevel");
@@ -1031,8 +1027,16 @@ public class BBX {
 
     @XmlJavaTypeAdapter(BlockSubType.TypeAdapter.class)
     public static class BlockSubType extends SubType {
+        public final StringAttribute linkID;
+
         private BlockSubType(BlockElement coreType, String name) {
-            super(coreType, name);
+          super(coreType, name);
+          this.linkID = new StringAttribute("linkID"); // Optional attribute for internally linking blocks
+          //May expand to other subtypes depending on how much work it is...or how well it works.
+          //Idea is to set some property in the manager to the highest linkID in the doc to avoid collisions.
+          //Then when adding or removing internal links, update as needed. The actual number is irrelevant beyond uniqueness.
+          //Broken links need to be handled gracefully as well - if the linked block is deleted, the link manager should
+          // notify the user and remove the linkID attribute from the link, or prompt to reassign it.
         }
 
         private static class TypeAdapter extends JAXBSubTypeAdapter<BlockSubType> {
@@ -1104,7 +1108,7 @@ public class BBX {
                     throw new NodeException("Expected only container child to be math, got ", mathTag);
                 }
 
-                List<Element> nonMathMl = StreamSupport.stream(FastXPath.descendant(node).spliterator(), false).filter(n -> n instanceof Element)
+                List<Element> nonMathMl = StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(node)::iterator).spliterator(), false).filter(n -> n instanceof Element)
                         .map(n -> (Element) n).filter(e -> !e.getNamespaceURI().equals(NamespacesKt.MATHML_NS)).toList();
                 if (!nonMathMl.isEmpty()) {
                     throw new NodeException("Unexpected non-mathml elements " + StringUtils.join(nonMathMl, ", "),

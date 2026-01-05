@@ -18,7 +18,6 @@ package org.brailleblaster.debug
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.TableTextMapElement
 import org.brailleblaster.perspectives.braille.mapping.elements.TextMapElement
-import org.brailleblaster.util.FormUIUtils
 import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.StyleRange
@@ -37,7 +36,7 @@ class MapListDebugger(private val m: Manager) {
     private var showBrailleList = false
 
     fun open() {
-        val dialog = FormUIUtils.makeDialogFloating(m)
+        val dialog = EasySWT.makeDialogFloating(m.wpManager.shell)
         this.dialog = dialog
         dialog.setSize(400, 300)
         dialog.layout = GridLayout(3, false)

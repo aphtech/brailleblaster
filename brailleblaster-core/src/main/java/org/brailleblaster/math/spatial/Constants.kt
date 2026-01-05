@@ -252,13 +252,8 @@ object SpatialMathEnum {
     val prettyName: String = localeHandler[key]
 
     companion object {
-      fun stringArray(): Array<String?> {
-        val values = entries.toTypedArray()
-        val array = arrayOfNulls<String>(values.size)
-        for (i in values.indices) {
-          array[i] = values[i].symbol
-        }
-        return array
+      fun stringArray(): Array<String> {
+          return entries.map { it.symbol }.toTypedArray()
       }
     }
   }

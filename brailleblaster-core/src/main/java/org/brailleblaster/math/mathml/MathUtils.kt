@@ -27,6 +27,7 @@ import org.brailleblaster.perspectives.braille.mapping.elements.WhiteSpaceElemen
 import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.perspectives.mvc.modules.views.TextViewModule.Companion.getAllTextMapElementsInSelectedRange
+import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.UTDHelper
@@ -38,9 +39,8 @@ import java.nio.file.Paths
 
 object MathUtils {
     fun nextTextIsMathButNotSameMathRoot(node: Node, mathParent: Element): Boolean {
-        val nextText = node.query("following::text()")
-        for (i in 0 until nextText.size()) {
-            val text = nextText[i]
+        val nextText = FastXPath.following(node).filterIsInstance<Text>()
+        for (text in nextText) {
             if (XMLHandler.ancestorElementIs(text) { n -> UTDElements.BRL.isA(n) }) {
                 continue
             }

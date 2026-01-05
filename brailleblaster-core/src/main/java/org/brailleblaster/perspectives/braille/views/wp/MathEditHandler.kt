@@ -18,6 +18,7 @@ package org.brailleblaster.perspectives.braille.views.wp
 import nu.xom.Element
 import nu.xom.Node
 import nu.xom.ParentNode
+import nu.xom.Text
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBXUtils
 import org.brailleblaster.bbx.findBlock
@@ -32,6 +33,7 @@ import org.brailleblaster.perspectives.mvc.XMLNodeCaret.CursorPosition
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.perspectives.mvc.modules.misc.TableSelectionModule
 import org.brailleblaster.perspectives.mvc.modules.views.TextViewModule
+import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.util.Notify
@@ -72,7 +74,7 @@ object MathEditHandler {
             var index = 0
             val actions = mutableListOf<MathAction>()
             val toDetach = mutableListOf<Node>()
-            val textNodes = block.query("descendant::text()")
+            val textNodes = FastXPath.descendant(block).filterIsInstance<Text>()
             for ((k, s) in arrayWithStrings) {
                 if (k is TabTextMapElement) {
                     // remove tabs

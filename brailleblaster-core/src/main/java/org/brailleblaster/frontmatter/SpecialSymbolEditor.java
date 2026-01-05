@@ -20,7 +20,7 @@ import org.brailleblaster.frontmatter.SpecialSymbols.DetectionRule;
 import org.brailleblaster.frontmatter.SpecialSymbols.Symbol;
 import org.brailleblaster.settings.UTDManager;
 import org.brailleblaster.utils.swt.ButtonBuilder1;
-import org.brailleblaster.utils.swt.CompositeBuilder1;
+import org.brailleblaster.utils.swt.CompositeBuilder;
 import org.brailleblaster.utils.swt.EasyListeners;
 import org.brailleblaster.utils.swt.EasySWT;
 import org.eclipse.swt.SWT;
@@ -70,7 +70,7 @@ public class SpecialSymbolEditor {
         TableColumn rulesColumn = new TableColumn(symbolsTable, SWT.NONE);
         rulesColumn.setText("Rules");
 
-        CompositeBuilder1 compositeBuilder = EasySWT.buildComposite(dialog);
+        CompositeBuilder compositeBuilder = EasySWT.buildComposite(dialog);
         compositeBuilder.setColumns(3);
         compositeBuilder.setEqualColumnWidth(true);
         compositeBuilder.addButton("Add...", BUTTON_WIDTH, 1, (i) -> new SymbolDialog(dialog, symbolsTable).open(null));

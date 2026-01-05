@@ -86,7 +86,7 @@ public class TestXMLUtils {
     }
 
     private static Stream<Element> getTestIdElementStream(Document doc, String id) {
-        return StreamSupport.stream(FastXPath.descendant(doc).spliterator(), false)
+        return StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(doc)::iterator).spliterator(), false)
                 .filter(curNode -> curNode instanceof Element
                         && ((Element) curNode).getAttribute("testid") != null
                         && ((Element) curNode).getAttribute("testid").getValue().equals(id)
@@ -94,7 +94,7 @@ public class TestXMLUtils {
     }
 
     public static Text getByTextNode(Document doc, String textValue) {
-        return StreamSupport.stream(FastXPath.descendant(doc).spliterator(), false)
+        return StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(doc)::iterator).spliterator(), false)
                 .filter(node -> node instanceof Text && node.getValue().equals(textValue))
                 .findFirst()
                 .map(node -> (Text) node)
@@ -102,7 +102,7 @@ public class TestXMLUtils {
     }
 
     public static Element getElementByOccurance(Document doc, String elementName, int occurrence) {
-        return StreamSupport.stream(FastXPath.descendant(doc).spliterator(), false)
+        return StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(doc)::iterator).spliterator(), false)
                 .filter(node -> node instanceof Element && ((Element) node).getLocalName().equals(elementName))
                 .skip(occurrence)
                 .findFirst()
@@ -128,7 +128,7 @@ public class TestXMLUtils {
     }
 
     public static Element getBookRoot(Document doc) {
-        return StreamSupport.stream(FastXPath.descendant(doc).spliterator(), false)
+        return StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(doc)::iterator).spliterator(), false)
                 .filter(n -> n instanceof Element)
                 .map(n -> (Element) n)
                 .filter(elem -> "testroot".equals(elem.getAttributeValue("testid")))

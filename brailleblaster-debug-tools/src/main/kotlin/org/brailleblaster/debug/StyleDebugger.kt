@@ -17,7 +17,7 @@ package org.brailleblaster.debug
 
 import nu.xom.Node
 import org.brailleblaster.perspectives.braille.Manager
-import org.brailleblaster.util.FormUIUtils
+import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.SelectionAdapter
 import org.eclipse.swt.events.SelectionEvent
@@ -33,7 +33,7 @@ class StyleDebugger(parent: Shell?, style: Int, private val m: Manager) {
     private var curNode: Node? = null
 
     fun open() {
-        val dialog = FormUIUtils.makeDialogFloating(m)
+        val dialog = EasySWT.makeDialogFloating(m.wpManager.shell)
         dialog.text = "Debug: Style Viewer"
         dialog.setSize(400, 600)
         dialog.layout = GridLayout(2, false)

@@ -17,9 +17,6 @@ package org.brailleblaster.math.ascii
 
 import org.brailleblaster.BBIni
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
-import org.brailleblaster.utils.swt.EasySWT
-import org.brailleblaster.utils.swt.SizeAndLocation
-import org.eclipse.swt.widgets.Shell
 
 class MathDialogSettings {
   var currentName = CATEGORIES.EXAMPLES
@@ -46,17 +43,7 @@ class MathDialogSettings {
 
   }
 
-  fun setLocation(shell: Shell, loc: SizeAndLocation?) {
-    var location = loc
-    if (location != null) {
-      EasySWT.setSizeAndLocation(shell, location)
-    } else {
-      EasySWT.setSizeAndLocationMiddleScreen(shell, shell.bounds.x, shell.bounds.y)
-    }
-    location = EasySWT.saveLocation(shell)
-  }
-
-  fun saveSettings() {
+    fun saveSettings() {
     BBIni.propertyFileManager.save(CURRENT_TAB, currentName.prettyName)
     BBIni.propertyFileManager.save(FULLSCREEN, isFullScreen.toString())
   }
@@ -104,13 +91,9 @@ class MathDialogSettings {
     return null
   }
 
-  val categoriesEnumStringArray: Array<String?>
+  val categoriesEnumStringArray: Array<String>
     get() {
-      val array = arrayOfNulls<String>(CATEGORIES.entries.size)
-      for (i in CATEGORIES.entries.toTypedArray().indices) {
-        array[i] = CATEGORIES.entries[i].prettyName
-      }
-      return array
+        return CATEGORIES.entries.map { it.prettyName }.toTypedArray()
     }
 
   val currentCategory: ASCIICategory?

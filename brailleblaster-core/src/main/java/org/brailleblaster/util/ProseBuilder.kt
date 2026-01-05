@@ -36,7 +36,9 @@ import org.brailleblaster.perspectives.mvc.events.BuildMenuEvent
 import org.brailleblaster.perspectives.mvc.events.BuildToolBarEvent
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.tools.MenuToolModule
+import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
+import org.brailleblaster.utd.internal.xml.splitNode
 import org.brailleblaster.utd.utils.TextTranslator
 import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.utils.xml.BB_NS
@@ -176,7 +178,7 @@ class ProseBuilder : MenuToolModule {
             message.open()
             return
         }
-        val pastedSpan = addLineElement(lineNumberText.text) as Element? ?: return
+        val pastedSpan = addLineElement(lineNumberText.text) as? Element ?: return
         try {
             checkForSpace(pastedSpan)
         } catch (_: Exception) {
@@ -279,8 +281,7 @@ class ProseBuilder : MenuToolModule {
                     if (index == p.childCount - 1) p.appendChild(lineSpan) else p.insertChild(lineSpan, index + 1)
                 } else {
                     val splitTextNode =
-                        XMLHandler.splitTextNode(
-                            currentNode,
+                        currentNode.splitNode(
                             (manager!!.simpleManager.currentSelection.end as XMLTextCaret).offset
                         )
                     if (splitTextNode.size > 1) {
@@ -344,7 +345,7 @@ class ProseBuilder : MenuToolModule {
         }
 
         //Check if start and/or end node is already inside a prose tag. If so, unwrap and update
-        if (unwrapProseParent(startNode) || unwrapProseParent(endNode)) {
+        if (unwrapProseParent(startNode!!) || unwrapProseParent(endNode)) {
             manager!!.simpleManager.dispatchEvent(ModifyEvent(Sender.NO_SENDER, true, startNode!!.parent))
             return
         }
@@ -473,41 +474,43 @@ class ProseBuilder : MenuToolModule {
                 }
             }
         })
+        fun navigateNumLine(newLineNum: Node?, msg: String) {
+            if (newLineNum != null || editText.text.isEmpty()) {
+                if (isProseLineNumber(activeLineNum)) {
+                    if (!editProseLineNumber(activeLineNum, editText.text)) {
+                        shell!!.setFocus()
+                    }
+                    activeLineNum = newLineNum as Element?
+                    if (activeLineNum != null) {
+                        editText.text = activeLineNum!!.getAttributeValue("printLineNum")
+                    } else {
+                        editText.text = ""
+                    }
+                } else if (isPoemLineNumber(activeLineNum)) {
+                    if (!editPoemLineNumber(activeLineNum, editText.text)) {
+                        shell!!.setFocus()
+                    }
+                    activeLineNum = newLineNum as Element?
+                    if (activeLineNum != null) {
+                        editText.text = activeLineNum!!.value
+                    } else {
+                        editText.text = ""
+                    }
+                }
+            }
+            if (newLineNum == null) {
+                val message = MessageBox(WPManager.getInstance().shell)
+                message.message = msg
+                message.open()
+                shell!!.close()
+            }
+        }
         val prevButton = Button(shell, SWT.PUSH)
         prevButton.text = "Previous"
         prevButton.layoutData = GridData(GridData.FILL_HORIZONTAL)
         prevButton.addSelectionListener(object : SelectionAdapter() {
             override fun widgetSelected(e: SelectionEvent) {
-                val newLineNum = retrievePrecedingLineNumber(activeLineNum)
-                if (newLineNum != null || editText.text.isEmpty()) {
-                    if (isProseLineNumber(activeLineNum)) {
-                        if (!editProseLineNumber(activeLineNum, editText.text)) {
-                            shell!!.setFocus()
-                        }
-                        activeLineNum = newLineNum as Element?
-                        if (activeLineNum != null) {
-                            editText.text = activeLineNum!!.getAttributeValue("printLineNum")
-                        } else {
-                            editText.text = ""
-                        }
-                    } else if (isPoemLineNumber(activeLineNum)) {
-                        if (!editPoemLineNumber(activeLineNum, editText.text)) {
-                            shell!!.setFocus()
-                        }
-                        activeLineNum = newLineNum as Element?
-                        if (activeLineNum != null) {
-                            editText.text = activeLineNum!!.value
-                        } else {
-                            editText.text = ""
-                        }
-                    }
-                }
-                if (newLineNum == null) {
-                    val message = MessageBox(WPManager.getInstance().shell)
-                    message.message = "Unable to find previous line number."
-                    message.open()
-                    shell!!.close()
-                }
+                navigateNumLine(retrievePrecedingLineNumber(activeLineNum), "Unable to find previous line number.")
             }
         })
         val nextButton = Button(shell, SWT.PUSH)
@@ -515,36 +518,7 @@ class ProseBuilder : MenuToolModule {
         nextButton.layoutData = GridData(GridData.FILL_HORIZONTAL)
         nextButton.addSelectionListener(object : SelectionAdapter() {
             override fun widgetSelected(e: SelectionEvent) {
-                val newLineNum = retrieveFollowingLineNumber(activeLineNum)
-                if (newLineNum != null || editText.text.isEmpty()) {
-                    if (isProseLineNumber(activeLineNum)) {
-                        if (!editProseLineNumber(activeLineNum, editText.text)) {
-                            shell!!.setFocus()
-                        }
-                        activeLineNum = newLineNum as Element?
-                        if (activeLineNum != null) {
-                            editText.text = activeLineNum!!.getAttributeValue("printLineNum")
-                        } else {
-                            editText.text = ""
-                        }
-                    } else if (isPoemLineNumber(activeLineNum)) {
-                        if (!editPoemLineNumber(activeLineNum, editText.text)) {
-                            shell!!.setFocus()
-                        }
-                        activeLineNum = newLineNum as Element?
-                        if (activeLineNum != null) {
-                            editText.text = activeLineNum!!.value
-                        } else {
-                            editText.text = ""
-                        }
-                    }
-                }
-                if (newLineNum == null) {
-                    val message = MessageBox(WPManager.getInstance().shell)
-                    message.message = "Unable to find next line number."
-                    message.open()
-                    shell!!.close()
-                }
+                navigateNumLine(retrieveFollowingLineNumber(activeLineNum), "Unable to find next line number.")
             }
         })
         val doneButton = Button(shell, SWT.PUSH)
@@ -641,10 +615,10 @@ class ProseBuilder : MenuToolModule {
 
     private fun getCommonParent(start: Node?, end: Node): Node {
         if (start!!.parent != end.parent) {
-            val startAncestors = start.query("ancestor::node()")
-            val endAncestors = end.query("ancestor::node()")
-            for (i in startAncestors.size() - 1 downTo -1 + 1) {
-                for (j in 0 until endAncestors.size()) {
+            val startAncestors = FastXPath.ancestor(start).toList()
+            val endAncestors = FastXPath.ancestor(end).toList()
+            for (i in startAncestors.size - 1 downTo -1 + 1) {
+                for (j in 0 until endAncestors.size) {
                     if (startAncestors[i] == endAncestors[j]) {
                         startNode = startAncestors[i + 1]
                         return startAncestors[i]
@@ -655,15 +629,15 @@ class ProseBuilder : MenuToolModule {
         return start.parent
     }
 
-    private fun unwrapProseParent(node: Node?): Boolean {
+    private fun unwrapProseParent(node: Node): Boolean {
         if (BBX.CONTAINER.PROSE.isA(node)) {
             XMLHandler.unwrapElement(node as Element)
             return true
         }
-        val ancestors = node!!.query("ancestor::node()")
-        for (i in ancestors.size() - 1 downTo -1 + 1) {
-            if (BBX.CONTAINER.PROSE.isA(ancestors[i])) {
-                XMLHandler.unwrapElement(ancestors[i] as Element)
+        val ancestors = FastXPath.ancestor(node)
+        for (ancestor in ancestors) {
+            if (BBX.CONTAINER.PROSE.isA(ancestor)) {
+                XMLHandler.unwrapElement(ancestor)
                 return true
             }
         }

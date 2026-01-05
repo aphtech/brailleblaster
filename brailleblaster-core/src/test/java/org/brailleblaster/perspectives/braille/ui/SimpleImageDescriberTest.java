@@ -587,17 +587,17 @@ public class SimpleImageDescriberTest {
 
         bbTest.textViewTools.navigateToText(testText);
 
-        List<Node> imageList = StreamSupport.stream(FastXPath.descendant(bbTest.getDoc()).spliterator(), false)
+        List<Node> imageList = StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(bbTest.getDoc())::iterator).spliterator(), false)
                 .filter(BBX.SPAN.IMAGE::isA)
                 .toList();
         try {
             // allow additional one for table copy
             assertEquals(imageList.size(), 2);
         } catch (AssertionError e) {
-            throw new NodeException("mulitple image lists", imageList.get(0), e);
+            throw new NodeException("mulitple image lists", imageList.getFirst(), e);
         }
 
-        Element image = (Element) imageList.get(0);
+        Element image = (Element) imageList.getFirst();
         assertEquals(image.getChildCount(), 1);
         assertEquals(image.getChild(0).getValue(), testText);
 
