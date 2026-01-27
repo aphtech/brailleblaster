@@ -67,7 +67,7 @@ open class Renderer(@JvmField protected var manager: Manager, private val wpView
     protected fun moveToAfterNewPage(n: Node): Boolean {
         val parent = n.parent as Element
         val index = parent.indexOf(n)
-        return if (index > 1 && ViewUtils.isElement(parent.getChild(index - 2)) && ViewUtils.followsMoveTo(n)) {
+        return if (index > 1 && (parent.getChild(index - 2) is Element) && ViewUtils.followsMoveTo(n)) {
             UTDElements.NEW_PAGE.isA(parent.getChild(index - 2))
         } else false
     }

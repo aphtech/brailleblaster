@@ -31,7 +31,6 @@ import org.brailleblaster.settings.ui.BrailleSettingsDialog
 import org.brailleblaster.settings.ui.EmbosserSettingsTab
 import org.brailleblaster.utd.BRFWriter
 import org.brailleblaster.utd.BRFWriter.PageListener
-import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.util.Notify.showMessage
 import org.brailleblaster.util.WorkingDialog
 import org.brailleblaster.utils.braille.BrailleUnicodeConverter
@@ -984,12 +983,12 @@ class PrintPreview private constructor(
             // Compute the number of lines and cells per page.
             // This is reliant on the first page of the brf being representative of the rest of the document.
             //Split the first page of text into lines, then find the longest line.
-            val firstPage = brfOutput.substring(0, pageStartOffsets[1])
-            val lines = firstPage.split(LINE_BREAK)
-            val longestLine = lines.maxByOrNull { it.length }
+            val firstPage = brfOutput.substring(0, pageRanges.first().last)
+            val lines = firstPage.lines()
+            val longestLine = lines.maxByOrNull { it.length } ?: ""
             //I'm assuming there's a check somewhere along the way to prevent embossing a blank brf.
-            val cellsPerLine = longestLine!!.length
-            val linesPerPage = lines.size - 1
+            val cellsPerLine = longestLine.length
+            val linesPerPage = lines.size - if (lines.isNotEmpty() && lines.last().isEmpty()) 1 else 0
 
             //Now what multipliers do we need to get the paper size based on char sizes?
             //Now use the current braille cell size to get the paper size - have to rely on user settings here.

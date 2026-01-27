@@ -42,7 +42,6 @@ class CoreModulesFactory : ModuleFactory {
         get() = Int.MAX_VALUE
     override fun createModules(manager: Manager): Iterable<BBSimpleManager.SimpleListener> = buildList {
         add(TextViewModule(manager))
-        add(PostViewUpdateModule())
         add(DebugModule(manager))
         add(ToggleViewsModule(manager))
         add(ToolBarModule(manager.wpManager))

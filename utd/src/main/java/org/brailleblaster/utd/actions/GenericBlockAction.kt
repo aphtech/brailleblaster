@@ -150,8 +150,9 @@ open class GenericBlockAction : GenericAction(), IBlockAction {
             if (wordCount > 2) {
                 // Direct translate should not be normalised.
                 emphasis = (emphasis-(emphasis.toInt() and NON_EMPHASIS_TYPEFORMS.toInt()).toShort()).toShort()
-                for (j in puncStart until translateText.length) emphasisArr[j] =
-                    (emphasisArr[j].toInt() or emphasis.toInt()).toShort()
+                for (j in puncStart until translateText.length) {
+                    emphasisArr[j] = (emphasisArr[j].toInt() or emphasis.toInt()).toShort()
+                }
             }
         }
         val translationEmpResult =

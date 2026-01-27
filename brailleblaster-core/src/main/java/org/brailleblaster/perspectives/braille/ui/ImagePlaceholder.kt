@@ -15,13 +15,18 @@
  */
 package org.brailleblaster.perspectives.braille.ui
 
+import nu.xom.Element
 import org.brailleblaster.BBIni
 import org.brailleblaster.perspectives.braille.Manager
+import org.brailleblaster.perspectives.braille.mapping.elements.ImagePlaceholderTextMapElement
+import org.brailleblaster.perspectives.braille.mapping.interfaces.Uneditable
+import org.brailleblaster.perspectives.braille.stylers.ImagePlaceholderHandler
 import org.brailleblaster.utils.OS
+import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.utils.os
 import org.brailleblaster.utils.swt.EasyListeners
 import org.brailleblaster.utils.swt.EasySWT
-import org.brailleblaster.wordprocessor.WPManager
+import org.brailleblaster.utils.xml.UTD_NS
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.KeyEvent
 import org.eclipse.swt.events.SelectionAdapter
@@ -29,74 +34,122 @@ import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.*
-import java.util.function.Consumer
+import kotlin.coroutines.CoroutineContext
 import kotlin.math.floor
 
-class ImagePlaceholder(parent: Shell?, manager: Manager, private val callback: Consumer<ArrayList<String?>>) {
+class ImagePlaceholder(parent: Shell?, manager: Manager) {
     var shell: Shell
-    var text: Text
-    var cancel: Button
-    var submit: Button
+    var linesText: Text
+    var cancelButton: Button
+    var submitButton: Button
     var insertImageButton: Button
-    var path: Label
-    var lines: Int?
+    var pathLabel: Label
+    var altTextText: Text
+    var lines: Int? = null
     var closeListener: Listener? = null
     var linesPerPage: Int = floor(
         manager.document.engine.pageSettings.drawableHeight /
                 manager.document.engine.brailleSettings.cellType.height.toDouble()
     ).toInt()
     var imagePath: String? = null
+    val localeHandler = getDefault()
 
     init {
-        lines = null
+        //Check for existing placeholder and set lines and path accordingly
+        val isImage = manager.mapList.current is ImagePlaceholderTextMapElement
+        if (isImage){
+            try {
+                val cur = manager.mapList.current.nodeParent
+                //println("Current image placeholder element: ${cur.toXML()}")
+                lines = cur.getAttributeValue("skipLines", UTD_NS).toInt()
+                imagePath = cur.getAttributeValue("src", UTD_NS)
+            }
+            catch (e: Exception){
+                //println("Error retrieving existing image placeholder attributes: ${e.message}")
+                lines = null
+                imagePath = null
+            }
+        }
+
+        ////println(getImageList(manager))
+
         shell = Shell(parent, SWT.RESIZE or SWT.CLOSE or SWT.APPLICATION_MODAL)
         shell.text = "Insert Image Placeholder"
         EasySWT.addEscapeCloseListener(shell)
         val layout = GridLayout(2, false)
         shell.layout = layout
-        val label = Label(shell, SWT.NONE)
-        label.text = "Number of lines (<$linesPerPage):"
-        label.layoutData = GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1)
-        text = Text(shell, SWT.SINGLE or SWT.BORDER)
+        val linesLabel = Label(shell, SWT.NONE)
+        linesLabel.text = "Number of lines (<$linesPerPage):"
+        linesLabel.layoutData = GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1)
+        linesText = Text(shell, SWT.SINGLE or SWT.BORDER)
+        if (lines != null) {
+            linesText.text = lines.toString()
+        }
         val gd = GridData(GridData.FILL_HORIZONTAL or GridData.GRAB_HORIZONTAL)
         gd.horizontalSpan = 2
-        text.layoutData = gd
+        gd.widthHint = 100
 
-//		Label enterImageLabel = new Label(shell, SWT.NONE);
-//		enterImageLabel.setText("Insert Image Location:");
+        pathLabel = Label(shell, SWT.NONE)
+        if (imagePath != null)
+            pathLabel.text = "Path: $imagePath"
+        else
+            pathLabel.text = "No image selected"
+        pathLabel.layoutData = GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1)
+
         insertImageButton = Button(shell, SWT.PUSH)
-        insertImageButton.text = "Insert Image Location"
+        insertImageButton.text = "Select Image"
         insertImageButton.layoutData = gd
-        path = Label(shell, SWT.NONE)
-        path.text = "Location: "
-        path.layoutData = GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1)
-        submit = Button(shell, SWT.PUSH)
-        submit.text = "Submit"
-        cancel = Button(shell, SWT.PUSH)
-        cancel.text = "Cancel"
-        addListeners()
+
+        val altTextLabel = Label(shell, SWT.NONE)
+        altTextLabel.text = "Alt Text (optional):"
+        val gd2 = GridData(GridData.FILL_HORIZONTAL or GridData.GRAB_HORIZONTAL)
+        gd2.horizontalSpan = 2
+        gd2.heightHint = 100
+
+        altTextText = Text(shell, SWT.MULTI or SWT.BORDER or SWT.V_SCROLL or SWT.WRAP)
+        altTextText.layoutData = gd2
+        if (isImage){
+            altTextText.text = manager.mapList.current.nodeParent.getAttributeValue("altText", UTD_NS) ?: ""
+        }
+
+        submitButton = Button(shell, SWT.PUSH)
+        if (isImage){
+            submitButton.text = "Update"
+        }
+        else{
+            submitButton.text = "Insert"
+        }
+
+        cancelButton = Button(shell, SWT.PUSH)
+        cancelButton.text = "Cancel"
+        addListeners(manager)
         shell.pack()
         shell.open()
     }
 
-    private fun addListeners() {
+    private fun addListeners(manager: Manager) {
         shell.addListener(SWT.Close, Listener {
-            imagePath = null
-            lines = null
+            //imagePath = null
+            //lines = null
+            //println("Closing image placeholder dialog")
         }.also { closeListener = it })
-        cancel.addSelectionListener(object : SelectionAdapter() {
+
+        cancelButton.addSelectionListener(object : SelectionAdapter() {
             override fun widgetSelected(e: SelectionEvent) {
-                lines = null
-                imagePath = null
+                //Change nothing, just close.
+                //lines = null
+                //imagePath = null
+                //println("Cancelling image placeholder dialog")
                 shell.close()
             }
         })
-        submit.addSelectionListener(object : SelectionAdapter() {
+        submitButton.addSelectionListener(object : SelectionAdapter() {
             override fun widgetSelected(e: SelectionEvent) {
-                submit()
+                submit(manager)
             }
         })
-        text.addListener(SWT.Verify) { e: Event ->
+
+        linesText.addListener(SWT.Verify) { e: Event ->
             val string = e.text
             val chars = CharArray(string.length)
             string.toCharArray(chars, 0, 0, chars.size)
@@ -112,35 +165,48 @@ class ImagePlaceholder(parent: Shell?, manager: Manager, private val callback: C
                 retrieveImagePath()
             }
         })
-        EasyListeners.keyPress(text) { e: KeyEvent ->
+        EasyListeners.keyPress(linesText) { e: KeyEvent ->
             if (e.keyCode == SWT.CR.code || e.keyCode == SWT.KEYPAD_CR) {
-                submit()
+                submit(manager)
             }
         }
     }
 
-    private fun submit() {
-        if (text.text.isNotEmpty()) {
-            val input = text.text.toInt()
-            if (input > linesPerPage) {
-                val message = MessageBox(WPManager.getInstance().shell)
-                message.message = "Please enter a number below $linesPerPage."
-                message.open()
-                shell.forceActive()
-                return
-            }
-            lines = input
-        } else {
-            lines = null
+    fun submit(manager: Manager) {
+        //Three cases:
+        //New placeholder with lines and path
+        //Modify existing placeholder's lines and/or path
+        //Nothing entered / invalid input - do nothing
+        //Likewise, cancelling the dialog should do nothing if on an existing placeholder.
+        lines = linesText.text.toInt()
+
+        if (manager.isEmptyDocument){
+            manager.notify(localeHandler["emptyDocMenuWarning"])
+            return
         }
+        else if (lines == null || imagePath == null) {
+            //println("No input provided; closing dialog without changes")
+            manager.notify("Please provide a number of lines and an image path to insert an image placeholder.")
+            return
+        }
+        else if (manager.mapList.current is ImagePlaceholderTextMapElement) {
+            //println("Updating existing image placeholder")
+            ImagePlaceholderHandler(manager, manager.viewInitializer, manager.mapList)
+                .updateImagePlaceholder(lines, imagePath, altTextText.text)
+        }
+        else if (manager.mapList.current !is Uneditable){
+            //println("Inserting new image placeholder")
+            ImagePlaceholderHandler(manager, manager.viewInitializer, manager.mapList)
+                .insertNewImagePlaceholder(lines, imagePath, altTextText.text)
+        }
+        else{
+            //Un-editable position selected; do nothing.
+            //println("Cannot insert image placeholder at current position; closing dialog without changes")
+            return
+        }
+
         shell.removeListener(SWT.Close, closeListener)
         shell.close()
-        if (imagePath != null || lines != null) {
-            val list = ArrayList<String?>()
-            list.add(if (lines != null) lines.toString() else null)
-            list.add(imagePath)
-            callback.accept(list)
-        }
     }
 
     private fun retrieveImagePath() {
@@ -157,8 +223,30 @@ class ImagePlaceholder(parent: Shell?, manager: Manager, private val callback: C
         dialog.filterPath = filterPath
         val imagePath = dialog.open()
         if (imagePath != null) {
-            path.text += imagePath
+            pathLabel.text = "Path: $imagePath"
+            pathLabel.redraw()
             this.imagePath = imagePath
         }
+    }
+
+    private fun getImageList(manager: Manager): List<String> {
+        //Find all ImagePlaceholder elements in the document
+        //Probably trim down a string from the end to the last '/' or '\'
+        //Looking for BLOCK bb:type="IMAGE_PLACEHOLDER"
+        //This isn't working, despite my testing with the same XPath in an external tool.
+        //What gives?
+        val xpath = "/BLOCK[@bb:type='IMAGE_PLACEHOLDER']"
+        val results = manager.simpleManager.doc.query(xpath).toList()
+        //println("Found ${results.size} image placeholders in document.")
+        val elementList = results.map{
+            it as Element
+        } as MutableList<Element>
+        val delim = if (OS.Windows == os) '\\' else '/'
+        //Use a truncated version of the src path for display
+        val imageStrings = elementList.map{
+            it.getAttributeValue("src", UTD_NS).substringAfterLast(delim)
+        }
+
+        return imageStrings
     }
 }

@@ -15,27 +15,14 @@
  */
 package org.brailleblaster.perspectives.braille.views.wp
 
-import nu.xom.Element
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.*
 import org.brailleblaster.perspectives.braille.mapping.interfaces.Uneditable
 import org.brailleblaster.perspectives.mvc.modules.misc.TableSelectionModule
-import org.brailleblaster.utd.actions.GenericBlockAction
 import org.brailleblaster.util.LINE_BREAK
 import org.eclipse.swt.custom.StyledText
 
 class Validator(var manager: Manager, var view: StyledText) {
-
-    fun isFirstElement(childElement: Element): Boolean {
-        var child = childElement
-        var parent = child.parent as Element
-        while (manager.getAction(parent) !is GenericBlockAction) {
-            if (parent.indexOf(child) != 0) return false
-            child = parent
-            parent = parent.parent as Element
-        }
-        return parent.indexOf(child) == 0
-    }
 
     fun validCut(
         currentElement: TextMapElement?,

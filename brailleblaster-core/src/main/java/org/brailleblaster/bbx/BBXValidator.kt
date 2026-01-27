@@ -17,7 +17,6 @@ package org.brailleblaster.bbx
 
 import nu.xom.*
 import org.brailleblaster.BBIni
-import org.brailleblaster.bbx.BBX.CoreType
 import org.brailleblaster.utd.config.StyleDefinitions
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.XMLHandler
@@ -34,25 +33,6 @@ import java.util.*
  */
 object BBXValidator {
     private val log = LoggerFactory.getLogger(BBXValidator::class.java)
-
-    @Throws(ValidateException::class)
-    fun validElementType(type: CoreType?, node: Node?) {
-        if (type == null) {
-            throw NullPointerException("type")
-        }
-        if (node == null) {
-            throw NullPointerException("node")
-        }
-        val validateResult = type.validate(node)
-        if (validateResult != null) {
-            throw ValidateException(
-                node,
-                "Input node is not expected type {}: {}",
-                type,
-                validateResult
-            )
-        }
-    }
 
     fun validateDocument(doc: Document, styleDefs: StyleDefinitions) {
         if (!BBIni.debugging) {

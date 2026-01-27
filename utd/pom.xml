@@ -105,7 +105,7 @@
                         <polyglot.engine.WarnInterpreterOnly>false</polyglot.engine.WarnInterpreterOnly>
                     </systemProperties>
                     <additionalClasspathElements>
-                        <additionalClasspathElement>${project.build.outputDirectory}/data</additionalClasspathElement>
+                        <additionalClasspathElement>${project.build.testOutputDirectory}/data</additionalClasspathElement>
                     </additionalClasspathElements>
                     <trimStackTrace>false</trimStackTrace>
                 </configuration>
@@ -118,7 +118,7 @@
                     <!-- Unpack liblouis tables to build/data/liblouis/tables -->
                     <execution>
                         <id>import-tables</id>
-                        <phase>generate-resources</phase>
+                        <phase>generate-test-resources</phase>
                         <goals>
                             <goal>unpack</goal>
                         </goals>
@@ -130,7 +130,7 @@
                                     <version>${jlouis.version}</version>
                                     <type>zip</type>
                                     <classifier>tables</classifier>
-                                    <outputDirectory>${project.build.outputDirectory}/data</outputDirectory>
+                                    <outputDirectory>${project.build.testOutputDirectory}/data</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>

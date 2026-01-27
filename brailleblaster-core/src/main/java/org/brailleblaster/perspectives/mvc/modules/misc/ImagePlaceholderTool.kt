@@ -16,10 +16,6 @@
 package org.brailleblaster.perspectives.mvc.modules.misc
 
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
-import org.brailleblaster.perspectives.braille.Manager
-import org.brailleblaster.perspectives.braille.mapping.elements.ImagePlaceholderTextMapElement
-import org.brailleblaster.perspectives.braille.mapping.interfaces.Uneditable
-import org.brailleblaster.perspectives.braille.stylers.ImagePlaceholderHandler
 import org.brailleblaster.perspectives.braille.ui.ImagePlaceholder
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
@@ -32,36 +28,6 @@ object ImagePlaceholderTool : MenuToolModule {
     override val topMenu = TopMenu.INSERT
     override val title = MENU_ITEM_NAME
     override fun onRun(bbData: BBSelectionData) {
-        insertImagePlaceholder(bbData.manager)
+        ImagePlaceholder(bbData.manager.wpManager.shell, bbData.manager)
     }
-
-    private fun insertImagePlaceholder(manager: Manager) {
-        if (!manager.isEmptyDocument) {
-            if (manager.mapList.current is Uneditable) {
-                (manager.mapList.current as Uneditable).blockEdit(manager)
-                return
-            }
-            manager.stopFormatting()
-            manager.text.update(false)
-            val trh = ImagePlaceholderHandler(manager, manager.viewInitializer, manager.mapList)
-            ImagePlaceholder(manager.wpManager.shell, manager) { list: ArrayList<String?> ->
-                val imagePath = list[1]
-                if (list[0] != null) {
-                    val lines = list[0]!!.toInt()
-                    if (manager.mapList.current is ImagePlaceholderTextMapElement) {
-                        trh.adjustImagePlaceholder(lines, imagePath)
-                    } else {
-                        trh.insertNewImagePlaceholder(lines, imagePath)
-                    }
-                } else {
-                    trh.updateImagePlaceholderPath(imagePath)
-                }
-            }
-        } else {
-            manager.notify(localeHandler["emptyDocMenuWarning"])
-        }
-    }
-
-
-
 }

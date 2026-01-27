@@ -26,10 +26,7 @@ import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.StyledText
 import org.eclipse.swt.graphics.Font
 import org.slf4j.helpers.MessageFormatter
-import java.io.BufferedReader
 import java.io.IOException
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URLEncoder
 import java.net.http.HttpClient
@@ -37,7 +34,6 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.nio.charset.StandardCharsets
 import java.time.Duration
-import javax.net.ssl.HttpsURLConnection
 
 /**
  * Randomly useful methods that aren't implemented
@@ -140,10 +136,6 @@ object Utils {
     }
 
 
-    fun httpGet(requestURL: String, firstLineOnly: Boolean): String {
-        return httpRun(requestURL, firstLineOnly) { }
-    }
-
     /**
      * Warning: URL must not redirect, POST parameters will be lost
      */
@@ -160,38 +152,6 @@ object Utils {
 
         if (response.statusCode() == 200) return response.body()
         else throw RuntimeException("Error " + response.statusCode() + " when posting to " + requestURL)
-    }
-
-    private fun httpRun(requestURL: String, firstLineOnly: Boolean, callback: (HttpURLConnection) -> Unit): String {
-        val requestMethod = "POST"
-        try {
-            val uri = URI(requestURL)
-            val url = uri.toURL()
-            val conn = url.openConnection() as HttpURLConnection
-            conn.readTimeout = 15000
-            conn.connectTimeout = 15000
-            conn.requestMethod = requestMethod
-            conn.doInput = true
-            conn.doOutput = true
-
-            callback(conn)
-            val responseCode = conn.responseCode
-            val response: String
-            BufferedReader(InputStreamReader(conn.inputStream)).use { br ->
-                response = if (!firstLineOnly) {
-                    br.readLines().joinToString(separator = LINE_BREAK)
-                } else {
-                    br.readLine()
-                }
-            }
-            if (responseCode != HttpsURLConnection.HTTP_OK) {
-                throw RuntimeException("Error $responseCode when connecting to $requestURL")
-            }
-
-            return response
-        } catch (e: Exception) {
-            throw RuntimeException("Failed to connect to url $requestURL", e)
-        }
     }
 
     private fun httpPostMakePostParams(params: Map<String, String>): String {

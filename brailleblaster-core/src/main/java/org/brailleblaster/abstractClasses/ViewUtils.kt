@@ -17,37 +17,11 @@ package org.brailleblaster.abstractClasses
 
 import nu.xom.Element
 import nu.xom.Node
-import nu.xom.Text
 import org.brailleblaster.utd.properties.UTDElements
 
 object ViewUtils {
-    /** Check if node is an element
-     * @param n : element to check
-     * @return True is an Element, False if not an element
-     */
-	@JvmStatic
-	fun isElement(n: Node?): Boolean {
-        return (n is Element)
-    }
 
-    /** Checks if a node is a text node
-     * @param n : node to check
-     * @return True if a text node, False if not a text node
-     */
-    fun isText(n: Node?): Boolean {
-        return (n is Text)
-    }
-
-    fun isMoveTo(e: Element?): Boolean {
-        return UTDElements.MOVE_TO.isA(e)
-    }
-
-    fun isNewPage(e: Element?): Boolean {
-        return UTDElements.NEW_PAGE.isA(e)
-    }
-
-    @JvmStatic
-	fun followsMoveTo(n: Node): Boolean {
+    fun followsMoveTo(n: Node): Boolean {
         val parent = n.parent as Element
         val index = parent.indexOf(n)
 
@@ -58,14 +32,13 @@ object ViewUtils {
         val parent = n.parent as Element
         val index = parent.indexOf(n)
 
-        if (index > 0 && isElement(parent.getChild(index - 1))) {
+        if (index > 0 && (parent.getChild(index - 1) is Element)) {
             return UTDElements.BRLONLY.isA(parent.getChild(index - 1))
         }
         return false
     }
 
-    @JvmStatic
-	fun followsNewPage(n: Node): Boolean {
+    fun followsNewPage(n: Node): Boolean {
         val parent = n.parent as Element
         val index = parent.indexOf(n)
 
@@ -73,7 +46,7 @@ object ViewUtils {
     }
 
     @JvmStatic
-	fun getAttributeValue(e: Element, `val`: String?): String? {
+    fun getAttributeValue(e: Element, `val`: String?): String? {
         val atr = e.getAttribute(`val`)
         return atr?.value
     }

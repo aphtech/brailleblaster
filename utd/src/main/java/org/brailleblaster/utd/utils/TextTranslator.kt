@@ -122,7 +122,6 @@ object TextTranslator {
     private const val TRANS_5: Short = 512
     private const val NO_CONTRACT: Short = 4096
 
-    @JvmStatic
     @Throws(UTDTranslateException::class)
     fun translateTextWithEmpArray(
         translateText: String?,

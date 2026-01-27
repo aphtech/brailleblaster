@@ -25,7 +25,6 @@ import org.brailleblaster.utils.BBData.getBrailleblasterPath
 import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.StyledText
-import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.layout.RowLayout
@@ -72,9 +71,10 @@ private fun showHelp(helpChoice: HelpOptions) {
     }
 }
 private fun showAbout() {
-    val shell = Shell(SWT.DIALOG_TRIM or SWT.SYSTEM_MODAL)
-    shell.text = "About ${AppProperties.displayName}"
-    shell.layout = GridLayout(2, false)
+    val shell = Shell(SWT.DIALOG_TRIM or SWT.SYSTEM_MODAL).apply {
+        text = "About ${AppProperties.displayName}"
+        layout = GridLayout(2, false)
+    }
     run {
         val img: Image = try {
             Image(
@@ -115,7 +115,7 @@ private fun showAbout() {
     privacyPolicy.text = "APH Privacy Policy"
 
     // ------ Listeners ------
-    EasySWT.addSelectionListener(license) { it: SelectionEvent ->
+    EasySWT.addSelectionListener(license) {
         val licensePath = getBrailleblasterPath("LICENSE.txt")
         val text: String = try {
             licensePath.readText(Charsets.UTF_8)
@@ -124,7 +124,7 @@ private fun showAbout() {
         }
         notify(text, "License")
     }
-    EasySWT.addSelectionListener(privacyPolicy) { it: SelectionEvent ->
+    EasySWT.addSelectionListener(privacyPolicy) {
         val licensePath = getBrailleblasterPath("APH_Privacy_Policy.txt")
         val text: String = try {
             licensePath.readText(Charsets.UTF_8)

@@ -1240,12 +1240,9 @@ public class Manager extends Controller {
         // This needs to run after the views are finished updating, because
         // moving the caret will trigger code inside Style View, which
         // would be working with an outdated, unformatted document
-//		simpleManager.getModule(PostViewUpdateModule.class).onModifyEvent(() -> { //commented for RT 7363
         text.setListenerLock(true);
         setTextCaret(newPos);
         text.setListenerLock(false);
-//		});
-        text.setListenerLock(false); //Does this need to be done twice?
         containerSash.setRedraw(true);
         sw.stop();
         logger.debug("Completed refreshFormat in: {}", sw);
