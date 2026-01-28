@@ -23,19 +23,28 @@ import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 
 object EBraillePackager {
-    private const val MIMETYPE_DATA = "application/epub+zip"
-    fun packageDocument(outPath: Path, html: Document) {
+    fun packageDocument(outPath: Path, docs: List<Document>) {
         ZipArchiveOutputStream(FileChannel.open(outPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE)).use { zos ->
-            zos.putArchiveEntry(ZipArchiveEntry("mimetype").apply {
-                method = ZipArchiveEntry.STORED
-            })
-            zos.writeUsAscii(MIMETYPE_DATA)
-            zos.putArchiveEntry(ZipArchiveEntry("ebraille/document.html"))
-            zos.writer(Charsets.UTF_8).let {
-                html.html(it)
-                it.flush()
-            }
+            zos.writeMimetype()
+            zos.writeVolumes(docs)
             zos.closeArchiveEntry()
+        }
+    }
+}
+
+private const val MIMETYPE_DATA = "application/epub+zip"
+
+private fun ZipArchiveOutputStream.writeMimetype() {
+    putArchiveEntry(ZipArchiveEntry("mimetype").apply { method = ZipArchiveEntry.STORED })
+    writeUsAscii(MIMETYPE_DATA)
+}
+
+private fun ZipArchiveOutputStream.writeVolumes(docs: List<Document>) {
+    for ((index, doc) in docs.withIndex()) {
+        putArchiveEntry(ZipArchiveEntry("ebraille/document${index}.html"))
+        writer(Charsets.UTF_8).let {
+            doc.html(it)
+            it.flush()
         }
     }
 }
