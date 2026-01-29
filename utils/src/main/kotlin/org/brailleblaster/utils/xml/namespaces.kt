@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 American Printing House for the Blind
+ * Copyright (C) 2025-2026 American Printing House for the Blind
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -20,5 +20,7 @@ const val BB_NS = "http://brailleblaster.org/ns/bb"
 const val TACTILE_GRAPHICS_NS = "http://www.aph.org/ns/tactile-graphics/1.0"
 const val APH_PAPER_NS = "http://www.aph.org/ns/paper-dimensions/1.0"
 const val MATHML_NS = "http://www.w3.org/1998/Math/MathML"
+const val OPF_NS = "http://www.idpf.org/2007/opf"
 const val DC_NS = "http://purl.org/dc/elements/1.1/"
 const val PEF_NS = "http://www.daisy.org/ns/2008/pef"
+const val OPEN_DOCUMENT_CONTAINER_NS = "urn:oasis:names:tc:opendocument:xmlns:container"
