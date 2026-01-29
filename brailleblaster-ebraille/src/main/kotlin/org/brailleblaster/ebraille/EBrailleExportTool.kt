@@ -33,7 +33,7 @@ object EBrailleExportTool : MenuTool {
         BBFileDialog(bbData.wpManager.shell, SWT.SAVE,  suggestedFileName = null, filterNames = arrayOf("eBraille files"), filterExtensions = arrayOf("*.ebrl")).open()?.let { f ->
             val converter = BBX2EbrailleHtml()
             DocumentTraversal.traverseDocument(bbData.manager.doc, converter)
-            EBraillePackager.packageDocument(Path(f), listOf(converter.htmlDoc!!))
+            EBraillePackager.createEbraillePackage(Path(f), listOf(converter.htmlDoc!!))
         }
     }
 }

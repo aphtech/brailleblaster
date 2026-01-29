@@ -27,11 +27,14 @@ import java.nio.file.StandardOpenOption
 private const val OPF_PATH = "package.opf"
 
 object EBraillePackager {
-    fun packageDocument(outPath: Path, docs: List<Document>) {
+    fun createEbraillePackage(outPath: Path, docs: List<Document>) {
+        packageDocument(outPath, docs.mapIndexed { i, doc -> HtmlItem("ebraille/document${i}.html", doc) })
+    }
+    private fun packageDocument(outPath: Path, docItems: List<PackageItem>) {
         ZipArchiveOutputStream(FileChannel.open(outPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE)).use { zos ->
             zos.writeMimetype()
-            zos.writeVolumes(docs)
-            zos.writeOpf()
+            zos.writeItems(docItems)
+            zos.writeOpf(docItems)
             zos.writeContainer()
             zos.closeArchiveEntry()
         }
@@ -47,19 +50,16 @@ private fun ZipArchiveOutputStream.writeMimetype() {
     writeUsAscii(MIMETYPE_DATA)
 }
 
-private fun ZipArchiveOutputStream.writeVolumes(docs: List<Document>) {
-    for ((index, doc) in docs.withIndex()) {
-        putArchiveEntry(ZipArchiveEntry("ebraille/document${index}.html"))
-        writer(Charsets.UTF_8).let {
-            doc.html(it)
-            it.flush()
-        }
+private fun ZipArchiveOutputStream.writeItems(items: List<PackageItem>) {
+    for (item in items) {
+        putArchiveEntry(ZipArchiveEntry(item.path))
+        item.write(this)
     }
 }
 
-private fun ZipArchiveOutputStream.writeOpf() {
+private fun ZipArchiveOutputStream.writeOpf(docItems: List<PackageItem>) {
     putArchiveEntry(ZipArchiveEntry(OPF_PATH))
-    createXomSerializer(this).write(createOpf())
+    createXomSerializer(this).write(createOpf(docItems))
 }
 
 private fun ZipArchiveOutputStream.writeContainer(opfPath: String = OPF_PATH) {
