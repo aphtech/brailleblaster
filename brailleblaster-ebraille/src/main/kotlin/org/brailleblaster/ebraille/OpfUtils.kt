@@ -21,6 +21,7 @@ import nu.xom.Element
 import org.brailleblaster.utils.xml.DC_NS
 import org.brailleblaster.utils.xml.OPF_NS
 import java.io.OutputStream
+import java.net.URL
 
 fun createOpf(items: List<PackageItem>): Document = Document(Element("package", OPF_NS).apply {
     val itemMap = items.mapIndexed { i, item -> "file${i}" to item }.toMap()
@@ -59,5 +60,12 @@ data class HtmlItem(override val path: String, val document: org.jsoup.nodes.Doc
         output.bufferedWriter(Charsets.UTF_8).also {
             document.html(it)
         }.flush()
+    }
+}
+
+data class ResourceItem(override val path: String, val resourceUrl: URL, override val mediaType: String,
+                        override val includeInSpine: Boolean = false) : PackageItem {
+    override fun write(output: OutputStream) {
+        resourceUrl.openStream().use { it.copyTo(output) }
     }
 }

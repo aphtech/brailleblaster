@@ -27,14 +27,19 @@ import java.nio.file.StandardOpenOption
 private const val OPF_PATH = "package.opf"
 
 object EBraillePackager {
-    fun createEbraillePackage(outPath: Path, docs: List<Document>) {
-        packageDocument(outPath, docs.mapIndexed { i, doc -> HtmlItem("ebraille/document${i}.html", doc) })
+    private val RESOURCE_ITEMS = buildList {
+        javaClass.getResource("/org/brailleblaster/ebraille/css/default.css")?.let {
+            add(ResourceItem("ebraille/css/default.css", it, "text/css"))
+        }
     }
-    private fun packageDocument(outPath: Path, docItems: List<PackageItem>) {
+    fun createEbraillePackage(outPath: Path, docs: List<Document>) {
+        packageDocument(outPath, docs.mapIndexed { i, doc -> HtmlItem("ebraille/document${i}.html", doc) } + RESOURCE_ITEMS)
+    }
+    private fun packageDocument(outPath: Path, packageItems: List<PackageItem>) {
         ZipArchiveOutputStream(FileChannel.open(outPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE)).use { zos ->
             zos.writeMimetype()
-            zos.writeItems(docItems)
-            zos.writeOpf(docItems)
+            zos.writeItems(packageItems)
+            zos.writeOpf(packageItems)
             zos.writeContainer()
             zos.closeArchiveEntry()
         }
