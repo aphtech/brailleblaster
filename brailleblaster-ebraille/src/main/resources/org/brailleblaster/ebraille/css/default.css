@@ -1,0 +1,67 @@
+/* General Braille Settings */
+body {
+    margin: 0; /* No outer margin for eBraille content */
+    padding: 0;
+    line-height: 1rem; /* To avoid excessive rounding, the reading system will need to handle the space between lines */
+    font-family: 'SimBraille', monospace; /* Unicode braille font */
+    white-space: pre; /* Preserve braille spacing and indentation */
+}
+/* Headings */
+/* Prevent splitting and ensure headings stay with following content */
+h1, h2, h3 {
+    break-after: avoid; /* Avoid breaking immediately after the heading */
+    break-inside: avoid; /* Ensure the heading itself does not split across pages */
+}
+
+/* Centered Heading (h1) */
+h1 {
+    text-align: center; /* Center the text for a centered heading */
+    margin-top: 1rem; /* Blank line before heading */
+    margin-bottom: 1rem; /* Blank line after heading */
+}
+
+/* Cell-5 Heading (h2) */
+h2 {
+    margin-left: 4rem; /* Indented to the fifth cell */
+    margin-top: 1rem; /* Blank line before heading */
+}
+
+/* Cell-7 Heading (h3) */
+h3 {
+    margin-left: 6rem; /* Indented to the seventh cell */
+    margin-top: 1rem; /* Blank line before heading */
+}
+
+/* Left-Justified Paragraph (p.left-justified) */
+p.left-justified {
+    margin-top: 1rem; /* Blank line before */
+    padding-left: 0; /* Start at cell 1 */
+    text-indent: 0; /* No additional indentation */
+}
+
+/* Indented Paragraph (p) */
+p {
+    margin: 0; /* No blank lines before or after */
+    padding-left: 2rem; /* Start the first line at cell 3 */
+    text-indent: -2rem; /* Runover starts at cell 1 */
+}
+
+/* General List Styling */
+ul, ol {
+    list-style-type: none; /* Remove bullets/numbers */
+    margin: 1rem 0; /* Blank line before and after lists */
+    padding-left: 0; /* Start at cell 1 */
+}
+
+/* Remove the blank line before lists that follow cell-5 or cell-7 headings */
+h2 + ul, h2 + ol, 
+h3 + ul, h3 + ol {
+    margin-top: 0; /* No blank line before the list */
+}
+
+
+/* Level 1: No Nesting (1-3) */
+.level-1 {
+    padding-left: 0; /* Main items start at cell 1 */
+    text-indent: 2rem; /* Runovers align to cell 3 */
+}
