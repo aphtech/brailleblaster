@@ -53,19 +53,19 @@ child.project.url.inherit.append.path="false">
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>2.3.0</kotlin.version>
+        <kotlin.version>2.3.10</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
-        <serialization.version>1.9.0</serialization.version>
+        <serialization.version>1.10.0</serialization.version>
         <jetbrains.annotations.version>26.0.2-1</jetbrains.annotations.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <logback-core.version>1.5.25</logback-core.version>
-        <logback-classic.version>1.5.25</logback-classic.version>
+        <logback-core.version>1.5.27</logback-core.version>
+        <logback-classic.version>1.5.27</logback-classic.version>
         <icu4j.version>78.2</icu4j.version>
         <mathcat4j.version>1.0.3</mathcat4j.version>
         <mathcat4j-jni.version>0.7.2-2</mathcat4j-jni.version>
         <jlouis.version>c75db74718cea465f839f7cb5b4bcf716ba3e3e3</jlouis.version>
         <libembosser.version>1.4.3</libembosser.version>
-        <jaxbapi.version>4.0.4</jaxbapi.version>
+        <jaxbapi.version>4.0.5</jaxbapi.version>
         <jaxbruntime.version>4.0.6</jaxbruntime.version>
         <activation.version>1.1</activation.version>
         <swt.platform>win32.win32.x86_64</swt.platform>
@@ -74,7 +74,7 @@ child.project.url.inherit.append.path="false">
         <orgeclipsejface.version>3.38.100</orgeclipsejface.version>
         <org.eclipse.equinox.common.version>3.20.300</org.eclipse.equinox.common.version>
         <hamcrest.version>2.2</hamcrest.version>
-        <testng.version>7.11.0</testng.version>
+        <testng.version>7.12.0</testng.version>
         <xercesimpl.version>2.12.2</xercesimpl.version>
         <xmlapis.version>2.0.2</xmlapis.version>
         <saxon.version>12.9</saxon.version>
@@ -86,7 +86,8 @@ child.project.url.inherit.append.path="false">
         <mavensurefireplugin.version>3.0.0-M6</mavensurefireplugin.version>
         <mavencompilerplugin.version>3.14.0</mavencompilerplugin.version>
         <downloadmavenplugin.version>2.0.0</downloadmavenplugin.version>
-        <mockitocore.version>5.6.0</mockitocore.version>
+        <equalsverifier.version>4.3.1</equalsverifier.version>
+        <mockitocore.version>5.21.0</mockitocore.version>
         <mavenenforcerplugin.version>3.0.0-M3</mavenenforcerplugin.version>
         <orgeclipseswtbotswtfinder.version>f5b2edaee2</orgeclipseswtbotswtfinder.version>
 
@@ -151,7 +152,6 @@ child.project.url.inherit.append.path="false">
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>${mockitocore.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -260,13 +260,13 @@ child.project.url.inherit.append.path="false">
             <dependency>
                 <groupId>org.graalvm.polyglot</groupId>
                 <artifactId>js</artifactId>
-                <version>25.0.1</version>
+                <version>25.0.2</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.graalvm.js</groupId>
                 <artifactId>js-scriptengine</artifactId>
-                <version>25.0.1</version>
+                <version>25.0.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -441,6 +441,28 @@ child.project.url.inherit.append.path="false">
                 <artifactId>hamcrest</artifactId>
                 <version>${hamcrest.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockitocore.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>nl.jqno.equalsverifier</groupId>
+                <artifactId>equalsverifier</artifactId>
+                <version>${equalsverifier.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.objenesis</groupId>
+                <artifactId>objenesis</artifactId>
+                <version>3.5</version>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>1.18.4</version>
             </dependency>
             <dependency>
                 <groupId>org.testng</groupId>

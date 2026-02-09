@@ -20,7 +20,7 @@ import org.brailleblaster.utd.properties.UTDElements;
 import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Node;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 
 public class BrailleMapElement extends AbstractMapElement{

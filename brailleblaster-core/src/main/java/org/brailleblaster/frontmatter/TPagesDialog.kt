@@ -1171,7 +1171,7 @@ class TPagesDialog : DebugMenuToolModule {
                                 //TODO: This shouldn't be necessary
                                 if (BBX.BLOCK.STYLE.isA(curChild) && m.hasStyle(curChild, "Centered Heading")) {
                                     m.applyStyle(
-                                        m.engine.styleDefinitions.getStyleByName(TPAGE_HEADING_STYLE),
+                                        m.engine.styleDefinitions.getStyleByName(TPAGE_HEADING_STYLE)!!,
                                         curChild
                                     )
                                 }

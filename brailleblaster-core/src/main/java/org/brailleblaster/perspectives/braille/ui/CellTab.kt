@@ -133,7 +133,7 @@ class CellTab(var manager: Manager, var currentElement: TextMapElement, var text
     private fun getNumber(num: String): Int {
         val `val`: Int = try {
             num.toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             0
         }
         return `val`

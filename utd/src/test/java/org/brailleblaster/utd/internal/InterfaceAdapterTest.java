@@ -27,7 +27,7 @@ import org.brailleblaster.utd.ITranslationEngine;
 import org.brailleblaster.utd.TextSpan;
 import org.brailleblaster.utd.actions.IAction;
 import org.brailleblaster.utd.matchers.XPathMatcher;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -39,7 +39,7 @@ import static org.testng.Assert.assertTrue;
 public class InterfaceAdapterTest {
     public static class TestAction implements IAction {
         @Override
-        public @NotNull List<TextSpan> applyTo(@NotNull Node node, @NotNull ITranslationEngine context) {
+        public @NonNull List<TextSpan> applyTo(@NonNull Node node, @NonNull ITranslationEngine context) {
             return Collections.emptyList();
         }
     }

@@ -540,7 +540,7 @@ class TextVerifyKeyListener(
                     textView.update(false)
                     val current = manager.mapList.current.node
                     val modifiedNode: Node?
-                        = (manager.mapList.getPrevious(false) as Deletable).deleteNode(manager)
+                        = (manager.mapList.getPrevious(false) as? Deletable)?.deleteNode(manager)
                     if (modifiedNode != null) {
                         //deleteNode returns null if it already dispatches a ModifyEvent and returns the parent of
                         //the edited node otherwise

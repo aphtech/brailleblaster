@@ -20,7 +20,7 @@ import nu.xom.Element;
 import org.apache.commons.lang3.StringUtils;
 import org.brailleblaster.libembosser.spi.BrlCell;
 import org.brailleblaster.utd.utils.UTDHelper;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.mwhapples.jlouis.Louis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +69,7 @@ public class BRFWriter {
     private int curLine;
     private final OutputCharStream output;
     public int brlPage = -1;
-    public final UTDTranslationEngine engine;
+    public final @NonNull UTDTranslationEngine engine;
     private boolean afterBookStart = false;
 
     private boolean nonsequentialPages = false;
@@ -82,16 +82,16 @@ public class BRFWriter {
     private record NonsequentialState(char[][] grid, String translatedBrlNum, String brlNum, int curCell, int curLine) {
     }
 
-    @NotNull
+    @NonNull
     private final InputPageListener inputPageListenerImpl = new InputPageListener();
-    @NotNull
+    @NonNull
     private final PageListener outputPageListener;
-    private StringBuilder pendingSpaces = new StringBuilder();
-    @NotNull
+    private @NonNull StringBuilder pendingSpaces = new StringBuilder();
+    @NonNull
     public static final PageListener EMPTY_PAGE_LISTENER = new PageListener() {
     };
 
-    public BRFWriter(UTDTranslationEngine engine, OutputCharStream output, int opts, @NotNull PageListener outputPageListener) {
+    public BRFWriter(@NonNull UTDTranslationEngine engine, OutputCharStream output, int opts, @NonNull PageListener outputPageListener) {
         this.opts = opts;
         this.outputPageListener = outputPageListener;
         this.engine = engine;
@@ -111,9 +111,7 @@ public class BRFWriter {
     /**
      * Append translated braille to current line
      */
-    public void append(String braille) {
-        if (braille == null)
-            throw new NullPointerException("braille");
+    public void append(@NonNull String braille) {
         //Cannot do anything on empty nodes
         if (braille.isEmpty()) {
             log.info(debug("Skipping appending empty string on braille page {}", brlPage));
@@ -308,7 +306,7 @@ public class BRFWriter {
         }
     }
 
-    @NotNull
+    @NonNull
     public PageListener getInputPageListener() {
         return inputPageListenerImpl;
     }
@@ -374,7 +372,7 @@ public class BRFWriter {
      * Issue #6646: BRFs must use Windows line endings. However to keep the
      * simple char stream API, rewrite the characters when needed
      */
-    public static BRFWriter.OutputCharStream lineEndingRewriter(BRFWriter.OutputCharStream dest) {
+    public static @NonNull OutputCharStream lineEndingRewriter(@NonNull OutputCharStream dest) {
         return (char givenChar) -> {
             if (givenChar == BRFWriter.NEWLINE) {
                 dest.accept('\r');
@@ -390,7 +388,7 @@ public class BRFWriter {
      */
     private class InputPageListener implements PageListener {
         private final Logger log = LoggerFactory.getLogger(InputPageListener.class);
-        private final Map<Point, List<PageEntry>> pages = new HashMap<>();
+        private final @NonNull Map<Point, List<PageEntry>> pages = new HashMap<>();
 
         @Override
         public void onBrlPageNum(String brlPageBraille, String brlPageOrig) {
@@ -418,7 +416,7 @@ public class BRFWriter {
             pages.computeIfAbsent(newPointCur(), k -> new ArrayList<>()).add(new PageEntry(printPageBraille, printPageOrig, true));
         }
 
-        private Point newPointCur() {
+        private @NonNull Point newPointCur() {
             //If these are at edges flush() will never call them because their out of the the array index
             //Can be at edges if cursor is at the end of a line and a pagenum is triggered
             int cell = curCell >= maxCells ? maxCells - 1 : curCell;
@@ -426,7 +424,7 @@ public class BRFWriter {
             return new Point(cell, line);
         }
 
-        public Collection<PageEntry> getEntryAtPos(int cell, int line) {
+        public @NonNull Collection<PageEntry> getEntryAtPos(int cell, int line) {
             Collection<PageEntry> entries = pages.remove(new Point(cell, line));
             return entries == null ? Collections.emptyList() : entries;
         }
@@ -444,7 +442,7 @@ public class BRFWriter {
     public record Point(int x, int y) {
     }
 
-    private static String debugLine(char[] line) {
+    private static @NonNull String debugLine(char[] line) {
         StringBuilder builder = new StringBuilder();
         for (char curChar : line)
             if (curChar == '\0')
@@ -472,7 +470,7 @@ public class BRFWriter {
         return MessageFormatter.arrayFormat(messagePattern, args).getMessage();
     }
 
-    private String debug(String messagePattern, Object... args) {
+    private @NonNull String debug(String messagePattern, Object... args) {
         return formatString("BRF page {} position {}x{} max {}x{} - ", brlPage, curCell, curLine, maxCells, maxLines)
                 + formatString(messagePattern, args);
     }

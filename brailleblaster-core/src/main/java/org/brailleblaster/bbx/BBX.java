@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.brailleblaster.utils.xml.NamespacesKt;
-import org.jetbrains.annotations.Nullable;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -61,7 +60,8 @@ import org.brailleblaster.utd.internal.xml.FastXPath;
 import org.brailleblaster.utd.internal.xml.XMLHandler;
 import org.brailleblaster.utd.properties.EmphasisType;
 import org.brailleblaster.utd.properties.UTDElements;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,11 +120,11 @@ public class BBX {
     /**
      * Element and attribute prefix, eg bb:type="OTHER"
      */
-    public static final String BB_PREFIX = "bb";
+    public static final @NonNull String BB_PREFIX = "bb";
     /**
      * XML Root
      */
-    public static final String DOCUMENT_ROOT_NAME = "bbdoc";
+    public static final @NonNull String DOCUMENT_ROOT_NAME = "bbdoc";
     /**
      * The version of the BBX Format, increment and write converter if
      * drastically changing
@@ -134,29 +134,29 @@ public class BBX {
      * Marker used by parsers to trigger fixers, should not exist in final
      * document
      */
-    public static final EnumAttribute<FixerTodo> _ATTRIB_FIXER_TODO = new EnumAttribute<>("fixerTodo", FixerTodo.class);
+    public static final @NonNull EnumAttribute<@NonNull FixerTodo> _ATTRIB_FIXER_TODO = new EnumAttribute<>("fixerTodo", FixerTodo.class);
     /**
      * Internal data of the original imported element name
      */
-    public static final StringAttribute _ATTRIB_ORIGINAL_ELEMENT = new StringAttribute("origElement");
+    public static final @NonNull StringAttribute _ATTRIB_ORIGINAL_ELEMENT = new StringAttribute("origElement");
     /**
      * UTD action
      */
-    public static final StringAttribute _ATTRIB_OVERRIDE_ACTION = new StringAttribute(
+    public static final @NonNull StringAttribute _ATTRIB_OVERRIDE_ACTION = new StringAttribute(
             OverrideMap.OVERRIDE_ATTRIB_ACTION, UTDElements.UTD_PREFIX, NamespacesKt.UTD_NS);
     /**
      * UTD style
      */
-    public static final StringAttribute _ATTRIB_OVERRIDE_STYLE = new StringAttribute(OverrideMap.OVERRIDE_ATTRIB_STYLE,
+    public static final @NonNull StringAttribute _ATTRIB_OVERRIDE_STYLE = new StringAttribute(OverrideMap.OVERRIDE_ATTRIB_STYLE,
             UTDElements.UTD_PREFIX, NamespacesKt.UTD_NS);
     /**
      * BB subtype of whatever coretype the element is
      */
-    public static final StringAttribute _ATTRIB_TYPE = new StringAttribute("type");
+    public static final @NonNull StringAttribute _ATTRIB_TYPE = new StringAttribute("type");
     /**
      * Usable as entire document should only have elements in these namespaces
      */
-    public static final XPathContext XPATH_CONTEXT;
+    public static final @NonNull XPathContext XPATH_CONTEXT;
 
     static {
         XPATH_CONTEXT = new XPathContext();
@@ -169,11 +169,11 @@ public class BBX {
     private BBX() {
     }
 
-    public static Element newElement(String name) {
+    public static @NonNull Element newElement(@NonNull String name) {
         return new Element(name, NamespacesKt.BB_NS);
     }
 
-    public static Document newDocument() {
+    public static @NonNull Document newDocument() {
         Element root = newElement(DOCUMENT_ROOT_NAME);
         root.addNamespaceDeclaration("bb", NamespacesKt.BB_NS);
         root.addNamespaceDeclaration("utd", NamespacesKt.UTD_NS);
@@ -189,7 +189,7 @@ public class BBX {
         return doc;
     }
 
-    public static Element getHead(Document doc) {
+    public static @NonNull Element getHead(@NonNull Document doc) {
         Element head = doc.getRootElement().getFirstChildElement("head", NamespacesKt.BB_NS);
         if (head == null) {
             head = new Element("head", NamespacesKt.BB_NS);
@@ -198,7 +198,7 @@ public class BBX {
         return head;
     }
 
-    public static int getFormatVersion(Document doc) {
+public static int getFormatVersion(@NonNull Document doc) {
         Element head = getHead(doc);
         Element versionElem = head.getFirstChildElement("version", NamespacesKt.BB_NS);
         if (versionElem == null) {
@@ -207,7 +207,7 @@ public class BBX {
         return Integer.parseInt(versionElem.getValue());
     }
 
-    public static void setFormatVersion(Document doc, int version) {
+    public static void setFormatVersion(@NonNull Document doc, int version) {
         Element head = getHead(doc);
         Element versionElem = head.getFirstChildElement("version", NamespacesKt.BB_NS);
         if (versionElem == null) {
@@ -218,20 +218,13 @@ public class BBX {
         versionElem.appendChild(String.valueOf(version));
     }
 
-    public static void assertIsA(Document doc) {
+    public static void assertIsA(@NonNull Document doc) {
         // TODO: will throw an exception if not found
         getFormatVersion(doc);
         getRoot(doc);
     }
 
-    public static void assertAttachedToDocument(Node node) {
-        BBX.CONTAINER.VOLUME.assertIsA(node);
-        if (node.getDocument() == null) {
-            throw new NodeException("Node not attached to document", node);
-        }
-    }
-
-    public static @NotNull Element getRoot(@NotNull Document doc) {
+    public static @NonNull Element getRoot(@NonNull Document doc) {
         if (doc.getRootElement().getChildElements().size() != 2) {
             throw new NodeException("Root should have both <head> and <section bb:type='ROOT'>", doc.getRootElement());
         }
@@ -244,13 +237,13 @@ public class BBX {
      * Transform an element into another type. <b>You shouldn't have to use this
      * in normal tools</b>
      */
-    public static void transform(@NotNull Element elem, @NotNull SubType destType) {
+    public static void transform(@NonNull Element elem, @NonNull SubType destType) {
         elem.setLocalName(destType.coreType.name);
         _ATTRIB_TYPE.set(elem, destType.name);
     }
 
     // ----------------- Definitions -------------------------
-    public static final SectionElement SECTION = new SectionElement();
+    public static final @NonNull SectionElement SECTION = new SectionElement();
 
     public static class SectionElement extends CoreType {
         public final SectionSubType ROOT = new SectionSubType(this, "ROOT");
@@ -280,7 +273,7 @@ public class BBX {
         }
     }
 
-    public static final ContainerElement CONTAINER = new ContainerElement();
+    public static final @NonNull ContainerElement CONTAINER = new ContainerElement();
 
     public static class ContainerElement extends CoreType {
         public final ListSubType LIST = new ListSubType(this, "LIST");
@@ -831,7 +824,7 @@ public class BBX {
         return BBX.BLOCK.isA(node) || BBX.SPAN.isA(node) || BBX.INLINE.isA(node);
     }
 
-    public static final BlockElement BLOCK = new BlockElement();
+public static final @NonNull BlockElement BLOCK = new BlockElement();
 
     public static class BlockElement extends CoreType {
         public final ListItemSubType LIST_ITEM = new ListItemSubType(this);
@@ -965,6 +958,8 @@ public class BBX {
                     NamespacesKt.UTD_NS);
             public final StringAttribute ATTRIB_ALT_TEXT = new StringAttribute("alt", UTDElements.UTD_PREFIX,
                     NamespacesKt.UTD_NS);
+            public final StringAttribute ATTRIB_DESCRIPTION = new StringAttribute("description", UTDElements.UTD_PREFIX,
+                    NamespacesKt.UTD_NS);
 
             private ImagePlaceholderType(BlockElement coreType, String name) {
                 super(coreType, name);
@@ -1048,7 +1043,7 @@ public class BBX {
         }
     }
 
-    public static final InlineElement INLINE = new InlineElement();
+    public static final @NonNull InlineElement INLINE = new InlineElement();
 
     public static class InlineElement extends CoreType {
         public final EmphasisSubType EMPHASIS = new EmphasisSubType(this);
@@ -1163,7 +1158,7 @@ public class BBX {
         }
     }
 
-    public static final SpanElement SPAN = new SpanElement();
+    public static final @NonNull SpanElement SPAN = new SpanElement();
 
     public static class SpanElement extends CoreType {
         public final ImageSubType IMAGE = new ImageSubType(this, "IMAGE");
@@ -1293,10 +1288,10 @@ public class BBX {
         }
     }
 
-    public static final List<BBX.@NotNull CoreType> CORE_TYPES =
+    public static final @NonNull List<@NonNull CoreType> CORE_TYPES =
         List.of(SECTION, CONTAINER, BLOCK, INLINE, SPAN);
 
-    public static CoreType getType(Element elem) {
+    public static @NonNull CoreType getType(@NonNull Element elem) {
         CoreType result = getTypeOrNull(elem);
         if (result == null) {
             throw new NodeException("No coreType found for element", elem);
@@ -1304,7 +1299,7 @@ public class BBX {
         return result;
     }
 
-    public static CoreType getTypeOrNull(Element elem) {
+    public static @Nullable CoreType getTypeOrNull(@NonNull Element elem) {
         for (CoreType coreType : CORE_TYPES) {
             if (coreType.name.equals(elem.getLocalName())) {
                 return coreType;
@@ -1314,10 +1309,9 @@ public class BBX {
     }
 
     public static boolean isA(Node node) {
-        if (!(node instanceof Element)) {
+        if (!(node instanceof Element elem)) {
             return false;
         }
-        Element elem = (Element) node;
 
         return getTypeOrNull(elem) != null;
     }
@@ -1356,7 +1350,7 @@ public class BBX {
         // instance fields/methods
         // So this workaround was used so getSubType works, is performant, can
         // still use final, just a bit more verbose
-        protected List<@NotNull SubType> subTypes;
+        protected List<@NonNull SubType> subTypes;
 
         public CoreType(String name, boolean textChildrenValid) {
             if (StringUtils.isBlank(name)) {
@@ -1380,7 +1374,7 @@ public class BBX {
             throw new NodeException("Missing subtype " + subtypeName + " for", sectionNode);
         }
 
-        public List<@NotNull SubType> getSubTypes() {
+        public List<@NonNull SubType> getSubTypes() {
             return subTypes;
         }
 
@@ -1390,10 +1384,9 @@ public class BBX {
                 throw new NullPointerException("node");
             }
 
-            if (!(node instanceof Element)) {
+            if (!(node instanceof Element element)) {
                 return "Expected element";
             }
-            Element element = (Element) node;
 
             if (!NamespacesKt.BB_NS.equals(element.getNamespaceURI())) {
                 return "Not in BB namespace";

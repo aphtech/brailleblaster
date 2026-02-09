@@ -163,7 +163,7 @@ class StyleHandler(manager: Manager, vi: ViewInitializer?, list: MapList?) : Han
             //System.out.println("StyleHandler.addStyle: " + style);
             if (style != null) {
                 val utd = man.simpleManager.utdManager
-                utd.applyStyle(replaceStyle, element, element.document)
+                utd.applyStyle(replaceStyle!!, element)
             }
         }
     }

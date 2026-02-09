@@ -38,7 +38,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.mwhapples.jlouis.Louis;
 import org.mwhapples.jlouis.TranslationException;
 import org.slf4j.Logger;
@@ -119,12 +119,12 @@ public class CorrectTranslationDialog extends Dialog implements MenuToolModule {
     }
 
     @Override
-    public @NotNull TopMenu getTopMenu() {
+    public @NonNull TopMenu getTopMenu() {
         return TopMenu.TOOLS;
     }
 
     @Override
-    public @NotNull String getTitle() {
+    public @NonNull String getTitle() {
         return localeHandler.get("&correctTranslation");
     }
 

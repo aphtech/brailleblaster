@@ -208,7 +208,7 @@ object SearchUtils {
             //Grab an element that matches the stylesFormatting
             val parent = XMLHandler.ancestorVisitorElement(
                 node
-            ) { n: Element -> hasStyles(n, click.settings.findStyleFormatting) }
+            ) { n -> hasStyles(n, click.settings.findStyleFormatting) }
             if (parent != null) {
                 //if the element is not null after checking the criteria, it's probably valid
                 return true

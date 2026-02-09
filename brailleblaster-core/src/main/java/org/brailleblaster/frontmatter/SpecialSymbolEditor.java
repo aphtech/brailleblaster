@@ -28,6 +28,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +110,7 @@ public class SpecialSymbolEditor {
         dialog.open();
     }
 
-    private void resizeRulesColumn(TableColumn rulesColumn) {
+    private void resizeRulesColumn(@NonNull TableColumn rulesColumn) {
         Table symbolsTable = rulesColumn.getParent();
         int longestRulesCol = (SHELL_WIDTH - 100) / 2;
         GC gc = new GC(symbolsTable);
@@ -123,7 +124,7 @@ public class SpecialSymbolEditor {
     /**
      * Read symbols from map and insert them into table
      */
-    private void fillTable(Table symbolsTable, List<Symbol> symbols) {
+private void fillTable(@NonNull Table symbolsTable, @NonNull List<@NonNull Symbol> symbols) {
         for (Symbol symbol : symbols) {
             String desc = symbol.getDesc();
             if (desc == null)

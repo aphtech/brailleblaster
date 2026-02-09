@@ -22,7 +22,7 @@ import org.brailleblaster.utd.properties.Align;
 import org.brailleblaster.utd.properties.NumberLinePosition;
 import org.brailleblaster.utd.properties.PageNumberType;
 import org.brailleblaster.utd.properties.PageSide;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayDeque;
 import java.util.Iterator;
@@ -47,7 +47,7 @@ public class StyleStack extends ArrayDeque<IStyle> implements IStyle {
     }
 
     @Override
-    public @NotNull String getName() {
+    public @NonNull String getName() {
         return name;
     }
 
@@ -64,7 +64,7 @@ public class StyleStack extends ArrayDeque<IStyle> implements IStyle {
     }
 
     @Override
-    public @NotNull String getId() {
+    public @NonNull String getId() {
         return getInnerMostStyle().getId();
     }
 
@@ -339,7 +339,7 @@ public class StyleStack extends ArrayDeque<IStyle> implements IStyle {
     }
 
     @Override
-    public @NotNull IStyle copy(@NotNull String id, @NotNull String name) {
+    public @NonNull IStyle copy(@NonNull String id, @NonNull String name) {
         throw new NotImplementedError("StyleStacks currently cannot be copied.");
     }
 

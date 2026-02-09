@@ -20,7 +20,7 @@ import nu.xom.Node;
 import nu.xom.ParentNode;
 import org.brailleblaster.math.mathml.MathModuleUtils;
 import org.brailleblaster.utd.internal.xml.XMLHandler;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.LinkedList;

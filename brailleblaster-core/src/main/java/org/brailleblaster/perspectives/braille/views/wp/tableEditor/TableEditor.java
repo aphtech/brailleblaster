@@ -60,7 +60,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.*;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -111,8 +111,7 @@ public class TableEditor extends Dialog {
     private Combo tableTypeCombo;
     private Text rowText, colText;
     private Consumer<Node[]> callback;
-    private @NotNull
-    final List<TableUtils.SimpleTableOptions> options = new ArrayList<>();
+    private @NonNull final List<TableUtils.SimpleTableOptions> options = new ArrayList<>();
     private int[] widths;
     private ITable state;
     static final int MAX_CELLS = 300; //Prevents user from crashing SWT
@@ -1920,12 +1919,12 @@ public class TableEditor extends Dialog {
         return containerCopy;
     }
 
-    private @NotNull TableType getTableType(Element tableNode) {
+    private @NonNull TableType getTableType(Element tableNode) {
         String attrValue = tableNode.getAttributeValue("format");
         return getTableType(attrValue);
     }
 
-    private @NotNull TableType getTableType(String tableType) {
+    private @NonNull TableType getTableType(String tableType) {
         if (tableType == null) {
             return TableType.UNSET;
         }

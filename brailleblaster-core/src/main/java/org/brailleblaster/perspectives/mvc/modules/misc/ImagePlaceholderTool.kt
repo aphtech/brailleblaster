@@ -28,6 +28,6 @@ object ImagePlaceholderTool : MenuToolModule {
     override val topMenu = TopMenu.INSERT
     override val title = MENU_ITEM_NAME
     override fun onRun(bbData: BBSelectionData) {
-        ImagePlaceholder(bbData.manager.wpManager.shell, bbData.manager)
+        ImagePlaceholder(bbData)
     }
 }

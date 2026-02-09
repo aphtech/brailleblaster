@@ -34,7 +34,6 @@ import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.braille.views.wp.MathEditHandler.translateAndReplaceAtCursor
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.utd.IStyle
-import org.brailleblaster.utd.Style
 import org.brailleblaster.utd.UTDTranslationEngineCallback
 import org.brailleblaster.utd.actions.GenericAction
 import org.brailleblaster.utd.actions.IAction
@@ -254,12 +253,12 @@ class BrailleDocument(dm: Manager, doc: Document) : BBDocument(dm, doc) {
     /**
      * Updates an entry in a document's semantic action file if an entry exists
      */
-    fun changeStyle(style: IStyle?, e: Element?) {
-        utdManager.applyStyle(style as Style?, e!!)
+    fun changeStyle(style: IStyle, e: Element) {
+        utdManager.applyStyle(style, e)
     }
 
-    fun changeAction(action: IAction?, e: Element?) {
-        utdManager.applyAction(action, e!!)
+    fun changeAction(action: IAction, e: Element) {
+        utdManager.applyAction(action, e)
     }
 
     fun removeAction(e: Element?) {

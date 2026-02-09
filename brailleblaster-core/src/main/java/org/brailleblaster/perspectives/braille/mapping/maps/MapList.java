@@ -31,19 +31,19 @@ import org.brailleblaster.utd.internal.xml.XMLHandler;
 import org.brailleblaster.utd.properties.UTDElements;
 import org.brailleblaster.utd.utils.TableUtils;
 import org.brailleblaster.utils.xml.NamespacesKt;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.StreamSupport;
 
-public class MapList extends LinkedList<@NotNull TextMapElement> {
-    final @NotNull Manager dm;
+public class MapList extends LinkedList<@NonNull TextMapElement> {
+    final @NonNull Manager dm;
     private TextMapElement current;
     private int currentIndex = -1;
     private int prevEnd, nextStart, prevBraille, nextBraille;
 
-    public MapList(@NotNull Manager dm) {
+    public MapList(@NonNull Manager dm) {
         this.dm = dm;
     }
 
@@ -246,7 +246,7 @@ public class MapList extends LinkedList<@NotNull TextMapElement> {
         }
     }
 
-    public @NotNull TextMapElement setCurrent(int index) {
+    public @NonNull TextMapElement setCurrent(int index) {
         TextMapElement result = this.get(index);
         this.current = result;
         this.currentIndex = index;
@@ -266,7 +266,7 @@ public class MapList extends LinkedList<@NotNull TextMapElement> {
         return result;
     }
 
-    public @NotNull TextMapElement getCurrent() {
+    public @NonNull TextMapElement getCurrent() {
         if (this.current != null) {
             return this.current;
         } else {
@@ -734,7 +734,7 @@ public class MapList extends LinkedList<@NotNull TextMapElement> {
      *
      * @return the closest text map element.
      */
-    public @NotNull TextMapElement getCurrentNonWhitespace(int pos) {
+    public @NonNull TextMapElement getCurrentNonWhitespace(int pos) {
         return getClosest(pos, true);
     }
 

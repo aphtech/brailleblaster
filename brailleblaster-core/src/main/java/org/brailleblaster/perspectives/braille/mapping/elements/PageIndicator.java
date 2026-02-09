@@ -29,7 +29,7 @@ import org.brailleblaster.wordprocessor.FontManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Listener;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -310,7 +310,7 @@ public class PageIndicator implements PaintedElement {
         view.getView().addListener(SWT.Paint, listener);
     }
 
-    public void removeListener(@NotNull BBEditorView view) {
+    public void removeListener(@NonNull BBEditorView view) {
         if (listener != null)
             view.getView().removeListener(SWT.Paint, listener);
     }

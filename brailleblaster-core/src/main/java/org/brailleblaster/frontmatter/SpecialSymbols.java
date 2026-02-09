@@ -21,7 +21,7 @@ import org.brailleblaster.settings.UTDManager;
 import org.brailleblaster.utd.internal.xml.XMLHandler;
 import org.brailleblaster.utd.properties.UTDElements;
 import org.brailleblaster.util.Notify;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

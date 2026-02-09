@@ -306,15 +306,15 @@ object MathModuleUtils {
     fun isSpatialMath(node: Node?): Boolean {
         return node != null && (XMLHandler.ancestorVisitorElement(
             node
-        ) { node: Element? -> BBX.CONTAINER.MATRIX.isA(node) } != null || XMLHandler.ancestorVisitorElement(
+        ) { node -> BBX.CONTAINER.MATRIX.isA(node) } != null || XMLHandler.ancestorVisitorElement(
             node
-        ) { node: Element? -> BBX.CONTAINER.NUMBER_LINE.isA(node) } != null || XMLHandler.ancestorVisitorElement(
+        ) { node -> BBX.CONTAINER.NUMBER_LINE.isA(node) } != null || XMLHandler.ancestorVisitorElement(
             node
-        ) { node: Element? -> BBX.CONTAINER.CONNECTING_CONTAINER.isA(node) } != null || XMLHandler.ancestorVisitorElement(
+        ) { node -> BBX.CONTAINER.CONNECTING_CONTAINER.isA(node) } != null || XMLHandler.ancestorVisitorElement(
             node
-        ) { node: Element? -> BBX.CONTAINER.TEMPLATE.isA(node) } != null || XMLHandler.ancestorVisitorElement(
+        ) { node -> BBX.CONTAINER.TEMPLATE.isA(node) } != null || XMLHandler.ancestorVisitorElement(
             node
-        ) { node: Element? -> BBX.CONTAINER.SPATIAL_GRID.isA(node) } != null)
+        ) { node -> BBX.CONTAINER.SPATIAL_GRID.isA(node) } != null)
     }
 
     fun getSpatialMathParent(node: Node): Element {

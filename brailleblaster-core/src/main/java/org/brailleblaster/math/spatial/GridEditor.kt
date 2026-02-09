@@ -65,13 +65,13 @@ class GridEditor : ISpatialMathDialog {
             val current = XMLHandler.ancestorVisitorElement(
                 WPManager.getInstance().controller
                     .simpleManager.currentCaret.node
-            ) { node: Element? -> BBX.CONTAINER.SPATIAL_GRID.isA(node) }
+            ) { node -> BBX.CONTAINER.SPATIAL_GRID.isA(node) }
             page = Grid.getPageFromElement(current)
         } else if (Matrix.currentIsMatrix()) {
             val current = XMLHandler.ancestorVisitorElement(
                 WPManager.getInstance().controller
                     .simpleManager.currentCaret.node
-            ) { node: Element? -> BBX.CONTAINER.MATRIX.isA(node) }
+            ) { node -> BBX.CONTAINER.MATRIX.isA(node) }
             val matrix = Matrix.getContainerFromElement(current)
             page = Grid()
             page!!.array[0][0] = matrix
@@ -80,7 +80,7 @@ class GridEditor : ISpatialMathDialog {
             val current = XMLHandler.ancestorVisitorElement(
                 WPManager.getInstance().controller
                     .simpleManager.currentCaret.node
-            ) { node: Element? -> BBX.CONTAINER.NUMBER_LINE.isA(node) }!!
+            ) { node -> BBX.CONTAINER.NUMBER_LINE.isA(node) }!!
             val numberLine = NumberLine.getContainerFromElement(current)
             page = Grid()
             page!!.array[0][0] = numberLine

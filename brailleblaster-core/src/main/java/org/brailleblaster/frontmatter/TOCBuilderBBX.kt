@@ -562,7 +562,7 @@ class TOCBuilderBBX(private var manager: Manager) : CheckMenuTool, MenuToolModul
 
             //Find the parent title
             val parentTitle: Element? = XMLHandler.ancestorVisitorElement(textNode
-            ) { curNode: Element -> isTocTitle(curNode) }
+            ) { curNode -> isTocTitle(curNode) }
 
             //Find any existing TOC pages
             val existingPage: Element? = if (parentTitle == null)

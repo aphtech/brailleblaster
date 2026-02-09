@@ -27,7 +27,7 @@ import org.brailleblaster.utd.internal.xml.XMLHandler
 
 object BBXTo4Upgrader {
     @JvmStatic
-    fun upgrade(doc: Document?) {
+    fun upgrade(doc: Document) {
         if (BBX.getFormatVersion(doc) != 4) {
             fixStyleExtend(doc)
             fixPageSpanInBlockIssue5975(doc)
@@ -72,11 +72,10 @@ object BBXTo4Upgrader {
             val newStyle: IStyle? = try {
                 System.setProperty(NodeException.SAVE_TO_DISK_ENABLED_PROPERTY, "false")
                 ImportFixerCommon.UTD_ENGINE.getStyle(elem)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 // cleanup
                 val attribute = elem.getAttribute(NodeException.ATTRIBUTE_NAME)
                 attribute?.detach()
-                //				System.out.println("Setting type to " + subType.coreType.name + " " + subType.name + " got style " + newStyle);
                 // ignore, most likely from breaking the BBXStyleMap
                 continue
             } finally {

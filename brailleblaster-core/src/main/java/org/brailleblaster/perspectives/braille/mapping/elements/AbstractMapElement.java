@@ -20,7 +20,7 @@ import org.brailleblaster.perspectives.braille.mapping.maps.MapList;
 import nu.xom.Element;
 import nu.xom.Node;
 import org.brailleblaster.utd.internal.xml.XMLHandler;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public abstract class AbstractMapElement {
 	public final static int NOT_SET = -1;
@@ -40,7 +40,7 @@ public abstract class AbstractMapElement {
 		return n != null ? (Element)n.getParent() : null;
 	}
 
-	@NotNull
+	@NonNull
 	public String getText(){
 		Node n = getNode();
 		return n!= null ? n.getValue() : "";

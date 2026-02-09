@@ -302,7 +302,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
         m.simpleManager.dispatchEvent(ModifyEvent(Sender.SIMPLEMANAGER, ArrayList(blocks), true))
     }
 
-    fun boxBlock(start: Node, style: Style?): Node {
+    fun boxBlock(start: Node, style: Style): Node {
         val block = if ((BBX.CONTAINER.TABLE.isA(start) || BBX.CONTAINER.LIST.isA(start)
                     || BBX.CONTAINER.BOX.isA(start))
         ) start as Element else start.findBlock()

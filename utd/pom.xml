@@ -14,7 +14,6 @@
     <properties>
         <findbugsXML>false</findbugsXML>
         <!-- Versioning -->
-        <equalsverifier.version>3.15.2</equalsverifier.version>
         <xmlunitmatchers.version>2.10.0</xmlunitmatchers.version>
         <findbugsmavenplugin.version>3.0.5</findbugsmavenplugin.version>
         <mavenpmdplugin.version>3.13.0</mavenpmdplugin.version>
@@ -69,7 +68,6 @@
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-            <version>${equalsverifier.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

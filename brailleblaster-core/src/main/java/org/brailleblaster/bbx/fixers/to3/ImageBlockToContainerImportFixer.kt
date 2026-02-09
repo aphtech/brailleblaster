@@ -36,7 +36,7 @@ class ImageBlockToContainerImportFixer : AbstractFixer() {
                 throw NodeException("Not an image", imgElem)
             }
             val parentBlock = requireNotNull(
-                XMLHandler.ancestorVisitorElement(imgElem) { node: Element? -> BBX.BLOCK.isA(node) }) {
+                XMLHandler.ancestorVisitorElement(imgElem) { node -> BBX.BLOCK.isA(node) }) {
                 "Cannot find a parent block"
         }
             if (BBX.SPAN.IMAGE.isA(imgElem) && imgElem.childCount != 0) {

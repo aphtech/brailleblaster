@@ -38,14 +38,14 @@ import org.brailleblaster.utd.properties.Align;
 import org.brailleblaster.utd.properties.NumberLinePosition;
 import org.brailleblaster.utd.properties.PageNumberType;
 import org.brailleblaster.utd.properties.PageSide;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Interface for style data.
  */
 public interface IStyle {
-    @NotNull
+    @NonNull
     String getId();
 
     List<ConditionalValue<Integer>> getLinesBeforeWhen();
@@ -65,19 +65,16 @@ public interface IStyle {
      *
      * @return The number of cells to indent the content.
      */
-    @Nullable
-    Integer getIndent();
+    @Nullable Integer getIndent();
 
     /**
      * Get the length for a line in cells.
      *
-     * @return The length of the line. Positive values are the actual length, zero or negative values indicate how much shorter than the maximum possible line length  the line should be.
+     * @return The length of the line. Positive values are the actual length, zero or negative values indicate how much shorter than the maximum possible line length the line should be.
      */
-    @Nullable
-    Integer getLineLength();
+    @Nullable Integer getLineLength();
 
-    @Nullable
-    Integer getFirstLineIndent();
+    @Nullable Integer getFirstLineIndent();
 
     NumberLinePosition getSkipNumberLines();
 
@@ -105,7 +102,7 @@ public interface IStyle {
 
     int getLineSpacing();
 
-    @NotNull
+    @NonNull
     String getName();
 
     boolean isTable();
@@ -153,11 +150,9 @@ public interface IStyle {
         }
     }
 
-    @Nullable
-    Integer getLinesAfter(Node node, NamespaceMap namespaces);
+    @Nullable Integer getLinesAfter(Node node, NamespaceMap namespaces);
 
-    @Nullable
-    Integer getLinesBefore(Node node, NamespaceMap namespaces);
+    @Nullable Integer getLinesBefore(Node node, NamespaceMap namespaces);
 
     /**
      * Gets the minimum number of spaces which should appear before this node.
@@ -182,7 +177,7 @@ public interface IStyle {
      * <p>
      * This method creates an actual copy of the style rather than creating a style based upon another style. Any modifications to the copy will not be seen in the original style object.
      */
-    @NotNull
-    IStyle copy(@NotNull String id, @NotNull String name);
+    @NonNull
+    IStyle copy(@NonNull String id, @NonNull String name);
 }
 

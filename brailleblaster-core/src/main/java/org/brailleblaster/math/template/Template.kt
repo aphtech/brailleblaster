@@ -329,7 +329,7 @@ class Template : ISpatialMathContainer {
       val current: Node? = XMLHandler.ancestorVisitorElement(
         WPManager.getInstance().controller
           .simpleManager.currentCaret.node
-      ) { node: Element? -> BBX.CONTAINER.TEMPLATE.isA(node) }
+      ) { node -> BBX.CONTAINER.TEMPLATE.isA(node) }
       val isWhitespace = WPManager.getInstance().controller.mapList
         .current is WhiteSpaceElement
       return !isWhitespace && current != null
@@ -353,7 +353,7 @@ class Template : ISpatialMathContainer {
         return false
       }
       val template =
-        XMLHandler.ancestorVisitorElement(currentElement.node) { node: Element? -> BBX.CONTAINER.TEMPLATE.isA(node) }
+        XMLHandler.ancestorVisitorElement(currentElement.node) { node -> BBX.CONTAINER.TEMPLATE.isA(node) }
       return template != null
     }
 
@@ -365,7 +365,7 @@ class Template : ISpatialMathContainer {
     }
 
     fun getTemplateParent(node: Node): Element? {
-      return XMLHandler.ancestorVisitorElement(node) { elm: Element -> BBX.CONTAINER.TEMPLATE.isA(elm) }
+      return XMLHandler.ancestorVisitorElement(node) { elm -> BBX.CONTAINER.TEMPLATE.isA(elm) }
     }
 
     @JvmStatic
