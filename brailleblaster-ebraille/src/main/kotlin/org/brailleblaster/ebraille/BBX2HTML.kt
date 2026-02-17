@@ -19,6 +19,7 @@ import nu.xom.Document
 import nu.xom.Element
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.libembosser.utils.BrailleMapper
+import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.utils.xml.BB_NS
 import org.brailleblaster.utils.xml.UTD_NS
@@ -50,9 +51,7 @@ private fun Element.processRoot(): Iterable<org.jsoup.nodes.Node> {
 }
 
 private fun Element.processStyle(): Iterable<org.jsoup.nodes.Element> {
-    println("Processing node ${this.qualifiedName} with attributes ${this.attributes.joinToString { it.qualifiedName }}")
-    val style = getAttributeValue("overrideStyle", UTD_NS)
-    println("Processing style $style")
+    val style = getAttributeValue(UTDElements.UTD_STYLE_ATTRIB)
     return when(style) {
         "Centered Heading" -> listOf(processParagraph(tag = "h1"))
         else -> listOf()
