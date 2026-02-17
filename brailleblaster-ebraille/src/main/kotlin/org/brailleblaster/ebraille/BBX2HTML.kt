@@ -21,6 +21,8 @@ import org.brailleblaster.bbx.BBX
 import org.brailleblaster.libembosser.utils.BrailleMapper
 import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.utils.xml.BB_NS
+import org.brailleblaster.utils.xml.UTD_NS
+import org.brailleblaster.utils.xom.attributes
 
 fun convertBbxToHtml(document: Document): org.jsoup.nodes.Document {
     val bbxRoot = requireNotNull(document.rootElement) { "BBX document must have a root element" }
@@ -28,22 +30,34 @@ fun convertBbxToHtml(document: Document): org.jsoup.nodes.Document {
     val htmlDoc = org.jsoup.nodes.Document.createShell("").also {
         it.insertChildren(0, org.jsoup.nodes.DocumentType("html", "", ""))
     }
-    htmlDoc.head().appendChildren(bbxRoot.getFirstChildElement("head", BB_NS)?.createHtmlHeadContent() ?: listOf<org.jsoup.nodes.Node>())
-    htmlDoc.body().appendChildren(bbxRoot.childElements.filter { BBX.SECTION.ROOT.isA(it) }.flatMap { it.createRootContent() })
+    htmlDoc.head().appendChildren(bbxRoot.getFirstChildElement("head", BB_NS)?.processHead() ?: listOf<org.jsoup.nodes.Node>())
+    htmlDoc.body().appendChildren(bbxRoot.childElements.filter { BBX.SECTION.ROOT.isA(it) }.flatMap { it.processRoot() })
     return htmlDoc
 }
 
-private fun Element.createHtmlHeadContent(): Collection<org.jsoup.nodes.Node> {
+private fun Element.processHead(): Collection<org.jsoup.nodes.Node> {
     return listOf()
 }
 
-private fun Element.createRootContent(): Iterable<org.jsoup.nodes.Node> {
-    return when {
-        BBX.BLOCK.DEFAULT.isA(this) -> listOf(processParagraph())
-        else -> childElements.flatMap { it.createRootContent() }
+private fun Element.processRoot(): Iterable<org.jsoup.nodes.Node> {
+    return childElements.flatMap {
+        when {
+            BBX.BLOCK.STYLE.isA(it) -> it.processStyle()
+            BBX.BLOCK.DEFAULT.isA(it) -> listOf(it.processParagraph())
+            else -> it.childElements.flatMap { e -> e.processRoot() }
+        }
     }
 }
 
-private fun Element.processParagraph(): org.jsoup.nodes.Element {
-    return org.jsoup.nodes.Element("p").appendText(UTDHelper.getDescendantBrlFast(this).joinToString { BrailleMapper.ASCII_TO_UNICODE_FAST.map(it.value) })
+private fun Element.processStyle(): Iterable<org.jsoup.nodes.Element> {
+    println("Processing node ${this.qualifiedName} with attributes ${this.attributes.joinToString { it.qualifiedName }}")
+    val style = getAttributeValue("overrideStyle", UTD_NS)
+    println("Processing style $style")
+    return when(style) {
+        "Centered Heading" -> listOf(processParagraph(tag = "h1"))
+        else -> listOf()
+    }
+}
+private fun Element.processParagraph(tag: String = "p"): org.jsoup.nodes.Element {
+    return org.jsoup.nodes.Element(tag).appendText(UTDHelper.getDescendantBrlFast(this).joinToString { BrailleMapper.ASCII_TO_UNICODE_FAST.map(it.value) })
 }
