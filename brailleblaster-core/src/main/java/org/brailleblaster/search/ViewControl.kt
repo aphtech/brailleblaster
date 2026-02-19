@@ -32,7 +32,7 @@ import org.brailleblaster.search.SearchUtils.isBraille
 import org.brailleblaster.search.SearchUtils.matchPhrase
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.utils.UTDHelper.stripUTDRecursive
+import org.brailleblaster.utd.utils.stripUTDRecursive
 import org.brailleblaster.util.Utils.insertChildCountSafe
 
 class ViewControl(val m: Manager, val click: Click) {

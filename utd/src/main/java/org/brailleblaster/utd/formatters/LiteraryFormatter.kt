@@ -27,9 +27,8 @@ import org.brailleblaster.utd.utils.PageBuilderHelper.handlePageIndicator
 import org.brailleblaster.utd.utils.PageBuilderHelper.isPageIndicator
 import org.brailleblaster.utd.utils.PageBuilderHelper.setPageNumberType
 import org.brailleblaster.utd.utils.PageBuilderHelper.verifyPageSide
-import org.brailleblaster.utd.utils.UTDHelper.getAssociatedBrlElement
-import org.brailleblaster.utd.utils.UTDHelper.getDescendantBrlFast
-import org.brailleblaster.utd.utils.UTDHelper.getDescendantBrlFastFirst
+import org.brailleblaster.utd.utils.getAssociatedBrlElement
+import org.brailleblaster.utd.utils.getDescendantBrlFast
 import java.util.*
 import java.util.function.Consumer
 
@@ -51,7 +50,7 @@ open class LiteraryFormatter : Formatter() {
         pageBuilder = mutPageBuilders.last()
 
         if (style.isVolumeEnd) {
-            pageBuilder.volumeEndLength = getDescendantBrlFastFirst(node)!!.value.length
+            pageBuilder.volumeEndLength = node.getDescendantBrlFast().firstOrNull()!!.value.length
             pageBuilder.setVolumeEnd(true)
             mutPageBuilders.addAll(pageBuilder.addVolumeBlankLines())
             if (mutPageBuilders.size > 1) {
@@ -200,7 +199,7 @@ open class LiteraryFormatter : Formatter() {
                         }
                     }
                 }
-                if (getDescendantBrlFast(child).isNotEmpty()) {
+                if (child.getDescendantBrlFast().isNotEmpty()) {
                     //Should keep start of block true if what you've found are pages to preserve correct indentations
                     if (child is Element) {
                         if (!((UTDElements.BRL.isA(child) && isPageIndicator(child))

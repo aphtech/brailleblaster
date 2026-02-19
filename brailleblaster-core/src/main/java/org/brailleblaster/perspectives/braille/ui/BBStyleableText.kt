@@ -28,13 +28,13 @@ import org.brailleblaster.utd.Style.StyleOption
 import org.brailleblaster.utd.internal.DynamicOptionStyleMap
 import org.brailleblaster.utd.properties.EmphasisType
 import org.brailleblaster.utd.utils.TableUtils
-import org.brailleblaster.utd.utils.UTDHelper
-import org.brailleblaster.utils.xom.detachAll
+import org.brailleblaster.utd.utils.getDescendantBrlFast
 import org.brailleblaster.util.ColorManager
 import org.brailleblaster.util.LINE_BREAK
-import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.util.Notify.showMessage
+import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.utils.xml.BB_NS
+import org.brailleblaster.utils.xom.detachAll
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.ExtendedModifyEvent
@@ -270,7 +270,7 @@ class BBStyleableText(parent: Composite, buttonPanel: Composite?, buttons: Int, 
         parent = parent.copy()
 
         //Detach all brls
-        val brls = UTDHelper.getDescendantBrlFast(parent)
+        val brls = parent.getDescendantBrlFast()
         for (brl in brls) {
             brl.detach()
         }

@@ -40,7 +40,8 @@ import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.internal.xml.splitNode
 import org.brailleblaster.utd.properties.EmphasisType
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.getTextChild
+import org.brailleblaster.utd.utils.stripUTDRecursive
 import org.brailleblaster.util.Utils
 import org.brailleblaster.utils.xom.childNodes
 import org.brailleblaster.wordprocessor.WPManager
@@ -133,7 +134,7 @@ object EmphasisModule : AbstractModule(), SimpleListener {
 //				return;
 //			}
 //		}
-            modifiedBlocks.forEach(Consumer { rootRaw -> UTDHelper.stripUTDRecursive(rootRaw) })
+            modifiedBlocks.forEach(Consumer { rootRaw -> stripUTDRecursive(rootRaw) })
             //If all of the current selection is emphasized, remove that emphasis. Otherwise, emphasize the selection.
             val removeEmphasis = isAllEmphasized(currentSelection, emphasisType)
             if (currentSelection.isSingleNode) {
@@ -165,7 +166,7 @@ object EmphasisModule : AbstractModule(), SimpleListener {
                 }
             }
             else {
-                modifiedBlocks.forEach(Consumer { rootRaw -> UTDHelper.stripUTDRecursive(rootRaw) })
+                modifiedBlocks.forEach(Consumer { rootRaw -> stripUTDRecursive(rootRaw) })
                 var startNode: Node? = currentSelection.start.node
 
                 //If the last node of the selection is not a text node, find the last text descendant of that node
@@ -230,7 +231,7 @@ object EmphasisModule : AbstractModule(), SimpleListener {
  * 			or if it's a Roman number.
  */
         fun verifyNumberedListItem(emphasisItem: Element, parent: Element): Boolean {
-            val value = UTDHelper.getTextChild(emphasisItem).value.lowercase(Locale.getDefault())
+            val value = getTextChild(emphasisItem).value.lowercase(Locale.getDefault())
             if (parent.indexOf(emphasisItem) == 0
                 && (value.matches("\\d+[.]".toRegex()) || value.matches("[a-z][.]".toRegex())
                         || value.matches("^m{0,4}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$[.]".toRegex()))
@@ -246,7 +247,7 @@ object EmphasisModule : AbstractModule(), SimpleListener {
 	 * 	If there is text immediately emphasized after the number, try and find where the number ends.
 	 */
         fun removePossibleNumberInListItem(emphasisItem: Element, parent: Element) {
-            val textChild = UTDHelper.getTextChild(emphasisItem)
+            val textChild = getTextChild(emphasisItem)
             val value = textChild.value
             if (parent.indexOf(emphasisItem) == 0 && (value.matches(".*\\d+[.].+".toRegex())
                         || value.matches(".*[a-zA-Z][.].+".toRegex())
@@ -312,7 +313,7 @@ object EmphasisModule : AbstractModule(), SimpleListener {
 
         private fun mergeAdjacentTextNodes(modifiedBlocks: List<Element>) {
             modifiedBlocks.forEach(Consumer { n ->
-                UTDHelper.stripUTDRecursive(n)
+                stripUTDRecursive(n)
                 Utils.combineAdjacentTextNodes(n)
             })
         }
@@ -404,7 +405,7 @@ object RemoveAllHeadingEmphasisTool : MenuToolModule {
                 //Check the attribute for heading
                 if (parent.getAttribute("utd-style") != null) {
                     if (parent.getAttributeValue("utd-style").lowercase(Locale.getDefault()).contains("heading")) {
-                        UTDHelper.stripUTDRecursive(emphasisNodes[i] as Element)
+                        stripUTDRecursive(emphasisNodes[i] as Element)
                         stripEmphasis(emphasisNodes[i] as Element)
                         //						modifiedNodes.add(parent);
                     }
@@ -439,7 +440,7 @@ object RemoveAllListEmphasisTool : MenuToolModule {
                     emphasisNodes[i] as Element, parent
                 )
             ) {
-                UTDHelper.stripUTDRecursive(emphasisNodes[i] as Element)
+                stripUTDRecursive(emphasisNodes[i] as Element)
                 stripEmphasis(emphasisNodes[i] as Element)
             }
         }
@@ -466,7 +467,7 @@ object RemoveAllGuideWordEmphasisTool : MenuToolModule {
         val emphasisNodes = root.query("descendant::node()[contains(@bb:type, 'EMPHASIS')]", BBX.XPATH_CONTEXT)
         for (i in 0 until emphasisNodes.size()) {
             if (isGuideWordItem(emphasisNodes[i])) {
-                UTDHelper.stripUTDRecursive(emphasisNodes[i] as Element)
+                stripUTDRecursive(emphasisNodes[i] as Element)
                 stripEmphasis(emphasisNodes[i] as Element)
             }
         }

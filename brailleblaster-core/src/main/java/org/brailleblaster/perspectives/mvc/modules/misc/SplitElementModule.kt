@@ -27,7 +27,7 @@ import org.brailleblaster.perspectives.mvc.SimpleEvent
 import org.brailleblaster.perspectives.mvc.XMLTextCaret
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
 import org.brailleblaster.utd.Style
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.stripUTDRecursive
 import org.slf4j.LoggerFactory
 
 class SplitElementModule : SimpleListener {
@@ -69,7 +69,7 @@ class SplitElementModule : SimpleListener {
                     var curNode: Node = textNode
                     while (!BBX.BLOCK.isA(curNode)) {
                         val newParent = curNode.parent as Element
-                        UTDHelper.stripUTDRecursive(newParent)
+                        stripUTDRecursive(newParent)
                         pathToBlock.add(newParent.indexOf(curNode))
                         curNode = newParent
                     }

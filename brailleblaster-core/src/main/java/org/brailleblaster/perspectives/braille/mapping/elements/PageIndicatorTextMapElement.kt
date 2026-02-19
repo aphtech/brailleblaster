@@ -24,7 +24,7 @@ import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.interfaces.Deletable
 import org.brailleblaster.perspectives.braille.mapping.interfaces.Uneditable
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.stripUTDRecursive
 import org.brailleblaster.utils.xom.childNodes
 import org.brailleblaster.util.Utils
 
@@ -60,7 +60,7 @@ class PageIndicatorTextMapElement(node: Element?) : TextMapElement(node), Unedit
             if (BBX.SPAN.PAGE_NUM.isA(node)) {
                 val parent = node.parent as Element
                 node.detach()
-                UTDHelper.stripUTDRecursive(parent)
+                stripUTDRecursive(parent)
                 Utils.combineAdjacentTextNodes(parent)
                 return parent
             }

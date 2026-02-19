@@ -31,7 +31,7 @@ import org.brailleblaster.perspectives.braille.mapping.elements.BrlOnlyBMEFactor
 import org.brailleblaster.perspectives.braille.mapping.maps.MapList
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utd.utils.UTDHelper.getAssociatedBrlElement
+import org.brailleblaster.utd.utils.getAssociatedBrlElement
 import org.brailleblaster.utils.xml.UTD_NS
 import org.brailleblaster.utils.xom.childNodes
 import org.slf4j.Logger

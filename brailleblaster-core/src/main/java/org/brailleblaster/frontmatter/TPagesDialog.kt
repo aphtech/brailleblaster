@@ -36,7 +36,7 @@ import org.brailleblaster.settings.UTDManager
 import org.brailleblaster.tools.DebugMenuToolModule
 import org.brailleblaster.utd.formatters.TPageFormatter
 import org.brailleblaster.utd.properties.EmphasisType
-import org.brailleblaster.utd.utils.UTDHelper.stripUTDRecursive
+import org.brailleblaster.utd.utils.stripUTDRecursive
 import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.utils.gui.PickerDialog
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault

@@ -54,14 +54,14 @@ import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.toc.TOCAttributes
 import org.brailleblaster.utd.toc.TOCAttributes.Companion.removeAll
-import org.brailleblaster.utd.utils.UTDHelper.getTextChild
-import org.brailleblaster.utd.utils.UTDHelper.stripUTDRecursive
 import org.brailleblaster.utils.xom.childNodes
 import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.perspectives.mvc.menu.MenuManager
 import org.brailleblaster.tools.CheckMenuTool
 import org.brailleblaster.tools.MenuToolModule
 import org.brailleblaster.utd.internal.xml.splitNode
+import org.brailleblaster.utd.utils.getTextChild
+import org.brailleblaster.utd.utils.stripUTDRecursive
 import org.brailleblaster.util.Notify.notify
 import org.brailleblaster.utils.swt.ButtonBuilder
 import org.brailleblaster.utils.swt.EasySWT

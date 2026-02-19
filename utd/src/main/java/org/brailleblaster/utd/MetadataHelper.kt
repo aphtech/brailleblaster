@@ -19,7 +19,7 @@ import nu.xom.Attribute
 import nu.xom.Document
 import nu.xom.Element
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.getDocumentHead
 
 /*
  * 	All metadata must be appended to the <head>. 
@@ -165,7 +165,7 @@ object MetadataHelper {
         skip: Boolean,
         runHead: Boolean
     ) {
-        val head = UTDHelper.getDocumentHead(doc.document)
+        val head = getDocumentHead(doc.document)
         val meta = addMeta(type, originalStr, newStr, resetCL, pageType, combined, blank, volume, skip, runHead)
         head?.appendChild(meta)
     }
@@ -291,7 +291,7 @@ object MetadataHelper {
     @JvmStatic
     fun getUTDMeta(doc: Document?): List<Element> {
         val returnList: MutableList<Element> = ArrayList()
-        val head = UTDHelper.getDocumentHead(doc)
+        val head = getDocumentHead(doc)
         if (head != null) {
             for (i in 0 until head.childElements.size()) {
                 if (UTDElements.META.isA(head.childElements[i])) {

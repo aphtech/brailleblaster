@@ -19,7 +19,7 @@ import jakarta.xml.bind.annotation.XmlAttribute
 import org.apache.commons.lang3.builder.ToStringStyle
 import org.brailleblaster.bbx.BBX.*
 import org.brailleblaster.utd.properties.EmphasisType
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.autoToString
 import java.util.*
 
 open class AbstractBBXUtil {
@@ -124,6 +124,6 @@ open class AbstractBBXUtil {
     }
 
     override fun toString(): String {
-        return UTDHelper.autoToString(this, ToStringStyle.MULTI_LINE_STYLE)
+        return autoToString(this, ToStringStyle.MULTI_LINE_STYLE)
     }
 }

@@ -102,12 +102,12 @@ object TableUtils {
      * @return
      */
     fun findCaptionBrl(element: Element, styleMap: IStyleMap): List<Element> {
-        return if (UTDHelper.containsBrl(element)) {
+        return if (containsBrl(element)) {
             element.childElements.map { it to styleMap.findValueOrDefault(it) }.takeWhile { (_, style) -> !style.isTableRow }
                 .flatMap { (child, _) ->
                     if (UTDElements.BRL.isA(child)) {
                         listOf(child)
-                    } else if (UTDHelper.containsBrl(child)) {
+                    } else if (containsBrl(child)) {
                         findCaptionBrl(child, styleMap)
                     } else {
                         emptyList()
@@ -190,7 +190,7 @@ object TableUtils {
     }
 
     fun getDescendantBrlNoFormatting(element: Element?): List<Element> {
-        return UTDHelper.getDescendantBrlFast(element).map { brl ->
+        return element.getDescendantBrlFast().map { brl ->
             brl.copy().apply {
                 childElements.detachAll()
             }
@@ -198,9 +198,9 @@ object TableUtils {
     }
 
     fun removeBrlBetweenCells(element: Element, styleMap: IStyleMap) {
-        val allBrls = UTDHelper.getDescendantBrlFast(element)
+        val allBrls = element.getDescendantBrlFast()
         val rows = findRows(element, styleMap)
-        val properBrl = rows.flatMap { tr -> findCols(tr, styleMap) }.flatMap { td -> UTDHelper.getDescendantBrlFast(td) } + findCaptionBrl(element, styleMap)
+        val properBrl = rows.flatMap { tr -> findCols(tr, styleMap) }.flatMap { td -> td.getDescendantBrlFast() } + findCaptionBrl(element, styleMap)
         allBrls.filter { brl -> !properBrl.contains(brl) && brl.getAttribute("printPage") == null }.detachAll()
     }
 
@@ -258,7 +258,7 @@ object TableUtils {
 
         //totalSizes doesn't compute correctly. Seems to always be 0.
         val totalSizes =
-            columnElements.map { elem -> UTDHelper.getDescendantBrlFastNodes(elem).sumOf { it.value.length } }
+            columnElements.map { elem -> elem.getDescendantBrlFast().sumOf { it.value.length } }
 
         //Simple enough way to estimate the number of lines in the longest column
         val estimatedWrap = WordUtils.wrap(longestColBrl, defaultWidth)

@@ -20,7 +20,7 @@ import nu.xom.Node
 import org.brailleblaster.utd.FormatSelector
 import org.brailleblaster.utd.IStyle
 import org.brailleblaster.utd.PageBuilder
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.getDescendantBrlFast
 
 class SkipFormatter : Formatter() {
     override fun format(
@@ -28,7 +28,7 @@ class SkipFormatter : Formatter() {
         formatSelector: FormatSelector
     ): MutableSet<PageBuilder> {
         // As we do not add any of the brl elements to the PageBuilder, we must remove them as they cannot be part of the content.
-        UTDHelper.getDescendantBrlFast(node) { obj: Element -> obj.detach() }
+        node.getDescendantBrlFast { obj: Element -> obj.detach() }
         return pageBuilders.toMutableSet()
     }
 }

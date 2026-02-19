@@ -24,7 +24,9 @@ import org.brailleblaster.utd.MetadataHelper
 import org.brailleblaster.utd.TextSpan
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.TextTranslator
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.getAssociatedBrlElement
+import org.brailleblaster.utd.utils.getDocumentHead
+import org.brailleblaster.utd.utils.getTextChild
 import org.mwhapples.jlouis.Louis.TypeForms
 
 /**
@@ -46,8 +48,8 @@ class PageAction : IAction {
 
     private fun processPageNode(node: Element, engine: ITranslationEngine): List<TextSpan> {
         //If the node already has a brl for a child, then return
-        val textChild = UTDHelper.getTextChild(node)
-        if (UTDHelper.getAssociatedBrlElement(textChild) != null) {
+        val textChild = getTextChild(node)
+        if (getAssociatedBrlElement(textChild) != null) {
             return emptyList()
         }
 
@@ -72,7 +74,7 @@ class PageAction : IAction {
         var pageType = getAttributeValue(node)
 
         //Check the pageType from changes shown in metadata
-        val head = UTDHelper.getDocumentHead(node.document)
+        val head = getDocumentHead(node.document)
         if (head != null) {
 //			Element meta = MetadataHelper.findPrintPageChange(head.getDocument(), printPage);
             val meta = MetadataHelper.findPrintPageChange(head.document, translatedPage)
