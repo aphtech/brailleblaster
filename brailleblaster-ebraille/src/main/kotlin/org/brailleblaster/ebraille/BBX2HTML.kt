@@ -20,10 +20,8 @@ import nu.xom.Element
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.libembosser.utils.BrailleMapper
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.getDescendantBrlFast
 import org.brailleblaster.utils.xml.BB_NS
-import org.brailleblaster.utils.xml.UTD_NS
-import org.brailleblaster.utils.xom.attributes
 
 fun convertBbxToHtml(document: Document): org.jsoup.nodes.Document {
     val bbxRoot = requireNotNull(document.rootElement) { "BBX document must have a root element" }
@@ -58,5 +56,5 @@ private fun Element.processStyle(): Iterable<org.jsoup.nodes.Element> {
     }
 }
 private fun Element.processParagraph(tag: String = "p"): org.jsoup.nodes.Element {
-    return org.jsoup.nodes.Element(tag).appendText(UTDHelper.getDescendantBrlFast(this).joinToString { BrailleMapper.ASCII_TO_UNICODE_FAST.map(it.value) })
+    return org.jsoup.nodes.Element(tag).appendText(this.getDescendantBrlFast().joinToString { BrailleMapper.ASCII_TO_UNICODE_FAST.map(it.value) })
 }
