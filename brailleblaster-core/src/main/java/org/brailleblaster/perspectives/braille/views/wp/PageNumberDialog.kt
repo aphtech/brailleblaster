@@ -39,9 +39,10 @@ import org.brailleblaster.utd.MetadataHelper.markBlankPrintPageNumber
 import org.brailleblaster.utd.properties.EmphasisType
 import org.brailleblaster.utd.properties.PageNumberType
 import org.brailleblaster.utd.utils.TextTranslator
-import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.utd.internal.xml.FastXPath
+import org.brailleblaster.utd.utils.findCurrentVolumeNumber
+import org.brailleblaster.utd.utils.getDocumentHead
 import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.utils.swt.EasyListeners
 import org.brailleblaster.wordprocessor.WPManager
@@ -606,7 +607,7 @@ class PageNumberDialog(parent: Shell?) : Dialog(parent, SWT.NONE), MenuToolModul
 
         //Delete the most recent page changes added to the document
         private fun cancelPageChange() {
-            val head = UTDHelper.getDocumentHead(manager!!.doc)
+            val head = getDocumentHead(manager!!.doc)
             if (head != null) {
                 repeat(metaCounter) {
                     head.removeChild(head.childCount - 1)
@@ -622,7 +623,7 @@ class PageNumberDialog(parent: Shell?) : Dialog(parent, SWT.NONE), MenuToolModul
             //Find a way to set the current volume based on current brl
             val currNode = manager!!.simpleManager.currentSelection.start.node
             val currVolNum =
-                if (UTDHelper.findCurrentVolumeNumber(currNode) > 0) UTDHelper.findCurrentVolumeNumber(currNode) - 1 else 0
+                if (findCurrentVolumeNumber(currNode) > 0) findCurrentVolumeNumber(currNode) - 1 else 0
             if (volumeList.isNotEmpty()) {
                 val volumeNames = getVolumeNames(volumeList)
                 val location = EasySWT.makeLabel(
@@ -827,7 +828,7 @@ class PageNumberDialog(parent: Shell?) : Dialog(parent, SWT.NONE), MenuToolModul
 
         //Re-adds the metadata that have been deleted
         private fun cancelPageChangeList() {
-            val head = UTDHelper.getDocumentHead(manager!!.doc)
+            val head = getDocumentHead(manager!!.doc)
             if (head != null) {
                 for (element in deletedMeta) {
                     head.appendChild(element)

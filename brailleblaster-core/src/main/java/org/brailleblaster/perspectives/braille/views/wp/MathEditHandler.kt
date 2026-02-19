@@ -35,7 +35,7 @@ import org.brailleblaster.perspectives.mvc.modules.misc.TableSelectionModule
 import org.brailleblaster.perspectives.mvc.modules.views.TextViewModule
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.stripUTDRecursive
 import org.brailleblaster.util.Notify
 import org.brailleblaster.util.Utils
 import org.brailleblaster.wordprocessor.WPManager
@@ -228,7 +228,7 @@ object MathEditHandler {
         // node
         val block: ParentNode
         if (mapElement.node is ParentNode) {
-            UTDHelper.stripUTDRecursive(mapElement.node as Element)
+            stripUTDRecursive(mapElement.node as Element)
         }
         val mathNode = ASCII2MathML.translate(text)
         val parent: Node = mapElement.nodeParent

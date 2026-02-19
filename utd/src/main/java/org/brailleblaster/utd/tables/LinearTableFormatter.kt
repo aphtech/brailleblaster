@@ -28,7 +28,7 @@ import org.brailleblaster.utd.properties.BrailleTableType
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.TableUtils
 import org.brailleblaster.utd.utils.TextTranslator
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.getDescendantBrlFast
 import kotlin.math.max
 
 class LinearTableFormatter : Formatter() {
@@ -61,9 +61,7 @@ class LinearTableFormatter : Formatter() {
         for (row in cells) {
             for (cell in row) {
                 val col = row.indexOf(cell)
-                val query = UTDHelper.getDescendantBrlFastNodes(cell)
-                if (query.size() > 0) {
-                    val lastBrl = query[query.size() - 1] as Element
+                cell.getDescendantBrlFast().lastOrNull()?.let { lastBrl ->
                     val newSpan = TableDivider()
                     val newBrl = UTDElements.BRL.create()
                     val dividerType = if (col == 0) {
@@ -77,7 +75,6 @@ class LinearTableFormatter : Formatter() {
                     val (idx, transText) = TextTranslator.translateIndexedText(newSpan.value, formatSelector.engine, tableType = BrailleTableType.UNCONTRACTED)
                     newBrl.appendChild(transText)
                     newBrl.addAttribute(Attribute("index", idx.joinToString(separator = " ")))
-                    query.append(newBrl)
                     newSpan.appendChild(newBrl)
                     var parent = lastBrl.parent as Element
                     val type = parent.getAttributeValue("type", parent.getNamespaceURI("bb"))
@@ -105,10 +102,10 @@ class LinearTableFormatter : Formatter() {
         outerLoop@ while (i < cells.size) {
             val row = cells[i]
             for (cell in row) {
-                val query = UTDHelper.getDescendantBrlFastNodes(cell)
-                for (brl in 0 until query.size()) {
+                val query = cell.getDescendantBrlFast()
+                for (brl in query) {
                     val curPages = mutPageBuilders.size
-                    mutPageBuilders.addAll(pageBuilder.addBrl((query[brl] as Element)))
+                    mutPageBuilders.addAll(pageBuilder.addBrl(brl))
                     pageBuilder = mutPageBuilders.last()
                     if (mutPageBuilders.size > curPages && !beginningOfPage) {
                         removeRowFromPageBuilder(row, mutPageBuilders)
@@ -148,9 +145,9 @@ class LinearTableFormatter : Formatter() {
     private fun removeRowFromPageBuilder(row: List<Element>, pageBuilder: Set<PageBuilder>) {
         for (pb in pageBuilder) {
             for (element in row) {
-                val brls = UTDHelper.getDescendantBrlFastNodes(element)
-                for (i in 0 until brls.size()) {
-                    pb.removeBrl((brls[i] as Element))
+                val brls = element.getDescendantBrlFast()
+                for (i in brls) {
+                    pb.removeBrl((i))
                 }
             }
         }

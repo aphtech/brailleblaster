@@ -29,8 +29,8 @@ import org.brailleblaster.utd.TextSpan
 import org.brailleblaster.utd.actions.IBlockAction
 import org.brailleblaster.utd.asciimath.AsciiMathConverter
 import org.brailleblaster.utd.properties.ContentType
+import org.brailleblaster.utd.utils.getAssociatedBrlElement
 import org.brailleblaster.utils.braille.BrailleUnicodeConverter
-import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.utils.xom.childNodes
 import org.brailleblaster.utils.braille.singleThreadedMathCAT
 import java.util.concurrent.ExecutionException
@@ -48,7 +48,7 @@ private fun createMathTextSpan(node: Node, text: String, braille: String): TextS
     }
     node.parent?.let { parent ->
         val index = parent.indexOf(node)
-        if (UTDHelper.getAssociatedBrlElement(parent, index) != null) {
+        if (getAssociatedBrlElement(parent, index) != null) {
             parent.removeChild(index+1)
         }
         parent.insertChild(brl, index+1)

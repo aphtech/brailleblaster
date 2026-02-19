@@ -38,7 +38,7 @@ import org.brailleblaster.utd.internal.NormaliserFactory
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.matchers.INodeMatcher
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.stripUTDRecursive
 import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.utils.xom.childNodes
 import org.brailleblaster.util.Utils
@@ -82,7 +82,7 @@ class BookToBBXConverter(
 
     private fun toBBX(oldDoc: Document): Document {
         //Remove UTD which isn't handled in parserMap
-        UTDHelper.stripUTDRecursive(oldDoc)
+        stripUTDRecursive(oldDoc)
         val bbxDoc = BBX.newDocument()
         toBBXRecursive(oldDoc.rootElement, bbxDoc.rootElement)
         return bbxDoc

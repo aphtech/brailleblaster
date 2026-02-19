@@ -97,13 +97,14 @@ class UTDHelperTest {
             arrayOf(node, node.query("following-sibling::node()[position()=1]")),
             arrayOf(text, text.query("following-sibling::node()[position()=1]")),
             arrayOf(Text("p"), Nodes()),
-            arrayOf(relatedElements, UTDHelper.getDescendantBrlFastNodes(relatedElements))
+            arrayOf(relatedElements,
+                relatedElements.getDescendantBrlFast().fold(Nodes()) { acc, element -> acc.apply { append(element) } })
         )
     }
 
     @Test(dataProvider = "relatedElementsProvider")
     fun checkRelatedElements(node: Node?, expectedResult: Nodes) {
-        val brlElements = UTDHelper.getBrlElements(node)
+        val brlElements = getBrlElements(node)
 
         Assert.assertEquals(brlElements.size(), expectedResult.size())
         for (i in 0 until expectedResult.size()) {
@@ -113,12 +114,12 @@ class UTDHelperTest {
 
     @Test(expectedExceptions = [NullPointerException::class])
     fun checkNullRelatedElements() {
-        UTDHelper.getBrlElements(null)
+        getBrlElements(null)
     }
 
     @Test(dataProvider = "associatedElementsProvider")
     fun checkAssociatedElement(node: Node) {
-        val associate = UTDHelper.getAssociatedBrlElement(node)
+        val associate = getAssociatedBrlElement(node)
         val expected =
             node.query("following-sibling::node()[position()=1 and local-name()='brl' and not(@type='brlonly')]")
         if (expected.size() == 0) {
@@ -130,12 +131,12 @@ class UTDHelperTest {
 
     @Test(expectedExceptions = [NullPointerException::class])
     fun checkNullAssociatedElement() {
-        UTDHelper.getAssociatedBrlElement(null)
+        getAssociatedBrlElement(null)
     }
 
     @Test(dataProvider = "associatedNodeProvider")
     fun checkAssociatedNode(element: Element) {
-        val result = UTDHelper.getAssociatedNode(element)
+        val result = getAssociatedNode(element)
 
         if ("true" != element.getAttributeValue("brlonly")) {
             Assert.assertEquals(result, element.query("preceding-sibling::node()[last()]")[0])
@@ -146,12 +147,12 @@ class UTDHelperTest {
 
     @Test(expectedExceptions = [NullPointerException::class])
     fun checkNullAssociatedNode() {
-        UTDHelper.getAssociatedNode(null)
+        getAssociatedNode(null)
     }
 
     @Test(expectedExceptions = [IllegalArgumentException::class])
     fun checkInvalidAssociatedNode() {
-        UTDHelper.getAssociatedNode(Element("p"))
+        getAssociatedNode(Element("p"))
     }
 
     @Test(expectedExceptions = [UTDException::class])
@@ -159,7 +160,7 @@ class UTDHelperTest {
         val parent: ParentNode = Element("p")
         val e = UTDElements.BRL.create()
         parent.appendChild(e)
-        UTDHelper.getAssociatedNode(e)
+        getAssociatedNode(e)
     }
 
     @Test
@@ -170,67 +171,67 @@ class UTDHelperTest {
         brl.appendChild(brlOnly)
         brl.appendChild("Some text")
 
-        Assert.assertEquals("Some text", UTDHelper.getTextChild(brl).value)
+        Assert.assertEquals("Some text", getTextChild(brl).value)
     }
 
     @Test
     fun endsWithWhitespaceTest() {
-        Assert.assertEquals(UTDHelper.endsWithWhitespace("this"), 0)
-        Assert.assertEquals(UTDHelper.endsWithWhitespace("this" + UTDHelper.BRAILLE_SPACE), 1)
+        Assert.assertEquals(endsWithWhitespace("this"), 0)
+        Assert.assertEquals(endsWithWhitespace("this$BRAILLE_SPACE"), 1)
         Assert.assertEquals(
-            UTDHelper.endsWithWhitespace(
-                "this" + UTDHelper.BRAILLE_SPACE + UTDHelper.BRAILLE_SPACE
+            endsWithWhitespace(
+                "this$BRAILLE_SPACE$BRAILLE_SPACE"
             ), 2
         )
         Assert.assertEquals(
-            UTDHelper.endsWithWhitespace(
-                "this" + UTDHelper.BRAILLE_SPACE + UTDHelper.BRAILLE_SPACE + UTDHelper.BRAILLE_SPACE
+            endsWithWhitespace(
+                "this$BRAILLE_SPACE$BRAILLE_SPACE$BRAILLE_SPACE"
             ), 3
         )
         Assert.assertEquals(
-            UTDHelper.endsWithWhitespace(
-                UTDHelper.BRAILLE_SPACE.toString() + "this" + UTDHelper.BRAILLE_SPACE + UTDHelper.BRAILLE_SPACE
+            endsWithWhitespace(
+                BRAILLE_SPACE.toString() + "this" + BRAILLE_SPACE + BRAILLE_SPACE
             ), 2
         )
         Assert.assertEquals(
-            UTDHelper.endsWithWhitespace(
-                UTDHelper.BRAILLE_SPACE.toString() + "" + UTDHelper.BRAILLE_SPACE + "this" + UTDHelper.BRAILLE_SPACE
+            endsWithWhitespace(
+                BRAILLE_SPACE.toString() + "" + BRAILLE_SPACE + "this" + BRAILLE_SPACE
             ), 1
         )
         Assert.assertEquals(
-            UTDHelper.endsWithWhitespace(
-                UTDHelper.BRAILLE_SPACE.toString() + "" + UTDHelper.BRAILLE_SPACE + UTDHelper.BRAILLE_SPACE + "this"
+            endsWithWhitespace(
+                BRAILLE_SPACE.toString() + "" + BRAILLE_SPACE + BRAILLE_SPACE + "this"
             ), 0
         )
     }
 
     @Test
     fun startsWithWhitespaceTest() {
-        Assert.assertEquals(UTDHelper.startsWithWhitespace("this"), 0)
-        Assert.assertEquals(UTDHelper.startsWithWhitespace("this" + UTDHelper.BRAILLE_SPACE), 0)
+        Assert.assertEquals(startsWithWhitespace("this"), 0)
+        Assert.assertEquals(startsWithWhitespace("this$BRAILLE_SPACE"), 0)
         Assert.assertEquals(
-            UTDHelper.startsWithWhitespace(
-                "this" + UTDHelper.BRAILLE_SPACE + UTDHelper.BRAILLE_SPACE
+            startsWithWhitespace(
+                "this$BRAILLE_SPACE$BRAILLE_SPACE"
             ), 0
         )
         Assert.assertEquals(
-            UTDHelper.startsWithWhitespace(
-                "this" + UTDHelper.BRAILLE_SPACE + UTDHelper.BRAILLE_SPACE + UTDHelper.BRAILLE_SPACE
+            startsWithWhitespace(
+                "this$BRAILLE_SPACE$BRAILLE_SPACE$BRAILLE_SPACE"
             ), 0
         )
         Assert.assertEquals(
-            UTDHelper.startsWithWhitespace(
-                UTDHelper.BRAILLE_SPACE.toString() + "this" + UTDHelper.BRAILLE_SPACE + UTDHelper.BRAILLE_SPACE
+            startsWithWhitespace(
+                BRAILLE_SPACE.toString() + "this" + BRAILLE_SPACE + BRAILLE_SPACE
             ), 1
         )
         Assert.assertEquals(
-            UTDHelper.startsWithWhitespace(
-                UTDHelper.BRAILLE_SPACE.toString() + "" + UTDHelper.BRAILLE_SPACE + "this" + UTDHelper.BRAILLE_SPACE
+            startsWithWhitespace(
+                BRAILLE_SPACE.toString() + "" + BRAILLE_SPACE + "this" + BRAILLE_SPACE
             ), 2
         )
         Assert.assertEquals(
-            UTDHelper.startsWithWhitespace(
-                UTDHelper.BRAILLE_SPACE.toString() + "" + UTDHelper.BRAILLE_SPACE + UTDHelper.BRAILLE_SPACE + "this"
+            startsWithWhitespace(
+                BRAILLE_SPACE.toString() + "" + BRAILLE_SPACE + BRAILLE_SPACE + "this"
             ), 3
         )
     }

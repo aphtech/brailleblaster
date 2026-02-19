@@ -21,7 +21,7 @@ import org.brailleblaster.utd.IStyle
 import org.brailleblaster.utd.InsertionPatternEntry.Companion.listToMap
 import org.brailleblaster.utd.PageBuilder
 import org.brailleblaster.utd.RegexLineWrapper
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.getAssociatedBrlElement
 
 class MathFormatter : Formatter() {
     override fun format(
@@ -32,7 +32,7 @@ class MathFormatter : Formatter() {
         if (mutPageBuilders.isEmpty()) {
             return mutPageBuilders
         }
-        val brl = UTDHelper.getAssociatedBrlElement(node)
+        val brl = getAssociatedBrlElement(node)
             ?: // This math seems to have no Braille
             return mutPageBuilders
         val styleMap = formatSelector.styleMap

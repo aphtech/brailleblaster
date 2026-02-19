@@ -21,7 +21,7 @@ import nu.xom.Text
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.mvc.events.ModifyEvent
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.getTextChild
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.KeyAdapter
 import org.eclipse.swt.events.KeyEvent
@@ -63,8 +63,8 @@ object GuideWordEditor {
         }
         val dtElement = text as Element
         if (dtElement.getAttribute("contraction") == null) {
-            contraction.text = UTDHelper.getTextChild(dtElement).value
-            contractedStr = UTDHelper.getTextChild(dtElement).value
+            contraction.text = getTextChild(dtElement).value
+            contractedStr = getTextChild(dtElement).value
         } else {
             contraction.text = dtElement.getAttributeValue("contraction")
             contractedStr = dtElement.getAttributeValue("contraction")

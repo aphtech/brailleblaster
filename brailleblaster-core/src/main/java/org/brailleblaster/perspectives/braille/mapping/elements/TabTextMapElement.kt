@@ -21,7 +21,7 @@ import nu.xom.ParentNode
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.interfaces.Deletable
 import org.brailleblaster.perspectives.braille.mapping.interfaces.Uneditable
-import org.brailleblaster.utd.utils.UTDHelper.stripUTDRecursive
+import org.brailleblaster.utd.utils.stripUTDRecursive
 import org.brailleblaster.util.Utils.combineAdjacentTextNodes
 
 open class TabTextMapElement(n: Node) : TextMapElement(n), Deletable, Uneditable {

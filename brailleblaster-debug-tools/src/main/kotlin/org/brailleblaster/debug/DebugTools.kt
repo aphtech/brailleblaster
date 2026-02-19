@@ -25,7 +25,7 @@ import org.brailleblaster.settings.ui.AdvancedSettingsDialog
 import org.brailleblaster.tools.CheckMenuTool
 import org.brailleblaster.tools.DebugMenuToolModule
 import org.brailleblaster.utd.internal.xml.XMLHandler
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.stripUTDRecursive
 import org.eclipse.swt.SWT
 import org.eclipse.swt.widgets.FileDialog
 import org.slf4j.Logger
@@ -123,7 +123,7 @@ object SaveFormattedWithoutBrlTool : DebugMenuToolModule {
         if (path == null) {
             log.debug("Cancelled save")
         } else {
-            val docCopy = bbData.manager.doc.copy().also { UTDHelper.stripUTDRecursive(it) }
+            val docCopy = bbData.manager.doc.copy().also { stripUTDRecursive(it) }
             XMLHandler.Formatted().save(docCopy, File(path))
         }
     }

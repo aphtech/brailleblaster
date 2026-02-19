@@ -28,10 +28,10 @@ import org.brailleblaster.utd.properties.Align
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utd.utils.PageBuilderHelper.handlePageIndicator
 import org.brailleblaster.utd.utils.PageBuilderHelper.isPageIndicator
-import org.brailleblaster.utd.utils.UTDHelper.getAssociatedBrlElement
-import org.brailleblaster.utd.utils.UTDHelper.getDescendantBrlFast
-import org.brailleblaster.utd.utils.UTDHelper.getFirstTextDescendant
-import org.brailleblaster.utd.utils.UTDHelper.stripBRLOnly
+import org.brailleblaster.utd.utils.getAssociatedBrlElement
+import org.brailleblaster.utd.utils.getDescendantBrlFast
+import org.brailleblaster.utd.utils.getFirstTextDescendant
+import org.brailleblaster.utd.utils.stripBRLOnly
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -90,7 +90,7 @@ class TOCFormatter : Formatter() {
         // emphasis of the page number.
         val pageCheck = pageMatch != null
         if (pageCheck) {
-            val brlPages = getDescendantBrlFast(pageMatch)
+            val brlPages = pageMatch.getDescendantBrlFast()
             for (brlPage in brlPages) {
                 //Clear out any possible existing guide dots within the page elements first
                 stripBRLOnly(brlPage)
@@ -342,7 +342,7 @@ class TOCFormatter : Formatter() {
         //2 cells for spaces, at least 2 for guide dots, and page number length
         // A page number may be formed of multiple brl elements, such as in the case of
         // partial emphasis of the page number.
-        val brls = getDescendantBrlFast(element)
+        val brls = element.getDescendantBrlFast()
 
         if (brls.isNotEmpty()) {
             //Do not add guide dots if there is no title present

@@ -20,7 +20,7 @@ import nu.xom.Node
 import org.brailleblaster.utd.ITranslationEngine
 import org.brailleblaster.utd.TextSpan
 import org.brailleblaster.utd.utils.TableUtils
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.getDescendantBrlFast
 import org.brailleblaster.utils.xom.detachAll
 
 @Suppress("UNUSED")
@@ -31,7 +31,7 @@ class TranslateTableAction : GenericBlockAction(), IBlockAction {
         }
         TableUtils.deleteExistingTable(node)
         val result = super.applyTo(node, context)
-        UTDHelper.getDescendantBrlFast(node) { it.localName = "tablebrl" }
+        node.getDescendantBrlFast { it.localName = "tablebrl" }
         return result
     }
 }

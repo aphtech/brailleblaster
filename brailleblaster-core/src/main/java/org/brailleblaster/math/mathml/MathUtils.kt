@@ -30,7 +30,7 @@ import org.brailleblaster.perspectives.mvc.modules.views.TextViewModule.Companio
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.stripUTDRecursive
 import org.brailleblaster.util.Utils
 import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.widgets.Display
@@ -241,7 +241,7 @@ object MathUtils {
     fun removeAllBBMarkupFromMathML(bbNode: Node): Node? {
         var mathNode: Node? = null
         if (MathModuleUtils.isMath(bbNode)) {
-            UTDHelper.stripUTDRecursive(bbNode as Element)
+            stripUTDRecursive(bbNode as Element)
             mathNode = bbNode.copy()
             removeAltText(mathNode)
         }

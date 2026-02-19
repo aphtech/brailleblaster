@@ -40,7 +40,7 @@ import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.internal.xml.splitNode
 import org.brailleblaster.utd.utils.TextTranslator
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.getFirstTextDescendant
 import org.brailleblaster.utils.xml.BB_NS
 import org.brailleblaster.utils.swt.AccessibilityUtils.setName
 import org.brailleblaster.wordprocessor.WPManager
@@ -419,7 +419,7 @@ class ProseBuilder : MenuToolModule {
                 return parent.getChild(index - 1)
             }
         } else if (node is Element) {
-            return findNearestLineNumber(UTDHelper.getFirstTextDescendant(node))
+            return findNearestLineNumber(getFirstTextDescendant(node))
         }
         return null
     }

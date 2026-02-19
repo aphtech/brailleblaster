@@ -22,7 +22,7 @@ import org.brailleblaster.utd.IStyleMap
 import org.brailleblaster.utd.PageBuilder
 import org.brailleblaster.utd.properties.Align
 import org.brailleblaster.utd.utils.PageBuilderHelper
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.getAssociatedBrlElement
 
 abstract class Formatter {
     @JvmField
@@ -99,7 +99,7 @@ abstract class Formatter {
             val parent = node.parent
             if (parent != null) {
                 var nodeIndex = parent.indexOf(node)
-                if (UTDHelper.getAssociatedBrlElement(node) != null) {
+                if (getAssociatedBrlElement(node) != null) {
                     nodeIndex++
                 }
                 parent.insertChild(brl, nodeIndex + 1)

@@ -31,8 +31,8 @@ import org.brailleblaster.perspectives.mvc.events.XMLCaretEvent
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.UTDElements.Companion.getByName
-import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.exceptions.BBNotifyException
+import org.brailleblaster.utd.utils.getAssociatedBrlElement
 import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.SelectionAdapter
@@ -211,7 +211,7 @@ class GoToPageDialog(private val m: Manager) {
                 ) {
                     return@ancestorElementNot true
                 }
-                val brl = UTDHelper.getAssociatedBrlElement(curNode)
+                val brl = getAssociatedBrlElement(curNode)
                 if (brl != null) {
                     return@ancestorElementNot brl.childCount == 0
                 }

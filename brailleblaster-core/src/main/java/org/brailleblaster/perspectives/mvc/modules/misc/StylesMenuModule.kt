@@ -51,11 +51,11 @@ import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.EmphasisType
 import org.brailleblaster.utd.utils.TableUtils
 import org.brailleblaster.utd.utils.TableUtils.isTableCopy
-import org.brailleblaster.utd.utils.UTDHelper.stripUTDRecursive
 import org.brailleblaster.utd.utils.dom.BoxUtils.unbox
 import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.perspectives.mvc.menu.BBSeparator
 import org.brailleblaster.utd.internal.xml.splitNode
+import org.brailleblaster.utd.utils.stripUTDRecursive
 import org.brailleblaster.util.Notify
 import org.brailleblaster.util.Notify.notify
 import org.brailleblaster.utils.xml.BB_NS
@@ -168,7 +168,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
                         }
                     }
                     propertyFileManager.save(COLOR_PROP, "$color,$sb")
-                    s.setColor(color)
+                    s.color = color
                     if (m.simpleManager.currentSelection.start.node
                         == m.simpleManager.currentSelection.end.node
                     ) {

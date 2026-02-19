@@ -21,7 +21,7 @@ import nu.xom.Node
 import org.brailleblaster.utd.ITranslationEngine
 import org.brailleblaster.utd.TextSpan
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.containsBrl
 
 class TabAction : IBlockAction {
     override fun applyTo(node: Node, context: ITranslationEngine): List<TextSpan> {
@@ -32,7 +32,7 @@ class TabAction : IBlockAction {
 
     private fun processPageNode(node: Element, engine: ITranslationEngine?): List<TextSpan> {
         //If the node already has a brl for a child, then return
-        if (UTDHelper.containsBrl(node)) {
+        if (containsBrl(node)) {
             return emptyList()
         }
         val brl = UTDElements.BRL.create()

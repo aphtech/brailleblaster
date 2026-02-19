@@ -20,7 +20,8 @@ import nu.xom.Node
 import org.brailleblaster.utd.ITranslationEngine
 import org.brailleblaster.utd.TextSpan
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.getAssociatedBrlElement
+import org.brailleblaster.utd.utils.getTextChild
 
 @Suppress("UNUSED")
 class LineBreakAction : IBlockAction {
@@ -40,8 +41,8 @@ class LineBreakAction : IBlockAction {
 
     private fun processNode(node: Element, engine: ITranslationEngine): List<TextSpan> {
         //If the node already has a brl for a child, then return
-        val textChild = UTDHelper.getTextChild(node)
-        if (UTDHelper.getAssociatedBrlElement(textChild) != null) {
+        val textChild = getTextChild(node)
+        if (getAssociatedBrlElement(textChild) != null) {
             return listOf(createTextSpanForLineBreak(node))
         }
         val brl = UTDElements.BRL.create()

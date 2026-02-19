@@ -25,7 +25,7 @@ import org.brailleblaster.perspectives.mvc.BBSimpleManager
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.UTDElements
-import org.brailleblaster.utd.utils.UTDHelper
+import org.brailleblaster.utd.utils.getDescendantBrlFast
 import org.brailleblaster.util.ColorManager
 import org.brailleblaster.utils.swt.EasySWT
 import org.brailleblaster.utils.xml.UTD_NS
@@ -197,7 +197,7 @@ class XMLDebugger(private val parent: Shell, private val simpleManager: BBSimple
         if (n == null) return
         curNode = n
         activeDocument = n as? Document ?: Document(n.copy() as Element)
-        if (!showBrlValue) UTDHelper.getDescendantBrlFast(activeDocument) { it.detach() }
+        if (!showBrlValue) activeDocument?.getDescendantBrlFast { it.detach() }
         if (warnEmptyText) {
             FastXPath.descendant(activeDocument)
                 .filterIsInstance<nu.xom.Text>()

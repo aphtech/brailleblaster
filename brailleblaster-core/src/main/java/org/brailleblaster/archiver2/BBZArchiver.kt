@@ -21,8 +21,8 @@ import org.brailleblaster.utd.BRFWriter
 import org.brailleblaster.utd.UTDTranslationEngine
 import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.utils.ALL_VOLUMES
-import org.brailleblaster.utd.utils.UTDHelper
 import org.brailleblaster.utd.utils.convertBBX2PEF
+import org.brailleblaster.utd.utils.stripUTDRecursive
 import org.brailleblaster.util.Notify
 import org.slf4j.LoggerFactory
 import java.io.BufferedOutputStream
@@ -292,7 +292,7 @@ class BBZArchiver(
         fun saveBBX(destPath: Path, doc: Document) {
             log.debug("Writing BBX to {}", destPath.toUri())
             val newDoc = doc.copy()
-            UTDHelper.stripUTDRecursive(newDoc)
+            stripUTDRecursive(newDoc)
             Files.newOutputStream(
                 destPath,
                 StandardOpenOption.CREATE,
