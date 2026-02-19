@@ -249,7 +249,7 @@ class NumberedLineFormatter : Formatter() {
             }
 
             if (node.getChild(i) is Text) {
-                val brl = getAssociatedBrlElement(node, i)
+                val brl = node.getAssociatedBrlElement(i)
                 pageBuilder.poemEnabled = true
 
                 if (brl == null) {

@@ -283,7 +283,7 @@ object BBXUtils {
     @JvmStatic
     fun cleanupBlock(node: Node): Node? {
         val block = node.findBlockOrNull() ?: return null
-        stripUTDRecursive(block)
+        block.stripUTDRecursive()
         if (block.value.isEmpty()) {
             var parent: Node? = block.parent
             val image = XMLHandler.childrenRecursiveVisitor(
@@ -299,7 +299,7 @@ object BBXUtils {
                     //If the container is a box, do not look at the boxlines when seeing if the element is empty
                     if (BBX.CONTAINER.BOX.isA(parent)) {
                         val boxCopy = parent.copy() as Element
-                        stripUTDRecursive(boxCopy)
+                        boxCopy.stripUTDRecursive()
                         if (boxCopy.value.isEmpty()) {
                             val temp: Node = parent.parent
                             stripBoxBrl(parent as Element)
@@ -355,7 +355,7 @@ object BBXUtils {
     }
 
     fun getDocumentTitle(manager: Manager): String? {
-        val head = getDocumentHead(manager.doc)
+        val head = manager.doc.getDocumentHead()
         if (head != null) {
             val title = head.getFirstChildElement("doctitle")
             if (title != null) {

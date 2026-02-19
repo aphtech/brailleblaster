@@ -103,8 +103,8 @@ class UTDHelperTest {
     }
 
     @Test(dataProvider = "relatedElementsProvider")
-    fun checkRelatedElements(node: Node?, expectedResult: Nodes) {
-        val brlElements = getBrlElements(node)
+    fun checkRelatedElements(node: Node, expectedResult: Nodes) {
+        val brlElements = node.getBrlElements()
 
         Assert.assertEquals(brlElements.size(), expectedResult.size())
         for (i in 0 until expectedResult.size()) {
@@ -112,14 +112,9 @@ class UTDHelperTest {
         }
     }
 
-    @Test(expectedExceptions = [NullPointerException::class])
-    fun checkNullRelatedElements() {
-        getBrlElements(null)
-    }
-
     @Test(dataProvider = "associatedElementsProvider")
     fun checkAssociatedElement(node: Node) {
-        val associate = getAssociatedBrlElement(node)
+        val associate = node.getAssociatedBrlElement()
         val expected =
             node.query("following-sibling::node()[position()=1 and local-name()='brl' and not(@type='brlonly')]")
         if (expected.size() == 0) {
@@ -129,14 +124,9 @@ class UTDHelperTest {
         }
     }
 
-    @Test(expectedExceptions = [NullPointerException::class])
-    fun checkNullAssociatedElement() {
-        getAssociatedBrlElement(null)
-    }
-
     @Test(dataProvider = "associatedNodeProvider")
     fun checkAssociatedNode(element: Element) {
-        val result = getAssociatedNode(element)
+        val result = element.getAssociatedNode()
 
         if ("true" != element.getAttributeValue("brlonly")) {
             Assert.assertEquals(result, element.query("preceding-sibling::node()[last()]")[0])
@@ -145,14 +135,9 @@ class UTDHelperTest {
         }
     }
 
-    @Test(expectedExceptions = [NullPointerException::class])
-    fun checkNullAssociatedNode() {
-        getAssociatedNode(null)
-    }
-
     @Test(expectedExceptions = [IllegalArgumentException::class])
     fun checkInvalidAssociatedNode() {
-        getAssociatedNode(Element("p"))
+        Element("p").getAssociatedNode()
     }
 
     @Test(expectedExceptions = [UTDException::class])
@@ -160,7 +145,7 @@ class UTDHelperTest {
         val parent: ParentNode = Element("p")
         val e = UTDElements.BRL.create()
         parent.appendChild(e)
-        getAssociatedNode(e)
+        e.getAssociatedNode()
     }
 
     @Test

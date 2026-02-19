@@ -71,7 +71,7 @@ class TPageFormatter : LiteraryFormatter() {
         val titlePage: Element? = node.childElements[0]
         val secondaryPages: MutableList<Element> = LinkedList()
         for (i in 1 until node.childElements.size()) {
-            if (containsBrl(node.childElements[i])) secondaryPages.add(node.childElements[i])
+            if (node.childElements[i].containsBrl()) secondaryPages.add(node.childElements[i])
         }
 
         pageBuilder = mutPageBuilders.last()
@@ -145,7 +145,7 @@ class TPageFormatter : LiteraryFormatter() {
 
         //Iterate through the sections
         for (i in 0 until element.childElements.size()) {
-            if (containsBrl(element.childElements[i])) {
+            if (element.childElements[i].containsBrl()) {
                 if (i != 0) {
                     if (firstPass) {
                         divCount++

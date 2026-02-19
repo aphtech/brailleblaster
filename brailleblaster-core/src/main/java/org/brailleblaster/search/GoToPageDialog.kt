@@ -211,7 +211,7 @@ class GoToPageDialog(private val m: Manager) {
                 ) {
                     return@ancestorElementNot true
                 }
-                val brl = getAssociatedBrlElement(curNode)
+                val brl = curNode.getAssociatedBrlElement()
                 if (brl != null) {
                     return@ancestorElementNot brl.childCount == 0
                 }

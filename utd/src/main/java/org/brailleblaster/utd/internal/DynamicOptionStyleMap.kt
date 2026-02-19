@@ -119,7 +119,7 @@ abstract class DynamicOptionStyleMap(
 
                 StyleOption.KEEP_WITH_NEXT -> {
                     val keepWithNext = stringValue.toBoolean()
-                    newStyle.setKeepWithNext(keepWithNext)
+                    newStyle.isKeepWithNext = keepWithNext
                 }
 
                 StyleOption.LINE_NUMBER -> {
@@ -129,17 +129,17 @@ abstract class DynamicOptionStyleMap(
 
                 StyleOption.SKIP_NUMBER_LINES -> {
                     val skipNumberLines = NumberLinePosition.valueOf(stringValue)
-                    newStyle.setSkipNumberLines(skipNumberLines)
+                    newStyle.skipNumberLines = skipNumberLines
                 }
 
                 StyleOption.NEW_PAGES_BEFORE -> {
                     val pagesBefore = stringValue.toInt()
-                    newStyle.setNewPagesBefore(pagesBefore)
+                    newStyle.newPagesBefore = pagesBefore
                 }
 
                 StyleOption.NEW_PAGES_AFTER -> {
                     val pagesAfter = stringValue.toInt()
-                    newStyle.setNewPagesAfter(pagesAfter)
+                    newStyle.newPagesAfter = pagesAfter
                 }
 
                 StyleOption.ALIGN -> newStyle.setAlign(Align.valueOf(stringValue))
@@ -151,11 +151,11 @@ abstract class DynamicOptionStyleMap(
                 }
 
                 StyleOption.FORMAT -> newStyle.setFormat(IStyle.Format.valueOf(stringValue))
-                StyleOption.DONT_SPLIT -> newStyle.setDontSplit(stringValue.toBoolean())
-                StyleOption.LINE_LENGTH -> newStyle.setLineLength(stringValue.toInt())
-                StyleOption.START_SEPARATOR -> newStyle.setStartSeparator(stringValue)
-                StyleOption.END_SEPARATOR -> newStyle.setEndSeparator(stringValue)
-                StyleOption.COLOR -> newStyle.setColor(stringValue)
+                StyleOption.DONT_SPLIT -> newStyle.isDontSplit = stringValue.toBoolean()
+                StyleOption.LINE_LENGTH -> newStyle.lineLength = stringValue.toInt()
+                StyleOption.START_SEPARATOR -> newStyle.startSeparator = stringValue
+                StyleOption.END_SEPARATOR -> newStyle.endSeparator = stringValue
+                StyleOption.COLOR -> newStyle.color = stringValue
                 else -> throw UnsupportedOperationException("Not implemented: $option")
             }
         }

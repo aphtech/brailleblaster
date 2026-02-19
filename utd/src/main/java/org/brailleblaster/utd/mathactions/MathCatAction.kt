@@ -48,7 +48,7 @@ private fun createMathTextSpan(node: Node, text: String, braille: String): TextS
     }
     node.parent?.let { parent ->
         val index = parent.indexOf(node)
-        if (getAssociatedBrlElement(parent, index) != null) {
+        if (parent.getAssociatedBrlElement(index) != null) {
             parent.removeChild(index+1)
         }
         parent.insertChild(brl, index+1)

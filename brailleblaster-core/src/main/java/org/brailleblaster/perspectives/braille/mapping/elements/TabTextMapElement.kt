@@ -28,7 +28,7 @@ open class TabTextMapElement(n: Node) : TextMapElement(n), Deletable, Uneditable
     override fun deleteNode(m: Manager): ParentNode? {
         val parent = node.parent as Element
         node.detach()
-        stripUTDRecursive(parent)
+        parent.stripUTDRecursive()
         combineAdjacentTextNodes(parent)
         return parent
     }

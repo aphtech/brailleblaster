@@ -99,7 +99,7 @@ abstract class Formatter {
             val parent = node.parent
             if (parent != null) {
                 var nodeIndex = parent.indexOf(node)
-                if (getAssociatedBrlElement(node) != null) {
+                if (node.getAssociatedBrlElement() != null) {
                     nodeIndex++
                 }
                 parent.insertChild(brl, nodeIndex + 1)

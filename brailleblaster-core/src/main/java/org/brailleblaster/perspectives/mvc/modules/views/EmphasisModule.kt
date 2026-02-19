@@ -134,7 +134,7 @@ object EmphasisModule : AbstractModule(), SimpleListener {
 //				return;
 //			}
 //		}
-            modifiedBlocks.forEach(Consumer { rootRaw -> stripUTDRecursive(rootRaw) })
+            modifiedBlocks.forEach(Consumer { rootRaw -> rootRaw.stripUTDRecursive() })
             //If all of the current selection is emphasized, remove that emphasis. Otherwise, emphasize the selection.
             val removeEmphasis = isAllEmphasized(currentSelection, emphasisType)
             if (currentSelection.isSingleNode) {
@@ -166,7 +166,7 @@ object EmphasisModule : AbstractModule(), SimpleListener {
                 }
             }
             else {
-                modifiedBlocks.forEach(Consumer { rootRaw -> stripUTDRecursive(rootRaw) })
+                modifiedBlocks.forEach(Consumer { rootRaw -> rootRaw.stripUTDRecursive() })
                 var startNode: Node? = currentSelection.start.node
 
                 //If the last node of the selection is not a text node, find the last text descendant of that node
@@ -313,7 +313,7 @@ object EmphasisModule : AbstractModule(), SimpleListener {
 
         private fun mergeAdjacentTextNodes(modifiedBlocks: List<Element>) {
             modifiedBlocks.forEach(Consumer { n ->
-                stripUTDRecursive(n)
+                n.stripUTDRecursive()
                 Utils.combineAdjacentTextNodes(n)
             })
         }
@@ -405,7 +405,7 @@ object RemoveAllHeadingEmphasisTool : MenuToolModule {
                 //Check the attribute for heading
                 if (parent.getAttribute("utd-style") != null) {
                     if (parent.getAttributeValue("utd-style").lowercase(Locale.getDefault()).contains("heading")) {
-                        stripUTDRecursive(emphasisNodes[i] as Element)
+                        (emphasisNodes[i] as Element).stripUTDRecursive()
                         stripEmphasis(emphasisNodes[i] as Element)
                         //						modifiedNodes.add(parent);
                     }
@@ -440,7 +440,7 @@ object RemoveAllListEmphasisTool : MenuToolModule {
                     emphasisNodes[i] as Element, parent
                 )
             ) {
-                stripUTDRecursive(emphasisNodes[i] as Element)
+                (emphasisNodes[i] as Element).stripUTDRecursive()
                 stripEmphasis(emphasisNodes[i] as Element)
             }
         }
@@ -467,7 +467,7 @@ object RemoveAllGuideWordEmphasisTool : MenuToolModule {
         val emphasisNodes = root.query("descendant::node()[contains(@bb:type, 'EMPHASIS')]", BBX.XPATH_CONTEXT)
         for (i in 0 until emphasisNodes.size()) {
             if (isGuideWordItem(emphasisNodes[i])) {
-                stripUTDRecursive(emphasisNodes[i] as Element)
+                (emphasisNodes[i] as Element).stripUTDRecursive()
                 stripEmphasis(emphasisNodes[i] as Element)
             }
         }

@@ -1556,7 +1556,7 @@ class PageBuilder {
         //Make sure to check the metadata to 
         //print out the correct number value
         if (currentBrl != null) {
-            val head = getDocumentHead(currentBrl!!.document)
+            val head = currentBrl!!.document.getDocumentHead()
             var skipCont = false
             if (head != null) {
                 val meta = MetadataHelper.findPrintPageChange(head.document, newPrintPage)
@@ -1625,7 +1625,7 @@ class PageBuilder {
     val pageNumberTypeFromMetaData: PageNumberType?
         get() {
             if (currentBrl != null) {
-                val head = getDocumentHead(currentBrl!!.document)
+                val head = currentBrl!!.document.getDocumentHead()
                 if (head != null) {
                     val meta = MetadataHelper.findPrintPageChange(head.document, printPageValue)
                     if (meta?.getAttribute("pageType") != null //						&& !getPageNumberType().equals(PageNumberType.T_PAGE)
@@ -1671,7 +1671,7 @@ class PageBuilder {
         get() {
             var brlPage = braillePageNumber.braillePageNumber
             if (currentBrl != null) {
-                val head = getDocumentHead(currentBrl!!.document)
+                val head = currentBrl!!.document.getDocumentHead()
                 if (head != null) {
                     val meta = MetadataHelper.findBraillePageChange(head.document, brlPage)
                     if (meta?.getAttribute("new") != null && meta.getAttributeValue("new")

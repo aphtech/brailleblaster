@@ -42,7 +42,7 @@ class LineBreakAction : IBlockAction {
     private fun processNode(node: Element, engine: ITranslationEngine): List<TextSpan> {
         //If the node already has a brl for a child, then return
         val textChild = getTextChild(node)
-        if (getAssociatedBrlElement(textChild) != null) {
+        if (textChild.getAssociatedBrlElement() != null) {
             return listOf(createTextSpanForLineBreak(node))
         }
         val brl = UTDElements.BRL.create()

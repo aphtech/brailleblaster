@@ -519,7 +519,7 @@ class TOCBuilderBBX(private var manager: Manager) : CheckMenuTool, MenuToolModul
             previousTitleBlock = isValidToMakePage(pageWrapElem, true)
 
             val parentBlock: Element = pageWrapElem.findBlock()
-            stripUTDRecursive(parentBlock)
+            parentBlock.stripUTDRecursive()
             modifiedNodes.add(parentBlock)
 
             if (unwrapPage(pageWrapElem)) {
@@ -544,7 +544,7 @@ class TOCBuilderBBX(private var manager: Manager) : CheckMenuTool, MenuToolModul
             val parentBlock: Element = textNode.findBlock()
 
             if (unwrapPage(textNode)) {
-                stripUTDRecursive(parentBlock)
+                parentBlock.stripUTDRecursive()
                 modifiedNodes.add(parentBlock)
                 manager.simpleManager.dispatchEvent(
                     org.brailleblaster.perspectives.mvc.events.ModifyEvent(
@@ -573,7 +573,7 @@ class TOCBuilderBBX(private var manager: Manager) : CheckMenuTool, MenuToolModul
 
             //Strip useless brl
             modifiedNodes.add(parentBlock)
-            stripUTDRecursive(parentBlock)
+            parentBlock.stripUTDRecursive()
 
             if (isFullySelected) {
                 pageWrapElem = textNode.parent as Element
@@ -595,7 +595,7 @@ class TOCBuilderBBX(private var manager: Manager) : CheckMenuTool, MenuToolModul
                 }
 
                 if (existingPage != null) {
-                    stripUTDRecursive(existingPage)
+                    existingPage.stripUTDRecursive()
                     pageWrapElem = existingPage
 
                     textNodeToWrap.detach()
@@ -778,7 +778,7 @@ class TOCBuilderBBX(private var manager: Manager) : CheckMenuTool, MenuToolModul
         log.debug("curBlock {}", block.toXML())
 
         //Strip BRL or the xpath will find text inside it
-        stripUTDRecursive(block)
+        block.stripUTDRecursive()
         modifiedNodes.add(block)
 
         // do not re-wrap page numbers
@@ -806,7 +806,7 @@ class TOCBuilderBBX(private var manager: Manager) : CheckMenuTool, MenuToolModul
                 && !BBXUtils.isPageNumAncestor(nextSiblingNode)
             ) {
                 val nextSibling: Element = nextSiblingNode as Element
-                stripUTDRecursive(nextSibling)
+                nextSibling.stripUTDRecursive()
                 modifiedNodes.add(nextSibling)
 
                 //Find a text node

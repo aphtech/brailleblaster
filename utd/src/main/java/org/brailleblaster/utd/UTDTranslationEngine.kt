@@ -200,7 +200,7 @@ open class UTDTranslationEngine(
             //Will cause bugs if, eg clients translate <p>test</p>,
             //  then add a <span> after the text node without removing the hidden <brl> tag
             //They are a UTD implementation detail and thus should be stripped out in UTD
-            stripUTDRecursive(block)
+            block.stripUTDRecursive()
             val translatedBlock = translate(block)[0] as Element
             block.parent.replaceChild(block, translatedBlock)
             translatedBlocks.add(translatedBlock)

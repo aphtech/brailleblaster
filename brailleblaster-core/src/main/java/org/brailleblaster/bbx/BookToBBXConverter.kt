@@ -82,7 +82,7 @@ class BookToBBXConverter(
 
     private fun toBBX(oldDoc: Document): Document {
         //Remove UTD which isn't handled in parserMap
-        stripUTDRecursive(oldDoc)
+        oldDoc.stripUTDRecursive()
         val bbxDoc = BBX.newDocument()
         toBBXRecursive(oldDoc.rootElement, bbxDoc.rootElement)
         return bbxDoc

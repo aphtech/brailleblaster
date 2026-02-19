@@ -339,10 +339,10 @@ class ViewControl(val m: Manager, val click: Click) {
         for (tme in array) {
             tme.node.detach()
         }
-        stripUTDRecursive(parent)
+        parent.stripUTDRecursive()
         if (blocks.size > 1) {
             for (block in blocks) {
-                stripUTDRecursive(block)
+                block.stripUTDRecursive()
                 repeat(block.childCount) {
                     val n = block.getChild(0)
                     n.detach()

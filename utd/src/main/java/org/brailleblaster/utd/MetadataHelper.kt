@@ -165,7 +165,7 @@ object MetadataHelper {
         skip: Boolean,
         runHead: Boolean
     ) {
-        val head = getDocumentHead(doc.document)
+        val head = doc.document.getDocumentHead()
         val meta = addMeta(type, originalStr, newStr, resetCL, pageType, combined, blank, volume, skip, runHead)
         head?.appendChild(meta)
     }
@@ -291,7 +291,7 @@ object MetadataHelper {
     @JvmStatic
     fun getUTDMeta(doc: Document?): List<Element> {
         val returnList: MutableList<Element> = ArrayList()
-        val head = getDocumentHead(doc)
+        val head = doc.getDocumentHead()
         if (head != null) {
             for (i in 0 until head.childElements.size()) {
                 if (UTDElements.META.isA(head.childElements[i])) {
