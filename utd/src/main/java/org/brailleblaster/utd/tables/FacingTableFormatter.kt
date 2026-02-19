@@ -51,7 +51,7 @@ class FacingTableFormatter : SimpleTableFormatter() {
             if ("utd:tableSimple" == child.getAttributeValue("class")) {
                 child.addAttribute(Attribute("class", "utd:reformat"))
             }
-            if (containsBrl(child)) {
+            if (child.containsBrl()) {
                 if (leftTable == null) leftTable = child
                 else rightTable = child
             }

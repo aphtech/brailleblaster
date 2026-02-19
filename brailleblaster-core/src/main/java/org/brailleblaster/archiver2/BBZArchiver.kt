@@ -292,7 +292,7 @@ class BBZArchiver(
         fun saveBBX(destPath: Path, doc: Document) {
             log.debug("Writing BBX to {}", destPath.toUri())
             val newDoc = doc.copy()
-            stripUTDRecursive(newDoc)
+            newDoc.stripUTDRecursive()
             Files.newOutputStream(
                 destPath,
                 StandardOpenOption.CREATE,

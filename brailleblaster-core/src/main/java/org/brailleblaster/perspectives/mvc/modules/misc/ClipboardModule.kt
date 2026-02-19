@@ -491,7 +491,7 @@ class ClipboardModule(private val manager: BBSimpleManager) : SimpleListener {
 
         // Normalize nested emphasis
         changedNodes.forEach { n: Node ->
-            if (n is Element) stripUTDRecursive(n)
+            if (n is Element) n.stripUTDRecursive()
             normalizeEmphasis(n)
         }
 
@@ -631,7 +631,7 @@ class ClipboardModule(private val manager: BBSimpleManager) : SimpleListener {
             addListItemToClipboard(nodeToCopy, startNode, endNode, selection)
         } else if (BBX.BLOCK.isA(nodeToCopy)) {
             val copy = copyBlock(startNode, endNode, nodeToCopy as Element, selection, false)
-            stripUTDRecursive(copy)
+            copy.stripUTDRecursive()
             if (!blockCopy(
                     copy, selection,
                     startNode in FastXPath.descendant(nodeToCopy),
@@ -641,7 +641,7 @@ class ClipboardModule(private val manager: BBSimpleManager) : SimpleListener {
         } else {
             if (nodeToCopy is ParentNode) {
                 nodeToCopy = nodeToCopy.copy()
-                stripUTDRecursive((nodeToCopy as Element))
+                (nodeToCopy as Element).stripUTDRecursive()
                 clips.add(Clip(nodeToCopy))
             } else {
                 clips.add(Clip(nodeToCopy.copy()))
@@ -740,7 +740,7 @@ class ClipboardModule(private val manager: BBSimpleManager) : SimpleListener {
         }
 
         nodesToDetach.forEach(Consumer { obj: Node? -> obj!!.detach() })
-        stripUTDRecursive(blockCopy)
+        blockCopy.stripUTDRecursive()
         return blockCopy
     }
 
@@ -1000,7 +1000,7 @@ class ClipboardModule(private val manager: BBSimpleManager) : SimpleListener {
             val systemCB = StringBuilder()
             clips.forEach(Consumer { c: Clip? ->
                 val copy = c!!.node.copy()
-                if (copy is Element) stripUTDRecursive(copy)
+                if (copy is Element) copy.stripUTDRecursive()
                 if (copy is Element && (BBX.SECTION.isA(copy) || BBX.CONTAINER.isA(copy))) {
 //				systemCB.append(getBlocksTextInSection((Element) copy).trim()); ticket 7627
                     systemCB.append(getBlocksTextInSection(copy))

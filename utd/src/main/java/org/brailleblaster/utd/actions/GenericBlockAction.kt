@@ -209,7 +209,7 @@ open class GenericBlockAction : GenericAction(), IBlockAction {
         if (inputNode != null) {
             val parentNode = inputNode.parent
             var index = parentNode.indexOf(inputNode)
-            if (getAssociatedBrlElement(parentNode, index) != null) {
+            if (parentNode.getAssociatedBrlElement(index) != null) {
                 parentNode.removeChild(index + 1)
             }
 

@@ -607,7 +607,7 @@ class PageNumberDialog(parent: Shell?) : Dialog(parent, SWT.NONE), MenuToolModul
 
         //Delete the most recent page changes added to the document
         private fun cancelPageChange() {
-            val head = getDocumentHead(manager!!.doc)
+            val head = manager!!.doc.getDocumentHead()
             if (head != null) {
                 repeat(metaCounter) {
                     head.removeChild(head.childCount - 1)
@@ -828,7 +828,7 @@ class PageNumberDialog(parent: Shell?) : Dialog(parent, SWT.NONE), MenuToolModul
 
         //Re-adds the metadata that have been deleted
         private fun cancelPageChangeList() {
-            val head = getDocumentHead(manager!!.doc)
+            val head = manager!!.doc.getDocumentHead()
             if (head != null) {
                 for (element in deletedMeta) {
                     head.appendChild(element)

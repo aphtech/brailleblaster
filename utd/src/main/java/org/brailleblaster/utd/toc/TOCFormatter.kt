@@ -93,7 +93,7 @@ class TOCFormatter : Formatter() {
             val brlPages = pageMatch.getDescendantBrlFast()
             for (brlPage in brlPages) {
                 //Clear out any possible existing guide dots within the page elements first
-                stripBRLOnly(brlPage)
+                brlPage.stripBRLOnly()
                 sb.append(getFirstTextDescendant(brlPage).value)
             }
         }
@@ -187,7 +187,7 @@ class TOCFormatter : Formatter() {
             if (element.getChild(i) is Text) {
                 //Calculate the remaining space for the title
                 //2 cells for spaces, at least 2 for guide dots, and page number length
-                val brl = getAssociatedBrlElement(element, i)!!
+                val brl = element.getAssociatedBrlElement(i)!!
                 if (isPageIndicator(brl)) {
                     results.addAll(handlePageIndicator(curPageBuilder, brl, origStyle, formatSelector))
                     curPageBuilder = results.last()
@@ -263,7 +263,7 @@ class TOCFormatter : Formatter() {
             if (element.getChild(i) is Text) {
                 //Calculate the remaining space for the title
                 //2 cells for spaces, at least 2 for guide dots, and page number length
-                val brl = getAssociatedBrlElement(element, i)!!
+                val brl = element.getAssociatedBrlElement(i)!!
                 if (isPageIndicator(brl)) {
                     results.addAll(handlePageIndicator(curPageBuilder, brl, style, formatSelector))
                     curPageBuilder = results.last()

@@ -888,7 +888,7 @@ class TextVerifyKeyListener(
         val newOffset = tab.getStart(manager.mapList)
         val parent = tab.nodeParent
         tab.node.detach()
-        stripUTDRecursive(parent)
+        parent.stripUTDRecursive()
         combineAdjacentTextNodes(parent)
         dispatchModifyEvent(parent, true)
         textView.setCursor(newOffset)
@@ -971,7 +971,7 @@ class TextVerifyKeyListener(
             ) {
                 val parent = node.parent as Element
                 node.detach()
-                stripUTDRecursive(parent)
+                parent.stripUTDRecursive()
                 combineAdjacentTextNodes(parent)
                 return true
             }

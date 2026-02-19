@@ -32,7 +32,7 @@ class MathFormatter : Formatter() {
         if (mutPageBuilders.isEmpty()) {
             return mutPageBuilders
         }
-        val brl = getAssociatedBrlElement(node)
+        val brl = node.getAssociatedBrlElement()
             ?: // This math seems to have no Braille
             return mutPageBuilders
         val styleMap = formatSelector.styleMap

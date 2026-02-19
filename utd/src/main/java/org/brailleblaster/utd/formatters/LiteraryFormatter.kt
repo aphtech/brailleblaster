@@ -72,7 +72,7 @@ open class LiteraryFormatter : Formatter() {
             pageBuilder.setStartOfBlock(true)
         }
         if (node is Text) {
-            val brl = getAssociatedBrlElement(node)
+            val brl = node.getAssociatedBrlElement()
             if (brl != null) {
                 pageBuilder.setCurrBrl(brl)
                 if (style.braillePageNumberFormat != null && pageBuilder.pendingPages == 0 && !pageBuilder.isOverridePageType()) {

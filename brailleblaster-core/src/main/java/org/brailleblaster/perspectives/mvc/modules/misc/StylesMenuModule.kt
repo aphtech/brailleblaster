@@ -474,7 +474,7 @@ class StylesMenuModule(private val m: Manager) : SimpleListener {
                 val ancestorElement = XMLHandler.ancestorVisitorElement(
                     endNode
                 ) { node: Element? -> BBX.BLOCK.isA(node) }!!
-                stripUTDRecursive(ancestorElement)
+                ancestorElement.stripUTDRecursive()
 
                 val splitTextNode = startNode.splitNode(
                     (m.simpleManager.currentSelection.start as XMLTextCaret).offset,

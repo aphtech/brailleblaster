@@ -196,7 +196,7 @@ class FormatSelector(styleMap: IStyleMap?, styleStack: StyleStack?, engine: ITra
                 earlierNewPages.append(node)
         } else {
             // If the first brl related to the node starts with a newPage then that is also a candidate.
-            val relatedBrls = getBrlElements(node)
+            val relatedBrls = node.getBrlElements()
             if (relatedBrls.size() > 0) {
                 val firstBrl = relatedBrls[0]
                 if (firstBrl.childCount > 0) {
@@ -221,7 +221,7 @@ class FormatSelector(styleMap: IStyleMap?, styleStack: StyleStack?, engine: ITra
             if (tmpBrl.indexOf(tmpSP) == 0) {
                 startPointStartsBrl = true
             }
-            var tmpNode: Node? = getAssociatedNode(tmpBrl) ?: continue
+            var tmpNode: Node? = tmpBrl.getAssociatedNode() ?: continue
             while (tmpNode != null) {
                 val tmpStyle = styleMap.findValueOrDefault(tmpNode)
                 val tmpFormat = tmpStyle.format

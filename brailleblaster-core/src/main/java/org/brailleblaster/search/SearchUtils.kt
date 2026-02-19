@@ -340,7 +340,7 @@ On node $node"""
                 if (existingEnum.isEmpty()) {
                     // we removed the only emphasis, get rid of the wrapper
                     val pn = element.parent as Element
-                    stripUTDRecursive(pn)
+                    pn.stripUTDRecursive()
                     node.detach()
                     pn.replaceChild(element, node)
                 } else {

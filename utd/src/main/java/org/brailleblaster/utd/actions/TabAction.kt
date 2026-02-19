@@ -32,7 +32,7 @@ class TabAction : IBlockAction {
 
     private fun processPageNode(node: Element, engine: ITranslationEngine?): List<TextSpan> {
         //If the node already has a brl for a child, then return
-        if (containsBrl(node)) {
+        if (node.containsBrl()) {
             return emptyList()
         }
         val brl = UTDElements.BRL.create()

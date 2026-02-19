@@ -123,7 +123,7 @@ object SaveFormattedWithoutBrlTool : DebugMenuToolModule {
         if (path == null) {
             log.debug("Cancelled save")
         } else {
-            val docCopy = bbData.manager.doc.copy().also { stripUTDRecursive(it) }
+            val docCopy = bbData.manager.doc.copy().also { it.stripUTDRecursive() }
             XMLHandler.Formatted().save(docCopy, File(path))
         }
     }
