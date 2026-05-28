@@ -18,12 +18,15 @@ package org.brailleblaster
 import org.brailleblaster.utils.BBData.brailleblasterPath
 import org.brailleblaster.utils.BBData.userDataPath
 import org.brailleblaster.archiver2.ZipHandles
+import org.brailleblaster.archiver2.ArchiverFactory
 import org.brailleblaster.firstrun.runFirstRunWizard
 import org.brailleblaster.logging.initLogback
 import org.brailleblaster.logging.preLog
 import org.brailleblaster.usage.*
 import org.brailleblaster.userHelp.Project
 import org.brailleblaster.utd.exceptions.NodeException
+import org.brailleblaster.utd.utils.ALL_VOLUMES
+import org.brailleblaster.utd.utils.convertBBX2PEF
 import org.brailleblaster.util.Notify
 import org.brailleblaster.util.NotifyUtils
 import org.brailleblaster.util.SoundManager
@@ -33,13 +36,17 @@ import org.brailleblaster.wordprocessor.WPManager
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.net.URLClassLoader
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.nio.file.StandardOpenOption
 import java.time.Duration
 import java.time.Instant
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
+import kotlin.io.path.createDirectories
+import kotlin.io.path.name
 
 /**
  * This class contains the main method. If there are no arguments it passes
@@ -51,23 +58,41 @@ import kotlin.system.exitProcess
  * you will get "SWTException: Invalid Thread Access"
  */
 object Main {
+    private enum class CliExportFormat {
+        BRF,
+        PEF,
+        EBRL
+    }
+
+    private data class CliExportTarget(val format: CliExportFormat, val outputPath: Path)
+
     var isInitted = false
         private set
 
     @JvmStatic
     fun main(args: Array<String>) {
+        var exitCode = 0
         try {
             start(args)
+        } catch (e: IllegalArgumentException) {
+            System.err.println(e.message ?: "Invalid command-line arguments.")
+            exitCode = 1
         } catch (e: Throwable) {
             handleFatalException(e)
+            exitCode = 1
         } finally {
             ZipHandles.closeAll()
         }
-        exitProcess(0)
+        exitProcess(exitCode)
     }
 
     @Throws(Exception::class)
     fun start(args: Array<String>) {
+        if (args.any { it == "--help" || it == "-h" }) {
+            printCliHelp()
+            return
+        }
+
         val argsToParse = args.toMutableList()
         initBB(argsToParse)
         if (System.getProperty("dumpClassPath", "false") == "true") {
@@ -82,12 +107,21 @@ object Main {
             val firstArg = argsToParse[0]
             try {
                 fileToOpen = Paths.get(firstArg)
+                if (!Files.exists(fileToOpen)) {
+                    throw IllegalArgumentException("Input file does not exist: ${fileToOpen.toAbsolutePath()}")
+                }
             } catch (e: Exception) {
+                if (e is IllegalArgumentException) {
+                    throw e
+                }
                 LoggerFactory.getLogger(Main::class.java).error("Failed to open $firstArg", e)
-                RECOVERABLE_BOOT_EXCEPTIONS.add(e)
+                throw IllegalArgumentException("Invalid input path: $firstArg", e)
             }
             argsToParse.removeAt(0)
         }
+
+        val exportTargets = parseCliExportTargets(argsToParse)
+
         if (argsToParse.isNotEmpty()) {
             LoggerFactory.getLogger(Main::class.java)
                 .error("Unknown extra arguments beyond file: " + args.joinToString(" "))
@@ -109,13 +143,155 @@ object Main {
                 usageManager.startPeriodicDataReporting(0, 5, units = TimeUnit.MINUTES)
                 val bbStartTime = Instant.now()
                 usageManager.logger.logStart(tool = BB_TOOL, message = runId.toString())
-                WPManager.createInstance(fileToOpen, usageManager).start()
+                if (exportTargets.isEmpty()) {
+                    WPManager.createInstance(fileToOpen, usageManager).start()
+                } else {
+                    runCommandLineExport(fileToOpen, usageManager, exportTargets)
+                }
                 usageManager.logger.logDurationSeconds(tool = BB_TOOL, duration = Duration.between(bbStartTime, Instant.now()))
                 usageManager.logger.logEnd(tool = BB_TOOL, message = runId.toString())
                 usageManager.reportDataAsync().get()
             }
         }
     }
+
+    private fun parseCliExportTargets(argsToParse: MutableList<String>): List<CliExportTarget> {
+        val targets = mutableListOf<CliExportTarget>()
+        var i = 0
+        while (i < argsToParse.size) {
+            val format = when (argsToParse[i].lowercase(Locale.getDefault())) {
+                "--brf" -> CliExportFormat.BRF
+                "--pef" -> CliExportFormat.PEF
+                "--ebrl" -> CliExportFormat.EBRL
+                else -> {
+                    i++
+                    continue
+                }
+            }
+
+            if (i + 1 >= argsToParse.size) {
+                throw IllegalArgumentException("Missing output path for option ${argsToParse[i]}")
+            }
+
+            val outputPath = Paths.get(argsToParse[i + 1])
+            targets.add(CliExportTarget(format, outputPath))
+
+            argsToParse.removeAt(i + 1)
+            argsToParse.removeAt(i)
+        }
+
+        val duplicates = targets.groupBy { it.format }.filterValues { it.size > 1 }.keys
+        if (duplicates.isNotEmpty()) {
+            throw IllegalArgumentException("Duplicate export options are not allowed: ${duplicates.joinToString(", ")}")
+        }
+        return targets
+    }
+
+    private fun runCommandLineExport(fileToOpen: Path?, usageManager: UsageManager, targets: List<CliExportTarget>) {
+        require(fileToOpen != null) { "Command-line export requires an input file." }
+
+        try {
+            ArchiverFactory.load(fileToOpen).close()
+        } catch (e: Throwable) {
+            LoggerFactory.getLogger(Main::class.java)
+                .error("Command-line export cannot open input '{}'", fileToOpen.toAbsolutePath(), e)
+            System.err.println("Command-line export failed: unable to open input file '${fileToOpen.toAbsolutePath()}'")
+            return
+        }
+
+        var wpManager: WPManager? = null
+        try {
+            wpManager = WPManager.createInstance(fileToOpen, usageManager)
+            val manager = requireNotNull(wpManager.currentManager) { "Unable to open input document for export." }
+            if (manager.isDefaultFile) {
+                System.err.println("Unable to export '${fileToOpen.toAbsolutePath()}'. Input could not be opened as an editable document.")
+                return
+            }
+
+            manager.checkForUpdatedViews()
+            manager.waitForFormatting(true)
+
+            val doc = manager.doc
+            val engine = manager.document.settingsManager.engine
+
+            for (target in targets) {
+                val outputPath = target.outputPath.toAbsolutePath()
+                outputPath.parent?.createDirectories()
+
+                when (target.format) {
+                    CliExportFormat.BRF -> engine.toBRF(doc, outputPath.toFile())
+                    CliExportFormat.PEF -> {
+                        Files.newOutputStream(
+                            outputPath,
+                            StandardOpenOption.CREATE,
+                            StandardOpenOption.TRUNCATE_EXISTING,
+                            StandardOpenOption.WRITE
+                        ).use { out ->
+                            convertBBX2PEF(doc, outputPath.fileName.toString().substringBeforeLast('.'), engine, ALL_VOLUMES, out)
+                        }
+                    }
+                    CliExportFormat.EBRL -> exportEbrailleReflective(doc, outputPath, engine)
+                }
+            }
+        } catch (e: Throwable) {
+            LoggerFactory.getLogger(Main::class.java)
+                .error("Command-line export failed for '{}'.", fileToOpen.toAbsolutePath(), e)
+            System.err.println("Command-line export failed: ${e.message ?: e.javaClass.simpleName}")
+        } finally {
+            wpManager?.let {
+                try {
+                    it.close()
+                } catch (closeError: Throwable) {
+                    LoggerFactory.getLogger(Main::class.java).warn("Error while closing command-line export session", closeError)
+                }
+            }
+        }
+    }
+
+    private fun exportEbrailleReflective(doc: nu.xom.Document, outputPath: Path, engine: Any) {
+        val bbx2HtmlClass = Class.forName("org.brailleblaster.ebraille.bbx2html.BBX2HTML")
+        val bbx2HtmlObject = bbx2HtmlClass.getField("INSTANCE").get(null)
+        val convertMethod = bbx2HtmlClass.getMethod("convertBbxToHtml", nu.xom.Document::class.java)
+        val htmlDoc = convertMethod.invoke(bbx2HtmlObject, doc)
+
+        val iTranslationEngineClass = Class.forName("org.brailleblaster.utd.ITranslationEngine")
+        val packagerClass = Class.forName("org.brailleblaster.ebraille.EBraillePackager")
+        val packagerObject = packagerClass.getField("INSTANCE").get(null)
+        val packageMethod = packagerClass.getMethod(
+            "createEbraillePackage",
+            Path::class.java,
+            List::class.java,
+            String::class.java,
+            iTranslationEngineClass
+        )
+        packageMethod.invoke(packagerObject, outputPath, listOf(htmlDoc), outputPath.name, engine)
+    }
+
+        private fun printCliHelp() {
+                println(
+                        """
+BrailleBlaster command-line usage:
+
+    brailleblaster [input-file] [options]
+
+Options:
+    -h, --help         Show this help and exit.
+    --brf <file>       Export opened document to BRF.
+    --pef <file>       Export opened document to PEF.
+    --pef <file>       Export opened document to PEF.
+    --ebrl <file>      Export opened document to eBraille.
+
+Examples:
+    brailleblaster paragraph_list.docx --brf output.brf
+    brailleblaster book.bbz --pef output.pef
+    brailleblaster book.bbz --ebrl output.ebrl
+
+Notes:
+    - Input file must appear before export options.
+    - Export uses the same default table and page settings used by normal startup.
+""".trimIndent()
+                )
+        }
 
     /**
      *

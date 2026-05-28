@@ -34,6 +34,7 @@ object PandocArchiverLoader : ArchiverFactory.FileLoader {
     @Throws(Exception::class)
     override fun tryLoad(file: Path, fileData: ArchiverFactory.ParseData): Archiver2 {
         val archiver: Archiver2
+        val sourceFile = file.toAbsolutePath()
         val fromFormat: String? = when (fileData.type) {
             ArchiverFactory.Types.DOCX -> "docx+styles+empty_paragraphs"
             ArchiverFactory.Types.EPUB -> "epub"
@@ -45,7 +46,7 @@ object PandocArchiverLoader : ArchiverFactory.FileLoader {
         }
 
         // run pandoc
-        val (bbxFile, fileTabName) = pandocImport(file.toString(), fromFormat)
+        val (bbxFile, fileTabName) = pandocImport(sourceFile.toString(), fromFormat)
         val newFilePath = FileSystems.getDefault().getPath(bbxFile)
 
         // attempt to load file
@@ -53,7 +54,7 @@ object PandocArchiverLoader : ArchiverFactory.FileLoader {
         // set new file name to be set in window tab
         archiver.newPath = Paths.get(fileTabName)
         // Set where the document was really imported from, not the temp bbx.
-        archiver.importedFrom = file
+        archiver.importedFrom = sourceFile
         return archiver
     }
 

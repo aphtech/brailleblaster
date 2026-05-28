@@ -26,3 +26,27 @@ Mac users will need a different command which is:
 ```bash
 java -XstartOnFirstThread -jar brailleblaster.jar
 ```
+
+## Command-line export
+
+BrailleBlaster also supports exporting from the command line using the same page and table settings loaded during normal startup.
+
+Usage:
+```command line
+java -jar brailleblaster.jar --help
+java -jar brailleblaster.jar <input-file> --brf <output-file>
+java -jar brailleblaster.jar <input-file> --pef <output-file>
+java -jar brailleblaster.jar <input-file> --ebrl <output-file>
+```
+
+Examples:
+```command line
+java -jar brailleblaster.jar filename.docx --brf filename.brf
+java -jar brailleblaster.jar filename.bbz --brf filename.brf
+java -jar brailleblaster.jar filename.html --pef filename.pef
+java -jar brailleblaster.jar filename.bbz --ebrl filename.ebrl
+```
+
+Notes:
+- Use `--pef` for PEF export.
+- The input file must be provided first, followed by one or more export options.
