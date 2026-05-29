@@ -17,7 +17,6 @@ package org.brailleblaster.tools
 
 import org.brailleblaster.BBIni
 import org.brailleblaster.archiver2.ArchiverFactory
-import org.brailleblaster.frontmatter.VolumeSaveDialog
 import org.brailleblaster.utils.localization.LocaleHandler
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.IBBMenu
@@ -90,18 +89,10 @@ object SaveAsTool : MenuTool {
     }
 }
 
-object SaveVolumeBrfPefTool : MenuTool {
-    override val topMenu: TopMenu = TopMenu.FILE
-    override val title: String = localeHandler["&SaveVolumeBRFPEF"]
-    override fun onRun(bbData: BBSelectionData) {
-        VolumeSaveDialog(bbData.wpManager.shell, bbData.manager.archiver, bbData.manager.document.settingsManager, bbData.manager.doc, bbData.manager)
-    }
-}
-
 object ExportMenuTool : SubMenuModule {
     override val topMenu = TopMenu.FILE
     override val text = "Export"
-    override val subMenuItems: List<IBBMenu> = listOf(SaveVolumeBrfPefTool)
+    override val subMenuItems: List<IBBMenu> = emptyList()
 }
 object PrintTool : MenuTool {
     override val topMenu: TopMenu = TopMenu.FILE

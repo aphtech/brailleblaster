@@ -22,11 +22,11 @@ import org.brailleblaster.archiver2.ArchiverFactory
 import org.brailleblaster.firstrun.runFirstRunWizard
 import org.brailleblaster.logging.initLogback
 import org.brailleblaster.logging.preLog
+import org.brailleblaster.spi.ExportProvider
 import org.brailleblaster.usage.*
 import org.brailleblaster.userHelp.Project
 import org.brailleblaster.utd.exceptions.NodeException
-import org.brailleblaster.utd.utils.ALL_VOLUMES
-import org.brailleblaster.utd.utils.convertBBX2PEF
+import org.brailleblaster.util.ExportService
 import org.brailleblaster.util.Notify
 import org.brailleblaster.util.NotifyUtils
 import org.brailleblaster.util.SoundManager
@@ -39,14 +39,12 @@ import java.net.URLClassLoader
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.nio.file.StandardOpenOption
 import java.time.Duration
 import java.time.Instant
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 import kotlin.io.path.createDirectories
-import kotlin.io.path.name
 
 /**
  * This class contains the main method. If there are no arguments it passes
@@ -58,13 +56,9 @@ import kotlin.io.path.name
  * you will get "SWTException: Invalid Thread Access"
  */
 object Main {
-    private enum class CliExportFormat {
-        BRF,
-        PEF,
-        EBRL
-    }
+    private data class CliExportTarget(val provider: ExportProvider, val outputPath: Path)
 
-    private data class CliExportTarget(val format: CliExportFormat, val outputPath: Path)
+    private val exportService = ExportService()
 
     var isInitted = false
         private set
@@ -159,14 +153,9 @@ object Main {
         val targets = mutableListOf<CliExportTarget>()
         var i = 0
         while (i < argsToParse.size) {
-            val format = when (argsToParse[i].lowercase(Locale.getDefault())) {
-                "--brf" -> CliExportFormat.BRF
-                "--pef" -> CliExportFormat.PEF
-                "--ebrl" -> CliExportFormat.EBRL
-                else -> {
-                    i++
-                    continue
-                }
+            val provider = exportService.providerByCliOption(argsToParse[i]) ?: run {
+                i++
+                continue
             }
 
             if (i + 1 >= argsToParse.size) {
@@ -174,15 +163,17 @@ object Main {
             }
 
             val outputPath = Paths.get(argsToParse[i + 1])
-            targets.add(CliExportTarget(format, outputPath))
+            targets.add(CliExportTarget(provider, outputPath))
 
             argsToParse.removeAt(i + 1)
             argsToParse.removeAt(i)
         }
 
-        val duplicates = targets.groupBy { it.format }.filterValues { it.size > 1 }.keys
+        val duplicates = targets.groupBy { it.provider.id }.filterValues { it.size > 1 }.keys
         if (duplicates.isNotEmpty()) {
-            throw IllegalArgumentException("Duplicate export options are not allowed: ${duplicates.joinToString(", ")}")
+            throw IllegalArgumentException(
+                "Duplicate export options are not allowed: ${duplicates.joinToString(", ") { "--$it" }}"
+            )
         }
         return targets
     }
@@ -217,21 +208,7 @@ object Main {
             for (target in targets) {
                 val outputPath = target.outputPath.toAbsolutePath()
                 outputPath.parent?.createDirectories()
-
-                when (target.format) {
-                    CliExportFormat.BRF -> engine.toBRF(doc, outputPath.toFile())
-                    CliExportFormat.PEF -> {
-                        Files.newOutputStream(
-                            outputPath,
-                            StandardOpenOption.CREATE,
-                            StandardOpenOption.TRUNCATE_EXISTING,
-                            StandardOpenOption.WRITE
-                        ).use { out ->
-                            convertBBX2PEF(doc, outputPath.fileName.toString().substringBeforeLast('.'), engine, ALL_VOLUMES, out)
-                        }
-                    }
-                    CliExportFormat.EBRL -> exportEbrailleReflective(doc, outputPath, engine)
-                }
+                target.provider.export(manager, outputPath)
             }
         } catch (e: Throwable) {
             LoggerFactory.getLogger(Main::class.java)
@@ -248,26 +225,17 @@ object Main {
         }
     }
 
-    private fun exportEbrailleReflective(doc: nu.xom.Document, outputPath: Path, engine: Any) {
-        val bbx2HtmlClass = Class.forName("org.brailleblaster.ebraille.bbx2html.BBX2HTML")
-        val bbx2HtmlObject = bbx2HtmlClass.getField("INSTANCE").get(null)
-        val convertMethod = bbx2HtmlClass.getMethod("convertBbxToHtml", nu.xom.Document::class.java)
-        val htmlDoc = convertMethod.invoke(bbx2HtmlObject, doc)
-
-        val iTranslationEngineClass = Class.forName("org.brailleblaster.utd.ITranslationEngine")
-        val packagerClass = Class.forName("org.brailleblaster.ebraille.EBraillePackager")
-        val packagerObject = packagerClass.getField("INSTANCE").get(null)
-        val packageMethod = packagerClass.getMethod(
-            "createEbraillePackage",
-            Path::class.java,
-            List::class.java,
-            String::class.java,
-            iTranslationEngineClass
-        )
-        packageMethod.invoke(packagerObject, outputPath, listOf(htmlDoc), outputPath.name, engine)
-    }
-
         private fun printCliHelp() {
+                val exportProviders = exportService.providers.toList()
+                val optionLines = buildString {
+                        appendLine("    -h, --help         Show this help and exit.")
+                        for (provider in exportProviders) {
+                                appendLine("    --${provider.cliOption} <file>      ${provider.cliDescription}")
+                        }
+                }.trimEnd()
+                val exampleLines = exportProviders.joinToString("\n") { provider ->
+                        "    brailleblaster book.bbz --${provider.cliOption} output.${provider.cliOption}"
+                }.ifEmpty { "    brailleblaster paragraph_list.docx" }
                 println(
                         """
 BrailleBlaster command-line usage:
@@ -275,16 +243,10 @@ BrailleBlaster command-line usage:
     brailleblaster [input-file] [options]
 
 Options:
-    -h, --help         Show this help and exit.
-    --brf <file>       Export opened document to BRF.
-    --pef <file>       Export opened document to PEF.
-    --pef <file>       Export opened document to PEF.
-    --ebrl <file>      Export opened document to eBraille.
+${optionLines.prependIndent("    ").removePrefix("    ")}
 
 Examples:
-    brailleblaster paragraph_list.docx --brf output.brf
-    brailleblaster book.bbz --pef output.pef
-    brailleblaster book.bbz --ebrl output.ebrl
+${exampleLines.prependIndent("    ").removePrefix("    ")}
 
 Notes:
     - Input file must appear before export options.

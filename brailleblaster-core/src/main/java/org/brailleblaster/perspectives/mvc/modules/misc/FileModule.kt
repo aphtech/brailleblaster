@@ -50,7 +50,6 @@ class FileModule : SimpleListener {
             //addMenuItem(RecentAutoSavesTool)
             MenuManager.add(SaveTool)
             MenuManager.add(SaveAsTool)
-            MenuManager.add(ExportMenuTool)
             MenuManager.add(PrintTool)
             MenuManager.add(EmbossTool)
             MenuManager.add(BraillePreviewTool)

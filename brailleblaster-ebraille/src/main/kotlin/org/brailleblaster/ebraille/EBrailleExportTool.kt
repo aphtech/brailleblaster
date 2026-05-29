@@ -18,7 +18,6 @@ package org.brailleblaster.ebraille
 import org.brailleblaster.ebraille.bbx2html.BBX2HTML
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
-import org.brailleblaster.perspectives.mvc.modules.views.DebugModule
 import org.brailleblaster.tools.ExportMenuTool
 import org.brailleblaster.tools.MenuTool
 import org.brailleblaster.tools.SubMenuModule
@@ -41,7 +40,5 @@ object EBrailleExportTool : MenuTool {
 object ExportSubMenu : SubMenuModule {
     override val topMenu = ExportMenuTool.topMenu
     override val text = ExportMenuTool.text
-    override val visible: Boolean
-        get() = DebugModule.enabled
     override val subMenuItems = listOf(EBrailleExportTool)
 }

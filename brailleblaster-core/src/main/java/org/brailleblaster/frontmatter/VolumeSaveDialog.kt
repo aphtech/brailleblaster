@@ -70,14 +70,24 @@ class VolumeSaveDialog(
     private val arch: Archiver2,
     private val utdManager: UTDManager,
     private val doc: Document,
-    private val m: Manager
+    private val m: Manager,
+    initialFormat: Format? = null,
+    allowedFormats: Set<Format> = Format.entries.toSet()
 ) {
     private var saveExec = false // To know if the user try to complete the save process
     private val shell: Shell
     private val volumesTable: Table?
-    private var selectedFormat = Format.valueOf(
-        propertyFileManager.getProperty(SETTINGS_FORMAT, Format.BRF.toString())
-    )
+    private val allowedFormats = Format.entries.filter { it in allowedFormats }
+    private var selectedFormat = initialFormat
+        ?.takeIf { it in this.allowedFormats }
+        ?: runCatching {
+            Format.valueOf(propertyFileManager.getProperty(SETTINGS_FORMAT, Format.BRF.toString()))
+        }.getOrDefault(Format.BRF).takeIf { it in this.allowedFormats }
+        ?: this.allowedFormats.first()
+
+    init {
+        require(this.allowedFormats.isNotEmpty()) { "At least one export format must be available." }
+    }
 
     init {
         val volumes = getVolumeElements(doc)
@@ -225,44 +235,38 @@ class VolumeSaveDialog(
             }
 
             //Always prompt for file type to save
-            val formatSelector = Shell(shell, SWT.APPLICATION_MODAL or SWT.DIALOG_TRIM)
-            formatSelector.setLayout(GridLayout(1, false))
-            formatSelector.text = "Format selector"
-
-            val formatBrf = Button(formatSelector, SWT.RADIO)
-            formatBrf.setText("Braille Ready File (BRF)")
-
-            val formatPef = Button(formatSelector, SWT.RADIO)
-            formatPef.setText("Portable Embosser Format (PEF)")
-
-            val submit = Button(formatSelector, SWT.NONE)
-            submit.setText("Submit")
-
-            formatSelector.open()
-            formatSelector.pack()
-
-            // listeners
-            submit.addListener(SWT.Selection) {
-                selectedFormat = if (formatBrf.selection) {
-                    Format.BRF
-                } else if (formatPef.selection) {
-                    Format.PEF
-                } else {
-                    throw UnsupportedOperationException("missing selection")
-                }
+            if (allowedFormats.size == 1) {
+                selectedFormat = allowedFormats.first()
                 doSaveFolder(selectedItems, path)
-                formatSelector.close()
-                if (saveExec)  // if the user press No, shell will remain open
+                if (saveExec) {
                     shell.close()
-            }
-
-            // data
-            when (selectedFormat) {
-                Format.BRF -> {
-                    formatBrf.selection = true
                 }
-                Format.PEF -> {
-                    formatPef.selection = true
+            } else {
+                val formatSelector = Shell(shell, SWT.APPLICATION_MODAL or SWT.DIALOG_TRIM)
+                formatSelector.setLayout(GridLayout(1, false))
+                formatSelector.text = "Format selector"
+
+                val formatButtons = allowedFormats.associateWith { format ->
+                    Button(formatSelector, SWT.RADIO).apply {
+                        text = format.displayName
+                        selection = format == selectedFormat
+                    }
+                }
+
+                val submit = Button(formatSelector, SWT.NONE)
+                submit.setText("Submit")
+
+                formatSelector.open()
+                formatSelector.pack()
+
+                submit.addListener(SWT.Selection) {
+                    selectedFormat = formatButtons.entries.firstOrNull { it.value.selection }?.key
+                        ?: throw UnsupportedOperationException("missing selection")
+                    doSaveFolder(selectedItems, path)
+                    formatSelector.close()
+                    if (saveExec) {
+                        shell.close()
+                    }
                 }
             }
         }
@@ -362,13 +366,13 @@ class VolumeSaveDialog(
                 m.wpManager.shell,
                 SWT.SAVE,
                 fileName,
-                Format.fileDialogNames(),
-                Format.fileDialogExtensions(),
-                Format.entries.indexOf(selectedFormat)
+                Format.fileDialogNames(allowedFormats),
+                Format.fileDialogExtensions(allowedFormats),
+                allowedFormats.indexOf(selectedFormat)
             )
 
             return dialog.open()?.let { filename ->
-                val format: Format = Format.matchExtension(filename, dialog.widget.getFilterIndex())
+                val format: Format = Format.matchExtension(filename, dialog.widget.getFilterIndex(), allowedFormats)
                 format to filename
             }
         }
@@ -382,25 +386,26 @@ class VolumeSaveDialog(
         FINISHED,
     }
 
-    enum class Format(private val extension: String, private val displayName: String) {
+    enum class Format(val extension: String, val displayName: String) {
         BRF("brf", "Braille Ready File"),
         PEF("pef", "Portable Embosser Format");
 
         companion object {
-            fun fileDialogExtensions(): Array<String> = entries.map { value -> "*.${value.extension}" }.toTypedArray()
+            fun fileDialogExtensions(formats: List<Format> = entries.toList()): Array<String> =
+                formats.map { value -> "*.${value.extension}" }.toTypedArray()
 
-            fun fileDialogNames(): Array<String> =
-                entries.map { value -> "${value.displayName} (*.${value.extension})" }.toTypedArray()
+            fun fileDialogNames(formats: List<Format> = entries.toList()): Array<String> =
+                formats.map { value -> "${value.displayName} (*.${value.extension})" }.toTypedArray()
 
-            fun matchExtension(filename: String, fallbackEnumIndex: Int): Format {
-                val result = entries[fallbackEnumIndex]
+            fun matchExtension(filename: String, fallbackEnumIndex: Int, formats: List<Format> = entries.toList()): Format {
+                val result = formats[fallbackEnumIndex]
                 val periodIndex = filename.lastIndexOf('.')
                 if (periodIndex == -1) {
                     log.warn("missing extension {}", filename)
                     log.warn("falling back to value {}", result)
                 } else {
                     val fileExtension = filename.substring(periodIndex + 1)
-                    for (value in entries) {
+                    for (value in formats) {
                         if (value.extension == fileExtension) {
                             return value
                         }
