@@ -16,6 +16,36 @@ mvnw package
 ```
 Once the build finishes you will find the application in brailleblaster-app/target/dist.
 
+### Export plugin build profiles
+
+Export outputs are packaged as optional plugins. By default BRF, PEF, and eBraille export plugins are included.
+
+Export plugin modules:
+
+- brailleblaster-export-brf
+- brailleblaster-export-pef
+- brailleblaster-export-ebraille
+
+- export-brf
+- export-pef
+- export-ebraille
+
+Use maven profiles to include or exclude specific export plugins at build time.
+
+Examples:
+```command line
+# Build without PEF export
+mvnw -pl brailleblaster-app -am package -DskipTests -P !export-pef
+
+# Build with only BRF export
+mvnw -pl brailleblaster-app -am package -DskipTests -P !export-pef,!export-ebraille
+
+# Build with no export plugins
+mvnw -pl brailleblaster-app -am package -DskipTests -P !export-brf,!export-pef,!export-ebraille
+```
+
+If a plugin is excluded from the build, its command-line export option is removed from help output and its export menu entry is not shown in the app.
+
 ## Running a development build
 
 To run a development build of BrailleBlaster, either one you built yourself or from the continuous release, you will need Java21 or higher installed. On Windows or Linux issue the following command from the root of your build:
@@ -29,7 +59,7 @@ java -XstartOnFirstThread -jar brailleblaster.jar
 
 ## Command-line export
 
-BrailleBlaster also supports exporting from the command line using the same page and table settings loaded during normal startup.
+BrailleBlaster supports exporting from the command line using the same page and table settings loaded during normal startup. The available options are discovered from installed export plugins.
 
 Usage:
 ```command line
@@ -48,5 +78,5 @@ java -jar brailleblaster.jar filename.bbz --ebrl filename.ebrl
 ```
 
 Notes:
-- Use `--pef` for PEF export.
 - The input file must be provided first, followed by one or more export options.
+- If an export plugin is not installed in the build, its option will not appear in --help and cannot be used.

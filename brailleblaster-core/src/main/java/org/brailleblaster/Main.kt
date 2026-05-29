@@ -226,27 +226,27 @@ object Main {
     }
 
         private fun printCliHelp() {
-                val exportProviders = exportService.providers.toList()
-                val optionLines = buildString {
-                        appendLine("    -h, --help         Show this help and exit.")
-                        for (provider in exportProviders) {
-                                appendLine("    --${provider.cliOption} <file>      ${provider.cliDescription}")
-                        }
-                }.trimEnd()
-                val exampleLines = exportProviders.joinToString("\n") { provider ->
-                        "    brailleblaster book.bbz --${provider.cliOption} output.${provider.cliOption}"
-                }.ifEmpty { "    brailleblaster paragraph_list.docx" }
-                println(
-                        """
+            val exportProviders = exportService.providers.toList()
+            val optionLines = buildString {
+                appendLine("    -h, --help         Show this help and exit.")
+                for (provider in exportProviders) {
+                    appendLine("    --${provider.cliOption} <file>      ${provider.cliDescription}")
+                }
+            }.trimEnd()
+            val exampleLines = exportProviders.joinToString("\n") { provider ->
+                "    brailleblaster book.bbz --${provider.cliOption} output.${provider.cliOption}"
+            }.ifEmpty { "    brailleblaster paragraph_list.docx" }
+            println(
+                """
 BrailleBlaster command-line usage:
 
     brailleblaster [input-file] [options]
 
 Options:
-${optionLines.prependIndent("    ").removePrefix("    ")}
+    ${optionLines}
 
 Examples:
-${exampleLines.prependIndent("    ").removePrefix("    ")}
+    ${exampleLines}
 
 Notes:
     - Input file must appear before export options.
