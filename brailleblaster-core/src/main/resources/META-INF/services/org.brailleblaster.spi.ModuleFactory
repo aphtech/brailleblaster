@@ -1,1 +1,3 @@
 org.brailleblaster.perspectives.braille.CoreModulesFactory
+org.brailleblaster.export.brf.BrfExportModuleFactory
+org.brailleblaster.export.pef.PefExportModuleFactory
