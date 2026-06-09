@@ -15,26 +15,60 @@
  */
 package org.brailleblaster
 
+import org.brailleblaster.utils.BBData
+import java.nio.file.Path
 import java.util.Properties
+import kotlin.io.path.exists
 import kotlin.io.path.reader
 
 object AppProperties {
-    private val properties: Properties = Properties().apply {
+    private const val ABOUT_PROPERTIES = "about.properties"
+
+    private fun loadProperties(): Properties {
+        val properties = Properties()
+        val candidatePaths = linkedSetOf<Path>()
+
         runCatching {
-            BBIni.bbDistPath.resolve("about.properties").reader(Charsets.UTF_8).use { load(it) }
+            candidatePaths.add(BBIni.bbDistPath.resolve(ABOUT_PROPERTIES))
         }
+        candidatePaths.add(BBData.brailleblasterPath.toPath().resolve(ABOUT_PROPERTIES))
+
+        for (path in candidatePaths) {
+            if (!path.exists()) {
+                continue
+            }
+            runCatching {
+                path.reader(Charsets.UTF_8).use { properties.load(it) }
+                return properties
+            }
+        }
+
+        return properties
     }
-    val displayName = properties.getProperty("app.display-name") ?: "BrailleBlaster"
-    val description = properties.getProperty("app.description") ?: displayName
-    val version = properties.getProperty("app.version") ?: "Unknown"
-    val vendor = properties.getProperty("app.vendor") ?: "Unknown"
-    val buildDate = properties.getProperty("app.build-date") ?: "Unknown"
+
+    private fun property(name: String): String? = loadProperties().getProperty(name)
+
+    val displayName: String
+        get() = property("app.display-name") ?: "BrailleBlaster"
+    val description: String
+        get() = property("app.description") ?: displayName
+    val version: String
+        get() = property("app.version") ?: "Unknown"
+    val vendor: String
+        get() = property("app.vendor") ?: "Unknown"
+    val buildDate: String
+        get() = property("app.build-date") ?: "Unknown"
     @Suppress("Unused")
-    val fsname = properties.getProperty("app.fsname") ?: "brailleblaster"
-    val buildHash: String? = properties.getProperty("app.build-hash")
+    val fsname: String
+        get() = property("app.fsname") ?: "brailleblaster"
+    val buildHash: String?
+        get() = property("app.build-hash")
     @Suppress("Unused")
-    val vcsUrl = properties.getProperty("app.vcs-url") ?: "https://github.com/aphtech/brailleblaster"
+    val vcsUrl: String
+        get() = property("app.vcs-url") ?: "https://github.com/aphtech/brailleblaster"
     @Suppress("Unused")
-    val downloadUrl = properties.getProperty("app.site.base-url") ?: "https://github.com/aphtech/brailleblaster/releases/latest"
-    val websiteUrl = properties.getProperty("app.website-url") ?: "https://www.brailleblaster.org"
+    val downloadUrl: String
+        get() = property("app.site.base-url") ?: "https://github.com/aphtech/brailleblaster/releases/latest"
+    val websiteUrl: String
+        get() = property("app.website-url") ?: "https://www.brailleblaster.org"
 }

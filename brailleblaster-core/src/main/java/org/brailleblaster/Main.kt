@@ -15,6 +15,11 @@
  */
 package org.brailleblaster
 
+import org.apache.commons.cli.DefaultParser
+import org.apache.commons.cli.HelpFormatter
+import org.apache.commons.cli.Option
+import org.apache.commons.cli.Options
+import org.apache.commons.cli.ParseException
 import org.brailleblaster.utils.BBData.brailleblasterPath
 import org.brailleblaster.utils.BBData.userDataPath
 import org.brailleblaster.archiver2.ZipHandles
@@ -33,8 +38,11 @@ import org.brailleblaster.utils.braille.singleThreadedMathCAT
 import org.brailleblaster.wordprocessor.WPManager
 import org.slf4j.LoggerFactory
 import java.io.File
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.net.URLClassLoader
 import java.nio.file.Files
+import java.nio.file.InvalidPathException
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Duration
@@ -53,41 +61,63 @@ import kotlin.system.exitProcess
  * you will get "SWTException: Invalid Thread Access"
  */
 object Main {
+    data class StartupArgs(
+        val fileToOpen: Path?,
+        val remainingArgs: List<String>,
+        val showHelp: Boolean,
+        val showVersion: Boolean,
+    )
+
+    private class StartupCliExitException(val exitCode: Int) : RuntimeException()
+
     var isInitted = false
         private set
 
     @JvmStatic
     fun main(args: Array<String>) {
+        var exitCode = 0
         try {
             start(args)
+        } catch (e: StartupCliExitException) {
+            exitCode = e.exitCode
         } catch (e: Throwable) {
             handleFatalException(e)
+            exitCode = 1
         } finally {
             ZipHandles.closeAll()
         }
-        exitProcess(0)
+        exitProcess(exitCode)
     }
 
     @Throws(Exception::class)
     fun start(args: Array<String>) {
-        val argsToParse = args.toMutableList()
-        var fileToOpen: Path? = null
-        if (argsToParse.isNotEmpty()) {
-            val firstArg = argsToParse[0]
-            try {
-                fileToOpen = Paths.get(firstArg)
-            } catch (e: Exception) {
-                showStartupMessage("Error: The file path '$firstArg' is invalid.")
-                return
-            }
-            if (!Files.exists(fileToOpen)) {
-                val displayName = fileToOpen.fileName?.toString() ?: fileToOpen.toString()
-                showStartupMessage("Error: The file '$displayName' was not found.")
-                return
-            }
-            argsToParse.removeAt(0)
+        val startupArgs = try {
+            parseStartupArgs(args)
+        } catch (e: ParseException) {
+            showStartupMessage("Error: ${e.message}")
+            showStartupMessage(renderStartupUsage())
+            throw StartupCliExitException(2)
+        } catch (e: InvalidPathException) {
+            showStartupMessage("Error: The file path '${e.input}' is invalid.")
+            throw StartupCliExitException(2)
         }
-        initBB(argsToParse)
+
+        if (startupArgs.showHelp) {
+            showStartupMessage(renderStartupUsage())
+            throw StartupCliExitException(0)
+        }
+        if (startupArgs.showVersion) {
+            showStartupMessage(renderVersionText())
+            throw StartupCliExitException(0)
+        }
+
+        val fileToOpen = startupArgs.fileToOpen
+        if (fileToOpen != null && !Files.exists(fileToOpen)) {
+            val displayName = fileToOpen.fileName?.toString() ?: fileToOpen.toString()
+            showStartupMessage("Error: The file '$displayName' was not found.")
+            return
+        }
+        initBB(startupArgs.remainingArgs)
         if (System.getProperty("dumpClassPath", "false") == "true") {
             dumpClassLoader(ClassLoader.getSystemClassLoader())
             //Handle maven-wrapper and presumably other IDE loaders
@@ -95,7 +125,7 @@ object Main {
                 dumpClassLoader(Thread.currentThread().contextClassLoader)
             }
         }
-        if (argsToParse.isNotEmpty()) {
+        if (startupArgs.remainingArgs.isNotEmpty()) {
             LoggerFactory.getLogger(Main::class.java)
                 .error("Unknown extra arguments beyond file: " + args.joinToString(" "))
         }
@@ -135,6 +165,48 @@ object Main {
         }
         println(message)
     }
+
+    @JvmStatic
+    fun parseStartupArgs(args: Array<String>): StartupArgs {
+        val parsed = DefaultParser().parse(startupOptions(), args)
+        val positionalArgs = parsed.argList
+        val fileToOpen = positionalArgs.firstOrNull()?.let { Paths.get(it) }
+        val remainingArgs = if (fileToOpen == null) emptyList() else positionalArgs.drop(1)
+        return StartupArgs(
+            fileToOpen = fileToOpen,
+            remainingArgs = remainingArgs,
+            showHelp = parsed.hasOption("h"),
+            showVersion = parsed.hasOption("v"),
+        )
+    }
+
+    @JvmStatic
+    fun renderStartupUsage(): String {
+        val formatter = HelpFormatter().apply {
+            optionComparator = compareBy<Option> { it.opt ?: it.longOpt ?: "" }
+        }
+        val writer = StringWriter()
+        PrintWriter(writer).use { out ->
+            formatter.printHelp(
+                out,
+                formatter.width,
+                "brailleblaster [options] [input-file]",
+                "Launch BrailleBlaster or print CLI information.",
+                startupOptions(),
+                formatter.leftPadding,
+                formatter.descPadding,
+                ""
+            )
+        }
+        return writer.toString().trimEnd()
+    }
+
+    @JvmStatic
+    fun renderVersionText(): String = "${Project.BB.displayName} ${Project.BB.version}"
+
+    private fun startupOptions(): Options = Options()
+        .addOption(Option("h", "help", false, "Show help"))
+        .addOption(Option("v", "version", false, "Show version"))
 
     /**
      *
