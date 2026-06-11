@@ -188,8 +188,8 @@ object Main {
             formatter.printHelp(
                 out,
                 formatter.width,
-                "brailleblaster [options] [input-file]",
-                "Launch BrailleBlaster or print CLI information.",
+                "${AppProperties.fsname} [options] [input-file]",
+                "Launch ${AppProperties.displayName} or print CLI information.",
                 startupOptions(),
                 formatter.leftPadding,
                 formatter.descPadding,
@@ -199,7 +199,7 @@ object Main {
         return writer.toString().trimEnd()
     }
 
-    fun renderVersionText(): String = "${Project.BB.displayName} ${Project.BB.version}"
+    fun renderVersionText(): String = "${AppProperties.displayName} ${AppProperties.version}"
 
     private fun startupOptions(): Options = Options()
         .addOption(Option("h", "help", false, "Show help"))
