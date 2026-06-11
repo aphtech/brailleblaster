@@ -170,7 +170,7 @@ object Main {
         val parsed = DefaultParser().parse(startupOptions(), args)
         val positionalArgs = parsed.argList
         val fileToOpen = positionalArgs.firstOrNull()?.let { Paths.get(it) }
-        val remainingArgs = if (fileToOpen == null) emptyList() else positionalArgs.drop(1)
+        val remainingArgs = positionalArgs.drop(1)
         return StartupArgs(
             fileToOpen = fileToOpen,
             remainingArgs = remainingArgs,
