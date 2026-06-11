@@ -166,7 +166,6 @@ object Main {
         println(message)
     }
 
-    @JvmStatic
     fun parseStartupArgs(args: Array<String>): StartupArgs {
         val parsed = DefaultParser().parse(startupOptions(), args)
         val positionalArgs = parsed.argList
@@ -180,7 +179,6 @@ object Main {
         )
     }
 
-    @JvmStatic
     fun renderStartupUsage(): String {
         val formatter = HelpFormatter().apply {
             optionComparator = compareBy<Option> { it.opt ?: it.longOpt ?: "" }
@@ -201,7 +199,6 @@ object Main {
         return writer.toString().trimEnd()
     }
 
-    @JvmStatic
     fun renderVersionText(): String = "${Project.BB.displayName} ${Project.BB.version}"
 
     private fun startupOptions(): Options = Options()
