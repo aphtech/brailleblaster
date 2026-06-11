@@ -67,55 +67,53 @@ object Main {
         val showHelp: Boolean,
         val showVersion: Boolean,
     )
-
-    private class StartupCliExitException(val exitCode: Int) : RuntimeException()
-
+    // Tracks whether startup initialization has already run; initBB uses this to prevent double initialization in normal runs.
     var isInitted = false
         private set
 
     @JvmStatic
     fun main(args: Array<String>) {
-        var exitCode = 0
+        // Catch startup failures from argument parsing or launch-time exceptions so they can be reported and the app
+        // can exit cleanly; ParseException and InvalidPathException return code 2, and any other throwable returns 1.
         try {
-            start(args)
-        } catch (e: StartupCliExitException) {
-            exitCode = e.exitCode
+            val exitCode = start(args)
+            if (exitCode != 0) {
+                exitProcess(exitCode)
+            }
         } catch (e: Throwable) {
             handleFatalException(e)
-            exitCode = 1
+            exitProcess(1)
         } finally {
             ZipHandles.closeAll()
         }
-        exitProcess(exitCode)
     }
 
-    @Throws(Exception::class)
-    fun start(args: Array<String>) {
+    fun start(args: Array<String>): Int {
         val startupArgs = try {
             parseStartupArgs(args)
         } catch (e: ParseException) {
             showStartupMessage("Error: ${e.message}")
             showStartupMessage(renderStartupUsage())
-            throw StartupCliExitException(2)
+            return 2
         } catch (e: InvalidPathException) {
             showStartupMessage("Error: The file path '${e.input}' is invalid.")
-            throw StartupCliExitException(2)
+            return 2
         }
 
         if (startupArgs.showHelp) {
             showStartupMessage(renderStartupUsage())
-            throw StartupCliExitException(0)
+            return 0
         }
         if (startupArgs.showVersion) {
             showStartupMessage(renderVersionText())
-            throw StartupCliExitException(0)
+            return 0
         }
 
         val fileToOpen = startupArgs.fileToOpen
         if (fileToOpen != null && !Files.exists(fileToOpen)) {
             val displayName = fileToOpen.fileName?.toString() ?: fileToOpen.toString()
             showStartupMessage("Error: The file '$displayName' was not found.")
-            return
+            return 2
         }
         initBB(startupArgs.remainingArgs)
         if (System.getProperty("dumpClassPath", "false") == "true") {
@@ -150,13 +148,15 @@ object Main {
                     WPManager.createInstance(fileToOpen, usageManager).start()
                 } catch (e: BBNotifyException) {
                     showStartupMessage(e.message)
-                    return@use
+                    // @use 0Exits the use block early and reports a normal exit code after showing the warning.
+                    return@use 0
                 }
                 usageManager.logger.logDurationSeconds(tool = BB_TOOL, duration = Duration.between(bbStartTime, Instant.now()))
                 usageManager.logger.logEnd(tool = BB_TOOL, message = runId.toString())
                 usageManager.reportDataAsync().get()
             }
         }
+        return 0
     }
 
     private fun showStartupMessage(message: String?) {
