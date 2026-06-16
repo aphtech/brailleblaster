@@ -67,10 +67,7 @@ child.project.url.inherit.append.path="false">
         <jaxbruntime.version>4.0.7</jaxbruntime.version>
         <activation.version>1.1</activation.version>
         <swt.platform>win32.win32.x86_64</swt.platform>
-        <swt.version>3.133.0</swt.version>
-        <swt.svg.version>3.132.0</swt.svg.version>
-        <orgeclipsejface.version>3.39.0</orgeclipsejface.version>
-        <org.eclipse.osgi.version>3.24.100</org.eclipse.osgi.version>
+        <swt.version>3.134.0</swt.version>
         <hamcrest.version>2.2</hamcrest.version>
         <testng.version>7.12.0</testng.version>
         <xercesimpl.version>2.12.2</xercesimpl.version>
@@ -239,17 +236,17 @@ child.project.url.inherit.append.path="false">
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.swt.svg</artifactId>
-                <version>${swt.svg.version}</version>
+                <version>3.133.0</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.jface</artifactId>
-                <version>${orgeclipsejface.version}</version>
+                <version>3.39.100</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
-                <artifactId>org.eclipse.osgi</artifactId>
-                <version>${org.eclipse.osgi.version}</version>
+                <artifactId>org.eclipse.equinox.common</artifactId>
+                <version>3.20.400</version>
             </dependency>
             <dependency>
                 <groupId>org.graalvm.polyglot</groupId>

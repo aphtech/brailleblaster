@@ -38,7 +38,6 @@ import org.brailleblaster.perspectives.braille.messages.Sender
 import org.brailleblaster.perspectives.braille.messages.WhitespaceMessage
 import org.brailleblaster.perspectives.mvc.XMLTextCaret
 import org.brailleblaster.perspectives.mvc.events.XMLCaretEvent
-import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.util.WhitespaceUtils.appendLineBreakElement
 import org.brailleblaster.util.WhitespaceUtils.prependLineBreakElement
 import org.brailleblaster.util.WhitespaceUtils.removeLineBreakElements

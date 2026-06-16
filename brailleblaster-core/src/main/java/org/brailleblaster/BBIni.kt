@@ -65,9 +65,7 @@ object BBIni {
                     }
                     argsToParse.removeAt(0)
                     if (option == "-debug") {
-                        val tokens =
-                            argsToParse.removeAt(0).split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                        debugArgs = listOf(*tokens)
+                        debugArgs = argsToParse.removeAt(0).split(",".toRegex()).dropLastWhile { it.isEmpty() }.toList()
                     } else {
                         println("Bad option '$option'")
                     }

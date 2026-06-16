@@ -36,6 +36,7 @@ import org.brailleblaster.util.SoundManager
 import org.brailleblaster.util.WorkingDialog
 import org.brailleblaster.utils.braille.singleThreadedMathCAT
 import org.brailleblaster.wordprocessor.WPManager
+import org.eclipse.jface.dialogs.MessageDialog
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.PrintWriter
@@ -109,11 +110,13 @@ object Main {
             return 0
         }
 
-        val fileToOpen = startupArgs.fileToOpen
-        if (fileToOpen != null && !Files.exists(fileToOpen)) {
-            val displayName = fileToOpen.fileName?.toString() ?: fileToOpen.toString()
-            showStartupMessage("Error: The file '$displayName' was not found.")
-            return 2
+        var fileToOpen = startupArgs.fileToOpen
+        var startupFileOpenError: String? = null
+        if (fileToOpen != null) {
+            startupFileOpenError = validateStartupFile(fileToOpen)
+            if (startupFileOpenError != null) {
+                fileToOpen = null
+            }
         }
         initBB(startupArgs.remainingArgs)
         if (System.getProperty("dumpClassPath", "false") == "true") {
@@ -145,11 +148,31 @@ object Main {
                 val bbStartTime = Instant.now()
                 usageManager.logger.logStart(tool = BB_TOOL, message = runId.toString())
                 try {
+                    if (startupFileOpenError != null && !showFileOpenErrorDialog(startupFileOpenError)) {
+                        return 1
+                    }
                     WPManager.createInstance(fileToOpen, usageManager).start()
                 } catch (e: BBNotifyException) {
-                    showStartupMessage(e.message)
-                    // @use 0Exits the use block early and reports a normal exit code after showing the warning.
-                    return@use 0
+                    if (fileToOpen == null) {
+                        showStartupMessage(e.message)
+                        return 0
+                    }
+                    val errorMessage = buildFileOpenErrorMessage(fileToOpen.toString(), e.message)
+                    if (showFileOpenErrorDialog(errorMessage)) {
+                        WPManager.createInstance(null, usageManager).start()
+                    } else {
+                        return 1
+                    }
+                } catch (e: Exception) {
+                    if (fileToOpen == null) {
+                        throw e
+                    }
+                    val errorMessage = buildFileOpenErrorMessage(fileToOpen.toString(), e.message)
+                    if (showFileOpenErrorDialog(errorMessage)) {
+                        WPManager.createInstance(null, usageManager).start()
+                    } else {
+                        return 1
+                    }
                 }
                 usageManager.logger.logDurationSeconds(tool = BB_TOOL, duration = Duration.between(bbStartTime, Instant.now()))
                 usageManager.logger.logEnd(tool = BB_TOOL, message = runId.toString())
@@ -157,6 +180,41 @@ object Main {
             }
         }
         return 0
+    }
+
+    private fun validateStartupFile(fileToOpen: Path): String? {
+        return try {
+            when {
+                !Files.exists(fileToOpen) -> buildFileOpenErrorMessage(fileToOpen.toString(), "The file was not found.")
+                Files.isDirectory(fileToOpen) -> buildFileOpenErrorMessage(fileToOpen.toString(), "The path points to a directory, not a file.")
+                !Files.isReadable(fileToOpen) -> buildFileOpenErrorMessage(fileToOpen.toString(), "The file cannot be read.")
+                else -> null
+            }
+        } catch (e: SecurityException) {
+            buildFileOpenErrorMessage(fileToOpen.toString(), e.message)
+        }
+    }
+
+    private fun buildFileOpenErrorMessage(filePath: String, cause: String?): String {
+        val sanitizedCause = cause?.trim().orEmpty()
+        return if (sanitizedCause.isEmpty()) {
+            "Failed to open file '$filePath'."
+        } else {
+            "Failed to open file '$filePath'. $sanitizedCause"
+        }
+    }
+
+    private fun showFileOpenErrorDialog(message: String): Boolean {
+        val dialog = MessageDialog(
+            WPManager.display.activeShell,
+            "Unable to Open File",
+            null,
+            message,
+            MessageDialog.ERROR,
+            arrayOf("Continue", "Exit"),
+            0
+        )
+        return dialog.open() == 0
     }
 
     private fun showStartupMessage(message: String?) {
@@ -209,7 +267,6 @@ object Main {
      *
      * @param argsToParse Arguments that will be removed from list when parsed
      */
-    @JvmOverloads
     fun initBB(argsToParse: List<String>, initBBIni: Boolean = true) {
         if (isInitted && !BBIni.debugging) throw RuntimeException("Do not call init twice")
         val bbPath = brailleblasterPath
