@@ -15,11 +15,7 @@
  */
 package org.brailleblaster
 
-import org.apache.commons.cli.DefaultParser
-import org.apache.commons.cli.HelpFormatter
-import org.apache.commons.cli.Option
-import org.apache.commons.cli.Options
-import org.apache.commons.cli.ParseException
+import picocli.CommandLine
 import org.brailleblaster.utils.BBData.brailleblasterPath
 import org.brailleblaster.utils.BBData.userDataPath
 import org.brailleblaster.archiver2.ZipHandles
@@ -92,7 +88,7 @@ object Main {
     fun start(args: Array<String>): Int {
         val startupArgs = try {
             parseStartupArgs(args)
-        } catch (e: ParseException) {
+        } catch (e: CommandLine.ParameterException) {
             showStartupMessage("Error: ${e.message}")
             showStartupMessage(renderStartupUsage())
             return 2
@@ -225,43 +221,45 @@ object Main {
     }
 
     fun parseStartupArgs(args: Array<String>): StartupArgs {
-        val parsed = DefaultParser().parse(startupOptions(), args)
-        val positionalArgs = parsed.argList
-        val fileToOpen = positionalArgs.firstOrNull()?.let { Paths.get(it) }
-        val remainingArgs = positionalArgs.drop(1)
+        val cli = CliArgs()
+        CommandLine(cli).parseArgs(*args)
+        val fileToOpen = cli.inputFile?.let { Paths.get(it) }
         return StartupArgs(
             fileToOpen = fileToOpen,
-            remainingArgs = remainingArgs,
-            showHelp = parsed.hasOption("h"),
-            showVersion = parsed.hasOption("v"),
+            remainingArgs = cli.extraArgs,
+            showHelp = cli.showHelp,
+            showVersion = cli.showVersion,
         )
     }
 
     fun renderStartupUsage(): String {
-        val formatter = HelpFormatter().apply {
-            optionComparator = compareBy<Option> { it.opt ?: it.longOpt ?: "" }
-        }
         val writer = StringWriter()
-        PrintWriter(writer).use { out ->
-            formatter.printHelp(
-                out,
-                formatter.width,
-                "${AppProperties.fsname} [options] [input-file]",
-                "Launch ${AppProperties.displayName} or print CLI information.",
-                startupOptions(),
-                formatter.leftPadding,
-                formatter.descPadding,
-                ""
-            )
-        }
+        CommandLine(CliArgs()).also { cmd ->
+            cmd.commandName = AppProperties.fsname
+        }.usage(PrintWriter(writer))
         return writer.toString().trimEnd()
     }
 
     fun renderVersionText(): String = "${AppProperties.displayName} ${AppProperties.version}"
 
-    private fun startupOptions(): Options = Options()
-        .addOption(Option("h", "help", false, "Show help"))
-        .addOption(Option("v", "version", false, "Show version"))
+    @CommandLine.Command(
+        description = ["Launch BrailleBlaster or print CLI information."],
+        mixinStandardHelpOptions = false,
+        sortOptions = false
+    )
+    private class CliArgs {
+        @CommandLine.Option(names = ["-h", "--help"], description = ["Show help"])
+        var showHelp: Boolean = false
+
+        @CommandLine.Option(names = ["-v", "--version"], description = ["Show version"])
+        var showVersion: Boolean = false
+
+        @CommandLine.Parameters(index = "0", arity = "0..1", paramLabel = "<input-file>", description = ["File to open"])
+        var inputFile: String? = null
+
+        @CommandLine.Parameters(index = "1..*", hidden = true)
+        var extraArgs: List<String> = emptyList()
+    }
 
     /**
      *

@@ -15,7 +15,7 @@
  */
 package org.brailleblaster
 
-import org.apache.commons.cli.ParseException
+import picocli.CommandLine
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertFalse
 import org.testng.Assert.assertTrue
@@ -40,7 +40,7 @@ class MainCliParsingTest {
 
     @Test
     fun parseUnknownOption() {
-        expectThrows(ParseException::class.java) {
+        expectThrows(CommandLine.ParameterException::class.java) {
             Main.parseStartupArgs(arrayOf("--not-a-real-option"))
         }
     }
