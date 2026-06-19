@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright (C) 2025 American Printing House for the Blind
  *
  * This program is free software: you can redistribute it and/or modify it
@@ -58,12 +58,6 @@ import kotlin.system.exitProcess
  * you will get "SWTException: Invalid Thread Access"
  */
 object Main {
-    data class StartupArgs(
-        val fileToOpen: Path?,
-        val remainingArgs: List<String>,
-        val showHelp: Boolean,
-        val showVersion: Boolean,
-    )
     // Tracks whether startup initialization has already run; initBB uses this to prevent double initialization in normal runs.
     var isInitted = false
         private set
@@ -106,7 +100,7 @@ object Main {
             return 0
         }
 
-        var fileToOpen = startupArgs.fileToOpen
+        var fileToOpen = startupArgs.fileToOpen()
         var startupFileOpenError: String? = null
         if (fileToOpen != null) {
             startupFileOpenError = validateStartupFile(fileToOpen)
@@ -221,21 +215,15 @@ object Main {
     }
 
     fun parseStartupArgs(args: Array<String>): StartupArgs {
-        val cli = CliArgs()
-        CommandLine(cli).parseArgs(*args)
-        val fileToOpen = cli.inputFile?.let { Paths.get(it) }
-        return StartupArgs(
-            fileToOpen = fileToOpen,
-            remainingArgs = cli.extraArgs,
-            showHelp = cli.showHelp,
-            showVersion = cli.showVersion,
-        )
+        val startupArgs = StartupArgs()
+        CommandLine(startupArgs).parseArgs(*args)
+        return startupArgs
     }
 
     fun renderStartupUsage(): String {
         val writer = StringWriter()
-        CommandLine(CliArgs()).also { cmd ->
-            cmd.commandName = AppProperties.fsname
+        CommandLine(StartupArgs()).apply {
+            commandName = AppProperties.fsname
         }.usage(PrintWriter(writer))
         return writer.toString().trimEnd()
     }
@@ -247,18 +235,33 @@ object Main {
         mixinStandardHelpOptions = false,
         sortOptions = false
     )
-    private class CliArgs {
-        @CommandLine.Option(names = ["-h", "--help"], description = ["Show help"])
+    class StartupArgs {
+        @CommandLine.Option(
+            names = ["-h", "--help"],
+            usageHelp = true,
+            description = ["Show help and exit"]
+        )
         var showHelp: Boolean = false
 
-        @CommandLine.Option(names = ["-v", "--version"], description = ["Show version"])
+        @CommandLine.Option(
+            names = ["-v", "-V", "--version"],
+            versionHelp = true,
+            description = ["Show version and exit"]
+        )
         var showVersion: Boolean = false
 
-        @CommandLine.Parameters(index = "0", arity = "0..1", paramLabel = "<input-file>", description = ["File to open"])
+        @CommandLine.Parameters(
+            index = "0",
+            arity = "0..1",
+            paramLabel = "<input-file>",
+            description = ["File to open"]
+        )
         var inputFile: String? = null
 
         @CommandLine.Parameters(index = "1..*", hidden = true)
-        var extraArgs: List<String> = emptyList()
+        var remainingArgs: List<String> = emptyList()
+
+        fun fileToOpen(): Path? = inputFile?.let { Paths.get(it) }
     }
 
     /**
