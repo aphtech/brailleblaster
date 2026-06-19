@@ -226,7 +226,7 @@
             </xsl:for-each>
         </xsl:variable>
         <xsl:if test="$result != ''">
-            <xsl:value-of select="substring($result, 2)"/>
+            <xsl:value-of select="$result"/>
         </xsl:if>
     </xsl:template>
     <xsl:template name="functionArgElement">

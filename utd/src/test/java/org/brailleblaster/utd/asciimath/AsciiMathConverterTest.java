@@ -49,10 +49,10 @@ public class AsciiMathConverterTest {
 	@DataProvider(name="conversionsProvider")
 	public Iterator<Object[]> conversionsProvider() {
 		List<Object[]> data = new ArrayList<>();
-		data.add(new Object[] {"`a^2 + b^2`", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msup><mi>a</mi><mn>2</mn></msup><mo>+</mo><msup><mi>b</mi><mn>2</mn></msup></math>"});
-		data.add(new Object[] {"   `a^2 + b^2`    ", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msup><mi>a</mi><mn>2</mn></msup><mo>+</mo><msup><mi>b</mi><mn>2</mn></msup></math>"});
-		data.add(new Object[] {"`sqrt(x^2 + y^2)`", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msqrt><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msup><mi>y</mi><mn>2</mn></msup></mrow></msqrt></math>"});
-		data.add(new Object[] {"`sqrt(x^2 + y^2)`", """
+		data.add(new Object[] {"`a^2+b^2`", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msup><mi>a</mi><mn>2</mn></msup><mo>+</mo><msup><mi>b</mi><mn>2</mn></msup></math>"});
+		data.add(new Object[] {"   `a^2+b^2`    ", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msup><mi>a</mi><mn>2</mn></msup><mo>+</mo><msup><mi>b</mi><mn>2</mn></msup></math>"});
+		data.add(new Object[] {"`sqrt(x^2+y^2)`", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msqrt><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><msup><mi>y</mi><mn>2</mn></msup></mrow></msqrt></math>"});
+		data.add(new Object[] {"`sqrt(x^2+y^2)`", """
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <msqrt><mrow>
     <msup>
@@ -66,10 +66,10 @@ public class AsciiMathConverterTest {
     </msup>
   </mrow></msqrt>
 </math>"""});
-		data.add(new Object[] {"`fr a`", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle mathvariant=\"fraktur\"><mi>a</mi></mstyle></math>"});
+		data.add(new Object[] {"`fra`", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle mathvariant=\"fraktur\"><mi>a</mi></mstyle></math>"});
 		return data.iterator();
 	}
-	@Test(dataProvider="conversionsProvider", enabled = false)
+	@Test(dataProvider="conversionsProvider")
 	public void basicConvertToAsciiMath(String asciiMath, String mathml) {
 		String expected = asciiMath.trim();
 		Builder builder = new Builder();

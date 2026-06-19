@@ -213,25 +213,16 @@ object AsciiMathConverter : AutoCloseable {
     }
 
     private fun transformFromMathML(n: Node, includeMathMarkers: Boolean): String {
-        val resultNodes: Nodes
-        val resultString = StringBuilder()
         val mathMarker = if (includeMathMarkers) "`" else ""
         transformer.setParameter("beginMathSymbol", mathMarker)
         transformer.setParameter("endMathSymbol", mathMarker)
-        try {
-            resultNodes = transformer.transform(Nodes(n))
+        val resultNodes: Nodes = try {
+            transformer.transform(Nodes(n))
         } catch (e: XSLException) {
             throw RuntimeException("Problem transforming document", e)
         }
-        for (i in 0 until resultNodes.size()) {
-            val r = resultNodes[i]
-            if (r is Text) {
-                resultString.append(r.value)
-            } else {
-                throw RuntimeException("The result from transforming is not pure ASCIIMath")
-            }
-        }
-        return resultString.toString()
+        require(resultNodes.all { it is Text }) { "The result from transforming is not pure ASCIIMath" }
+        return resultNodes.joinToString(separator = "") { it.value }
     }
 
     init {
