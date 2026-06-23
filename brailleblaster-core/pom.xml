@@ -58,6 +58,10 @@
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>
         </dependency>
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli</artifactId>
+        </dependency>
         <!-- Braille Translation -->
         <dependency>
             <groupId>org.brailleblaster</groupId>

@@ -32,6 +32,12 @@ import org.brailleblaster.util.WorkingDialog
 import org.brailleblaster.utils.braille.singleThreadedMathCAT
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.jface.dialogs.MessageDialog
+import picocli.CommandLine
+import picocli.CommandLine.Command
+import picocli.CommandLine.IVersionProvider
+import picocli.CommandLine.Option
+import picocli.CommandLine.Parameters
+import picocli.CommandLine.Unmatched
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.net.URLClassLoader
@@ -73,15 +79,15 @@ object Main {
     }
 
     fun start(args: Array<String>) {
-        val argsToParse = args.toMutableList()
+        val parsedArgs = parseStartupArgs(args) ?: return
+        val argsToParse = parsedArgs.argsToParse.toMutableList()
         var fileToOpen: Path? = null
         var startupFileOpenError: String? = null
-        if (argsToParse.isNotEmpty()) {
-            val firstArg = argsToParse[0]
+        parsedArgs.inputFile?.let { inputFile ->
             try {
-                fileToOpen = Paths.get(firstArg)
+                fileToOpen = Paths.get(inputFile)
             } catch (e: Exception) {
-                startupFileOpenError = buildFileOpenErrorMessage(firstArg, "The file path is invalid.")
+                startupFileOpenError = buildFileOpenErrorMessage(inputFile, "The file path is invalid.")
                 fileToOpen = null
             }
             if (fileToOpen != null) {
@@ -90,7 +96,6 @@ object Main {
                     fileToOpen = null
                 }
             }
-            argsToParse.removeAt(0)
         }
         initBB(argsToParse)
         if (System.getProperty("dumpClassPath", "false") == "true") {
@@ -155,6 +160,68 @@ object Main {
                 usageManager.logger.logEnd(tool = BB_TOOL, message = runId.toString())
                 usageManager.reportDataAsync().get()
             }
+        }
+    }
+
+    private fun parseStartupArgs(args: Array<String>): ParsedStartupArgs? {
+        val command = BrailleBlasterRootCommand()
+        val commandLine = CommandLine(command)
+        commandLine.commandName = AppProperties.fsname
+        commandLine.isUnmatchedArgumentsAllowed = true
+
+        val parseResult = try {
+            commandLine.parseArgs(*args)
+        } catch (e: CommandLine.ParameterException) {
+            e.commandLine.err.println(e.message)
+            e.commandLine.usage(e.commandLine.err)
+            startupExitCode = 2
+            return null
+        }
+
+        if (CommandLine.printHelpIfRequested(parseResult)) {
+            return null
+        }
+
+        return ParsedStartupArgs(command.inputFile, command.unmatched)
+    }
+
+    private data class ParsedStartupArgs(
+        val inputFile: String?,
+        val argsToParse: List<String>
+    )
+
+    @Command(
+        name = "brailleblaster",
+        description = ["Launch BrailleBlaster."],
+        versionProvider = MainVersionProvider::class
+    )
+    private class BrailleBlasterRootCommand {
+        @Option(names = ["-h", "--help"], usageHelp = true, description = ["Show this help message and exit."])
+        var helpRequested: Boolean = false
+
+        @Option(
+            names = ["-v", "--version"],
+            versionHelp = true,
+            description = ["Print version information and exit."]
+        )
+        var versionRequested: Boolean = false
+
+        @Parameters(
+            index = "0",
+            arity = "0..1",
+            paramLabel = "<input-file>",
+            description = ["File to open"]
+        )
+        var inputFile: String? = null
+
+        @Unmatched
+        var unmatched: List<String> = emptyList()
+    }
+
+    class MainVersionProvider : IVersionProvider {
+        override fun getVersion(): Array<String> {
+            val buildHash = AppProperties.buildHash ?: "Unknown"
+            return arrayOf("${AppProperties.displayName} ${AppProperties.version} commit: $buildHash built: ${AppProperties.buildDate}")
         }
     }
 

@@ -46,7 +46,7 @@ child.project.url.inherit.append.path="false">
         <app.vendor-fsname>aph</app.vendor-fsname>
         <app.contact-email>cs@aph.org</app.contact-email>
         <app.rdns-name>org.aph.brailleblaster</app.rdns-name>
-        <revision>3.2.1</revision>
+        <revision>3.2.2</revision>
         <sha1/>
         <changelist>-SNAPSHOT</changelist>
         <maven.compiler.release>21</maven.compiler.release>
@@ -54,6 +54,7 @@ child.project.url.inherit.append.path="false">
         <kotlin.version>2.4.0</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <serialization.version>1.11.0</serialization.version>
+        <picocli.version>4.7.7</picocli.version>
         <jetbrains.annotations.version>26.1.0</jetbrains.annotations.version>
         <slf4j.version>2.0.17</slf4j.version>
         <mathcat4j.version>1.0.3</mathcat4j.version>
@@ -64,7 +65,7 @@ child.project.url.inherit.append.path="false">
         <jaxbruntime.version>4.0.9</jaxbruntime.version>
         <activation.version>1.1</activation.version>
         <swt.platform>win32.win32.x86_64</swt.platform>
-        <swt.version>3.134.0</swt.version>
+        <swt.version>3.132.0</swt.version>
         <hamcrest.version>2.2</hamcrest.version>
         <testng.version>7.12.0</testng.version>
         <xercesimpl.version>2.12.2</xercesimpl.version>
@@ -74,7 +75,7 @@ child.project.url.inherit.append.path="false">
         <mockitocore.version>5.23.0</mockitocore.version>
         <orgeclipseswtbotswtfinder.version>f5b2edaee2</orgeclipseswtbotswtfinder.version>
 
-        <pandoc.version>3.6.4</pandoc.version>
+        <pandoc.version>3.10</pandoc.version>
     </properties>
 
 
@@ -229,7 +230,7 @@ child.project.url.inherit.append.path="false">
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.swt.svg</artifactId>
-                <version>3.133.0</version>
+                <version>3.131.0</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
@@ -366,6 +367,11 @@ child.project.url.inherit.append.path="false">
                 <groupId>org.jcommander</groupId>
                 <artifactId>jcommander</artifactId>
                 <version>3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>info.picocli</groupId>
+                <artifactId>picocli</artifactId>
+                <version>${picocli.version}</version>
             </dependency>
             <dependency>
                 <groupId>xml-apis</groupId>
