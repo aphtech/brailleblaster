@@ -235,12 +235,12 @@ child.project.url.inherit.append.path="false">
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.jface</artifactId>
-                <version>3.39.100</version>
+                <version>3.38.100</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.equinox.common</artifactId>
-                <version>3.20.400</version>
+                <version>3.20.300</version>
             </dependency>
             <dependency>
                 <groupId>org.graalvm.polyglot</groupId>
