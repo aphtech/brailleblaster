@@ -450,6 +450,7 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
     }
 
     fun setCurrent(pos: Int) {
+        // Resolve the incoming view offset to the nearest mapped text element.
         val tmeIndex = manager.mapList.findClosest(
             pos,
             manager.mapList.current,
@@ -458,16 +459,25 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
         )
         var tme = manager.mapList[tmeIndex]
         if (isLastInView(tmeIndex)) {
+            // If caret lands on the last visible element, page forward and move to the
+            // first navigable element in the new window to keep keyboard navigation continuous.
             manager.bufferForward()
             if (selection.getSelectionLength() > 0) setSelection(-1, -1)
             var nTme: TextMapElement? = manager.mapList.current
-            while (nTme is TableTextMapElement || nTme is ReadOnlyTableTextMapElement || nTme is FormattingWhiteSpaceElement) {
+            // Skip non-editable/structural elements so XML caret events target real content.
+            while (nTme is TableTextMapElement || nTme is ReadOnlyTableTextMapElement || nTme is FormattingWhiteSpaceElement
+                || nTme is PaintedWhiteSpaceElement || nTme is WhiteSpaceElement || nTme is PageIndicatorTextMapElement
+            ) {
                 nTme = manager.mapList.getNext(manager.mapList.indexOf(nTme), true)
             }
-            while (nTme is PaintedWhiteSpaceElement || nTme is WhiteSpaceElement || nTme is PageIndicatorTextMapElement) {
-                nTme = manager.mapList.getNext(manager.mapList.indexOf(nTme), true)
+            if (nTme == null) {
+            // I had this in for testing my fix but I am nto sure it should be in in normal use.
+//                logger.warn("No navigable TextMapElement found after buffering forward at pos {}", pos)
+                setLocalState(view.caretOffset)
+                return
             }
-            tme = requireNotNull(nTme) { "Problem finding tme" }
+            tme = nTme
+            // Dispatch caret from TREE so model and rendered window stay synchronized after paging.
             val insertPos = calculateTextOffset(tme.getStart(manager.mapList), tme)
             manager.simpleManager.dispatchEvent(
                 XMLCaretEvent(
@@ -476,13 +486,23 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
             )
             setLocalState(view.caretOffset)
         } else if (isFirstInView(tmeIndex)) {
-            //int insertPos = calculateTextOffset(pos, tme);
+            // Mirror the forward-edge logic when navigating before the first visible element:
+            // page backward and select the previous navigable element.
             manager.decrementView()
             if (selection.getSelectionLength() > 0) setSelection(-1, -1)
-            tme = manager.mapList.current
-            while (tme is TableTextMapElement || tme is ReadOnlyTableTextMapElement || tme is FormattingWhiteSpaceElement) {
-                tme = manager.mapList.getPrevious(manager.mapList.indexOf(tme), true)
+            var previousTme: TextMapElement? = manager.mapList.current
+            // Skip table/formatting placeholders that should not become editing targets.
+            while (previousTme is TableTextMapElement || previousTme is ReadOnlyTableTextMapElement || previousTme is FormattingWhiteSpaceElement) {
+                previousTme = manager.mapList.getPrevious(manager.mapList.indexOf(previousTme), true)
             }
+            if (previousTme == null) {
+                        // I had this in for testing my fix but I am nto sure it should be in in normal use.
+//                logger.warn("No navigable TextMapElement found after buffering backward at pos {}", pos)
+                setLocalState(view.caretOffset)
+                return
+            }
+            tme = previousTme
+            // Dispatch caret from TREE after viewport change to re-anchor at document level.
             val insertPos = calculateTextOffset(tme.getStart(manager.mapList), tme)
             manager.simpleManager.dispatchEvent(
                 XMLCaretEvent(Sender.TREE, createNodeCaret(tme, insertPos))
@@ -494,8 +514,10 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
             if (!(tme.getStart(manager.mapList) == pos && pos == view.charCount) //					&&
             //					!(tme instanceof MathMLElement)
             ) {
+                // In normal in-window movement, map view offset to text-node-relative offset.
                 insertPos = calculateTextOffset(pos, tme)
             }
+            // Dispatch from TEXT because no viewport shift occurred; this is intra-view navigation.
             manager.simpleManager.dispatchEvent(
                 XMLCaretEvent(
                     Sender.TEXT, createNodeCaret(tme, insertPos)
