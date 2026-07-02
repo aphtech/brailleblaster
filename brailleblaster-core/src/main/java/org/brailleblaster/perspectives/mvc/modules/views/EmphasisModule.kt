@@ -124,7 +124,8 @@ object EmphasisModule : AbstractModule(), SimpleListener {
                 return
             }
             val currentSelection = manager.currentSelection
-            val modifiedBlocks = currentSelection.selectedBlocks
+            val effectiveSelection = getSelectionOrCurrentWord(currentSelection)
+            val modifiedBlocks = effectiveSelection.selectedBlocks
 
 //		for(Element e: modifiedBlocks){
 //			if (XMLHandler.childrenRecursiveNodeVisitor(e, n -> MathModule.isMath(n)) != null
@@ -136,22 +137,22 @@ object EmphasisModule : AbstractModule(), SimpleListener {
 //		}
             modifiedBlocks.forEach(Consumer { rootRaw -> rootRaw.stripUTDRecursive() })
             //If all of the current selection is emphasized, remove that emphasis. Otherwise, emphasize the selection.
-            val removeEmphasis = isAllEmphasized(currentSelection, emphasisType)
-            if (currentSelection.isSingleNode) {
-                if (currentSelection.start.node is Text) {
-                    if ((currentSelection.end as XMLTextCaret).offset == (currentSelection.start as XMLTextCaret).offset) {
+            val removeEmphasis = isAllEmphasized(effectiveSelection, emphasisType)
+            if (effectiveSelection.isSingleNode) {
+                if (effectiveSelection.start.node is Text) {
+                    if ((effectiveSelection.end as XMLTextCaret).offset == (effectiveSelection.start as XMLTextCaret).offset) {
                         return  // nothing selected, return
                     } else {
                         log.debug("Single node is selected")
                         callback.emphasize(
-                            emphasisType, currentSelection.start.node, currentSelection.start.offset,
-                            currentSelection.end.offset, removeEmphasis
+                            emphasisType, effectiveSelection.start.node, effectiveSelection.start.offset,
+                            effectiveSelection.end.offset, removeEmphasis
                         )
                     }
                 }
                 else {
                     //Element is selected. Apply emphasis to all descendant text nodes
-                    FastXPath.descendant(currentSelection.start.node)
+                    FastXPath.descendant(effectiveSelection.start.node)
                         .filterIsInstance<Text>()
                         .filter { n -> !MathModuleUtils.isMath(n) }
                         .forEach { n ->
@@ -167,20 +168,20 @@ object EmphasisModule : AbstractModule(), SimpleListener {
             }
             else {
                 modifiedBlocks.forEach(Consumer { rootRaw -> rootRaw.stripUTDRecursive() })
-                var startNode: Node? = currentSelection.start.node
+                var startNode: Node? = effectiveSelection.start.node
 
                 //If the last node of the selection is not a text node, find the last text descendant of that node
-                val finalTextNode = getFinalTextNode(currentSelection.end.node)
+                val finalTextNode = getFinalTextNode(effectiveSelection.end.node)
                 var finalTextOffset = NO_OFFSET
-                if (currentSelection.end.node is Text) {
-                    finalTextOffset = (currentSelection.end as XMLTextCaret).offset
+                if (effectiveSelection.end.node is Text) {
+                    finalTextOffset = (effectiveSelection.end as XMLTextCaret).offset
                 }
                 if (startNode is Text && !MathModuleUtils.isMath(startNode)) { //Apply the emphasis to the first node
-                    if ((currentSelection.start as XMLTextCaret).offset != startNode.value.length) {
+                    if ((effectiveSelection.start as XMLTextCaret).offset != startNode.value.length) {
                         startNode = callback.emphasize(
                             emphasisType,
                             startNode,
-                            currentSelection.start.offset,
+                            effectiveSelection.start.offset,
                             NO_OFFSET,
                             removeEmphasis
                         )
@@ -316,6 +317,40 @@ object EmphasisModule : AbstractModule(), SimpleListener {
                 n.stripUTDRecursive()
                 Utils.combineAdjacentTextNodes(n)
             })
+        }
+
+        private fun getSelectionOrCurrentWord(selection: XMLSelection): XMLSelection {
+            if (!selection.isTextNoSelection) {
+                return selection
+            }
+            val start = selection.start as? XMLTextCaret ?: return selection
+            val node = start.node
+            val bounds = getWordBounds(node.value, start.offset) ?: return selection
+            return XMLSelection(XMLTextCaret(node, bounds.first), XMLTextCaret(node, bounds.second))
+        }
+
+        private fun getWordBounds(text: String, caretOffset: Int): Pair<Int, Int>? {
+            if (text.isEmpty()) {
+                return null
+            }
+            var pivot = when {
+                caretOffset < text.length && isWordCharacter(text[caretOffset]) -> caretOffset
+                caretOffset > 0 && isWordCharacter(text[caretOffset - 1]) -> caretOffset - 1
+                else -> return null
+            }
+            var start = pivot
+            while (start > 0 && isWordCharacter(text[start - 1])) {
+                start--
+            }
+            var end = pivot + 1
+            while (end < text.length && isWordCharacter(text[end])) {
+                end++
+            }
+            return if (start < end) Pair(start, end) else null
+        }
+
+        private fun isWordCharacter(ch: Char): Boolean {
+            return ch.isLetterOrDigit() || ch == '\'' || ch == '’'
         }
 
         private fun hasAllEmphasis(node: Node, emphasis: EnumSet<EmphasisType>): Boolean {
