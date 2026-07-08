@@ -77,19 +77,22 @@ open class TableCellTextMapElement : TextMapElement, ITableCell, Uneditable {
             } else if (moveTo == null) continue
             var spacing = ""
             val vPos = moveTo!!.getAttributeValue("vPos").toDouble()
+            val moveToHPos = moveTo.getAttributeValue("hPos")?.toDoubleOrNull()
             if (start == 0) {
                 startingVPos = vPos
                 if (prev != null && prev!!.col == col && prev!!.row == row) {
                     hPos = prev!!.hPos
-                    if (hPos < moveTo.getAttributeValue("hPos").toDouble()) {
+                    // Some move-to nodes in imported content can omit hPos.
+                    // Keep previous hPos and only add spacing when a valid, larger hPos is provided.
+                    if (moveToHPos != null && hPos < moveToHPos) {
                         spacing = "  "
                     }
                 } else {
-                    hPos = moveTo.getAttributeValue("hPos").toDouble()
+                    hPos = moveToHPos ?: 0.0
                 }
                 actualHPos = hPos
             } else {
-                if (moveTo.getAttributeValue("hPos").toDouble() > hPos) {
+                if (moveToHPos != null && moveToHPos > hPos) {
                     spacing = "  "
                 }
             }
@@ -122,8 +125,12 @@ open class TableCellTextMapElement : TextMapElement, ITableCell, Uneditable {
         for (bme in brailleList) {
             if (bme is BrlOnlyBrlMapElement) {
                 if (bme !is RunningHeadBrlMapElement) {
-                    val newGuideDots = GuideDot(bme.hPos, bme.vPos, bme.node)
-                    if (bme.vPos < startingVPos && prev != null) {
+                    // BrlOnly map elements come from Java with nullable position fields.
+                    // Imported documents can omit moveTo hPos/vPos, so fall back to this cell's coordinates.
+                    val guideDotVPos = bme.vPos ?: endingVPos
+                    val guideDotHPos = bme.hPos ?: hPos
+                    val newGuideDots = GuideDot(guideDotHPos, guideDotVPos, bme.node)
+                    if (guideDotVPos < startingVPos && prev != null) {
                         //Edge case where the guide dots in this element are for the previous row
                         while (prev != null && prev!!.row == row && prev!!.col == col) {
                             prev = prev!!.prev
