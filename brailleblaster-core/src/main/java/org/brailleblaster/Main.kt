@@ -191,7 +191,6 @@ object Main {
     )
 
     @Command(
-        name = "brailleblaster",
         description = ["Launch BrailleBlaster."],
         versionProvider = MainVersionProvider::class
     )
