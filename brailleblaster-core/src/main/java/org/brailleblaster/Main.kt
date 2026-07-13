@@ -69,12 +69,12 @@ object Main {
         })
     }
 
-    fun start(inputPath: Path?, args: List<String> = listOf()): Int {
+    fun start(inputPath: Path?, debugArgs: List<String> = listOf()): Int {
         var startupExitCode = 0
         val startupFileOpenError = inputPath?.let { validateStartupFile(it) }
         val fileToOpen: Path? = if (startupFileOpenError == null) inputPath else null
 
-        initBB(args)
+        initBB(debugArgs)
         if (System.getProperty("dumpClassPath", "false") == "true") {
             dumpClassLoader(ClassLoader.getSystemClassLoader())
             //Handle maven-wrapper and presumably other IDE loaders
@@ -181,9 +181,9 @@ object Main {
 
     /**
      *
-     * @param argsToParse Arguments that will be removed from list when parsed
+     * @param debugArgs Arguments that will be removed from list when parsed
      */
-    fun initBB(argsToParse: List<String>, initBBIni: Boolean = true) {
+    fun initBB(debugArgs: List<String>, initBBIni: Boolean = true) {
         if (isInitted && !BBIni.debugging) throw RuntimeException("Do not call init twice")
         val bbPath = brailleblasterPath
         println("BrailleBlaster path: $bbPath")
@@ -202,14 +202,14 @@ object Main {
         }
 
         //Catch any lingering exceptions 
-        //TODO: If the -debug option is passed but BBIni throws an Exception, the dialog will still be shown
+        //TODO: If the --debug option is passed but BBIni throws an Exception, the dialog will still be shown
         //      But on a EU machine they need to see the dialog
         //      Unit tests that use BBIni.setDebuggingEnabled() won't be affected
         val oldHandler = Thread.getDefaultUncaughtExceptionHandler()
         if (!BBIni.debugging) {
             Thread.setDefaultUncaughtExceptionHandler { _: Thread?, e: Throwable -> handleFatalException(e) }
         }
-        if (initBBIni) BBIni.initialize(argsToParse.toMutableList(), bbPath, userPath)
+        if (initBBIni) BBIni.initialize(debugArgs.toList(), bbPath, userPath)
         if (BBIni.debugging) {
             //Hit above mentioned edge case, but BBIni ran succesfully
             Thread.setDefaultUncaughtExceptionHandler(oldHandler)

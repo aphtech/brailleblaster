@@ -29,6 +29,7 @@ import org.testng.collections.Lists;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -191,7 +192,7 @@ public class BBTestInit extends TestListenerAdapter {
 	public static void setupForBenchmarks(String[] args) {
 		BBIni.bootDialogsEnabled = false;
 		BBIni.INSTANCE.initialize(
-				Lists.newArrayList(args),
+				Arrays.asList(args),
 				BBData.INSTANCE.getBrailleblasterPath(),
 				BBData.INSTANCE.getUserDataPath(),
 				new NullPropertyFileManager(USER_SETTINGS_TPL)

@@ -73,7 +73,7 @@ public class BBViewTestRunner extends ViewTestRunner {
         assertTrue(testFile.isFile());
 
         BBIni.setDebuggingEnabled();
-        BBIni.INSTANCE.initialize(Lists.newArrayList("-debug", testFile.getName()), BB_PATH, BB_USER_PATH);
+        BBIni.INSTANCE.initialize(Lists.newArrayList(testFile.getName()), BB_PATH, BB_USER_PATH);
         wpManager = WPManager.createInstance(null);
         doPendingSWTWork();
 
