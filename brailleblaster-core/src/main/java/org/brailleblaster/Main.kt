@@ -15,25 +15,24 @@
  */
 package org.brailleblaster
 
-import org.brailleblaster.utils.BBData.brailleblasterPath
-import org.brailleblaster.utils.BBData.userDataPath
 import org.brailleblaster.archiver2.ZipHandles
 import org.brailleblaster.cli.MainCommand
+import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.firstrun.runFirstRunWizard
 import org.brailleblaster.logging.initLogback
 import org.brailleblaster.logging.preLog
 import org.brailleblaster.usage.*
 import org.brailleblaster.userHelp.Project
-import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.util.Notify
 import org.brailleblaster.util.NotifyUtils
 import org.brailleblaster.util.SoundManager
 import org.brailleblaster.util.WorkingDialog
+import org.brailleblaster.utils.BBData.brailleblasterPath
+import org.brailleblaster.utils.BBData.userDataPath
 import org.brailleblaster.utils.braille.singleThreadedMathCAT
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.jface.dialogs.MessageDialog
-import org.slf4j.LoggerFactory
 import picocli.CommandLine
 import java.io.File
 import java.net.URLClassLoader
@@ -70,23 +69,18 @@ object Main {
         })
     }
 
-    fun start(inputPath: Path?, args: Array<String> = arrayOf()): Int {
+    fun start(inputPath: Path?, args: List<String> = listOf()): Int {
         var startupExitCode = 0
-        val argsToParse = args.toMutableList()
         val startupFileOpenError = inputPath?.let { validateStartupFile(it) }
         val fileToOpen: Path? = if (startupFileOpenError == null) inputPath else null
 
-        initBB(argsToParse)
+        initBB(args)
         if (System.getProperty("dumpClassPath", "false") == "true") {
             dumpClassLoader(ClassLoader.getSystemClassLoader())
             //Handle maven-wrapper and presumably other IDE loaders
             if (ClassLoader.getSystemClassLoader() !== Thread.currentThread().contextClassLoader) {
                 dumpClassLoader(Thread.currentThread().contextClassLoader)
             }
-        }
-        if (argsToParse.isNotEmpty()) {
-            LoggerFactory.getLogger(Main::class.java)
-                .error("Unknown extra arguments beyond file: " + args.joinToString(" "))
         }
         createDefaultBBUsageManager().use { usageManager ->
             // Need to get the display to ensure initialised before the FirstRunWizard
