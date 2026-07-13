@@ -32,6 +32,10 @@
     
     <dependencies>
         <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.github.aphtech.libembosser</groupId>
             <artifactId>libembosser-api</artifactId>
         </dependency>

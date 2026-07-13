@@ -18,6 +18,7 @@ package org.brailleblaster
 import org.brailleblaster.utils.BBData.brailleblasterPath
 import org.brailleblaster.utils.BBData.userDataPath
 import org.brailleblaster.archiver2.ZipHandles
+import org.brailleblaster.cli.MainCommand
 import org.brailleblaster.firstrun.runFirstRunWizard
 import org.brailleblaster.logging.initLogback
 import org.brailleblaster.logging.preLog
@@ -33,11 +34,11 @@ import org.brailleblaster.utils.braille.singleThreadedMathCAT
 import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.jface.dialogs.MessageDialog
 import org.slf4j.LoggerFactory
+import picocli.CommandLine
 import java.io.File
 import java.net.URLClassLoader
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.time.Duration
 import java.time.Instant
 import java.util.*
@@ -56,42 +57,25 @@ import kotlin.system.exitProcess
 object Main {
     var isInitted = false
         private set
-    private var startupExitCode = 0
 
     @JvmStatic
     fun main(args: Array<String>) {
-        startupExitCode = 0
-        try {
-            start(args)
+        exitProcess(try {
+            CommandLine(MainCommand()).setCommandName(AppProperties.fsname).execute(*args)
         } catch (e: Throwable) {
-            startupExitCode = 1
             handleFatalException(e)
+            1
         } finally {
             ZipHandles.closeAll()
-        }
-        exitProcess(startupExitCode)
+        })
     }
 
-    fun start(args: Array<String>) {
+    fun start(inputPath: Path?, args: Array<String> = arrayOf()): Int {
+        var startupExitCode = 0
         val argsToParse = args.toMutableList()
-        var fileToOpen: Path? = null
-        var startupFileOpenError: String? = null
-        if (argsToParse.isNotEmpty()) {
-            val firstArg = argsToParse[0]
-            try {
-                fileToOpen = Paths.get(firstArg)
-            } catch (e: Exception) {
-                startupFileOpenError = buildFileOpenErrorMessage(firstArg, "The file path is invalid.")
-                fileToOpen = null
-            }
-            if (fileToOpen != null) {
-                startupFileOpenError = validateStartupFile(fileToOpen)
-                if (startupFileOpenError != null) {
-                    fileToOpen = null
-                }
-            }
-            argsToParse.removeAt(0)
-        }
+        val startupFileOpenError = inputPath?.let { validateStartupFile(it) }
+        val fileToOpen: Path? = if (startupFileOpenError == null) inputPath else null
+
         initBB(argsToParse)
         if (System.getProperty("dumpClassPath", "false") == "true") {
             dumpClassLoader(ClassLoader.getSystemClassLoader())
@@ -156,6 +140,7 @@ object Main {
                 usageManager.reportDataAsync().get()
             }
         }
+        return startupExitCode
     }
 
     private fun validateStartupFile(fileToOpen: Path): String? {
