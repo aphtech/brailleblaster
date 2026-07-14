@@ -119,7 +119,7 @@ object Main {
                     }
                     val errorMessage = buildFileOpenErrorMessage(fileToOpen.toString(), e.message)
                     if (showFileOpenErrorDialog(errorMessage)) {
-                        action(WPManager.createInstance(null, usageManager))
+                        startupExitCode = action(WPManager.createInstance(null, usageManager))
                     } else {
                         startupExitCode = 1
                         return@use
@@ -130,7 +130,7 @@ object Main {
                     }
                     val errorMessage = buildFileOpenErrorMessage(fileToOpen.toString(), e.message)
                     if (showFileOpenErrorDialog(errorMessage)) {
-                        action(WPManager.createInstance(null, usageManager))
+                        startupExitCode = action(WPManager.createInstance(null, usageManager))
                     } else {
                         startupExitCode = 1
                         return@use
