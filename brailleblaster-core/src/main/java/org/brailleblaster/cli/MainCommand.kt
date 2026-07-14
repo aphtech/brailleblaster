@@ -28,7 +28,7 @@ class MainCommand : Callable<Int> {
     var versionInfoRequested = false
     @CommandLine.Option(names = ["--debug"], hidden = true)
     var debugArgs: String = ""
-    @CommandLine.Parameters(paramLabel = "<input-file>", index = "0", description = ["The file to open"], defaultValue = CommandLine.Option.NULL_VALUE)
+    @CommandLine.Parameters(paramLabel = "<input-file>", index = "0", description = ["The file to open"], arity = "0..1", defaultValue = CommandLine.Option.NULL_VALUE)
     var inputFile: Path? = null
     override fun call(): Int {
         return Main.start(inputFile, debugArgs.split(',').dropLastWhile { it.isEmpty() }.toList())

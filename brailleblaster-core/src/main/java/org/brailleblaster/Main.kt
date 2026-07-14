@@ -16,6 +16,8 @@
 package org.brailleblaster
 
 import org.brailleblaster.archiver2.ZipHandles
+import org.brailleblaster.cli.BrfCommand
+import org.brailleblaster.cli.ExportCommand
 import org.brailleblaster.cli.MainCommand
 import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.firstrun.runFirstRunWizard
@@ -60,7 +62,9 @@ object Main {
     @JvmStatic
     fun main(args: Array<String>) {
         exitProcess(try {
-            CommandLine(MainCommand()).setCommandName(AppProperties.fsname).execute(*args)
+            CommandLine(MainCommand()).setCommandName(AppProperties.fsname).addSubcommand("export", CommandLine(ExportCommand()).apply {
+                addSubcommand("brf", BrfCommand())
+            }).execute(*args)
         } catch (e: Throwable) {
             handleFatalException(e)
             1
