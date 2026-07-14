@@ -31,6 +31,9 @@ class MainCommand : Callable<Int> {
     @CommandLine.Parameters(paramLabel = "<input-file>", index = "0", description = ["The file to open"], arity = "0..1", defaultValue = CommandLine.Option.NULL_VALUE)
     var inputFile: Path? = null
     override fun call(): Int {
-        return Main.start(inputFile, debugArgs.split(',').dropLastWhile { it.isEmpty() }.toList())
+        return Main.start(inputFile, debugArgs.split(',').dropLastWhile { it.isEmpty() }.toList()) {
+            it.start()
+            0
+        }
     }
 }

@@ -73,7 +73,7 @@ object Main {
         })
     }
 
-    fun start(inputPath: Path?, debugArgs: List<String> = listOf()): Int {
+    fun start(inputPath: Path?, debugArgs: List<String> = listOf(), action: (WPManager) -> Int): Int {
         var startupExitCode = 0
         val startupFileOpenError = inputPath?.let { validateStartupFile(it) }
         val fileToOpen: Path? = if (startupFileOpenError == null) inputPath else null
@@ -108,7 +108,7 @@ object Main {
                         startupExitCode = 1
                         return@use
                     }
-                    WPManager.createInstance(fileToOpen, usageManager).start()
+                    startupExitCode = action(WPManager.createInstance(fileToOpen, usageManager))
                 } catch (e: BBNotifyException) {
                     if (fileToOpen == null) {
                         showStartupMessage(e.message)
@@ -116,7 +116,7 @@ object Main {
                     }
                     val errorMessage = buildFileOpenErrorMessage(fileToOpen.toString(), e.message)
                     if (showFileOpenErrorDialog(errorMessage)) {
-                        WPManager.createInstance(null, usageManager).start()
+                        action(WPManager.createInstance(null, usageManager))
                     } else {
                         startupExitCode = 1
                         return@use
@@ -127,7 +127,7 @@ object Main {
                     }
                     val errorMessage = buildFileOpenErrorMessage(fileToOpen.toString(), e.message)
                     if (showFileOpenErrorDialog(errorMessage)) {
-                        WPManager.createInstance(null, usageManager).start()
+                        action(WPManager.createInstance(null, usageManager))
                     } else {
                         startupExitCode = 1
                         return@use
