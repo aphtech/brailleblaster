@@ -136,7 +136,7 @@ public class BBTestRunner {
         } catch (Exception e) {
             throw new RuntimeException("Unable to make debug file", e);
         }
-        BBTestInit.setupForTesting(new String[]{"-debug", debugFile.getAbsolutePath() + "," + debugSaveFile.getAbsolutePath()});
+        BBTestInit.setupForTesting(new String[]{debugFile.getAbsolutePath(), debugSaveFile.getAbsolutePath()});
         assertEquals(BBIni.getDebugFilePath().toString(), debugFile.getAbsolutePath());
         assertEquals(BBIni.getDebugSavePath().toString(), debugSaveFile.getAbsolutePath());
 

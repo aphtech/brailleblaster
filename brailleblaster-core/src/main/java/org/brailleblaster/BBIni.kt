@@ -47,30 +47,14 @@ object BBIni {
      */
     @JvmOverloads
     fun initialize(
-        argsToParse: MutableList<String>,
+        debugArgs: List<String>,
         bbPath: File,
         userbbPath: File,
         propManager: PropertyFileManager? = null
     ): Boolean {
         if (!::impl.isInitialized || debugging) {
-            var debugArgs = listOf<String>()
-            if (argsToParse.isNotEmpty()) {
+            if (debugArgs.isNotEmpty()) {
                 debugging = true
-                // strip off arguments that can be handled here
-                var i = 0
-                while (i < argsToParse.size) {
-                    val option = argsToParse[0]
-                    if (option[0] != '-') {
-                        break
-                    }
-                    argsToParse.removeAt(0)
-                    if (option == "-debug") {
-                        debugArgs = argsToParse.removeAt(0).split(",".toRegex()).dropLastWhile { it.isEmpty() }.toList()
-                    } else {
-                        println("Bad option '$option'")
-                    }
-                    i++
-                }
             }
             impl = BBIniImpl(
                 bbPath.toPath().toAbsolutePath(),
