@@ -26,6 +26,7 @@ import org.brailleblaster.logging.preLog
 import org.brailleblaster.usage.*
 import org.brailleblaster.userHelp.Project
 import org.brailleblaster.utd.exceptions.NodeException
+import org.brailleblaster.util.ExportService
 import org.brailleblaster.util.Notify
 import org.brailleblaster.util.NotifyUtils
 import org.brailleblaster.util.SoundManager
@@ -63,7 +64,9 @@ object Main {
     fun main(args: Array<String>) {
         exitProcess(try {
             CommandLine(MainCommand()).setCommandName(AppProperties.fsname).addSubcommand("export", CommandLine(ExportCommand()).apply {
-                addSubcommand("brf", BrfCommand())
+                for (cmd in ExportService().exporterFactories.flatMap { it.createExporters() }) {
+                    addSubcommand(cmd.id, cmd)
+                }
             }).execute(*args)
         } catch (e: Throwable) {
             handleFatalException(e)
