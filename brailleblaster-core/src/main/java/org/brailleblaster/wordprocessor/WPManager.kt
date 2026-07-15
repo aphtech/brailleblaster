@@ -63,6 +63,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.SplashScreen
 import java.io.IOException
+import java.io.Writer
 import java.nio.file.AccessDeniedException
 import java.nio.file.FileSystemException
 import java.nio.file.NoSuchFileException
@@ -245,7 +246,7 @@ class WPManager private constructor(val usageManager: UsageManager) {
         return dialog.openAutoSaveDialog("Auto Save", recentSaves)
     }
 
-    fun start() {
+    fun startGui() {
         currentManager?.simpleManager?.dispatchEvent(AppStartedEvent(Sender.SIMPLEMANAGER))
         while (!shell.isDisposed) {
             try {

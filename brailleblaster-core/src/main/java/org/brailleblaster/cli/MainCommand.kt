@@ -32,7 +32,7 @@ class MainCommand : Callable<Int> {
     var inputFile: Path? = null
     override fun call(): Int {
         return Main.start(inputFile, debugArgs.split(',').dropLastWhile { it.isEmpty() }.toList()) {
-            it.start()
+            it.startGui()
             0
         }
     }

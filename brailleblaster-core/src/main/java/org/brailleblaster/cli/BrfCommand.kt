@@ -33,17 +33,26 @@ class BrfCommand : Exporter {
     lateinit var outputFile: File
     override fun call(): Int {
         return Main.start(inputFile) {
-            val manager = it.currentManager
-            if (manager != null && !manager.isDefaultFile) {
-                manager.checkForUpdatedViews()
-                manager.waitForFormatting(true)
-                val doc = manager.doc
-                val engine = manager.document.engine
-                engine.toBRF(doc, outputFile)
-                0
-            } else {
-                println("Unable to open input file")
+            try {
+                val manager = it.currentManager
+                if (manager != null && !manager.isDefaultFile) {
+                    manager.checkForUpdatedViews()
+                    manager.waitForFormatting(true)
+                    val doc = manager.doc
+                    val engine = manager.document.engine
+                    engine.toBRF(doc, outputFile)
+                    0
+                } else {
+                    println("Unable to open file")
+                    1
+                }
+            } catch (_: Throwable) {
+                println("There was a problem converting your file to BRF")
                 1
+            } finally {
+                if (!it.isClosed()) {
+                    it.close()
+                }
             }
         }
     }

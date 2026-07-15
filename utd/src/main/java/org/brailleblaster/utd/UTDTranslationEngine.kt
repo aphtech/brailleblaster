@@ -316,8 +316,8 @@ open class UTDTranslationEngine(
     fun toBRF(
         utdDocument: Document,
         writer: Writer,
-        opts: Int,
-        outputPageListener: PageListener,
+        opts: Int = OPTS_DEFAULT,
+        outputPageListener: PageListener = EMPTY_PAGE_LISTENER,
         convertLineEndings: Boolean = false,
         convertToBrfChars: Boolean = false
     ) {
