@@ -41,6 +41,7 @@ class BrfCommand : Exporter {
                     val doc = manager.doc
                     val engine = manager.document.engine
                     engine.toBRF(doc, outputFile)
+                    manager.isDocumentEdited = false
                     0
                 } else {
                     println("Unable to open file")
