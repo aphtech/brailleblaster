@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.ebraille
 
+import nu.xom.Document
 import org.brailleblaster.ebraille.bbx2html.BBX2HTML
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
@@ -22,18 +23,23 @@ import org.brailleblaster.perspectives.mvc.modules.views.DebugModule
 import org.brailleblaster.tools.ExportMenuTool
 import org.brailleblaster.tools.MenuTool
 import org.brailleblaster.tools.SubMenuModule
+import org.brailleblaster.utd.ITranslationEngine
 import org.brailleblaster.wordprocessor.BBFileDialog
 import org.eclipse.swt.SWT
+import java.nio.file.Path
 import kotlin.io.path.Path
-import kotlin.io.path.name
+import kotlin.io.path.nameWithoutExtension
 
+internal fun createEbraille(outputPath: Path, docs: List<Document>, title: String, engine: ITranslationEngine) {
+    val html = docs.map { BBX2HTML.convertBbxToHtml(it) }
+    EBraillePackager.createEbraillePackage(outputPath, html, title = title, engine)
+}
 object EBrailleExportTool : MenuTool {
     override val topMenu = TopMenu.FILE
     override val title = "Export to eBraille"
     override fun onRun(bbData: BBSelectionData) {
         BBFileDialog(bbData.wpManager.shell, SWT.SAVE,  suggestedFileName = null, filterNames = arrayOf("eBraille files"), filterExtensions = arrayOf("*.ebrl")).open()?.let { f ->
-            val html = BBX2HTML.convertBbxToHtml(bbData.manager.doc)
-            EBraillePackager.createEbraillePackage(Path(f), listOf(html),  title = Path(f).name, bbData.manager.simpleManager.utdManager.engine)
+            createEbraille(Path(f), listOf(bbData.manager.doc), Path(f).nameWithoutExtension, bbData.manager.document.engine)
         }
     }
 }
