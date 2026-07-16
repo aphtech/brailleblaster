@@ -21,11 +21,12 @@ import picocli.CommandLine
 import java.io.File
 import java.nio.file.Path
 
+private const val CMD_NAME = "brf"
 private const val DESCRIPTION = "create a BRF"
 
-@CommandLine.Command(name = "brf", description = [DESCRIPTION])
+@CommandLine.Command(name = CMD_NAME, description = [DESCRIPTION])
 class BrfCommand : Exporter {
-    override val id: String = "brf"
+    override val id: String = CMD_NAME
     override val description: String = DESCRIPTION
     @CommandLine.Parameters(paramLabel = "<input-file>", description = ["Input file to convert"])
     lateinit var inputFile: Path

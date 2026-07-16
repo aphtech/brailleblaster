@@ -16,9 +16,10 @@
 package org.brailleblaster.util
 
 import org.brailleblaster.cli.BrfCommand
+import org.brailleblaster.cli.PefCommand
 import org.brailleblaster.spi.Exporter
 import org.brailleblaster.spi.ExporterFactory
 
 class CoreExporterFactory : ExporterFactory {
-    override fun createExporters(): Iterable<Exporter> = listOf(BrfCommand())
+    override fun createExporters(): Iterable<Exporter> = listOf(BrfCommand(), PefCommand())
 }
