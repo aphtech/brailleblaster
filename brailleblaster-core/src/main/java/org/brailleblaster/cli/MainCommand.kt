@@ -22,7 +22,7 @@ import java.util.concurrent.Callable
 
 @CommandLine.Command(versionProvider = VersionProvider::class, description = ["Launches the application in GUI mode"])
 class MainCommand : Callable<Int> {
-    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["display this help message"])
+    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["display this help message"], scope = CommandLine.ScopeType.INHERIT)
     var helpRequested = false
     @CommandLine.Option(names = ["-v", "--version"], versionHelp = true, description = ["display version info"])
     var versionInfoRequested = false

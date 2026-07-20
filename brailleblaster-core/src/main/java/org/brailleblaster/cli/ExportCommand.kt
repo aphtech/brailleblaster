@@ -20,6 +20,4 @@ import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "export", description = ["Convert a document to Braille"])
 class ExportCommand {
-    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true)
-    var helpRequested = false
 }
