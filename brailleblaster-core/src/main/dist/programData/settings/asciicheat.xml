@@ -721,7 +721,7 @@
 	<entry>
 		<entry>~~</entry>
 		<category>relation</category>
-		<name>approximately equal to</name>
+		<name>almost equal to</name>
 		<see>≈</see>
 		<shortcut></shortcut>
 	</entry>
