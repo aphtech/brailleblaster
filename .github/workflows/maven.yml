@@ -43,7 +43,7 @@ jobs:
         cp -a -t brailleblaster-continuous brailleblaster-app/target/dist/*
         zip -r brailleblaster-continuous.zip brailleblaster-continuous
     - name: Upload dist
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: brailleblaster
         path: brailleblaster-continuous.zip
