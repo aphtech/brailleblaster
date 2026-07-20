@@ -652,7 +652,7 @@
 		<entry>&gt;=</entry>
 		<category>relation</category>
 		<name>greater than or equal to</name>
-		<see>≤</see>
+		<see>≥</see>
 		<shortcut></shortcut>
 	</entry>
 	<entry>
