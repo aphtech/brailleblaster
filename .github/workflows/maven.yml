@@ -18,6 +18,9 @@ env:
   BB_VERSION: '3.2.2'
   BB_CHANGELIST: ''
 
+permissions:
+  contents: write
+
 jobs:
   build:
 
