@@ -679,7 +679,7 @@
 	<entry>
 		<entry>!in</entry>
 		<category>relation</category>
-		<name>does not exist</name>
+		<name>not ean lement of</name>
 		<see>∉</see>
 		<shortcut></shortcut>
 	</entry>
