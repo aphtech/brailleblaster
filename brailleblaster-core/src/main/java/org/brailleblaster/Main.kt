@@ -230,7 +230,6 @@ object Main {
      *
      * @param t Exception
      */
-    @JvmStatic
     fun handleFatalException(t: Throwable) {
 
         //Same as before: system prints and suchlike
