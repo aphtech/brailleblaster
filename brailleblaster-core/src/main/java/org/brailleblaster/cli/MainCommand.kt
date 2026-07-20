@@ -22,15 +22,18 @@ import java.util.concurrent.Callable
 
 @CommandLine.Command(versionProvider = VersionProvider::class, description = ["Launches the application in GUI mode"])
 class MainCommand : Callable<Int> {
-    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["display this help message"])
+    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["display this help message"], scope = CommandLine.ScopeType.INHERIT)
     var helpRequested = false
     @CommandLine.Option(names = ["-v", "--version"], versionHelp = true, description = ["display version info"])
     var versionInfoRequested = false
     @CommandLine.Option(names = ["--debug"], hidden = true)
     var debugArgs: String = ""
-    @CommandLine.Parameters(paramLabel = "<input-file>", index = "0", description = ["The file to open"], defaultValue = CommandLine.Option.NULL_VALUE)
+    @CommandLine.Parameters(paramLabel = "<input-file>", index = "0", description = ["The file to open"], arity = "0..1", defaultValue = CommandLine.Option.NULL_VALUE)
     var inputFile: Path? = null
     override fun call(): Int {
-        return Main.start(inputFile, debugArgs.split(',').dropLastWhile { it.isEmpty() }.toList())
+        return Main.start(inputFile, debugArgs.split(',').dropLastWhile { it.isEmpty() }.toList()) {
+            it.startGui()
+            0
+        }
     }
 }

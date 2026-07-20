@@ -705,7 +705,7 @@ public class Manager extends Controller {
             refresh(false);
             Notify.showException("An error occurred. BrailleBlaster has attempted to repair the document.", e);
         } catch (Exception e2) {
-            Main.handleFatalException(e2);
+            Main.INSTANCE.handleFatalException(e2);
         }
     }
 

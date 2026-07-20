@@ -180,7 +180,7 @@ public abstract class ViewTestRunner {
 	 * call this, the UI won't change because SWT hasn't registered 
 	 * you clicked something
 	 * <p>
-	 * This simulates {@link WPManager#start() } but without waiting for more 
+	 * This simulates {@link WPManager#startGui() } but without waiting for more
 	 * input from the OS.
 	 */
 	public static void doPendingSWTWork() {
