@@ -134,6 +134,7 @@ object Main {
             }
         } catch (e: Throwable) {
             handleFatalException(e)
+            startupExitCode = 1
         } finally {
             ZipHandles.closeAll()
         }
