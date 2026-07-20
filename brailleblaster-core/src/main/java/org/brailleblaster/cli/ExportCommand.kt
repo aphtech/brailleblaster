@@ -19,11 +19,7 @@ import picocli.CommandLine
 import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "export", description = ["Convert a document to Braille"])
-class ExportCommand : Callable<Int> {
+class ExportCommand {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true)
     var helpRequested = false
-    override fun call(): Int? {
-        println("Exporting file")
-        return 0
-    }
 }
