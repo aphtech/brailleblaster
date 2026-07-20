@@ -75,7 +75,7 @@ jobs:
             sha: context.sha
           })
     - name: Update continuous release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         name: continuous
         tag_name: continuous
