@@ -65,7 +65,7 @@ jobs:
       with:
         name: brailleblaster
     - name: Update continuous tag
-      uses: actions/github-script@v7
+      uses: actions/github-script@v9
       with:
         script: |
           github.rest.git.updateRef({
