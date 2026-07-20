@@ -672,7 +672,7 @@
 	<entry>
 		<entry>in</entry>
 		<category>relation</category>
-		<name>exists</name>
+		<name>element of</name>
 		<see>∈</see>
 		<shortcut></shortcut>
 	</entry>
