@@ -39,7 +39,7 @@ fun createOpf(items: List<PackageItem>): Document = Document(Element("package", 
     appendChild(Element("metadata", OPF_NS).apply {
         val nowDateTime = LocalDateTime.now(Clock.systemUTC()).truncatedTo(ChronoUnit.SECONDS)
         appendChild(Element("dc:format", DC_NS).apply {
-            appendChild("1.0")
+            appendChild("eBraille 1.0")
         })
         appendChild(Element("dc:date", DC_NS).apply {
             appendChild(DateTimeFormatter.ISO_LOCAL_DATE.format(nowDateTime))
