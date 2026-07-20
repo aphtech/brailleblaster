@@ -16,7 +16,6 @@
 package org.brailleblaster
 
 import org.brailleblaster.archiver2.ZipHandles
-import org.brailleblaster.cli.BrfCommand
 import org.brailleblaster.cli.ExportCommand
 import org.brailleblaster.cli.MainCommand
 import org.brailleblaster.exceptions.BBNotifyException
@@ -26,11 +25,7 @@ import org.brailleblaster.logging.preLog
 import org.brailleblaster.usage.*
 import org.brailleblaster.userHelp.Project
 import org.brailleblaster.utd.exceptions.NodeException
-import org.brailleblaster.util.ExportService
-import org.brailleblaster.util.Notify
-import org.brailleblaster.util.NotifyUtils
-import org.brailleblaster.util.SoundManager
-import org.brailleblaster.util.WorkingDialog
+import org.brailleblaster.util.*
 import org.brailleblaster.utils.BBData.brailleblasterPath
 import org.brailleblaster.utils.BBData.userDataPath
 import org.brailleblaster.utils.braille.singleThreadedMathCAT
@@ -62,84 +57,85 @@ object Main {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        exitProcess(try {
+        exitProcess(
             CommandLine(MainCommand()).setCommandName(AppProperties.fsname).addSubcommand("export", CommandLine(ExportCommand()).apply {
                 for (cmd in ExportService().exporterFactories.flatMap { it.createExporters() }) {
                     addSubcommand(cmd.id, cmd)
                 }
             }).execute(*args)
-        } catch (e: Throwable) {
-            handleFatalException(e)
-            1
-        } finally {
-            ZipHandles.closeAll()
-        })
+        )
     }
 
     fun start(inputPath: Path?, debugArgs: List<String> = listOf(), action: (WPManager) -> Int): Int {
         var startupExitCode = 0
-        val startupFileOpenError = inputPath?.let { validateStartupFile(it) }
-        val fileToOpen: Path? = if (startupFileOpenError == null) inputPath else null
+        try {
+            val startupFileOpenError = inputPath?.let { validateStartupFile(it) }
+            val fileToOpen: Path? = if (startupFileOpenError == null) inputPath else null
 
-        initBB(debugArgs)
-        if (System.getProperty("dumpClassPath", "false") == "true") {
-            dumpClassLoader(ClassLoader.getSystemClassLoader())
-            //Handle maven-wrapper and presumably other IDE loaders
-            if (ClassLoader.getSystemClassLoader() !== Thread.currentThread().contextClassLoader) {
-                dumpClassLoader(Thread.currentThread().contextClassLoader)
-            }
-        }
-        createDefaultBBUsageManager().use { usageManager ->
-            // Need to get the display to ensure initialised before the FirstRunWizard
-            WPManager.display
-            if (runFirstRunWizard(usageManager = usageManager, userSettings = BBIni.propertyFileManager)) {
-                val runId = UUID.randomUUID()
-                usageManager.logger.log(UsageRecord(tool = BB_TOOL, event = "product", message = Project.BB.displayName))
-                usageManager.logger.log(
-                    UsageRecord(
-                        tool = BB_TOOL,
-                        event = "version",
-                        message = Project.BB.version
-                    ))
-                usageManager.logger.log(UsageRecord(tool = BB_TOOL, event = "os", message = System.getProperty("os.name")))
-                usageManager.logger.log(UsageRecord(tool = BB_TOOL, event = "os-version", message = System.getProperty("os.version")))
-                usageManager.startPeriodicDataReporting(0, 5, units = TimeUnit.MINUTES)
-                val bbStartTime = Instant.now()
-                usageManager.logger.logStart(tool = BB_TOOL, message = runId.toString())
-                try {
-                    if (startupFileOpenError != null && !showFileOpenErrorDialog(startupFileOpenError)) {
-                        startupExitCode = 1
-                        return@use
-                    }
-                    startupExitCode = action(WPManager.createInstance(fileToOpen, usageManager))
-                } catch (e: BBNotifyException) {
-                    if (fileToOpen == null) {
-                        showStartupMessage(e.message)
-                        return@use
-                    }
-                    val errorMessage = buildFileOpenErrorMessage(fileToOpen.toString(), e.message)
-                    if (showFileOpenErrorDialog(errorMessage)) {
-                        startupExitCode = action(WPManager.createInstance(null, usageManager))
-                    } else {
-                        startupExitCode = 1
-                        return@use
-                    }
-                } catch (e: Exception) {
-                    if (fileToOpen == null) {
-                        throw e
-                    }
-                    val errorMessage = buildFileOpenErrorMessage(fileToOpen.toString(), e.message)
-                    if (showFileOpenErrorDialog(errorMessage)) {
-                        startupExitCode = action(WPManager.createInstance(null, usageManager))
-                    } else {
-                        startupExitCode = 1
-                        return@use
-                    }
+            initBB(debugArgs)
+            if (System.getProperty("dumpClassPath", "false") == "true") {
+                dumpClassLoader(ClassLoader.getSystemClassLoader())
+                //Handle maven-wrapper and presumably other IDE loaders
+                if (ClassLoader.getSystemClassLoader() !== Thread.currentThread().contextClassLoader) {
+                    dumpClassLoader(Thread.currentThread().contextClassLoader)
                 }
-                usageManager.logger.logDurationSeconds(tool = BB_TOOL, duration = Duration.between(bbStartTime, Instant.now()))
-                usageManager.logger.logEnd(tool = BB_TOOL, message = runId.toString())
-                usageManager.reportDataAsync().get()
             }
+            createDefaultBBUsageManager().use { usageManager ->
+                // Need to get the display to ensure initialised before the FirstRunWizard
+                WPManager.display
+                if (runFirstRunWizard(usageManager = usageManager, userSettings = BBIni.propertyFileManager)) {
+                    val runId = UUID.randomUUID()
+                    usageManager.logger.log(UsageRecord(tool = BB_TOOL, event = "product", message = Project.BB.displayName))
+                    usageManager.logger.log(
+                        UsageRecord(
+                            tool = BB_TOOL,
+                            event = "version",
+                            message = Project.BB.version
+                        ))
+                    usageManager.logger.log(UsageRecord(tool = BB_TOOL, event = "os", message = System.getProperty("os.name")))
+                    usageManager.logger.log(UsageRecord(tool = BB_TOOL, event = "os-version", message = System.getProperty("os.version")))
+                    usageManager.startPeriodicDataReporting(0, 5, units = TimeUnit.MINUTES)
+                    val bbStartTime = Instant.now()
+                    usageManager.logger.logStart(tool = BB_TOOL, message = runId.toString())
+                    try {
+                        if (startupFileOpenError != null && !showFileOpenErrorDialog(startupFileOpenError)) {
+                            startupExitCode = 1
+                            return@use
+                        }
+                        startupExitCode = action(WPManager.createInstance(fileToOpen, usageManager))
+                    } catch (e: BBNotifyException) {
+                        if (fileToOpen == null) {
+                            showStartupMessage(e.message)
+                            return@use
+                        }
+                        val errorMessage = buildFileOpenErrorMessage(fileToOpen.toString(), e.message)
+                        if (showFileOpenErrorDialog(errorMessage)) {
+                            startupExitCode = action(WPManager.createInstance(null, usageManager))
+                        } else {
+                            startupExitCode = 1
+                            return@use
+                        }
+                    } catch (e: Exception) {
+                        if (fileToOpen == null) {
+                            throw e
+                        }
+                        val errorMessage = buildFileOpenErrorMessage(fileToOpen.toString(), e.message)
+                        if (showFileOpenErrorDialog(errorMessage)) {
+                            startupExitCode = action(WPManager.createInstance(null, usageManager))
+                        } else {
+                            startupExitCode = 1
+                            return@use
+                        }
+                    }
+                    usageManager.logger.logDurationSeconds(tool = BB_TOOL, duration = Duration.between(bbStartTime, Instant.now()))
+                    usageManager.logger.logEnd(tool = BB_TOOL, message = runId.toString())
+                    usageManager.reportDataAsync().get()
+                }
+            }
+        } catch (e: Throwable) {
+            handleFatalException(e)
+        } finally {
+            ZipHandles.closeAll()
         }
         return startupExitCode
     }
@@ -257,7 +253,6 @@ object Main {
         Notify.handleFatalException(message, "Fatal Error", t)
     }
 
-    @JvmStatic
     fun deleteExceptionFiles() {
         /*
 		Cleanup old Exception files from previous run
