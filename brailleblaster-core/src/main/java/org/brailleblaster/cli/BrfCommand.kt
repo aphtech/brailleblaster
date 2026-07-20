@@ -18,7 +18,6 @@ package org.brailleblaster.cli
 import org.brailleblaster.Main
 import org.brailleblaster.spi.Exporter
 import picocli.CommandLine
-import java.io.File
 import java.nio.file.Path
 
 private const val CMD_NAME = "brf"
@@ -31,7 +30,7 @@ class BrfCommand : Exporter {
     @CommandLine.Parameters(paramLabel = "<input-file>", description = ["Input file to convert"])
     lateinit var inputFile: Path
     @CommandLine.Parameters(paramLabel = "<output-file>", description = ["File name of the output BRF"])
-    lateinit var outputFile: File
+    lateinit var outputFile: Path
     override fun call(): Int {
         return Main.start(inputFile) {
             try {
@@ -41,7 +40,7 @@ class BrfCommand : Exporter {
                     manager.waitForFormatting(true)
                     val doc = manager.doc
                     val engine = manager.document.engine
-                    engine.toBRF(doc, outputFile)
+                    engine.toBRF(doc, outputFile.toFile())
                     manager.isDocumentEdited = false
                     0
                 } else {

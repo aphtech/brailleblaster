@@ -5,8 +5,9 @@ import org.brailleblaster.spi.Exporter
 import org.brailleblaster.utd.utils.ALL_VOLUMES
 import org.brailleblaster.utd.utils.convertBBX2PEF
 import picocli.CommandLine
-import java.io.File
 import java.nio.file.Path
+import kotlin.io.path.nameWithoutExtension
+import kotlin.io.path.outputStream
 
 private const val CMD_NAME = "pef"
 private const val DESCRIPTION = "Create a PEF"
@@ -20,8 +21,8 @@ class PefCommand : Exporter {
     lateinit var inputFile: Path
 
     @CommandLine.Parameters(paramLabel = "<output-file>", index = "1", description = ["The output file"])
-    lateinit var outputFile: File
-    override fun call(): Int? {
+    lateinit var outputFile: Path
+    override fun call(): Int {
         return Main.start(inputFile) {
             try {
                 val manager = it.currentManager
