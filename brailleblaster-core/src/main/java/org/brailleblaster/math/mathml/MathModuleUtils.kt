@@ -218,7 +218,7 @@ object MathModuleUtils {
     }
 
     fun setASCIIText(node: Element) {
-        val att = Attribute("alttext", toAsciiMath(Nodes(node), true))
+        val att = Attribute("alttext", toAsciiMath(Nodes(node)))
         node.addAttribute(att)
     }
 

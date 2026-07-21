@@ -162,16 +162,16 @@ object AsciiMathConverter : AutoCloseable {
     private var transformer: XSLTransform
     private val amParser: ASCIIMathParser
 
-    fun toAsciiMath(mathml: Nodes, bbSpaces: Boolean): String {
-        return toAsciiMath(mathml, bbSpaces, MathTextFinder.NONE)
+    fun toAsciiMath(mathml: Nodes): String {
+        return toAsciiMath(mathml, MathTextFinder.NONE)
     }
 
-    fun toAsciiMath(mathml: Nodes, bbSpaces: Boolean, includeMathMarkers: Boolean): String {
-        return toAsciiMath(mathml, bbSpaces, includeMathMarkers, MathTextFinder.NONE)
+    fun toAsciiMath(mathml: Nodes, includeMathMarkers: Boolean): String {
+        return toAsciiMath(mathml, includeMathMarkers, MathTextFinder.NONE)
     }
 
-    fun toAsciiMath(mathml: Nodes, bbSpaces: Boolean, vararg finders: MathTextFinder): String {
-        return toAsciiMath(mathml, bbSpaces, false, *finders)
+    fun toAsciiMath(mathml: Nodes, vararg finders: MathTextFinder): String {
+        return toAsciiMath(mathml, false, *finders)
     }
 
     /**
@@ -195,19 +195,15 @@ object AsciiMathConverter : AutoCloseable {
      */
     fun toAsciiMath(
         mathml: Nodes,
-        bbSpaces: Boolean,
         includeMathMarkers: Boolean,
         vararg finders: MathTextFinder
     ): String {
         val resultText = mathml.joinToString(separator = "") { n ->
             finders.mapNotNull { it.findText(n) }
-                .firstOrNull { compareMathML(Nodes(n), toMathML(it, false)) } ?: transformFromMathML(
+                .firstOrNull { compareMathML(Nodes(n), toMathML(it)) } ?: transformFromMathML(
                 n,
                 includeMathMarkers
             )
-        }
-        if (bbSpaces) {
-            return resultText.split("\\\\ ".toRegex()).joinToString(separator = " ") { sub -> sub.replace(" ", "\\ ") }
         }
         return resultText
     }
@@ -352,17 +348,11 @@ object AsciiMathConverter : AutoCloseable {
     @JvmOverloads
     fun toMathML(
         asciiMath: String?,
-        bbSpaces: Boolean,
         addAltText: Boolean = true,
         stripMathMarkers: Boolean = false
     ): Nodes {
         var amStr = asciiMath!!.trim { it <= ' ' }
         var altTextStr = amStr
-        if (bbSpaces) {
-            amStr = Arrays.stream(amStr.split("\\\\ ".toRegex()).toTypedArray())
-                .map { sub: String -> sub.replace(" ", "\\ ") }
-                .collect(Collectors.joining(" "))
-        }
         if (stripMathMarkers) {
             // The ASCIIMath parser's parseMath method does not strip the ` character
             if (amStr.startsWith("`")) {
@@ -397,7 +387,7 @@ object AsciiMathConverter : AutoCloseable {
      * For spatial math formatting in BBV2.  Eventually move to UTD and integrate to PB
      */
     fun asciiToBraille(ascii: String?): String {
-        val nodes = toMathML(ascii, true)
+        val nodes = toMathML(ascii)
         val engine = UTDTranslationEngine()
         engine.brailleSettings.isUseAsciiBraille = true
         val translated = engine.translate(nodes[0])

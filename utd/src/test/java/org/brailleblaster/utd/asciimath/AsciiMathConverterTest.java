@@ -80,7 +80,7 @@ public class AsciiMathConverterTest {
 			throw new RuntimeException("Problem creating test data", e);
 		}
         Element root = doc.getRootElement();
-		String result = converter.toAsciiMath(new Nodes(root), false, true, MathTextFinder.ALTTEXT_ATTRIBUTE);
+		String result = converter.toAsciiMath(new Nodes(root), true, MathTextFinder.ALTTEXT_ATTRIBUTE);
 		assertEquals(result, expected);
 	}
 	@Test(dataProvider="conversionsProvider", enabled = false)
@@ -100,7 +100,7 @@ public class AsciiMathConverterTest {
 		} catch (IOException e1) {
 			throw new RuntimeException("Problem in creating the canonical form of the test data MathML", e1);
 		}
-		Nodes resultNodes = converter.toMathML(asciiMath, false, false, true);
+		Nodes resultNodes = converter.toMathML(asciiMath, false, true);
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < resultNodes.size(); i++) {
 			sb.append(resultNodes.get(i).toXML());
@@ -147,7 +147,7 @@ public class AsciiMathConverterTest {
 	}
 	@Test(dataProvider="asciiMathParserTestsProvider", enabled = false)
 	public void asciiMathParserTest(String asciiMath, String mml) {
-		Nodes actualNodes = converter.toMathML(asciiMath, false, false, true);
+		Nodes actualNodes = converter.toMathML(asciiMath, false, true);
 		assertEquals(actualNodes.size(), 1);
 		String actualStr = actualNodes.get(0).toXML();
 		assertThat(actualStr, CompareMatcher.isSimilarTo(mml).ignoreWhitespace());
@@ -197,7 +197,7 @@ public class AsciiMathConverterTest {
 	@Test(dataProvider="storedASCIIMathProvider", enabled = false)
 	public void testUseStored(String asciiMath, Node mathml, boolean includeMathMarkers, MathTextFinder[] finders) {
 		AsciiMathConverter convert = AsciiMathConverter.INSTANCE;
-		String result = convert.toAsciiMath(new Nodes(mathml), false, includeMathMarkers, finders);
+		String result = convert.toAsciiMath(new Nodes(mathml), includeMathMarkers, finders);
 		assertEquals(result, asciiMath, String.format("Test of ASCIIMath %s against MathML %s", asciiMath, mathml.toXML()));
 	}
 }

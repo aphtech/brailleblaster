@@ -45,7 +45,7 @@ object ASCII2MathML {
     s = s.replace("!UNDEFINED!", "")
     log.debug("Sending " + s.length + " chars to javascript parser")
     log.debug("Sending $s to the javascript parser")
-    val nodes = AsciiMathConverter.toMathML(s, bbSpaces = true, addAltText = true, stripMathMarkers = false)
+    val nodes = AsciiMathConverter.toMathML(s, addAltText = true, stripMathMarkers = false)
     return if (nodes.size() < 1) {
       log.error("Error in translation to MathML.")
       Element("math")

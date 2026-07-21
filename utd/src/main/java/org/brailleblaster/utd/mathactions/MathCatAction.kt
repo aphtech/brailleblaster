@@ -78,7 +78,7 @@ class MathCatAction : IBlockAction {
 }
 
 fun translateAsciiMath(text: String, brailleCode: MathBraileCode): String {
-    return AsciiMathConverter.toMathML(text,true).joinToString(separator = "") { translateMathML(it.toXML(), brailleCode) }
+    return AsciiMathConverter.toMathML(text).joinToString(separator = "") { translateMathML(it.toXML(), brailleCode) }
 }
 private fun translateMathML(mml: String, brailleCode: MathBraileCode): String = try {
         singleThreadedMathCAT {
