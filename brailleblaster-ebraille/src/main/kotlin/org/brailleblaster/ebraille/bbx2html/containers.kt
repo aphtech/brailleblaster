@@ -33,11 +33,11 @@ internal fun Element.processContainer(): Collection<Node> = when (BBX.CONTAINER.
 }
 
 private fun Element.processBox(): org.jsoup.nodes.Element {
-    val boxSymbol = when (style) {
-        "Full Box" -> "\u283f"
-        else -> "\u2836"
+    val (boxSymbol, cssClass) = when (style) {
+        "Full Box" -> "\u283f" to "full-box"
+        else -> "\u2836" to "box"
     }
-    return org.jsoup.nodes.Element("div").attr("type", boxSymbol).appendChildren(processChildren())
+    return org.jsoup.nodes.Element("div").addClass(cssClass).attr("type", boxSymbol).appendChildren(processChildren())
 }
 
 private fun Element.processList(): org.jsoup.nodes.Element =
