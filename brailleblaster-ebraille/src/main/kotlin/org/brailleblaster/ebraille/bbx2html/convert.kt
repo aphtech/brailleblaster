@@ -26,7 +26,7 @@ import org.jsoup.nodes.Node
 object BBX2HTML {
     private val FALLBACK_TEMPLATE = """
             <!DOCTYPE html>
-            <html>
+            <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
             <head></head>
             <body></body>
             </html>
