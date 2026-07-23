@@ -417,12 +417,12 @@ child.project.url.inherit.append.path="false">
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-core</artifactId>
-                <version>1.5.34</version>
+                <version>1.5.38</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.5.34</version>
+                <version>1.5.38</version>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
