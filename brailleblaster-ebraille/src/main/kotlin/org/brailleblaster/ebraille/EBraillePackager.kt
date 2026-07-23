@@ -34,19 +34,53 @@ object EBraillePackager {
             add(ResourceItem("ebraille/css/default.css", it, "text/css"))
         }
     }
-    fun createEbraillePackage(outPath: Path, docs: List<Document>, title: String = "-", translationEngine: ITranslationEngine = UTDTranslationEngine()) {
+    fun createEbraillePackage(
+        outPath: Path,
+        docs: List<Document>,
+        title: String = "-",
+        translationEngine: ITranslationEngine = UTDTranslationEngine(),
+        manifest: EBrailleManifest? = null
+    ) {
         val docItems = docs.mapIndexed { i, doc -> XHtmlItem("ebraille/document${i}.html", doc) }
         val navDoc = XHtmlItem("index.html", NavigationHtml.createNavigationHtml(docItems, title = title, translationEngine = translationEngine), properties = "nav")
-        packageDocument(outPath, docItems + RESOURCE_ITEMS + navDoc)
+        val packageItems = docItems + RESOURCE_ITEMS + navDoc
+        val exportManifest = manifest ?: createManifestForExport(title, packageItems)
+        packageDocument(outPath, packageItems, exportManifest)
     }
-    private fun packageDocument(outPath: Path, packageItems: List<PackageItem>) {
+
+    private fun packageDocument(outPath: Path, packageItems: List<PackageItem>, manifest: EBrailleManifest) {
         ZipArchiveOutputStream(FileChannel.open(outPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE)).use { zos ->
             zos.writeMimetype()
             zos.writeItems(packageItems)
-            zos.writeOpf(packageItems)
+            zos.writeOpf(packageItems, manifest)
             zos.writeContainer()
             zos.closeArchiveEntry()
         }
+    }
+
+    private fun createManifestForExport(title: String, packageItems: List<PackageItem>): EBrailleManifest {
+        val titleValue = title.ifBlank { "-" }
+        val tactileGraphicsValue = deriveTactileGraphics(packageItems)
+        return EBrailleManifest.defaults().copy(
+            title = ManifestValue(titleValue, ManifestValueSource.DERIVED, defaulted = titleValue == "-"),
+            tactileGraphics = ManifestValue(tactileGraphicsValue, ManifestValueSource.DERIVED, defaulted = tactileGraphicsValue == "none")
+        )
+    }
+
+    private fun deriveTactileGraphics(packageItems: List<PackageItem>): String {
+        val byFrequency = packageItems
+            .asSequence()
+            .map { it.mediaType.substringBefore(';').trim().lowercase() }
+            .filter { it.startsWith("image/") }
+            .map { it.substringAfter('/') }
+            .filter { it.isNotBlank() }
+            .groupingBy { it }
+            .eachCount()
+            .entries
+            .sortedWith(compareByDescending<Map.Entry<String, Int>> { it.value }.thenBy { it.key })
+            .map { it.key }
+
+        return if (byFrequency.isEmpty()) "none" else byFrequency.joinToString(" ")
     }
 }
 
@@ -66,9 +100,9 @@ private fun ZipArchiveOutputStream.writeItems(items: List<PackageItem>) {
     }
 }
 
-private fun ZipArchiveOutputStream.writeOpf(docItems: List<PackageItem>) {
+private fun ZipArchiveOutputStream.writeOpf(docItems: List<PackageItem>, manifest: EBrailleManifest) {
     putArchiveEntry(ZipArchiveEntry(OPF_PATH))
-    createXomSerializer(this).write(createOpf(docItems))
+    createXomSerializer(this).write(createOpf(docItems, manifest))
 }
 
 private fun ZipArchiveOutputStream.writeContainer(opfPath: String = OPF_PATH) {
