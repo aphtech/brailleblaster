@@ -31,8 +31,17 @@ import kotlin.io.path.Path
 import kotlin.io.path.nameWithoutExtension
 
 internal fun createEbraille(outputPath: Path, docs: List<Document>, title: String, engine: ITranslationEngine) {
+    val sourceDoc = docs.firstOrNull()
+    val persistedManifest = sourceDoc?.let { EBrailleManifestDocumentStore.load(it) }
+    val titleValue = title.ifBlank { "-" }
+    val stableManifest = (persistedManifest ?: EBrailleManifest.defaults().copy(
+        title = ManifestValue(titleValue, ManifestValueSource.DERIVED, defaulted = titleValue == "-")
+    ))
+
+    sourceDoc?.let { EBrailleManifestDocumentStore.save(it, stableManifest) }
+
     val html = docs.map { BBX2HTML.convertBbxToHtml(it) }
-    EBraillePackager.createEbraillePackage(outputPath, html, title = title, engine)
+    EBraillePackager.createEbraillePackage(outputPath, html, title = title, engine, stableManifest)
 }
 object EBrailleExportTool : MenuTool {
     override val topMenu = TopMenu.FILE

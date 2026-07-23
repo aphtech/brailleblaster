@@ -94,7 +94,7 @@ class EBraillePackagerTest {
     }
 
     @Test
-    fun exportUsesProvidedManifestWhenPassed() {
+    fun exportUsesProvidedStableManifestButRecalculatesVolatileFields() {
         val outFile = Files.createTempFile("ebraille-phase2-manifest-", ".ebrl")
         try {
             val customManifest = EBrailleManifest.defaults().copy(
@@ -116,7 +116,7 @@ class EBraillePackagerTest {
                 val metadata = firstChild(opfDoc.rootElement, "metadata", OPF_NS)
 
                 Assert.assertEquals(firstDcValue(metadata, "title"), "Provided Manifest Title")
-                Assert.assertEquals(firstMetaProperty(metadata, "a11y:tactileGraphics"), "png")
+                Assert.assertEquals(firstMetaProperty(metadata, "a11y:tactileGraphics"), "none")
             }
         } finally {
             Files.deleteIfExists(outFile)
