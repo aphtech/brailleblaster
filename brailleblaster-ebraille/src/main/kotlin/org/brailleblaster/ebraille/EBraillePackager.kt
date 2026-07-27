@@ -26,9 +26,6 @@ import java.nio.channels.FileChannel
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 import java.time.Clock
-import java.time.Instant
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 
 private const val OPF_PATH = "package.opf"
 
@@ -48,7 +45,7 @@ object EBraillePackager {
         val docItems = docs.mapIndexed { i, doc -> XHtmlItem("ebraille/document${i}.html", doc) }
         val navDoc = XHtmlItem("index.html", NavigationHtml.createNavigationHtml(docItems, title = title, translationEngine = translationEngine), properties = "nav")
         val packageItems = docItems + RESOURCE_ITEMS + navDoc
-        val exportManifest = manifest?.withVolatileExportValues(packageItems) ?: createManifestForExport(title, packageItems)
+        val exportManifest = manifest?.withVolatileExportValues(docs, packageItems) ?: createManifestForExport(title, docs, packageItems)
         packageDocument(outPath, packageItems, exportManifest)
     }
 
@@ -62,43 +59,23 @@ object EBraillePackager {
         }
     }
 
-    private fun createManifestForExport(title: String, packageItems: List<PackageItem>): EBrailleManifest {
+    private fun createManifestForExport(title: String, docs: List<Document>, packageItems: List<PackageItem>): EBrailleManifest {
         val titleValue = title.ifBlank { "-" }
-        val tactileGraphicsValue = deriveTactileGraphicsFromItems(packageItems)
         return EBrailleManifest.defaults().copy(
             title = ManifestValue(titleValue, ManifestValueSource.DERIVED, defaulted = titleValue == "-"),
-            tactileGraphics = ManifestValue(tactileGraphicsValue, ManifestValueSource.DERIVED, defaulted = tactileGraphicsValue == "none")
+            brailleCellType = EBrailleManifestDefaults.brailleCellType(docs),
+            tactileGraphics = EBrailleManifestDefaults.tactileGraphics(packageItems)
         )
     }
 }
 
-private fun EBrailleManifest.withVolatileExportValues(packageItems: List<PackageItem>, clock: Clock = Clock.systemUTC()): EBrailleManifest {
-    val tactileGraphicsValue = deriveTactileGraphicsFromItems(packageItems)
-    val now = Instant.now(clock).truncatedTo(ChronoUnit.SECONDS)
+private fun EBrailleManifest.withVolatileExportValues(docs: List<Document>, packageItems: List<PackageItem>, clock: Clock = Clock.systemUTC()): EBrailleManifest {
+    val derivedCellType = EBrailleManifestDefaults.brailleCellType(docs)
     return copy(
-        modified = ManifestValue(DateTimeFormatter.ISO_INSTANT.format(now), ManifestValueSource.DERIVED),
-        tactileGraphics = ManifestValue(
-            tactileGraphicsValue,
-            ManifestValueSource.DERIVED,
-            defaulted = tactileGraphicsValue == "none"
-        )
+        modified = EBrailleManifestDefaults.modified(clock),
+        brailleCellType = ManifestValuePrecedence.choose(brailleCellType, derivedCellType) ?: derivedCellType,
+        tactileGraphics = EBrailleManifestDefaults.tactileGraphics(packageItems)
     )
-}
-
-private fun deriveTactileGraphicsFromItems(packageItems: List<PackageItem>): String {
-    val byFrequency = packageItems
-        .asSequence()
-        .map { it.mediaType.substringBefore(';').trim().lowercase() }
-        .filter { it.startsWith("image/") }
-        .map { it.substringAfter('/') }
-        .filter { it.isNotBlank() }
-        .groupingBy { it }
-        .eachCount()
-        .entries
-        .sortedWith(compareByDescending<Map.Entry<String, Int>> { it.value }.thenBy { it.key })
-        .map { it.key }
-
-    return if (byFrequency.isEmpty()) "none" else byFrequency.joinToString(" ")
 }
 
 private const val MIMETYPE_DATA = "application/epub+zip"
