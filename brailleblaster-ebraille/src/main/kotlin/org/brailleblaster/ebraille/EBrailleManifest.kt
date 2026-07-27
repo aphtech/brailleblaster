@@ -134,7 +134,7 @@ data class EBrailleManifest(
                 title = defaultValue("-"),
                 creators = listOf(defaultValue("-")),
                 format = defaultValue("eBraille 1.0"),
-                identifier = defaultValue("urn:uuid:${uuidProvider()}"),
+                identifier = EBrailleManifestDefaults.identifier(null, uuidProvider),
                 languages = listOf(defaultValue("en-Brai")),
                 date = defaultValue(LocalDate.now(clock).format(DateTimeFormatter.ISO_LOCAL_DATE)),
                 modified = defaultValue(DateTimeFormatter.ISO_INSTANT.format(now)),
