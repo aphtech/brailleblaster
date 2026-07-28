@@ -20,6 +20,7 @@ import org.brailleblaster.pandoc.FixImage
 import org.brailleblaster.pandoc.FixMathML
 import org.brailleblaster.pandoc.FixNestedList
 import org.brailleblaster.pandoc.Fixer
+import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.util.PANDOC_CMD
 import org.slf4j.LoggerFactory
 import java.io.*
@@ -54,7 +55,26 @@ object PandocArchiverLoader : ArchiverFactory.FileLoader {
         archiver.newPath = Paths.get(fileTabName)
         // Set where the document was really imported from, not the temp bbx.
         archiver.importedFrom = file
+        if (fileData.type == ArchiverFactory.Types.EPUB) {
+            readEpubOpfMetadata(file)?.saveTo(archiver.bbxDocument)
+        }
         return archiver
+    }
+
+    /**
+     * EPUBs are zip packages containing an OPF file with the book's real dc:metadata. Pandoc's
+     * own EPUB reader doesn't surface that metadata into the converted BBX, so it's read directly
+     * from the zip here instead of relying on the pandoc conversion output.
+     */
+    private fun readEpubOpfMetadata(file: Path): ImportedSourceMetadata? = try {
+        FileSystems.newFileSystem(file, emptyMap<String, Any>()).use { fs ->
+            OPFUtils.findOPFFilesInFolder(fs.getPath("/")).firstOrNull()?.let { opfFile ->
+                ImportedSourceMetadata.fromOpf(XMLHandler().load(opfFile))
+            }
+        }
+    } catch (e: Exception) {
+        log.warn("Failed to read EPUB OPF metadata from {}", file, e)
+        null
     }
 
     override val extensionsAndDescription: Map<String, String> = mapOf(

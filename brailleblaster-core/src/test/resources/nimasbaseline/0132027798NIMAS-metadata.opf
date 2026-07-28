@@ -1,0 +1,31 @@
+<!DOCTYPE package PUBLIC "+//ISBN 0-9673008-1-9//DTD OEB 1.2 Package//EN" "http://openebook.org/dtds/oeb-1.2/oebpkg12.dtd">
+<package unique-identifier="my_id_element">
+	<metadata>
+		<dc-metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:oebpackage="http://openebook.org/namespaces/oeb-package/1.0/">
+			<dc:Title>United States History: Reconstruction to the Present, Kentucky</dc:Title>
+			<dc:Creator role="author">Emma Lapsansky-Werner</dc:Creator>
+			<dc:Creator role="author">Randy Roberts</dc:Creator>
+			<dc:Creator role="author">Peter Levy</dc:Creator>
+			<dc:Creator role="author">Alan Taylor</dc:Creator>
+			<dc:Creator role="illustrator"/>
+			<dc:Publisher>Pearson Prentice Hall</dc:Publisher>
+			<dc:Date event="DCTERMS.created">2007-04-23</dc:Date>
+			<dc:Format>NIMAS 1.1</dc:Format>
+			<dc:Identifier id="my_id_element" scheme="NIMAS">0132027798NIMAS</dc:Identifier>
+			<dc:Language>en</dc:Language>
+			<dc:Source>0132027798</dc:Source>
+			<dc:Source>9780132027793</dc:Source>
+			<dc:Subject>Social Studies</dc:Subject>
+			<dc:Subject>History</dc:Subject>
+		</dc-metadata>
+		<x-metadata>
+			<meta name="DCTERMS.date.dateCopyrighted" content="2008"/>
+		</x-metadata>
+	</metadata>
+	<manifest>
+		<item media-type="text/xml" href="0132027798NIMAS.xml" id="main"/>
+	</manifest>
+	<spine>
+		<itemref idref="main"/>
+	</spine>
+</package>
