@@ -34,10 +34,11 @@ internal fun createEbraille(outputPath: Path, docs: List<Document>, title: Strin
     val sourceDoc = docs.firstOrNull()
     val persistedManifest = sourceDoc?.let { EBrailleManifestDocumentStore.load(it) }
     val titleValue = title.ifBlank { "-" }
-    val stableManifest = (persistedManifest ?: EBrailleManifest.defaults().copy(
+    val baseManifest = persistedManifest ?: EBrailleManifest.defaults().copy(
         title = ManifestValue(titleValue, ManifestValueSource.DERIVED, defaulted = titleValue == "-"),
         languages = listOf(EBrailleManifestDefaults.language(engine))
-    ))
+    )
+    val stableManifest = sourceDoc?.let { baseManifest.withImportedSourceMetadata(it) } ?: baseManifest
 
     sourceDoc?.let { EBrailleManifestDocumentStore.save(it, stableManifest) }
 

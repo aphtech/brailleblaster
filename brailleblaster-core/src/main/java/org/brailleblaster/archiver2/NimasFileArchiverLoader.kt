@@ -30,9 +30,11 @@ object NimasFileArchiverLoader : ArchiverFactory.FileLoader {
     override fun tryLoad(file: Path, fileData: ArchiverFactory.ParseData): Archiver2? {
         val rootName = fileData.doc!!.rootElement.localName
         return if (rootName == "dtbook") {
+            val convertedDoc = convert(file, "nimas")
+            ImportedSourceMetadata.fromDtbookHead(fileData.doc).saveTo(convertedDoc)
             val archiver: Archiver2 = BBZArchiver.createImportedBBZ(
                 file,
-                convert(file, "nimas")
+                convertedDoc
             )
             // Set the recommended save as new file name
             var fileStr = file.toString()

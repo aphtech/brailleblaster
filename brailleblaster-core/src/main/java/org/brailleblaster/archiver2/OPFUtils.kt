@@ -64,6 +64,15 @@ object OPFUtils {
     }
 
     @JvmStatic
+	fun getDCElementValuesCaseInsensitive(opfDocument: Document?, opfElemName: String?): List<String> {
+        return FastXPath.descendant(opfDocument)
+            .filterIsInstance<Element>()
+            .filter { curElem: Element -> curElem.namespacePrefix == "dc" && curElem.localName.equals(opfElemName, ignoreCase = true) }
+            .map { it.value }
+            .toList()
+    }
+
+    @JvmStatic
 	fun getManifestItems(opfDocument: Document): List<ManifestEntry> {
         val namespace = opfDocument.rootElement.namespaceURI
         val manifestRoot = opfDocument.rootElement.getFirstChildElement(

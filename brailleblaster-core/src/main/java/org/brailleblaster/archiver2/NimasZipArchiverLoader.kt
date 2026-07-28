@@ -45,6 +45,7 @@ class NimasZipArchiverLoader : ArchiverFactory.FileLoader {
         val zipRoot = zipFS.getPath("/")
 
         var bookPath: Path? = null
+        var importedMetadata = ImportedSourceMetadata()
         val opfFiles = findOPFFilesInFolder(zipRoot)
         if (!opfFiles.isEmpty()) {
             if (opfFiles.size > 1) {
@@ -62,6 +63,7 @@ class NimasZipArchiverLoader : ArchiverFactory.FileLoader {
             }
 
             if (opfDocument != null) {
+                importedMetadata = ImportedSourceMetadata.fromOpf(opfDocument)
                 val bookManifest: ManifestEntry = guessNimasLocation(opfDocument)
 
                 bookPath = opfFile.resolveSibling(bookManifest.href)
@@ -109,6 +111,7 @@ class NimasZipArchiverLoader : ArchiverFactory.FileLoader {
 
         log.debug("book Path {}", bookPath)
         val convertedDoc = convert(bookPath, "nimas")
+        importedMetadata.saveTo(convertedDoc)
         return BBZArchiver(
             file,
             zipFS,
