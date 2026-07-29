@@ -17,13 +17,20 @@ package org.brailleblaster.archiver2
 
 import nu.xom.Document
 import nu.xom.Element
+import nu.xom.Node
 import org.brailleblaster.utd.config.DocumentUTDConfig
 import org.brailleblaster.utd.internal.xml.FastXPath
+import org.brailleblaster.utils.xml.DC_NS
+import org.brailleblaster.utils.xml.OPF_NS
 
 /**
  * Bibliographic metadata read directly from a book's original source markup - a NIMAS/EPUB OPF
  * package's `dc-metadata`, or a NIMAS dtbook `<head>` - before BBX conversion, so it can be
  * reused later (e.g. by the eBraille exporter) without re-parsing the source.
+ *
+ * Persisted into the BBX `<head>` as the same OPF-style `<metadata>` block (Dublin Core elements)
+ * that a source OPF or an eBraille package uses, so [fromOpf] can read both without a separate
+ * BBX-only parser.
  *
  * Only fields that map 1:1 onto the source's own Dublin Core elements are captured here. Fields
  * that need interpretation to be spec-correct, such as deriving a braille-script language tag,
@@ -39,39 +46,41 @@ data class ImportedSourceMetadata(
         get() = title == null && creators.isEmpty() && identifier == null && date == null
 
     fun saveTo(doc: Document) {
-        if (isEmpty) return
-        val store = DocumentUTDConfig.NIMAS
-        title?.let { store.setSetting(doc, key("title"), it) }
-        identifier?.let { store.setSetting(doc, key("identifier"), it) }
-        date?.let { store.setSetting(doc, key("date"), it) }
-        if (creators.isNotEmpty()) {
-            store.setSetting(doc, key("creators.count"), creators.size.toString())
-            creators.forEachIndexed { i, value -> store.setSetting(doc, key("creators.$i"), value) }
+        val headElem = DocumentUTDConfig.NIMAS.getOrCreateHeadElement(doc)
+        for (existing in headElem.getChildElements(METADATA_ELEMENT, OPF_NS)) {
+            existing.detach()
         }
+        if (isEmpty) return
+        headElem.appendChild(toMetadataElement())
+    }
+
+    private fun toMetadataElement(): Element = Element(METADATA_ELEMENT, OPF_NS).apply {
+        title?.let { appendChild(dcElement("title", it)) }
+        creators.forEach { appendChild(dcElement("creator", it)) }
+        identifier?.let { appendChild(dcElement("identifier", it)) }
+        date?.let { appendChild(dcElement("date", it)) }
+    }
+
+    private fun dcElement(localName: String, value: String): Element = Element("dc:$localName", DC_NS).apply {
+        appendChild(value)
     }
 
     companion object {
-        private const val ROOT_KEY = "importedSourceMetadata"
-        private fun key(field: String) = "$ROOT_KEY.$field"
+        private const val METADATA_ELEMENT = "metadata"
 
         fun load(doc: Document): ImportedSourceMetadata {
-            val store = DocumentUTDConfig.NIMAS
-            val creatorCount = store.getSetting(doc, key("creators.count"))?.toIntOrNull() ?: 0
-            val creators = (0 until creatorCount).mapNotNull { store.getSetting(doc, key("creators.$it")) }
-            return ImportedSourceMetadata(
-                title = store.getSetting(doc, key("title")),
-                creators = creators,
-                identifier = store.getSetting(doc, key("identifier")),
-                date = store.getSetting(doc, key("date"))
-            )
+            val metadataElem = DocumentUTDConfig.NIMAS.getHeadElement(doc)
+                ?.getFirstChildElement(METADATA_ELEMENT, OPF_NS)
+                ?: return ImportedSourceMetadata()
+            return fromOpf(metadataElem)
         }
 
-        /** Extracts dc:title/creator/identifier/date from an OPF package's metadata, shared by NIMAS and EPUB books. */
-        fun fromOpf(opfDocument: Document): ImportedSourceMetadata = ImportedSourceMetadata(
-            title = OPFUtils.getDCElementValuesCaseInsensitive(opfDocument, "title").firstOrNull { it.isNotBlank() },
-            creators = OPFUtils.getDCElementValuesCaseInsensitive(opfDocument, "creator").filter { it.isNotBlank() },
-            identifier = OPFUtils.getDCElementValuesCaseInsensitive(opfDocument, "identifier").firstOrNull { it.isNotBlank() },
-            date = OPFUtils.getDCElementValuesCaseInsensitive(opfDocument, "date").firstOrNull { it.isNotBlank() }
+        /** Extracts dc:title/creator/identifier/date from an OPF-style metadata block - shared by NIMAS/EPUB source OPFs and the BBX head. */
+        fun fromOpf(opfSource: Node): ImportedSourceMetadata = ImportedSourceMetadata(
+            title = OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "title").firstOrNull { it.isNotBlank() },
+            creators = OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "creator").filter { it.isNotBlank() },
+            identifier = OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "identifier").firstOrNull { it.isNotBlank() },
+            date = OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "date").firstOrNull { it.isNotBlank() }
         )
 
         /** Extracts dc:Title/Creator/Identifier/Date from a NIMAS dtbook's `<head><meta name="dc:X" content="Y"/></head>` block. */

@@ -17,6 +17,7 @@ package org.brailleblaster.archiver2
 
 import nu.xom.Document
 import nu.xom.Element
+import nu.xom.Node
 import org.brailleblaster.utd.exceptions.NodeException
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.slf4j.Logger
@@ -50,9 +51,14 @@ object OPFUtils {
         }
     }
 
+    /**
+     * Matches `dc:*` elements by namespace prefix rather than a real namespace URI check, and
+     * accepts any [Node] (not just a whole OPF [Document]) so the same lookup can be pointed at a
+     * `<metadata>` block embedded anywhere - a source OPF, an eBraille package, or a BBX head.
+     */
     @JvmStatic
-	fun getDCElementValueCaseInsensitive(opfDocument: Document?, opfElemName: String?): String? {
-        val results = FastXPath.descendant(opfDocument)
+	fun getDCElementValueCaseInsensitive(source: Node?, opfElemName: String?): String? {
+        val results = FastXPath.descendant(source)
             .filterIsInstance<Element>()
             .filter { curElem: Element -> curElem.namespacePrefix == "dc" && curElem.localName.equals(opfElemName, ignoreCase = true) }.toList()
         if (results.isEmpty()) {
@@ -64,8 +70,8 @@ object OPFUtils {
     }
 
     @JvmStatic
-	fun getDCElementValuesCaseInsensitive(opfDocument: Document?, opfElemName: String?): List<String> {
-        return FastXPath.descendant(opfDocument)
+	fun getDCElementValuesCaseInsensitive(source: Node?, opfElemName: String?): List<String> {
+        return FastXPath.descendant(source)
             .filterIsInstance<Element>()
             .filter { curElem: Element -> curElem.namespacePrefix == "dc" && curElem.localName.equals(opfElemName, ignoreCase = true) }
             .map { it.value }
