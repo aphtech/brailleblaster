@@ -23,8 +23,13 @@ import org.testng.Assert
 import org.testng.annotations.Test
 import java.nio.charset.StandardCharsets
 import java.nio.file.Paths
+import java.time.Clock
+import java.time.Instant
+import java.time.ZoneOffset
 
 class ImportedSourceMetadataTest {
+    private val fixedClock: Clock = Clock.fixed(Instant.parse("2026-07-22T00:00:00Z"), ZoneOffset.UTC)
+    private val fixedUuid: () -> String = { "11111111-1111-1111-1111-111111111111" }
 
     // --- fromOpf: real NIMAS OPF fixture (multiple dc:Creator, one blank) ---
 
@@ -57,16 +62,16 @@ class ImportedSourceMetadataTest {
         Assert.assertEquals(result.date, "2017")
     }
 
-    // --- fromOpf: no usable metadata present ---
+    // --- fromOpf: source has no creators ---
 
     @Test
-    fun fromOpfReturnsEmptyPlaceholdersWhenMetadataAbsent() {
+    fun fromOpfDefaultsCreatorsWhenSourceHasNone() {
         val opf = XMLHandler().load(Paths.get("src/test/resources/fdr/FDR Inagural Address.opf"))
 
-        val result = ImportedSourceMetadata.fromOpf(opf)
+        val result = ImportedSourceMetadata.fromOpf(opf, fixedClock, fixedUuid)
 
         Assert.assertEquals(result.title, "FDR's Inaugural Address for use as part of the following: NIMAS v1.0 Exemplar file: Social Studies")
-        Assert.assertTrue(result.creators.isEmpty())
+        Assert.assertEquals(result.creators, listOf("-"))
         Assert.assertEquals(result.date, "2007-01-10")
     }
 
@@ -85,12 +90,16 @@ class ImportedSourceMetadataTest {
     }
 
     @Test
-    fun fromDtbookHeadReturnsEmptyWhenHeadHasNoDcMeta() {
+    fun fromDtbookHeadDefaultsAllFieldsWhenHeadHasNoDcMeta() {
         val dtbook = Document(Element("dtbook"))
 
-        val result = ImportedSourceMetadata.fromDtbookHead(dtbook)
+        val result = ImportedSourceMetadata.fromDtbookHead(dtbook, fixedClock, fixedUuid)
 
-        Assert.assertTrue(result.isEmpty)
+        Assert.assertEquals(result, ImportedSourceMetadata.defaults(fixedClock, fixedUuid))
+        Assert.assertEquals(result.title, "-")
+        Assert.assertEquals(result.creators, listOf("-"))
+        Assert.assertEquals(result.identifier, "urn:uuid:11111111-1111-1111-1111-111111111111")
+        Assert.assertEquals(result.date, "2026-07-22")
     }
 
     // --- save/load round trip on a BBX document ---
@@ -113,12 +122,23 @@ class ImportedSourceMetadataTest {
     }
 
     @Test
-    fun loadReturnsEmptyPlaceholdersWhenNothingWasSaved() {
+    fun loadReturnsDefaultsWhenNothingWasSaved() {
         val doc = Document(Element("bbx"))
 
-        val loaded = ImportedSourceMetadata.load(doc)
+        val loaded = ImportedSourceMetadata.load(doc, fixedClock, fixedUuid)
 
-        Assert.assertTrue(loaded.isEmpty)
+        Assert.assertEquals(loaded, ImportedSourceMetadata.defaults(fixedClock, fixedUuid))
+    }
+
+    @Test
+    fun saveAlwaysWritesMetadataEvenWhenSourceHadNothingUsable() {
+        val doc = Document(Element("bbx"))
+        ImportedSourceMetadata.defaults(fixedClock, fixedUuid).saveTo(doc)
+
+        val reopened = reopen(doc)
+        val loaded = ImportedSourceMetadata.load(reopened, fixedClock, fixedUuid)
+
+        Assert.assertEquals(loaded, ImportedSourceMetadata.defaults(fixedClock, fixedUuid))
     }
 
     private fun reopen(doc: Document): Document {

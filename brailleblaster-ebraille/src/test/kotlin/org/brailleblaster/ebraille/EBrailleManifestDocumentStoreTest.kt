@@ -35,19 +35,16 @@ class EBrailleManifestDocumentStoreTest {
         Assert.assertNull(EBrailleManifestDocumentStore.load(doc, fixedClock))
 
         val toPersist = EBrailleManifest.defaults(fixedClock) { "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" }.copy(
-            title = ManifestValue("Round Trip Title", ManifestValueSource.AUTHORED),
-            creators = listOf(
-                ManifestValue("Creator A", ManifestValueSource.AUTHORED),
-                ManifestValue("Creator B", ManifestValueSource.IMPORTED)
-            )
+            title = "Round Trip Title",
+            creators = listOf("Creator A", "Creator B")
         )
         EBrailleManifestDocumentStore.save(doc, toPersist)
 
         val reopened = reopen(doc)
         val loaded = EBrailleManifestDocumentStore.load(reopened, fixedClock)
         Assert.assertNotNull(loaded)
-        Assert.assertEquals(loaded!!.title.value, "Round Trip Title")
-        Assert.assertEquals(loaded.creators.map { it.value }, listOf("Creator A", "Creator B"))
+        Assert.assertEquals(loaded!!.title, "Round Trip Title")
+        Assert.assertEquals(loaded.creators, listOf("Creator A", "Creator B"))
 
         // Simulate a non-eBraille workflow mutating unrelated document settings.
         DocumentUTDConfig.NIMAS.setSetting(reopened, "someOtherSetting", "42")
@@ -55,8 +52,8 @@ class EBrailleManifestDocumentStoreTest {
         val reopenedAgain = reopen(reopened)
         val loadedAgain = EBrailleManifestDocumentStore.load(reopenedAgain, fixedClock)
         Assert.assertNotNull(loadedAgain)
-        Assert.assertEquals(loadedAgain!!.title.value, "Round Trip Title")
-        Assert.assertEquals(loadedAgain.creators.map { it.value }, listOf("Creator A", "Creator B"))
+        Assert.assertEquals(loadedAgain!!.title, "Round Trip Title")
+        Assert.assertEquals(loadedAgain.creators, listOf("Creator A", "Creator B"))
     }
 
     @Test
@@ -66,28 +63,19 @@ class EBrailleManifestDocumentStoreTest {
 
         val loaded = EBrailleManifestDocumentStore.load(doc, fixedClock)
         Assert.assertNotNull(loaded)
-        Assert.assertEquals(loaded!!.title.value, "Only Title")
-        Assert.assertEquals(loaded.format.value, "eBraille 1.0")
-        Assert.assertEquals(loaded.languages.map { it.value }, listOf("en-Brai"))
-        Assert.assertEquals(loaded.producers.map { it.value }, listOf("-"))
+        Assert.assertEquals(loaded!!.title, "Only Title")
+        Assert.assertEquals(loaded.format, "eBraille 1.0")
+        Assert.assertEquals(loaded.languages, listOf("en-Brai"))
+        Assert.assertEquals(loaded.producers, listOf("-"))
     }
 
     @Test
     fun roundTripPreservesMultiValueStableFields() {
         val doc = newBookDocument()
         val manifest = EBrailleManifest.defaults(fixedClock) { "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb" }.copy(
-            creators = listOf(
-                ManifestValue("Creator One", ManifestValueSource.AUTHORED),
-                ManifestValue("Creator Two", ManifestValueSource.IMPORTED)
-            ),
-            languages = listOf(
-                ManifestValue("en-Brai", ManifestValueSource.AUTHORED),
-                ManifestValue("fr-Brai", ManifestValueSource.AUTHORED)
-            ),
-            producers = listOf(
-                ManifestValue("Producer A", ManifestValueSource.AUTHORED),
-                ManifestValue("Producer B", ManifestValueSource.DERIVED)
-            )
+            creators = listOf("Creator One", "Creator Two"),
+            languages = listOf("en-Brai", "fr-Brai"),
+            producers = listOf("Producer A", "Producer B")
         )
 
         EBrailleManifestDocumentStore.save(doc, manifest)
@@ -95,9 +83,9 @@ class EBrailleManifestDocumentStoreTest {
         val loaded = EBrailleManifestDocumentStore.load(reopened, fixedClock)
 
         Assert.assertNotNull(loaded)
-        Assert.assertEquals(loaded!!.creators.map { it.value }, listOf("Creator One", "Creator Two"))
-        Assert.assertEquals(loaded.languages.map { it.value }, listOf("en-Brai", "fr-Brai"))
-        Assert.assertEquals(loaded.producers.map { it.value }, listOf("Producer A", "Producer B"))
+        Assert.assertEquals(loaded!!.creators, listOf("Creator One", "Creator Two"))
+        Assert.assertEquals(loaded.languages, listOf("en-Brai", "fr-Brai"))
+        Assert.assertEquals(loaded.producers, listOf("Producer A", "Producer B"))
     }
 
     private fun newBookDocument(): Document {

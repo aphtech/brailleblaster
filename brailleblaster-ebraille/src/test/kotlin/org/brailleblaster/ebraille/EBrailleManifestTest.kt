@@ -24,54 +24,59 @@ import java.time.ZoneOffset
 
 class EBrailleManifestTest {
     @Test
-    fun defaultsUseExpectedValuesAndProvenance() {
+    fun defaultsUseExpectedValues() {
         val fixedClock = Clock.fixed(Instant.parse("2026-07-22T12:34:56Z"), ZoneOffset.UTC)
         val manifest = EBrailleManifest.defaults(fixedClock) { "11111111-1111-1111-1111-111111111111" }
 
-        Assert.assertEquals(manifest.format.value, "eBraille 1.0")
-        Assert.assertEquals(manifest.date.value, "2026-07-22")
-        Assert.assertEquals(manifest.modified.value, "2026-07-22T12:34:56Z")
-        Assert.assertEquals(manifest.identifier.value, "urn:uuid:11111111-1111-1111-1111-111111111111")
-        Assert.assertEquals(manifest.brailleCellType.value, "6")
-        Assert.assertEquals(manifest.tactileGraphics.value, "none")
-        Assert.assertEquals(manifest.languages.size, 1)
-        Assert.assertEquals(manifest.creators.size, 1)
-        Assert.assertEquals(manifest.producers.size, 1)
-        Assert.assertEquals(manifest.title.source, ManifestValueSource.DEFAULT)
-        Assert.assertTrue(manifest.title.defaulted)
+        Assert.assertEquals(manifest.title, "-")
+        Assert.assertEquals(manifest.format, "eBraille 1.0")
+        Assert.assertEquals(manifest.date, "2026-07-22")
+        Assert.assertEquals(manifest.modified, "2026-07-22T12:34:56Z")
+        Assert.assertEquals(manifest.identifier, "urn:uuid:11111111-1111-1111-1111-111111111111")
+        Assert.assertEquals(manifest.brailleCellType, "6")
+        Assert.assertEquals(manifest.tactileGraphics, "none")
+        Assert.assertEquals(manifest.languages, listOf("en-Brai"))
+        Assert.assertEquals(manifest.creators, listOf("-"))
+        Assert.assertEquals(manifest.producers, listOf("-"))
     }
 
     @Test
-    fun validateReportsMissingOrBlankFields() {
+    fun withDefaultsAppliesFallbackValuesForBlankOrMissingFields() {
         val manifest = EBrailleManifest.defaults().copy(
-            title = ManifestValue("", ManifestValueSource.AUTHORED),
+            title = "",
             creators = emptyList(),
-            languages = listOf(ManifestValue("", ManifestValueSource.AUTHORED)),
-            producers = listOf(ManifestValue("", ManifestValueSource.AUTHORED))
+            format = "",
+            identifier = "",
+            languages = listOf(""),
+            date = "",
+            modified = "",
+            dateCopyrighted = "",
+            brailleCellType = "",
+            brailleSystem = "",
+            completeTranscription = "",
+            producers = listOf(""),
+            tactileGraphics = ""
         )
 
-        val errors = manifest.validate()
-        Assert.assertTrue(errors.contains("dc:title must not be blank"))
-        Assert.assertTrue(errors.contains("dc:creator must contain at least one value"))
-        Assert.assertTrue(errors.contains("dc:language values must not be blank"))
-        Assert.assertTrue(errors.contains("a11y:producer values must not be blank"))
+        val normalized = manifest.withDefaults()
+
+        Assert.assertEquals(normalized.title, "-")
+        Assert.assertEquals(normalized.creators, listOf("-"))
+        Assert.assertEquals(normalized.format, "eBraille 1.0")
+        Assert.assertTrue(normalized.identifier.startsWith("urn:uuid:"))
+        Assert.assertEquals(normalized.languages, listOf("en-Brai"))
+        Assert.assertEquals(normalized.date, java.time.LocalDate.now().toString())
+        Assert.assertTrue(normalized.modified.isNotBlank())
+        Assert.assertEquals(normalized.producers, listOf("-"))
+        Assert.assertEquals(normalized.tactileGraphics, "none")
     }
 
     @Test
     fun serializationPreservesRepeatedFieldCardinality() {
         val manifest = EBrailleManifest.defaults().copy(
-            creators = listOf(
-                ManifestValue("Creator One", ManifestValueSource.AUTHORED),
-                ManifestValue("Creator Two", ManifestValueSource.AUTHORED)
-            ),
-            languages = listOf(
-                ManifestValue("en-Brai", ManifestValueSource.AUTHORED),
-                ManifestValue("fr-Brai", ManifestValueSource.IMPORTED)
-            ),
-            producers = listOf(
-                ManifestValue("Producer A", ManifestValueSource.AUTHORED),
-                ManifestValue("Producer B", ManifestValueSource.DERIVED)
-            )
+            creators = listOf("Creator One", "Creator Two"),
+            languages = listOf("en-Brai", "fr-Brai"),
+            producers = listOf("Producer A", "Producer B")
         )
 
         val metadata = manifest.toMetadataElement()
@@ -93,9 +98,9 @@ class EBrailleManifestTest {
         val manifest = EBrailleManifest.defaults(Clock.fixed(Instant.parse("2026-07-22T00:00:00Z"), ZoneOffset.UTC)) {
             "22222222-2222-2222-2222-222222222222"
         }.copy(
-            creators = listOf(ManifestValue("Author", ManifestValueSource.AUTHORED)),
-            languages = listOf(ManifestValue("en-Brai", ManifestValueSource.AUTHORED)),
-            producers = listOf(ManifestValue("Producer", ManifestValueSource.AUTHORED))
+            creators = listOf("Author"),
+            languages = listOf("en-Brai"),
+            producers = listOf("Producer")
         )
 
         val metadata = manifest.toMetadataElement()
@@ -104,7 +109,7 @@ class EBrailleManifestTest {
             val child = metadata.childElements[i]
             orderedLabels.add(
                 if (child.localName == "meta") {
-                    "meta:${child.getAttributeValue("property")}" 
+                    "meta:${child.getAttributeValue("property")}"
                 } else {
                     "dc:${child.localName}"
                 }

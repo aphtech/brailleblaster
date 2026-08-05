@@ -45,7 +45,7 @@ class NimasZipArchiverLoader : ArchiverFactory.FileLoader {
         val zipRoot = zipFS.getPath("/")
 
         var bookPath: Path? = null
-        var importedMetadata = ImportedSourceMetadata()
+        var importedMetadata = ImportedSourceMetadata.defaults()
         val opfFiles = findOPFFilesInFolder(zipRoot)
         if (!opfFiles.isEmpty()) {
             if (opfFiles.size > 1) {

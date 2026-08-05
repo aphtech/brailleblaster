@@ -33,9 +33,8 @@ import kotlin.io.path.nameWithoutExtension
 internal fun createEbraille(outputPath: Path, docs: List<Document>, title: String, engine: ITranslationEngine) {
     val sourceDoc = docs.firstOrNull()
     val persistedManifest = sourceDoc?.let { EBrailleManifestDocumentStore.load(it) }
-    val titleValue = title.ifBlank { "-" }
     val baseManifest = persistedManifest ?: EBrailleManifest.defaults().copy(
-        title = ManifestValue(titleValue, ManifestValueSource.DERIVED, defaulted = titleValue == "-"),
+        title = title.ifBlank { "-" },
         languages = listOf(EBrailleManifestDefaults.language(engine))
     )
     val stableManifest = sourceDoc?.let { baseManifest.withImportedSourceMetadata(it) } ?: baseManifest

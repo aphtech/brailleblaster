@@ -98,8 +98,8 @@ class EBraillePackagerTest {
         val outFile = Files.createTempFile("ebraille-phase2-manifest-", ".ebrl")
         try {
             val customManifest = EBrailleManifest.defaults().copy(
-                title = ManifestValue("Provided Manifest Title", ManifestValueSource.AUTHORED),
-                tactileGraphics = ManifestValue("png", ManifestValueSource.AUTHORED)
+                title = "Provided Manifest Title",
+                tactileGraphics = "png"
             )
             val doc = Jsoup.parse("<html><body><h1>Heading</h1><p>Body</p></body></html>")
 

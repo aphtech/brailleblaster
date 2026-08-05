@@ -24,7 +24,7 @@ import org.testng.annotations.Test
 class EBrailleManifestImportTest {
 
     @Test
-    fun fillsInDefaultedFieldsFromImportedSourceMetadata() {
+    fun fillsInFieldsFromImportedSourceMetadata() {
         val doc = newBookDocument()
         ImportedSourceMetadata(
             title = "Imported Title",
@@ -35,41 +35,51 @@ class EBrailleManifestImportTest {
 
         val result = EBrailleManifest.defaults().withImportedSourceMetadata(doc)
 
-        Assert.assertEquals(result.title.value, "Imported Title")
-        Assert.assertEquals(result.title.source, ManifestValueSource.IMPORTED)
-        Assert.assertEquals(result.creators.map { it.value }, listOf("Imported Author One", "Imported Author Two"))
-        Assert.assertEquals(result.identifier.value, "urn:isbn:9781234567890")
-        Assert.assertEquals(result.date.value, "2007-04-23")
+        Assert.assertEquals(result.title, "Imported Title")
+        Assert.assertEquals(result.creators, listOf("Imported Author One", "Imported Author Two"))
+        Assert.assertEquals(result.identifier, "urn:isbn:9781234567890")
+        Assert.assertEquals(result.date, "2007-04-23")
         // Untouched fields are left as-is.
         Assert.assertEquals(result.format, EBrailleManifest.defaults().format)
         Assert.assertEquals(result.languages, EBrailleManifest.defaults().languages)
     }
 
     @Test
-    fun authoredValuesBeatImportedSourceMetadata() {
+    fun importedSourceMetadataIsTheCanonicalSourceForSharedFields() {
         val doc = newBookDocument()
-        ImportedSourceMetadata(title = "Imported Title", identifier = "imported-id").saveTo(doc)
+        ImportedSourceMetadata.defaults().copy(title = "Imported Title", identifier = "imported-id").saveTo(doc)
 
-        val authoredManifest = EBrailleManifest.defaults().copy(
-            title = ManifestValue("User Entered Title", ManifestValueSource.AUTHORED)
-        )
+        val manifestWithDifferentTitle = EBrailleManifest.defaults().copy(title = "Some Other Title")
 
-        val result = authoredManifest.withImportedSourceMetadata(doc)
+        val result = manifestWithDifferentTitle.withImportedSourceMetadata(doc)
 
-        Assert.assertEquals(result.title.value, "User Entered Title")
-        Assert.assertEquals(result.title.source, ManifestValueSource.AUTHORED)
-        // Identifier had no authored value, so the imported one still applies.
-        Assert.assertEquals(result.identifier.value, "imported-id")
+        // The BBX-persisted required metadata always wins, so the same identifier/title survive
+        // every export rather than drifting between calls.
+        Assert.assertEquals(result.title, "Imported Title")
+        Assert.assertEquals(result.identifier, "imported-id")
     }
 
     @Test
-    fun leavesManifestUnchangedWhenNoImportedSourceMetadataIsPresent() {
+    fun appliesDefaultedRequiredMetadataWhenNoneWasEverSaved() {
         val doc = newBookDocument()
         val manifest = EBrailleManifest.defaults()
 
         val result = manifest.withImportedSourceMetadata(doc)
 
-        Assert.assertEquals(result, manifest)
+        Assert.assertEquals(result.title, "-")
+        Assert.assertEquals(result.creators, listOf("-"))
+        Assert.assertTrue(result.identifier.startsWith("urn:uuid:"))
+        Assert.assertTrue(Regex("""\d{4}-\d{2}-\d{2}""").matches(result.date))
+    }
+
+    @Test
+    fun keepsHyphenDefaultWhenImportedTitleIsMissing() {
+        val doc = newBookDocument()
+        ImportedSourceMetadata.defaults().saveTo(doc)
+
+        val result = EBrailleManifest.defaults().withImportedSourceMetadata(doc)
+
+        Assert.assertEquals(result.title, "-")
     }
 
     private fun newBookDocument(): Document = Document(Element("dtbook", "http://www.daisy.org/z3986/2005/dtbook/"))

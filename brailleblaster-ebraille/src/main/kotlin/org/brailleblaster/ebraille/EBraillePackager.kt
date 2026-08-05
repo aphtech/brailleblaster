@@ -60,23 +60,19 @@ object EBraillePackager {
     }
 
     private fun createManifestForExport(title: String, docs: List<Document>, packageItems: List<PackageItem>): EBrailleManifest {
-        val titleValue = title.ifBlank { "-" }
         return EBrailleManifest.defaults().copy(
-            title = ManifestValue(titleValue, ManifestValueSource.DERIVED, defaulted = titleValue == "-"),
+            title = title.ifBlank { "-" },
             brailleCellType = EBrailleManifestDefaults.brailleCellType(docs),
             tactileGraphics = EBrailleManifestDefaults.tactileGraphics(packageItems)
         )
     }
 }
 
-private fun EBrailleManifest.withVolatileExportValues(docs: List<Document>, packageItems: List<PackageItem>, clock: Clock = Clock.systemUTC()): EBrailleManifest {
-    val derivedCellType = EBrailleManifestDefaults.brailleCellType(docs)
-    return copy(
-        modified = EBrailleManifestDefaults.modified(clock),
-        brailleCellType = ManifestValuePrecedence.choose(brailleCellType, derivedCellType) ?: derivedCellType,
-        tactileGraphics = EBrailleManifestDefaults.tactileGraphics(packageItems)
-    )
-}
+private fun EBrailleManifest.withVolatileExportValues(docs: List<Document>, packageItems: List<PackageItem>, clock: Clock = Clock.systemUTC()): EBrailleManifest = copy(
+    modified = EBrailleManifestDefaults.modified(clock),
+    brailleCellType = EBrailleManifestDefaults.brailleCellType(docs),
+    tactileGraphics = EBrailleManifestDefaults.tactileGraphics(packageItems)
+)
 
 private const val MIMETYPE_DATA = "application/epub+zip"
 

@@ -22,43 +22,44 @@ import org.brailleblaster.utd.config.DocumentUTDConfig
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utils.xml.DC_NS
 import org.brailleblaster.utils.xml.OPF_NS
+import java.time.Clock
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.UUID
 
 /**
- * Bibliographic metadata read directly from a book's original source markup - a NIMAS/EPUB OPF
- * package's `dc-metadata`, or a NIMAS dtbook `<head>` - before BBX conversion, so it can be
+ * Required bibliographic metadata for a book, read from its original source markup - a NIMAS/EPUB
+ * OPF package's `dc-metadata`, or a NIMAS dtbook `<head>` - before BBX conversion, so it can be
  * reused later (e.g. by the eBraille exporter) without re-parsing the source.
+ *
+ * Every field is required, so any field the source doesn't provide is filled with a default
+ * constant (see [defaults]) rather than left blank or absent - a BBX document always has a
+ * complete, well-formed record of this metadata after import, regardless of what the source
+ * format provided.
  *
  * Persisted into the BBX `<head>` as the same OPF-style `<metadata>` block (Dublin Core elements)
  * that a source OPF or an eBraille package uses, so [fromOpf] can read both without a separate
  * BBX-only parser.
- *
- * Only fields that map 1:1 onto the source's own Dublin Core elements are captured here. Fields
- * that need interpretation to be spec-correct, such as deriving a braille-script language tag,
- * are left to dedicated default/derivation logic instead.
  */
 data class ImportedSourceMetadata(
-    val title: String? = null,
-    val creators: List<String> = emptyList(),
-    val identifier: String? = null,
-    val date: String? = null
+    val title: String,
+    val creators: List<String>,
+    val identifier: String,
+    val date: String
 ) {
-    val isEmpty: Boolean
-        get() = title == null && creators.isEmpty() && identifier == null && date == null
-
     fun saveTo(doc: Document) {
         val headElem = DocumentUTDConfig.NIMAS.getOrCreateHeadElement(doc)
         for (existing in headElem.getChildElements(METADATA_ELEMENT, OPF_NS)) {
             existing.detach()
         }
-        if (isEmpty) return
         headElem.appendChild(toMetadataElement())
     }
 
     private fun toMetadataElement(): Element = Element(METADATA_ELEMENT, OPF_NS).apply {
-        title?.let { appendChild(dcElement("title", it)) }
+        appendChild(dcElement("title", title))
         creators.forEach { appendChild(dcElement("creator", it)) }
-        identifier?.let { appendChild(dcElement("identifier", it)) }
-        date?.let { appendChild(dcElement("date", it)) }
+        appendChild(dcElement("identifier", identifier))
+        appendChild(dcElement("date", date))
     }
 
     private fun dcElement(localName: String, value: String): Element = Element("dc:$localName", DC_NS).apply {
@@ -67,24 +68,46 @@ data class ImportedSourceMetadata(
 
     companion object {
         private const val METADATA_ELEMENT = "metadata"
+        private const val DEFAULT_TITLE = "-"
+        private const val DEFAULT_CREATOR = "-"
 
-        fun load(doc: Document): ImportedSourceMetadata {
+        /** The default constants used to fill in any field the source doesn't provide. */
+        fun defaults(clock: Clock = Clock.systemUTC(), uuidProvider: () -> String = { UUID.randomUUID().toString() }): ImportedSourceMetadata =
+            ImportedSourceMetadata(
+                title = DEFAULT_TITLE,
+                creators = listOf(DEFAULT_CREATOR),
+                identifier = "urn:uuid:${uuidProvider()}",
+                date = LocalDate.now(clock).format(DateTimeFormatter.ISO_LOCAL_DATE)
+            )
+
+        fun load(doc: Document, clock: Clock = Clock.systemUTC(), uuidProvider: () -> String = { UUID.randomUUID().toString() }): ImportedSourceMetadata {
             val metadataElem = DocumentUTDConfig.NIMAS.getHeadElement(doc)
                 ?.getFirstChildElement(METADATA_ELEMENT, OPF_NS)
-                ?: return ImportedSourceMetadata()
-            return fromOpf(metadataElem)
+                ?: return defaults(clock, uuidProvider)
+            return fromOpf(metadataElem, clock, uuidProvider)
         }
 
         /** Extracts dc:title/creator/identifier/date from an OPF-style metadata block - shared by NIMAS/EPUB source OPFs and the BBX head. */
-        fun fromOpf(opfSource: Node): ImportedSourceMetadata = ImportedSourceMetadata(
-            title = OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "title").firstOrNull { it.isNotBlank() },
-            creators = OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "creator").filter { it.isNotBlank() },
-            identifier = OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "identifier").firstOrNull { it.isNotBlank() },
-            date = OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "date").firstOrNull { it.isNotBlank() }
-        )
+        fun fromOpf(
+            opfSource: Node,
+            clock: Clock = Clock.systemUTC(),
+            uuidProvider: () -> String = { UUID.randomUUID().toString() }
+        ): ImportedSourceMetadata {
+            val defaults = defaults(clock, uuidProvider)
+            return ImportedSourceMetadata(
+                title = OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "title").firstOrNull { it.isNotBlank() } ?: defaults.title,
+                creators = OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "creator").filter { it.isNotBlank() }.ifEmpty { defaults.creators },
+                identifier = OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "identifier").firstOrNull { it.isNotBlank() } ?: defaults.identifier,
+                date = OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "date").firstOrNull { it.isNotBlank() } ?: defaults.date
+            )
+        }
 
         /** Extracts dc:Title/Creator/Identifier/Date from a NIMAS dtbook's `<head><meta name="dc:X" content="Y"/></head>` block. */
-        fun fromDtbookHead(dtbookDocument: Document): ImportedSourceMetadata {
+        fun fromDtbookHead(
+            dtbookDocument: Document,
+            clock: Clock = Clock.systemUTC(),
+            uuidProvider: () -> String = { UUID.randomUUID().toString() }
+        ): ImportedSourceMetadata {
             fun metaValues(name: String): List<String> = FastXPath.descendant(dtbookDocument)
                 .filterIsInstance<Element>()
                 .filter { it.localName == "meta" && (it.parent as? Element)?.localName == "head" }
@@ -93,11 +116,12 @@ data class ImportedSourceMetadata(
                 .filter { it.isNotBlank() }
                 .toList()
 
+            val defaults = defaults(clock, uuidProvider)
             return ImportedSourceMetadata(
-                title = metaValues("dc:Title").firstOrNull(),
-                creators = metaValues("dc:Creator"),
-                identifier = metaValues("dc:Identifier").firstOrNull(),
-                date = metaValues("dc:Date").firstOrNull()
+                title = metaValues("dc:Title").firstOrNull() ?: defaults.title,
+                creators = metaValues("dc:Creator").ifEmpty { defaults.creators },
+                identifier = metaValues("dc:Identifier").firstOrNull() ?: defaults.identifier,
+                date = metaValues("dc:Date").firstOrNull() ?: defaults.date
             )
         }
     }

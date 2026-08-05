@@ -55,9 +55,12 @@ object PandocArchiverLoader : ArchiverFactory.FileLoader {
         archiver.newPath = Paths.get(fileTabName)
         // Set where the document was really imported from, not the temp bbx.
         archiver.importedFrom = file
-        if (fileData.type == ArchiverFactory.Types.EPUB) {
-            readEpubOpfMetadata(file)?.saveTo(archiver.bbxDocument)
+        val importedMetadata = if (fileData.type == ArchiverFactory.Types.EPUB) {
+            readEpubOpfMetadata(file) ?: ImportedSourceMetadata.defaults()
+        } else {
+            ImportedSourceMetadata.defaults()
         }
+        importedMetadata.saveTo(archiver.bbxDocument)
         return archiver
     }
 
