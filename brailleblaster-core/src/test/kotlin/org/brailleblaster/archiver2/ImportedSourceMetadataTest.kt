@@ -22,6 +22,7 @@ import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.testng.Assert
 import org.testng.annotations.Test
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.Clock
 import java.time.Instant
@@ -139,6 +140,26 @@ class ImportedSourceMetadataTest {
         val loaded = ImportedSourceMetadata.load(reopened, fixedClock, fixedUuid)
 
         Assert.assertEquals(loaded, ImportedSourceMetadata.defaults(fixedClock, fixedUuid))
+    }
+
+    @Test
+    fun saveBbxAddsDefaultMetadataWhenDocumentHadNone() {
+        val doc = Document(Element("bbx"))
+        val tempFile = Files.createTempFile("bbx-metadata-", ".bbx")
+
+        try {
+            BBZArchiver.saveBBX(tempFile, doc)
+
+            val reopened = XMLHandler().load(tempFile)
+            val loaded = ImportedSourceMetadata.load(reopened)
+
+            Assert.assertEquals(loaded.title, "-")
+            Assert.assertEquals(loaded.creators, listOf("-"))
+            Assert.assertTrue(loaded.identifier.startsWith("urn:uuid:"))
+            Assert.assertTrue(Regex("""\d{4}-\d{2}-\d{2}""").matches(loaded.date))
+        } finally {
+            Files.deleteIfExists(tempFile)
+        }
     }
 
     private fun reopen(doc: Document): Document {
