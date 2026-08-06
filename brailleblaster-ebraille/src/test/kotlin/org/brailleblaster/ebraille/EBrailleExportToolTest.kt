@@ -32,24 +32,22 @@ import org.testng.annotations.Test
 
 class EBrailleExportToolTest {
     @Test
-    fun buildExportManifestUsesCanonicalMetadataWithoutWritingEbrailleSettings() {
+    fun buildExportDataUsesCanonicalMetadataWithoutWritingEbrailleSettings() {
         val doc = Document(Element("bbx"))
-        ImportedSourceMetadata(
+        val expected = ImportedSourceMetadata(
             title = "Canonical Title",
             creators = listOf("Author One", "Author Two"),
             identifier = "urn:isbn:9781234567890",
             date = "2021-06-15"
-        ).saveTo(doc)
+        )
+        expected.saveTo(doc)
 
-        val manifest = buildExportManifest(doc, mockTranslationEngine())
+        val exportData = buildExportData(doc, mockTranslationEngine())
 
         Assert.assertNull(DocumentUTDConfig.NIMAS.getSetting(doc, "ebrailleManifest.version"))
         Assert.assertNull(DocumentUTDConfig.NIMAS.getSetting(doc, "ebrailleManifest.title.value"))
-        Assert.assertEquals(manifest.title, "Canonical Title")
-        Assert.assertEquals(manifest.creators, listOf("Author One", "Author Two"))
-        Assert.assertEquals(manifest.identifier, "urn:isbn:9781234567890")
-        Assert.assertEquals(manifest.date, "2021-06-15")
-        Assert.assertEquals(manifest.languages, listOf("en-Brai"))
+        Assert.assertEquals(exportData.sourceMetadata, expected)
+        Assert.assertEquals(exportData.manifest.languages, listOf("en-Brai"))
     }
 
     private fun mockTranslationEngine(): ITranslationEngine {

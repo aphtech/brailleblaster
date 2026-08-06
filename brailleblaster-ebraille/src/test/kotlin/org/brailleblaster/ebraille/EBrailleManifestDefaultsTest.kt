@@ -33,21 +33,21 @@ class EBrailleManifestDefaultsTest {
     @Test
     fun brailleCellTypeDefaultsToSixWhenNoBrailleContentPresent() {
         val docs = listOf(Jsoup.parse("<html><body><p>Plain print text</p></body></html>"))
-        val result = EBrailleManifestDefaults.brailleCellType(docs)
+        val result = deriveBrailleCellType(docs)
         Assert.assertEquals(result, "6")
     }
 
     @Test
     fun brailleCellTypeDetectsSixDotOnlyContent() {
         val docs = listOf(Jsoup.parse("<html><body><p>${sixDotChar()}</p></body></html>"))
-        val result = EBrailleManifestDefaults.brailleCellType(docs)
+        val result = deriveBrailleCellType(docs)
         Assert.assertEquals(result, "6")
     }
 
     @Test
     fun brailleCellTypeDetectsEightDotContent() {
         val docs = listOf(Jsoup.parse("<html><body><p>${eightDotChar()}</p></body></html>"))
-        val result = EBrailleManifestDefaults.brailleCellType(docs)
+        val result = deriveBrailleCellType(docs)
         Assert.assertEquals(result, "8")
     }
 
@@ -57,7 +57,7 @@ class EBrailleManifestDefaultsTest {
             Jsoup.parse("<html><body><p>${sixDotChar()}</p></body></html>"),
             Jsoup.parse("<html><body><p>${eightDotChar()}</p></body></html>")
         )
-        val result = EBrailleManifestDefaults.brailleCellType(docs)
+        val result = deriveBrailleCellType(docs)
         Assert.assertEquals(result, "6 8")
     }
 
@@ -68,13 +68,13 @@ class EBrailleManifestDefaultsTest {
 
     @Test
     fun tactileGraphicsDefaultsToNoneWhenNoImagesPresent() {
-        val result = EBrailleManifestDefaults.tactileGraphics(listOf(fakeItem("doc.html", "application/xhtml+xml")))
+        val result = deriveTactileGraphics(listOf(fakeItem("doc.html", "application/xhtml+xml")))
         Assert.assertEquals(result, "none")
     }
 
     @Test
     fun tactileGraphicsUsesSingleFormatWhenOnlyOnePresent() {
-        val result = EBrailleManifestDefaults.tactileGraphics(listOf(fakeItem("a.png", "image/png")))
+        val result = deriveTactileGraphics(listOf(fakeItem("a.png", "image/png")))
         Assert.assertEquals(result, "png")
     }
 
@@ -85,7 +85,7 @@ class EBrailleManifestDefaultsTest {
             fakeItem("d.jpeg", "image/jpeg"), fakeItem("e.jpeg", "image/jpeg"),
             fakeItem("f.gif", "image/gif"), fakeItem("g.gif", "image/gif")
         )
-        val result = EBrailleManifestDefaults.tactileGraphics(items)
+        val result = deriveTactileGraphics(items)
         Assert.assertEquals(result, "png gif jpeg")
     }
 
@@ -102,36 +102,15 @@ class EBrailleManifestDefaultsTest {
     @Test
     fun modifiedReflectsCurrentUtcTimeTruncatedToSeconds() {
         val fixedClock = Clock.fixed(Instant.parse("2026-07-27T10:15:30.123Z"), ZoneOffset.UTC)
-        val result = EBrailleManifestDefaults.modified(fixedClock)
+        val result = currentModifiedTime(fixedClock)
         Assert.assertEquals(result, "2026-07-27T10:15:30Z")
-    }
-
-    // --- identifier ---
-
-    @Test
-    fun identifierGeneratesUuidWhenAbsent() {
-        val result = EBrailleManifestDefaults.identifier(null) { "fixed-uuid" }
-        Assert.assertEquals(result, "urn:uuid:fixed-uuid")
-    }
-
-    @Test
-    fun identifierGeneratesUuidWhenExistingIsBlank() {
-        val result = EBrailleManifestDefaults.identifier("") { "fixed-uuid" }
-        Assert.assertEquals(result, "urn:uuid:fixed-uuid")
-    }
-
-    @Test
-    fun identifierKeepsExistingValueWhenPresent() {
-        val existing = "urn:uuid:already-set"
-        val result = EBrailleManifestDefaults.identifier(existing) { "fixed-uuid" }
-        Assert.assertEquals(result, existing)
     }
 
     // --- language ---
 
     @Test
     fun languageDefaultsToEnBrailWhenEngineAbsent() {
-        val result = EBrailleManifestDefaults.language(null)
+        val result = defaultEbrailleLanguage(null)
         Assert.assertEquals(result, "en-Brai")
     }
 
@@ -151,6 +130,6 @@ class EBrailleManifestDefaultsTest {
         val settings = BrailleSettings().apply { mainTranslationTable = table }
         val engine = Mockito.mock(ITranslationEngine::class.java)
         Mockito.`when`(engine.brailleSettings).thenReturn(settings)
-        return EBrailleManifestDefaults.language(engine)
+        return defaultEbrailleLanguage(engine)
     }
 }

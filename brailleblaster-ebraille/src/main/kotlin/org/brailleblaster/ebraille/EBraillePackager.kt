@@ -16,6 +16,7 @@
 package org.brailleblaster.ebraille
 
 import nu.xom.Serializer
+import org.brailleblaster.archiver2.ImportedSourceMetadata
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream
 import org.brailleblaster.utd.ITranslationEngine
@@ -38,41 +39,32 @@ object EBraillePackager {
     fun createEbraillePackage(
         outPath: Path,
         docs: List<Document>,
-        title: String = "-",
+        sourceMetadata: ImportedSourceMetadata = ImportedSourceMetadata.defaults(),
         translationEngine: ITranslationEngine = UTDTranslationEngine(),
-        manifest: EBrailleManifest? = null
+        manifest: EBrailleManifest = EBrailleManifest.defaults(languages = listOf(defaultEbrailleLanguage(translationEngine)))
     ) {
         val docItems = docs.mapIndexed { i, doc -> XHtmlItem("ebraille/document${i}.html", doc) }
-        val navDoc = XHtmlItem("index.html", NavigationHtml.createNavigationHtml(docItems, title = title, translationEngine = translationEngine), properties = "nav")
+        val navDoc = XHtmlItem("index.html", NavigationHtml.createNavigationHtml(docItems, title = sourceMetadata.title, translationEngine = translationEngine), properties = "nav")
         val packageItems = docItems + RESOURCE_ITEMS + navDoc
-        val exportManifest = manifest?.withVolatileExportValues(docs, packageItems) ?: createManifestForExport(title, docs, packageItems)
-        packageDocument(outPath, packageItems, exportManifest)
+        val exportManifest = manifest.withVolatileExportValues(docs, packageItems)
+        packageDocument(outPath, packageItems, sourceMetadata, exportManifest)
     }
 
-    private fun packageDocument(outPath: Path, packageItems: List<PackageItem>, manifest: EBrailleManifest) {
+    private fun packageDocument(
+        outPath: Path,
+        packageItems: List<PackageItem>,
+        sourceMetadata: ImportedSourceMetadata,
+        manifest: EBrailleManifest
+    ) {
         ZipArchiveOutputStream(FileChannel.open(outPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE)).use { zos ->
             zos.writeMimetype()
             zos.writeItems(packageItems)
-            zos.writeOpf(packageItems, manifest)
+            zos.writeOpf(packageItems, sourceMetadata, manifest)
             zos.writeContainer()
             zos.closeArchiveEntry()
         }
     }
-
-    private fun createManifestForExport(title: String, docs: List<Document>, packageItems: List<PackageItem>): EBrailleManifest {
-        return EBrailleManifest.defaults().copy(
-            title = title.ifBlank { "-" },
-            brailleCellType = EBrailleManifestDefaults.brailleCellType(docs),
-            tactileGraphics = EBrailleManifestDefaults.tactileGraphics(packageItems)
-        )
-    }
 }
-
-private fun EBrailleManifest.withVolatileExportValues(docs: List<Document>, packageItems: List<PackageItem>, clock: Clock = Clock.systemUTC()): EBrailleManifest = copy(
-    modified = EBrailleManifestDefaults.modified(clock),
-    brailleCellType = EBrailleManifestDefaults.brailleCellType(docs),
-    tactileGraphics = EBrailleManifestDefaults.tactileGraphics(packageItems)
-)
 
 private const val MIMETYPE_DATA = "application/epub+zip"
 
@@ -90,9 +82,13 @@ private fun ZipArchiveOutputStream.writeItems(items: List<PackageItem>) {
     }
 }
 
-private fun ZipArchiveOutputStream.writeOpf(docItems: List<PackageItem>, manifest: EBrailleManifest) {
+private fun ZipArchiveOutputStream.writeOpf(
+    docItems: List<PackageItem>,
+    sourceMetadata: ImportedSourceMetadata,
+    manifest: EBrailleManifest
+) {
     putArchiveEntry(ZipArchiveEntry(OPF_PATH))
-    createXomSerializer(this).write(createOpf(docItems, manifest))
+    createXomSerializer(this).write(createOpf(docItems, sourceMetadata, manifest))
 }
 
 private fun ZipArchiveOutputStream.writeContainer(opfPath: String = OPF_PATH) {

@@ -31,25 +31,26 @@ import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.nameWithoutExtension
 
+internal data class EBrailleExportData(
+    val sourceMetadata: ImportedSourceMetadata,
+    val manifest: EBrailleManifest
+)
+
+@Suppress("UNUSED_PARAMETER")
 internal fun createEbraille(outputPath: Path, docs: List<Document>, title: String, engine: ITranslationEngine) {
-    val stableManifest = buildExportManifest(docs.firstOrNull(), engine)
+    val exportData = buildExportData(docs.firstOrNull(), engine)
 
     val html = docs.map { BBX2HTML.convertBbxToHtml(it) }
-    EBraillePackager.createEbraillePackage(outputPath, html, title = title, engine, stableManifest)
+    EBraillePackager.createEbraillePackage(outputPath, html, exportData.sourceMetadata, engine, exportData.manifest)
 }
 
-internal fun buildExportManifest(sourceDoc: Document?, engine: ITranslationEngine): EBrailleManifest {
+internal fun buildExportData(sourceDoc: Document?, engine: ITranslationEngine): EBrailleExportData {
     val importedMetadata = sourceDoc?.let { ImportedSourceMetadata.load(it) } ?: ImportedSourceMetadata.defaults()
-    return importedMetadata.toExportManifest(EBrailleManifestDefaults.language(engine))
+    return EBrailleExportData(
+        sourceMetadata = importedMetadata,
+        manifest = EBrailleManifest.defaults(languages = listOf(defaultEbrailleLanguage(engine)))
+    )
 }
-
-private fun ImportedSourceMetadata.toExportManifest(language: String): EBrailleManifest = EBrailleManifest.defaults().copy(
-    title = title,
-    creators = creators,
-    identifier = identifier,
-    date = date,
-    languages = listOf(language)
-)
 
 object EBrailleExportTool : MenuTool {
     override val topMenu = TopMenu.FILE

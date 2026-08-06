@@ -18,6 +18,7 @@ package org.brailleblaster.ebraille
 import nu.xom.Builder
 import nu.xom.Document
 import nu.xom.Element
+import org.brailleblaster.archiver2.ImportedSourceMetadata
 import org.brailleblaster.utd.BrailleSettings
 import org.brailleblaster.utd.ITranslationEngine
 import org.brailleblaster.utils.xml.OPF_NS
@@ -39,11 +40,17 @@ class EBraillePackagerTest {
         val outFile = Files.createTempFile("ebraille-phase2-", ".ebrl")
         try {
             val doc = Jsoup.parse("<html><body><h1>Chapter 1</h1><span role=\"doc-pagebreak\">1</span><p>Content</p></body></html>")
+            val sourceMetadata = ImportedSourceMetadata(
+                title = "Sample Title",
+                creators = listOf("Author One", "Author Two"),
+                identifier = "urn:isbn:9781234567890",
+                date = "2021-06-15"
+            )
 
             EBraillePackager.createEbraillePackage(
                 outFile,
                 listOf(doc),
-                title = "Sample Title",
+                sourceMetadata = sourceMetadata,
                 translationEngine = mockTranslationEngine()
             )
 
@@ -58,6 +65,8 @@ class EBraillePackagerTest {
                 val metadata = firstChild(opfDoc.rootElement, "metadata", OPF_NS)
 
                 Assert.assertEquals(firstDcValue(metadata, "title"), "Sample Title")
+                Assert.assertEquals(firstDcValue(metadata, "identifier"), "urn:isbn:9781234567890")
+                Assert.assertEquals(firstDcValue(metadata, "date"), "2021-06-15")
                 Assert.assertEquals(firstDcValue(metadata, "format"), "eBraille 1.0")
                 Assert.assertEquals(firstMetaProperty(metadata, "a11y:tactileGraphics"), "none")
                 Assert.assertEquals(firstMetaProperty(metadata, "a11y:brailleCellType"), "6")
@@ -97,8 +106,14 @@ class EBraillePackagerTest {
     fun exportUsesProvidedStableManifestButRecalculatesVolatileFields() {
         val outFile = Files.createTempFile("ebraille-phase2-manifest-", ".ebrl")
         try {
+            val sourceMetadata = ImportedSourceMetadata(
+                title = "Canonical Title",
+                creators = listOf("Author One"),
+                identifier = "canonical-id",
+                date = "2021-06-15"
+            )
             val customManifest = EBrailleManifest.defaults().copy(
-                title = "Provided Manifest Title",
+                languages = listOf("fr-Brai"),
                 tactileGraphics = "png"
             )
             val doc = Jsoup.parse("<html><body><h1>Heading</h1><p>Body</p></body></html>")
@@ -106,7 +121,7 @@ class EBraillePackagerTest {
             EBraillePackager.createEbraillePackage(
                 outFile,
                 listOf(doc),
-                title = "Ignored Export Title",
+                sourceMetadata = sourceMetadata,
                 translationEngine = mockTranslationEngine(),
                 manifest = customManifest
             )
@@ -115,7 +130,8 @@ class EBraillePackagerTest {
                 val opfDoc = readXml(zip, "package.opf")
                 val metadata = firstChild(opfDoc.rootElement, "metadata", OPF_NS)
 
-                Assert.assertEquals(firstDcValue(metadata, "title"), "Provided Manifest Title")
+                Assert.assertEquals(firstDcValue(metadata, "title"), "Canonical Title")
+                Assert.assertEquals(firstDcValue(metadata, "language"), "fr-Brai")
                 Assert.assertEquals(firstMetaProperty(metadata, "a11y:tactileGraphics"), "none")
             }
         } finally {
