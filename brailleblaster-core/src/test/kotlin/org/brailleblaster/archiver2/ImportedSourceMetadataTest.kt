@@ -187,6 +187,19 @@ class ImportedSourceMetadataTest {
         }
     }
 
+    @Test
+    fun constructorNormalizesCreatorsToANonEmptyTypedList() {
+        val blankCreators = ImportedSourceMetadata(
+            title = "Title",
+            creators = listOf("", "   "),
+            identifier = "identifier",
+            date = "2021-06-15"
+        )
+
+        Assert.assertEquals(blankCreators.creators, listOf("-"))
+        Assert.assertTrue(blankCreators.creators is RequiredMetadataValues)
+    }
+
     private fun reopen(doc: Document): Document {
         val xml = doc.toXML().toByteArray(StandardCharsets.UTF_8)
         return Builder().build(xml.inputStream(), "")
