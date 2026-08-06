@@ -16,6 +16,7 @@
 package org.brailleblaster.ebraille
 
 import nu.xom.Document
+import org.brailleblaster.archiver2.ImportedSourceMetadata
 import org.brailleblaster.ebraille.bbx2html.BBX2HTML
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
@@ -31,19 +32,25 @@ import kotlin.io.path.Path
 import kotlin.io.path.nameWithoutExtension
 
 internal fun createEbraille(outputPath: Path, docs: List<Document>, title: String, engine: ITranslationEngine) {
-    val sourceDoc = docs.firstOrNull()
-    val persistedManifest = sourceDoc?.let { EBrailleManifestDocumentStore.load(it) }
-    val baseManifest = persistedManifest ?: EBrailleManifest.defaults().copy(
-        title = title.ifBlank { "-" },
-        languages = listOf(EBrailleManifestDefaults.language(engine))
-    )
-    val stableManifest = sourceDoc?.let { baseManifest.withImportedSourceMetadata(it) } ?: baseManifest
-
-    sourceDoc?.let { EBrailleManifestDocumentStore.save(it, stableManifest) }
+    val stableManifest = buildExportManifest(docs.firstOrNull(), engine)
 
     val html = docs.map { BBX2HTML.convertBbxToHtml(it) }
     EBraillePackager.createEbraillePackage(outputPath, html, title = title, engine, stableManifest)
 }
+
+internal fun buildExportManifest(sourceDoc: Document?, engine: ITranslationEngine): EBrailleManifest {
+    val importedMetadata = sourceDoc?.let { ImportedSourceMetadata.load(it) } ?: ImportedSourceMetadata.defaults()
+    return importedMetadata.toExportManifest(EBrailleManifestDefaults.language(engine))
+}
+
+private fun ImportedSourceMetadata.toExportManifest(language: String): EBrailleManifest = EBrailleManifest.defaults().copy(
+    title = title,
+    creators = creators,
+    identifier = identifier,
+    date = date,
+    languages = listOf(language)
+)
+
 object EBrailleExportTool : MenuTool {
     override val topMenu = TopMenu.FILE
     override val title = "Export to eBraille"
