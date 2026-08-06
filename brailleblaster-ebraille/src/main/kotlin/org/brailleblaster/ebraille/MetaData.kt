@@ -20,7 +20,6 @@ import nu.xom.Document
 import nu.xom.Element
 import org.brailleblaster.archiver2.ImportedSourceMetadata
 import org.brailleblaster.utd.ITranslationEngine
-import org.brailleblaster.utd.config.DocumentUTDConfig
 import org.brailleblaster.utils.xml.DC_NS
 import org.brailleblaster.utils.xml.OPF_NS
 import org.jsoup.nodes.Document as JsoupDocument
@@ -146,87 +145,6 @@ object EBrailleManifestDefaults {
 
         return if (languageCode != null) "$languageCode-Brai" else "en-Brai"
     }
-}
-
-internal object EBrailleManifestDocumentStore {
-    private const val ROOT_KEY = "ebrailleManifest"
-    private const val VERSION_KEY = "$ROOT_KEY.version"
-
-    fun load(doc: Document, clock: Clock = Clock.systemUTC()): EBrailleManifest? {
-        if (!hasAnyPersistedManifestData(doc)) {
-            return null
-        }
-
-        val defaults = EBrailleManifest.defaults(clock)
-        return defaults.copy(
-            title = readSingleValue(doc, "title", defaults.title),
-            creators = readListValues(doc, "creators", defaults.creators),
-            identifier = readSingleValue(doc, "identifier", defaults.identifier),
-            languages = readListValues(doc, "languages", defaults.languages),
-            date = readSingleValue(doc, "date", defaults.date),
-            dateCopyrighted = readSingleValue(doc, "dateCopyrighted", defaults.dateCopyrighted),
-            brailleCellType = readSingleValue(doc, "brailleCellType", defaults.brailleCellType),
-            brailleSystem = readSingleValue(doc, "brailleSystem", defaults.brailleSystem),
-            completeTranscription = readSingleValue(doc, "completeTranscription", defaults.completeTranscription),
-            producers = readListValues(doc, "producers", defaults.producers)
-        )
-    }
-
-    fun save(doc: Document, manifest: EBrailleManifest) {
-        writeSingleValue(doc, "title", manifest.title)
-        writeListValues(doc, "creators", manifest.creators)
-        writeSingleValue(doc, "identifier", manifest.identifier)
-        writeListValues(doc, "languages", manifest.languages)
-        writeSingleValue(doc, "date", manifest.date)
-        writeSingleValue(doc, "dateCopyrighted", manifest.dateCopyrighted)
-        writeSingleValue(doc, "brailleCellType", manifest.brailleCellType)
-        writeSingleValue(doc, "brailleSystem", manifest.brailleSystem)
-        writeSingleValue(doc, "completeTranscription", manifest.completeTranscription)
-        writeListValues(doc, "producers", manifest.producers)
-        DocumentUTDConfig.NIMAS.setSetting(doc, VERSION_KEY, "1")
-    }
-
-    private fun hasAnyPersistedManifestData(doc: Document): Boolean {
-        val directKeys = listOf(
-            VERSION_KEY,
-            key("title"),
-            key("identifier"),
-            key("date"),
-            key("dateCopyrighted"),
-            key("brailleCellType"),
-            key("brailleSystem"),
-            key("completeTranscription"),
-            countKey("creators"),
-            countKey("languages"),
-            countKey("producers")
-        )
-        return directKeys.any { DocumentUTDConfig.NIMAS.getSetting(doc, it) != null }
-    }
-
-    private fun writeSingleValue(doc: Document, field: String, value: String) {
-        DocumentUTDConfig.NIMAS.setSetting(doc, key(field), value)
-    }
-
-    private fun writeListValues(doc: Document, field: String, values: List<String>) {
-        DocumentUTDConfig.NIMAS.setSetting(doc, countKey(field), values.size.toString())
-        values.forEachIndexed { i, value ->
-            writeSingleValue(doc, "$field.$i", value)
-        }
-    }
-
-    private fun readSingleValue(doc: Document, field: String, fallback: String): String =
-        DocumentUTDConfig.NIMAS.getSetting(doc, key(field)) ?: fallback
-
-    private fun readListValues(doc: Document, field: String, fallback: List<String>): List<String> {
-        val count = DocumentUTDConfig.NIMAS.getSetting(doc, countKey(field))?.toIntOrNull() ?: return fallback
-        val values = (0 until count)
-            .map { i -> readSingleValue(doc, "$field.$i", "") }
-            .filter { it.isNotBlank() }
-        return if (values.isEmpty()) fallback else values
-    }
-
-    private fun key(field: String): String = "$ROOT_KEY.$field.value"
-    private fun countKey(field: String): String = "$ROOT_KEY.$field.count"
 }
 
 /**
