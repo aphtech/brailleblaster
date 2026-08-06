@@ -162,6 +162,31 @@ class ImportedSourceMetadataTest {
         }
     }
 
+    @Test
+    fun saveBbxPreservesExplicitCanonicalMetadata() {
+        val doc = Document(Element("bbx"))
+        val expected = ImportedSourceMetadata(
+            title = "Canonical Title",
+            creators = listOf("Creator One", "Creator Two"),
+            identifier = "urn:isbn:9781234567890",
+            date = "2021-06-15"
+        )
+        val tempFile = Files.createTempFile("bbx-metadata-preserve-", ".bbx")
+
+        try {
+            expected.saveTo(doc)
+
+            BBZArchiver.saveBBX(tempFile, doc)
+
+            val reopened = XMLHandler().load(tempFile)
+            val loaded = ImportedSourceMetadata.load(reopened)
+
+            Assert.assertEquals(loaded, expected)
+        } finally {
+            Files.deleteIfExists(tempFile)
+        }
+    }
+
     private fun reopen(doc: Document): Document {
         val xml = doc.toXML().toByteArray(StandardCharsets.UTF_8)
         return Builder().build(xml.inputStream(), "")

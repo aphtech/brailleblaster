@@ -60,6 +60,31 @@ class EBrailleManifestImportTest {
     }
 
     @Test
+    fun importedSourceMetadataOverridesAllConflictingSharedManifestFields() {
+        val doc = newBookDocument()
+        ImportedSourceMetadata(
+            title = "Imported Title",
+            creators = listOf("Imported Author One", "Imported Author Two"),
+            identifier = "imported-id",
+            date = "2019-08-07"
+        ).saveTo(doc)
+
+        val conflictingManifest = EBrailleManifest.defaults().copy(
+            title = "Manifest Title",
+            creators = listOf("Manifest Creator"),
+            identifier = "manifest-id",
+            date = "2024-01-31"
+        )
+
+        val result = conflictingManifest.withImportedSourceMetadata(doc)
+
+        Assert.assertEquals(result.title, "Imported Title")
+        Assert.assertEquals(result.creators, listOf("Imported Author One", "Imported Author Two"))
+        Assert.assertEquals(result.identifier, "imported-id")
+        Assert.assertEquals(result.date, "2019-08-07")
+    }
+
+    @Test
     fun appliesDefaultedRequiredMetadataWhenNoneWasEverSaved() {
         val doc = newBookDocument()
         val manifest = EBrailleManifest.defaults()
