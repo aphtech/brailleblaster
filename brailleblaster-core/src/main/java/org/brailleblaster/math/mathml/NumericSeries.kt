@@ -33,8 +33,7 @@ import org.brailleblaster.util.Notify.notify
 
 object NumericSeries {
     const val BRAILLE_DOT_5 = "\u2810"
-    @JvmStatic
-	fun toggleNumeric(m: Manager) {
+    fun toggleNumeric(m: Manager) {
         val selectedText = m.textView.selectionText
         if (selectedText.isEmpty()) {
             return

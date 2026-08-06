@@ -1805,7 +1805,7 @@ public static final @NonNull BlockElement BLOCK = new BlockElement();
                 int numChars = string.length();
                 String sizeString = String.valueOf(numChars);
                 int digitLength = sizeString.length();
-                Matrix.matrixLog("StringBuilder digits {} length {} and string {}" + digitLength + sizeString + string);
+                Matrix.Companion.matrixLog("StringBuilder digits {} length {} and string {}" + digitLength + sizeString + string);
                 s.append(digitLength).append(sizeString).append(string);
             }
             return s.toString();

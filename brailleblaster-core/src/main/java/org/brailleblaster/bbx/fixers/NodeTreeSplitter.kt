@@ -48,17 +48,17 @@ object NodeTreeSplitter {
      * @param splitAt The root of what gets duplicated in the split element
      * @return The after root or null if empty
      */
-	@JvmStatic
-	fun split(root: Element?, splitAt: Node?): Element? {
+    fun split(root: Element?, splitAt: Node?): Element? {
         if (root == null) {
             throw NullPointerException("oldRootElement")
         } else if (splitAt == null) {
             throw NullPointerException("oldTrigger")
         } else if (root === splitAt) {
             log.error("root " + XMLHandler.toXMLSimple(root))
-            log.error("splitAt " + XMLHandler.toXMLSimple(
-                splitAt
-            )
+            log.error(
+                "splitAt " + XMLHandler.toXMLSimple(
+                    splitAt
+                )
             )
             throw NodeException("root == splitAt, splitAt: ", splitAt)
         } else if (FastXPath.descendant(root).none { node: Node -> node === splitAt }) {

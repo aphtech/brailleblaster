@@ -55,9 +55,9 @@ child.project.url.inherit.append.path="false">
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <serialization.version>1.11.0</serialization.version>
         <jetbrains.annotations.version>26.1.0</jetbrains.annotations.version>
-        <slf4j.version>2.0.17</slf4j.version>
+        <slf4j.version>2.0.18</slf4j.version>
         <mathcat4j.version>1.0.3</mathcat4j.version>
-        <mathcat4j-jni.version>0.7.2-2</mathcat4j-jni.version>
+        <mathcat4j-jni.version>0.7.6-beta.9-1</mathcat4j-jni.version>
         <jlouis.version>7733050ea6b5152412e6ddb6dec996f9e024a082</jlouis.version>
         <libembosser.version>1.4.3</libembosser.version>
         <jaxbapi.version>4.0.5</jaxbapi.version>
@@ -70,11 +70,11 @@ child.project.url.inherit.append.path="false">
         <xercesimpl.version>2.12.2</xercesimpl.version>
         <xmlapis.version>2.0.2</xmlapis.version>
         <requiremaven.version>3.6.3</requiremaven.version>
-        <equalsverifier.version>4.3.1</equalsverifier.version>
+        <equalsverifier.version>4.5</equalsverifier.version>
         <mockitocore.version>5.23.0</mockitocore.version>
         <orgeclipseswtbotswtfinder.version>f5b2edaee2</orgeclipseswtbotswtfinder.version>
 
-        <pandoc.version>3.10</pandoc.version>
+        <pandoc.version>3.10.1</pandoc.version>
     </properties>
 
 
@@ -244,13 +244,13 @@ child.project.url.inherit.append.path="false">
             <dependency>
                 <groupId>org.graalvm.polyglot</groupId>
                 <artifactId>js</artifactId>
-                <version>25.1.3</version>
+                <version>25.2.4</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.graalvm.js</groupId>
                 <artifactId>js-scriptengine</artifactId>
-                <version>25.1.3</version>
+                <version>25.2.4</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -344,7 +344,7 @@ child.project.url.inherit.append.path="false">
             <dependency>
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
-                <version>1.22.2</version>
+                <version>1.23.1</version>
             </dependency>
             <dependency>
                 <groupId>xom</groupId>
@@ -417,12 +417,12 @@ child.project.url.inherit.append.path="false">
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-core</artifactId>
-                <version>1.5.38</version>
+                <version>1.6.1</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.5.38</version>
+                <version>1.6.1</version>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
@@ -456,12 +456,12 @@ child.project.url.inherit.append.path="false">
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
-                <version>1.18.10</version>
+                <version>1.18.11</version>
             </dependency>
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy-agent</artifactId>
-                <version>1.18.10</version>
+                <version>1.18.11</version>
             </dependency>
             <dependency>
                 <groupId>org.testng</groupId>
@@ -500,7 +500,7 @@ child.project.url.inherit.append.path="false">
             <dependency>
                 <groupId>org.jspecify</groupId>
                 <artifactId>jspecify</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.1</version>
                 <scope>provided</scope>
             </dependency>
         </dependencies>

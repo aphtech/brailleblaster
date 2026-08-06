@@ -190,8 +190,7 @@ class ConnectingContainer : ISpatialMathContainer {
             return container
         }
 
-        @JvmStatic
-		fun initialize(n: Node): Element {
+        fun initialize(n: Node): Element {
             val e = n as Element
             val t = getContainerFromElement(e)
             t.format()

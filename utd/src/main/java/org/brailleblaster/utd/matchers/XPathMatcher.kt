@@ -68,7 +68,7 @@ class XPathMatcher : INodeMatcher {
     override fun hashCode(): Int {
         val prime = 31
         var result = 1
-        result = prime * result + (expression?.hashCode() ?: 0)
+        result = prime * result + expression.hashCode()
         return result
     }
 

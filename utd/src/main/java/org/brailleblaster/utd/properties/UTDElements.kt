@@ -77,7 +77,6 @@ enum class UTDElements(val elementName: String) {
             return null
         }
 
-        @JvmStatic
         fun findType(e: Element): UTDElements? {
             if (UTD_NS == e.namespaceURI) {
                 for (curType in entries) {

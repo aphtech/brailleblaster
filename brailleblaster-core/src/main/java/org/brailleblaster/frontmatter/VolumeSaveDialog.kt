@@ -536,7 +536,7 @@ class VolumeSaveDialog(
             }
 
             val finalBrf = finalBrfMut!!
-            check(!finalBrf.isBlank()) { "No finalBrf?! $LINE_BREAK$finalBrf$LINE_BREAK=------=" }
+            check(finalBrf.isNotBlank()) { "No finalBrf?! $LINE_BREAK$finalBrf$LINE_BREAK=------=" }
 
             //Remove lingering empty page from resetting the page to restart the BRF output
             val linesPerPage = engine.brailleSettings.cellType.getLinesForHeight(

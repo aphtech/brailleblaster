@@ -295,7 +295,7 @@ public class PageIndicator implements PaintedElement {
             int x1 = 0;
             int y1 = view.getView().getLinePixel(line == 0 ? 0 : line + 1);
             int x2 = view.getView().getBounds().width;
-            FontManager.copyViewFont(manager, view, event.gc);
+            FontManager.Companion.copyViewFont(manager, view, event.gc);
             final int brailleLine = y1 + BRAILLE_LINE_OFFSET;
             final int printLine = y1 + PRINT_LINE_OFFSET;
 

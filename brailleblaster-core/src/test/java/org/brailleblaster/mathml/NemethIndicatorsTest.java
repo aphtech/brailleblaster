@@ -37,12 +37,12 @@ public class NemethIndicatorsTest {
             "<p>" + wizard1 + "</p>" + "<p>" + wizard2 + "</p>" + "<p>" + wizard3 + "</p>");
 
     public void clickInline(BBTestRunner bb) {
-        NemethIndicators.inline(bb.manager);
+        NemethIndicators.INSTANCE.inline(bb.manager);
 //		bb.openMenuItem(MenuManager.TopMenu.MATH, MathModule.NEMETH_TOGGLE);
     }
 
     public void clickBlock(BBTestRunner bb) {
-        NemethIndicators.block(bb.manager);
+        NemethIndicators.INSTANCE.block(bb.manager);
 //		bb.openMenuItem(MenuManager.TopMenu.MATH, MathModule.NEMETH_TOGGLE);
     }
 
@@ -214,7 +214,7 @@ public class NemethIndicatorsTest {
     }
 
     public void clickAddIndicators(BBTestRunner bb) {
-        NemethIndicators.inline(bb.manager);
+        NemethIndicators.INSTANCE.inline(bb.manager);
     }
 
     @Test(enabled = false)

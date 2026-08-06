@@ -21,7 +21,6 @@ import org.brailleblaster.utils.xml.UTD_NS
 
 class BrlOnly : Element(PROTOTYPE) {
     companion object {
-        @JvmStatic
         private val PROTOTYPE = Element(UTDElements.BRLONLY.qName, UTD_NS)
     }
 }

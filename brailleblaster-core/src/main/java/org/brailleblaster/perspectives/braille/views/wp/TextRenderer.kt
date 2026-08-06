@@ -493,14 +493,14 @@ class TextRenderer(manager: Manager, private val textView: TextView) : Renderer(
 
     private fun renderNewPages() {
         val newPages = state.newPages
-        for (pair in newPages) {
-            handleNewPageElement(pair.first, pair.second, textView)
+        for ((first, second) in newPages) {
+            handleNewPageElement(first, second, textView)
         }
     }
 
     private fun renderLineNumbers() {
-        for (lineNumber in lineNumberList) {
-            handleLineNumber(lineNumber.second, lineNumber.first)
+        for ((first, second) in lineNumberList) {
+            handleLineNumber(second, first)
         }
     }
 

@@ -32,8 +32,6 @@ object TextTranslator {
     private val log: Logger = LoggerFactory.getLogger(TextTranslator::class.java)
 
 
-    @JvmStatic
-    @JvmOverloads
     fun translateText(
         translateText: String,
         context: ITranslationEngine,

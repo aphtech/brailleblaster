@@ -54,9 +54,9 @@ open class NodeNameMatcher @JvmOverloads constructor(nodeName: String? = null,
         val prime = 31
         var result = 1
         result = (prime * result
-                + (namespace?.hashCode() ?: 0))
+                + namespace.hashCode())
         result = (prime * result
-                + (nodeName?.hashCode() ?: 0))
+                + nodeName.hashCode())
         return result
     }
 

@@ -34,7 +34,6 @@ class Tab : Element(PROTOTYPE) {
         }
 
     companion object {
-        @JvmStatic
         private val PROTOTYPE = Element(UTDElements.TAB.qName, UTD_NS).apply { addAttribute(Attribute("xml:space", "http://www.w3.org/XML/1998/namespace", "preserve")) }
     }
 

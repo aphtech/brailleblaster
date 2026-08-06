@@ -38,7 +38,6 @@ class TemplateSettings : ISpatialMathSettings {
     var defaultType = SpatialMathEnum.TemplateType.SIMPLE_ENUM
     var defaultOperator = OPERATOR.PLUS_ENUM
 
-    @JvmStatic
     fun shouldFormatLinear(template: Template): Boolean {
       return MathModuleUtils.isNemeth
           && template.settings.isLinear

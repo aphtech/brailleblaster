@@ -31,7 +31,6 @@ object MetadataHelper {
     private const val PRINT = "printPage"
     private const val BRL = "braillePage"
 
-    @JvmStatic
     fun changePrintPageNumber(doc: Document, originalNum: String, newNum: String?, volume: String?, skip: Boolean) {
         addNewChangeMeta(doc, PRINT, originalNum, newNum, null, null,
             combined = false,
@@ -55,7 +54,6 @@ object MetadataHelper {
         )
     }
 
-    @JvmStatic
     fun changePrintPageNumber(
         doc: Document, originalNum: String, newNum: String?,
         newContLetter: String?, pageType: String?, volume: String?, skip: Boolean
@@ -69,7 +67,6 @@ object MetadataHelper {
         )
     }
 
-    @JvmStatic
     fun markBlankPrintPageNumber(doc: Document, originalNum: String, volume: String?, skip: Boolean) {
         addNewChangeMeta(doc, PRINT, originalNum, null, null, null,
             combined = false,
@@ -80,7 +77,6 @@ object MetadataHelper {
         )
     }
 
-    @JvmStatic
     fun changeBraillePageNumber(
         doc: Document,
         originalNum: String,
@@ -170,12 +166,10 @@ object MetadataHelper {
         head?.appendChild(meta)
     }
 
-    @JvmStatic
     fun findPrintPageChange(doc: Document, originalNum: String): Element? {
         return findPageChange(doc, originalNum, PRINT)
     }
 
-    @JvmStatic
     fun findBraillePageChange(doc: Document, originalNum: String): Element? {
         return findPageChange(doc, originalNum, BRL)
     }
@@ -288,7 +282,6 @@ object MetadataHelper {
         return adaptedMeta
     }
 
-    @JvmStatic
     fun getUTDMeta(doc: Document?): List<Element> {
         val returnList: MutableList<Element> = ArrayList()
         val head = doc.getDocumentHead()

@@ -90,7 +90,6 @@ data class InsertionPatternEntry @JvmOverloads constructor(
 ) {
 
     companion object {
-        @JvmStatic
         fun listToMap(listInsertions: List<InsertionPatternEntry>?): Map<String, String> {
             return listInsertions?.associate { it.matchPattern to it.insertionDots } ?: emptyMap()
         }

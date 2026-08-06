@@ -33,8 +33,8 @@ class NamespaceMapAdapter : XmlAdapter<AdaptedNamespaceMap?, NamespaceMap?>() {
             null
         } else {
             val result = NamespaceMap()
-            for (nsDef in namespaces.namespaces) {
-                result.addNamespace(nsDef.prefix, nsDef.uri)
+            for ((prefix, uri) in namespaces.namespaces) {
+                result.addNamespace(prefix, uri)
             }
             result
         }

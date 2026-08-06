@@ -248,7 +248,7 @@ public class NodeTreeSplitterTest {
 		Element br = TestXMLUtils.getTestIdElement(doc, "target");
 
 		// do not use testNodeTreeSplit as the paragraph should be removed
-		NodeTreeSplitter.split(p, br);
+		NodeTreeSplitter.INSTANCE.split(p, br);
 		
 		new XMLElementAssert(root, null)
 				.nextChildIs(childAssert -> childAssert
@@ -416,7 +416,7 @@ public class NodeTreeSplitterTest {
 	private static void testNodeTreeSplit(Element root, Node splitAt) {
 		List<Node> allNodes = Lists.newArrayList(FastXPath.descendant(root.getDocument())::iterator);
 		
-		NodeTreeSplitter.split(root, splitAt);
+		NodeTreeSplitter.INSTANCE.split(root, splitAt);
 		
 		for (Node origNode : allNodes) {
 			if (origNode.getDocument() == null) {

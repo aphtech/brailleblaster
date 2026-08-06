@@ -51,7 +51,6 @@ object PageBuilderHelper {
         return pages
     }
 
-    @JvmStatic
     fun isPageIndicator(brl: Element): Boolean {
         require(UTDElements.BRL.isA(brl)) { "Expected brl, received $brl" }
 
@@ -174,7 +173,6 @@ object PageBuilderHelper {
     /**
      * Set the page number type directly. If you're using a pagenum element, use changePageNumberType instead
      */
-    @JvmStatic
     fun setPageNumberType(pageBuilder: PageBuilder, pageType: PageNumberType, formatSelector: FormatSelector) {
         //You need to double check here if you are indeed using the correct braille page type for this brl
         if (pageBuilder.pageNumberTypeFromMetaData != null) {
@@ -198,7 +196,6 @@ object PageBuilderHelper {
      * First verifies if a page indicator can be inserted, and if so, makes a new line if the current line is not
      * empty and inserts a page indicator
      */
-    @JvmStatic
     fun handlePageIndicator(
         pb: PageBuilder,
         brl: Element,
@@ -297,7 +294,6 @@ object PageBuilderHelper {
         return results
     }
 
-    @JvmStatic
     fun verifyPageSide(pageBuilder: PageBuilder, side: String) {
         //Check what side of the document you're on
         if (side == "right") {
@@ -309,7 +305,6 @@ object PageBuilderHelper {
         }
     }
 
-    @JvmStatic
     fun isSkipLinesNode(node: Node?): Boolean {
         return node is Element && node.getAttributeValue(
             UTDElements.UTD_SKIP_LINES_ATTRIB,
@@ -335,7 +330,6 @@ object PageBuilderHelper {
         return Property.ODD
     }
 
-    @JvmStatic
     fun getPrintPageNumberAt(pageSettings: PageSettings, braillePageNumber: Int): PageNumberPosition {
         if (getPageProperty(braillePageNumber) == Property.EVEN) {
             return pageSettings.evenPrintPageNumberAt
@@ -343,7 +337,6 @@ object PageBuilderHelper {
         return pageSettings.oddPrintPageNumberAt
     }
 
-    @JvmStatic
     fun getBraillePageNumberAt(pageSettings: PageSettings, braillePageNumber: Int): PageNumberPosition {
         if (getPageProperty(braillePageNumber) == Property.EVEN) {
             return pageSettings.evenBraillePageNumberAt

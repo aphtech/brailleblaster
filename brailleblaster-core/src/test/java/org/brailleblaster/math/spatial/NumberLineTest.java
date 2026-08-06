@@ -169,7 +169,7 @@ public class NumberLineTest {
     }
 
     public void setPassage(BBTestRunner bb) {
-        if (!MathModuleUtils.isNemeth()) {
+        if (!MathModuleUtils.INSTANCE.isNemeth()) {
             bb.bot
                     .activeShell()
                     .bot()

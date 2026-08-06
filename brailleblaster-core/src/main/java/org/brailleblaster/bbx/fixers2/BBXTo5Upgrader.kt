@@ -26,8 +26,7 @@ import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.utils.TableUtils
 
 object BBXTo5Upgrader {
-    @JvmStatic
-	fun upgrade(doc: Document) {
+    fun upgrade(doc: Document) {
         tableCleanup(doc)
         BBX.setFormatVersion(doc, 5)
     }

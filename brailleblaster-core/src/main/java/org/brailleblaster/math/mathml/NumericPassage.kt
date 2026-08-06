@@ -34,8 +34,7 @@ object NumericPassage {
     val NUMERIC_PASSAGE_BLOCK = localeHandler["blockNumericPassage"]
     val NUMERIC_PASSAGE_INLINE = localeHandler["inlineNumericPassage"]
     private val log = LoggerFactory.getLogger(NumericPassage::class.java)
-    @JvmStatic
-	fun block(m: Manager) {
+    fun block(m: Manager) {
         log.debug("Block Numeric Passage ")
         val array = BlockSelectionInTextSymbols.block(
             m, BLOCK_BEGINNING_INDICATOR, BLOCK_END_INDICATOR,
@@ -47,8 +46,7 @@ object NumericPassage {
         m.simpleManager.dispatchEvent(ModifyEvent(Sender.MATH, array, true))
     }
 
-    @JvmStatic
-	fun inline(m: Manager) {
+    fun inline(m: Manager) {
         log.debug("Inline Numeric Passage ")
         if (m.simpleManager.currentSelection.isTextNoSelection) {
             return

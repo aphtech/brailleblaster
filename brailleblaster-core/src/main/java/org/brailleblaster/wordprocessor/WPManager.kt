@@ -386,9 +386,9 @@ class WPManager private constructor(val usageManager: UsageManager) {
                 val cause = if (fileName != null && !Files.exists(fileName)) {
                     NoSuchFileException(fileName.toString())
                 } else {
-                    FileSystemException(fileName?.toString(), null, "Cannot open file")
+                    FileSystemException(fileName.toString(), null, "Cannot open file")
                 }
-                throw BBNotifyException(fileOpenMessage(fileName!!, cause))
+                throw BBNotifyException(fileOpenMessage(fileName, cause))
             }
             if (fileName in RecentDocs.defaultRecentDocs.recentDocs) {
                 val removeFromRecentDocs = MessageBox(shell, SWT.ICON_ERROR or SWT.YES or SWT.NO).apply {

@@ -241,8 +241,6 @@ class BookToBBXConverter(
             DEBUG_ASK_SWT_DIALOG = !unitTest.isNullOrBlank() && unitTest.startsWith("org.brailleblaster")
         }
 
-        @JvmStatic
-        @JvmOverloads
         fun fromConfig(bookType: String = "nimas"): BookToBBXConverter {
             if (BBDocument.TEST_MODE && TEST_CONFIG == bookType) {
                 return TEST_CONVERTER
@@ -259,7 +257,6 @@ class BookToBBXConverter(
             return converter
         }
 
-        @JvmStatic
         fun upgradeFormat(doc: Document) {
             val formatVersion = BBX.getFormatVersion(doc)
             if (formatVersion >= BBX.FORMAT_VERSION) {
@@ -351,7 +348,6 @@ class BookToBBXConverter(
             }
         }
 
-        @JvmStatic
         fun devSetup(args: Array<String>): Array<String> {
             return if (File("/home/leon/").exists()) {
                 System.setProperty(NodeException.SAVE_TO_DISK_FOLDER_PROPERTY, "exception.xml")

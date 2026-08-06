@@ -31,7 +31,6 @@ object MoreFileUtils {
      *
      * @return
      */
-    @JvmStatic
     @Throws(FileNotFoundException::class)
     fun newReaderUTF8(file: File): BufferedReader {
         return BufferedReader(
@@ -39,7 +38,6 @@ object MoreFileUtils {
         )
     }
 
-    @JvmStatic
     @Throws(FileNotFoundException::class)
     fun newWriterUTF8(filename: String): BufferedWriter {
         return BufferedWriter(
@@ -56,7 +54,6 @@ object MoreFileUtils {
      * @param suffix
      * @return
      */
-    @JvmStatic
     fun newFileIncrimented(dir: File, prefix: String, suffix: String): File {
         require(dir.exists()) { "Given directory doesn't exist: " + dir.absolutePath }
         require(dir.isDirectory) { "Expected directory, given file: " + dir.absolutePath }

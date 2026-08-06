@@ -419,7 +419,7 @@ open class XMLHandler {
          * Lowest Common Ancestor Problem
          */
         fun findCommonParent(elements: List<Element>): Element {
-            require(!elements.isEmpty()) { "elements list cannot be empty" }
+            require(elements.isNotEmpty()) { "elements list cannot be empty" }
             for (element in elements) {
                 log.debug("in list {}", element.toXML())
                 if (element.document == null) {

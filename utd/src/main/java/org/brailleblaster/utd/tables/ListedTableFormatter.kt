@@ -93,9 +93,9 @@ class ListedTableFormatter : Formatter() {
         if (cells.size <= 1 || headings.isEmpty()) {
             return LiteraryFormatter().format(node, style, mutPageBuilders, formatSelector)
         }
-        for (cell in headings) {
+        for ((td) in headings) {
             val colon: Element = TableDivider(TableDivider.DividerTypes.LISTED_COLON)
-            if (cell.td.value.isEmpty()) {
+            if (td.value.isEmpty()) {
                 colon.removeChildren()
             } else {
                 val newBrl = UTDElements.BRL.create()
@@ -104,8 +104,8 @@ class ListedTableFormatter : Formatter() {
                 newBrl.appendChild(sepBrl)
                 colon.appendChild(newBrl)
             }
-            cell.td.appendChild(colon)
-            cell.td.detach()
+            td.appendChild(colon)
+            td.detach()
         }
         TableUtils.findRows(node, formatSelector.styleMap).first().detach()
         attachHeadings(headings, cells)

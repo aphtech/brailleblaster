@@ -411,7 +411,7 @@ class ClipboardModule(private val manager: BBSimpleManager) : SimpleListener {
                 // so that pasting into a new/blank document preserves the source style
                 if (BBX.BLOCK.STYLE.isA(firstClipBlock)) {
                     BBX._ATTRIB_TYPE[parent as Element] = "STYLE"
-                    BBX._ATTRIB_OVERRIDE_STYLE[parent as Element] = BBX._ATTRIB_OVERRIDE_STYLE[firstClipBlock]
+                    BBX._ATTRIB_OVERRIDE_STYLE[parent] = BBX._ATTRIB_OVERRIDE_STYLE[firstClipBlock]
                 }
                 for (i in 0..<clips.first().node.childCount) {
                     val child = clips.first().node.getChild(i).copy()
@@ -443,7 +443,7 @@ class ClipboardModule(private val manager: BBSimpleManager) : SimpleListener {
                     }
                 }
             }
-            if (!newEndNode.value.trim { it <= ' ' }.isEmpty()) addNodeToParent(parent, newEndNode, index)
+            if (newEndNode.value.trim { it <= ' ' }.isNotEmpty()) addNodeToParent(parent, newEndNode, index)
             changedNodes.add(parent)
         } else if (isStartMath && inBlock && !multipleClips) {
             insertNew(MathSubject(clips.first().node))
@@ -452,7 +452,7 @@ class ClipboardModule(private val manager: BBSimpleManager) : SimpleListener {
             val block = findBlock(startNode)
             val blockCopy = copyBlock(startNode, null, block, sel, true)
             // Put the text of the first block into the existing first block
-            if (!clips.first().node.value.trim { it <= ' ' }.isEmpty()) {
+            if (clips.first().node.value.trim { it <= ' ' }.isNotEmpty()) {
                 if (BBX.BLOCK.isA(clips.first().node)) {
                     // Apply the block type/style from the first clip to the destination block
                     // so that pasting into a new/blank document preserves the source style
@@ -617,13 +617,13 @@ class ClipboardModule(private val manager: BBSimpleManager) : SimpleListener {
                 )
         }
 
-        if (!endText.isEmpty() && !endText.contentEquals(startNode.value)) {
+        if (endText.isNotEmpty() && !endText.contentEquals(startNode.value)) {
             manager.manager.splitElement()
         }
 
         val parent = findBlock(startNode).parent
         var index =
-            if (!endText.isEmpty() && endText.contentEquals(startNode.value)) parent.indexOf(findBlock(startNode)) else parent.indexOf(
+            if (endText.isNotEmpty() && endText.contentEquals(startNode.value)) parent.indexOf(findBlock(startNode)) else parent.indexOf(
                 findBlock(startNode)
             ) + 1
 
@@ -1094,7 +1094,7 @@ class ClipboardModule(private val manager: BBSimpleManager) : SimpleListener {
             val textTransfer = TextTransfer.getInstance()
             val clipboard = Clipboard(Display.getCurrent())
             clipboard.clearContents()
-            if (!systemCB.isEmpty()) {
+            if (systemCB.isNotEmpty()) {
                 clipboard.setContents(arrayOf(systemCB.toString()), arrayOf<Transfer?>(textTransfer))
             } else {
                 // SWT cannot setContents to be an empty string, because you're

@@ -188,7 +188,7 @@ public class VolumeTest {
 				nodeToVolumize = (Text) StreamSupport.stream(FastXPath.descendantAndFollowing(startNodeProcessing).spliterator(), false)
                         .filter(curNode -> curNode instanceof Text)
                         .skip(textNodesPerVolume + endOffset)
-                        .filter(curNode -> !BBXUtils.isPageNumAncestor(curNode))
+                        .filter(curNode -> !BBXUtils.INSTANCE.isPageNumAncestor(curNode))
                         .findFirst().orElse(null);
 				if (nodeToVolumize == null) {
 					//end of document

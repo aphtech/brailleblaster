@@ -30,7 +30,7 @@ object ASCII2MathML {
    * @param st
    * @return math root node, detached from document,, or null
    */
-	@JvmStatic
+
 	fun translate(st: String): Node {
     var s = st
     if (s.contains("\r")) {
@@ -64,7 +64,7 @@ object ASCII2MathML {
    * @param st
    * @return math root node, detached from document,, or null
    */
-	@JvmStatic
+  
 	fun translateUseHTML(st: String): org.w3c.dom.Element {
     var s = st
     if (s.contains("\r")) {

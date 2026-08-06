@@ -125,14 +125,14 @@ public class ActionMapTest extends NodeMatcherMapTest {
     @Test(dataProvider = "actionMapDataProvider")
     public void saveTest(ActionMap map) throws Exception {
         File tempOutput = File.createTempFile("actionMap", "test");
-        UTDConfig.saveActions(tempOutput, map);
+        UTDConfig.INSTANCE.saveActions(tempOutput, map);
         UTDConfigUtils.compareOutputToSaved(tempOutput, UTDConfigUtils.TEST_ACTION_FILE);
     }
 
     @Test(dataProvider = "actionMapDataProvider")
     public void loadTest(ActionMap mapExpected) throws Exception {
         //TODO: Only handles ActionMap impl do to get(int)
-        ActionMap mapLoaded = UTDConfig.loadActions(UTDConfigUtils.TEST_ACTION_FILE);
+        ActionMap mapLoaded = UTDConfig.INSTANCE.loadActions(UTDConfigUtils.TEST_ACTION_FILE);
 
         //Validate action map
         assertEquals(mapLoaded.size(), mapExpected.size(), "Map sizes are different");

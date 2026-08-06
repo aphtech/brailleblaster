@@ -138,11 +138,9 @@ class ArchiverRecoverThread(private val m: Manager) {
             return "${path.nameWithoutExtension} $dateTimeString.${path.extension}"
         }
 
-        @JvmStatic
         val recentSaves: List<Path>
             get() = RECENT_SAVE_FILES
 
-        @JvmStatic
         fun readRecentSaves(): MutableList<Path> {
             try {
                 return Files.readAllLines(BBIni.recentSaves, BBIni.charset)

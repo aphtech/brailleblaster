@@ -28,6 +28,6 @@ public class ArchiverRecoveryThreadTest {
 		FileUtils.write(BBIni.getRecentSaves().toFile(), "\0\0\0\0", StandardCharsets.UTF_8, true);
 		
 		// should not fail
-		ArchiverRecoverThread.readRecentSaves();
+		ArchiverRecoverThread.Companion.readRecentSaves();
 	}
 }

@@ -62,7 +62,7 @@ class StyleId(utd: UTDManager) {
     companion object {
         var slist: MutableList<Id> = ArrayList()
 
-        @JvmStatic
+
         fun getWholeFromMain(main: String): List<String> {
             return slist.filter { it.main == main }.map { it.whole }
         }

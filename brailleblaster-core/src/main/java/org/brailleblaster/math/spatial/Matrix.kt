@@ -371,7 +371,6 @@ class Matrix : ISpatialMathContainer {
 
     private val log: Logger = LoggerFactory.getLogger(Matrix::class.java)
 
-    @JvmStatic
     fun matrixLog(s: String?) {
       if (DebugModule.enabled) {
         log.error(s)
@@ -410,11 +409,8 @@ class Matrix : ISpatialMathContainer {
       return true
     }
 
-    private fun calculateWhitespace(length: Int, longestSegmentInColumn: Int): Int {
-      return (longestSegmentInColumn + 1) - length
-    }
+    private fun calculateWhitespace(length: Int, longestSegmentInColumn: Int): Int = (longestSegmentInColumn + 1) - length
 
-    @JvmStatic
     fun middleMatrix(currentElement: TextMapElement): Boolean {
       if (currentElement.node == null || currentElement is LineBreakElement) {
         return false
@@ -424,18 +420,11 @@ class Matrix : ISpatialMathContainer {
       return matrix != null
     }
 
-    fun getMatrixParent(node: Node): Element? {
-      return XMLHandler.ancestorVisitorElement(node) { e: Element -> BBX.CONTAINER.MATRIX.isA(e) }
-    }
+    fun getMatrixParent(node: Node): Element? = XMLHandler.ancestorVisitorElement(node) { e: Element -> BBX.CONTAINER.MATRIX.isA(e) }
 
-    fun isMatrix(node: Node?): Boolean {
-      if (node == null || node.document == null) {
-        return false
-      }
-      return XMLHandler.ancestorElementIs(node) { e: Element -> BBX.CONTAINER.MATRIX.isA(e) }
-    }
+    fun isMatrix(node: Node?): Boolean =
+        node?.document != null && XMLHandler.ancestorElementIs(node) { e: Element -> BBX.CONTAINER.MATRIX.isA(e) }
 
-    @JvmStatic
     fun currentIsMatrix(): Boolean {
       val current: Node? = XMLHandler.ancestorVisitorElement(
         WPManager.getInstance().controller.simpleManager.currentCaret.node
@@ -458,7 +447,6 @@ class Matrix : ISpatialMathContainer {
       return matrix
     }
 
-    @JvmStatic
     fun initialize(n: Node): Element {
       val e = n as Element
       val t = getContainerFromElement(e)

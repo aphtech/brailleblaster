@@ -174,14 +174,14 @@ class NumberLine : ISpatialMathContainer {
     fun rebuildPoints(points: Int) {
         if (numberLineText.points.size < points) {
             val difference = points - numberLineText.points.size
-            for (j in 0 until difference) {
+            repeat(difference) {
                 numberLineText
                     .points
                     .add(NumberLineSegmentPoint())
             }
         } else if (numberLineText.points.size > points) {
             val difference = numberLineText.points.size - points
-            for (j in 0 until difference) {
+            repeat(difference) {
                 numberLineText.points.removeAt(numberLineText.points.size - 1)
             }
         }
@@ -189,7 +189,7 @@ class NumberLine : ISpatialMathContainer {
 
     fun initializePoints() {
         if (numberLineText.points.isEmpty()) {
-            for (j in 0 until DEFAULT_NUM_POINTS) {
+            repeat(DEFAULT_NUM_POINTS) {
                 numberLineText
                     .points
                     .add(NumberLineSegmentPoint())
@@ -512,7 +512,6 @@ class NumberLine : ISpatialMathContainer {
         private const val USER_SETTINGS_LEADING_ZEROS = "nle.leadingZeros"
         val log: Logger = LoggerFactory.getLogger(NumberLine::class.java)
 
-        @JvmStatic
         fun getContainerFromElement(node: Node): NumberLine {
             var numberLine = NumberLine()
             var ele = node as Element
@@ -538,12 +537,8 @@ class NumberLine : ISpatialMathContainer {
         }
 
         @JvmStatic
-        fun isNumberLine(node: Node?): Boolean {
-            if (node == null || node.document == null) {
-                return false
-            }
-            return XMLHandler.ancestorElementIs(node) { e: Element -> BBX.CONTAINER.NUMBER_LINE.isA(e) }
-        }
+        fun isNumberLine(node: Node?): Boolean =
+            node?.document != null && XMLHandler.ancestorElementIs(node) { e: Element -> BBX.CONTAINER.NUMBER_LINE.isA(e) }
 
         @JvmStatic
         fun getNumberLineParent(node: Node): Element? {

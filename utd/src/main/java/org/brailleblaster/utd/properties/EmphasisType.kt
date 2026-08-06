@@ -40,7 +40,6 @@ enum class EmphasisType(val jlouisTypeform: Short, val longName: String) {
      * @param longName
      * @return EmphasisType for corresponding pretty name, null if not found
      */
-    @JvmStatic
     fun getEmphasisType(longName: String): EmphasisType? {
       for (type in entries) {
         if (type.longName == longName) {

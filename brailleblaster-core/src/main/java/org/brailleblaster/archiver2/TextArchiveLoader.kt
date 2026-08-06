@@ -32,14 +32,16 @@ open class TextArchiveLoader : ArchiverFactory.FileLoader {
         val bbxDoc = BBX.newDocument()
         val root = BBX.SECTION.ROOT.create()
         bbxDoc.rootElement.appendChild(root)
-        file.readLines(BBIni.charset).flatMap { it.split('\u000c') }.filter { it.isNotBlank() }.mapNotNull { getUsableText(it) }.fold(root) { r, v ->
+        file.readLines(BBIni.charset).flatMap { it.split('\u000c') }.filter { it.isNotBlank() }
+            .mapNotNull { getUsableText(it) }.fold(root) { r, v ->
             r.also {
                 it.appendChild(createBlock(v))
             }
         }
         val archiver: Archiver2 = BBZArchiver.createImportedBBZ(file, bbxDoc)
         var fileStr = file.toString()
-        fileStr = (if (fileStr.lowercase(Locale.getDefault()).endsWith(".txt")) fileStr.dropLast(4) else fileStr) + ".bbz"
+        fileStr =
+            (if (fileStr.lowercase(Locale.getDefault()).endsWith(".txt")) fileStr.dropLast(4) else fileStr) + ".bbz"
         archiver.newPath = Paths.get(fileStr)
         return archiver
     }
@@ -67,8 +69,7 @@ open class TextArchiveLoader : ArchiverFactory.FileLoader {
          * @param line
          * @return
          */
-		@JvmStatic
-		fun getUsableText(line: String): Text? {
+        fun getUsableText(line: String): Text? {
             return try {
                 Text(line)
             } catch (_: IllegalCharacterDataException) {

@@ -51,7 +51,7 @@ class ImmediatelyPrecedingStyleMatcher : INodeMatcher {
     override fun hashCode(): Int {
         val prime = 31
         var result = 1
-        result = prime * result + (styleMatcher?.hashCode() ?: 0)
+        result = prime * result + styleMatcher.hashCode()
         return result
     }
 

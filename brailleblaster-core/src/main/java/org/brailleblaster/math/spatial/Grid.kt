@@ -354,7 +354,6 @@ class Grid : ISpatialMathContainer {
             }
         }
 
-        @JvmStatic
         fun initialize(n: Node): Element {
             val ele = n as Element
             val page = getPageFromElement(ele)

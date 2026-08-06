@@ -71,7 +71,7 @@ class InsertBookmarkTool(parent: Manager) : Dialog(parent.wpManager.shell, SWT.N
     }
 
     EasySWT.addEnterListener(entryBox) {
-      if (!entryBox.text.isEmpty() && !bookmarksList.items.contains(entryBox.text)) {
+      if (entryBox.text.isNotEmpty() && !bookmarksList.items.contains(entryBox.text)) {
         addBookmark(bbData, entryBox.text)
         //Refresh manager to avoid errors when navigating to newly added bookmarks
         //Not sure why it works, but it does fix the problem.
@@ -89,7 +89,7 @@ class InsertBookmarkTool(parent: Manager) : Dialog(parent.wpManager.shell, SWT.N
     val bookmarkAtCursor = Button(buttonsGroup, SWT.PUSH)
     bookmarkAtCursor.text = "Add Bookmark at Cursor"
     bookmarkAtCursor.addListener(SWT.Selection) {
-      if (!entryBox.text.isEmpty() && !bookmarksList.items.contains(entryBox.text)) {
+      if (entryBox.text.isNotEmpty() && !bookmarksList.items.contains(entryBox.text)) {
         addBookmark(bbData, entryBox.text)
         //Refresh manager to avoid errors when navigating to newly added bookmarks
         bbData.manager.refresh()

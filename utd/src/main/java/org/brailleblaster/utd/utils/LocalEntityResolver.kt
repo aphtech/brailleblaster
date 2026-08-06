@@ -190,8 +190,6 @@ class LocalEntityResolver : EntityResolver2 {
             }
         }
 
-        @JvmStatic
-        @JvmOverloads
         @Throws(SAXException::class, ParserConfigurationException::class)
         fun createXomBuilder(validate: Boolean = false): Builder {
             val parser = newNSInstance("org.apache.xerces.jaxp.SAXParserFactoryImpl", null).newSAXParser().xmlReader

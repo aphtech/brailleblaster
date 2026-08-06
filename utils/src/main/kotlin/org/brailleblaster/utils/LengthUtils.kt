@@ -20,24 +20,20 @@ import java.math.RoundingMode
 import kotlin.math.roundToInt
 
 object LengthUtils {
-    @JvmStatic
     fun inchesToMM(inches: Double): Double {
         val denominator = 0.039370
         return (inches / denominator * 10.0).roundToInt() / 10.0
     }
 
-    @JvmStatic
     fun mmToInches(mm: Double): Double {
         val multiplier = 0.039370
         return (mm * multiplier * 10000.0).roundToInt() / 10000.0
     }
 
-    @JvmStatic
     fun toLengthBigDecimal(length: Double): BigDecimal {
         return BigDecimal(length).setScale(2, RoundingMode.HALF_UP)
     }
 
-    @JvmStatic
     fun toLengthBigDecimal(length: String?): BigDecimal {
         return BigDecimal(length).setScale(2, RoundingMode.HALF_UP)
     }

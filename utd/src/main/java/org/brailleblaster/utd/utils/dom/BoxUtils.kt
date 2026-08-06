@@ -29,8 +29,7 @@ object BoxUtils {
      *
      * @param element The element which represents the boxed item (eg. the sidebar element).
      */
-	@JvmStatic
-	fun stripBoxBrl(element: Element?) {
+    fun stripBoxBrl(element: Element?) {
         if (element == null) {
             return
         }
@@ -101,8 +100,7 @@ object BoxUtils {
      *
      * @param element The box element (eg. sidebar).
      */
-	@JvmStatic
-	fun unbox(element: Element) {
+    fun unbox(element: Element) {
         // Check there is a parent, cannot do otherwise
         val parent = element.parent ?: throw IllegalArgumentException("The element is not attached to a parent.")
         stripBoxBrl(element)

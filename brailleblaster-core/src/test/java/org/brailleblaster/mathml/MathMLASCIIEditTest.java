@@ -244,7 +244,7 @@ public class MathMLASCIIEditTest {
     public void rt5675_math_and_toc() {
         BBTestRunner bb = new BBTestRunner(blank);
         BBIni.setDebuggingEnabled();
-        if (!TOCBuilderBBX.isEnabled(bb.manager)) {
+        if (!TOCBuilderBBX.Companion.isEnabled(bb.manager)) {
             bb.openMenuItem(TopMenu.TOOLS, "TOC Builder");
         }
         if (!bb.bot.checkBox("Find Page | Page Prefix").isChecked()) {

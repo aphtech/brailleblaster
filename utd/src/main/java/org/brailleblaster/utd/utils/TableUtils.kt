@@ -38,7 +38,6 @@ object TableUtils {
      * @param table
      * @return
      */
-    @JvmStatic
     fun copyTable(table: Element): Element {
         val newTable = table.copy()
         findTableBrls(table).forEach { it.localName = "brl" }
@@ -77,7 +76,6 @@ object TableUtils {
             if (style.isTableCell) listOf(it) else findCols(it, iStyleMap)
     }
 
-    @JvmStatic
 	  fun findCaption(element: Element, styleMap: IStyleMap): List<Element> {
         val foundCaption: MutableList<Element> = ArrayList()
         for (i in 0 until element.childCount) {
@@ -119,7 +117,6 @@ object TableUtils {
     }
 
     const val SIGN_OF_OMISSION = "\u2013"
-    @JvmOverloads
     fun createSignsOfOmission(
         engine: ITranslationEngine,
         tableParent: Element,
@@ -281,17 +278,16 @@ object TableUtils {
         }
     }
 
-    @JvmStatic
+
 	  fun hasSimpleTableOption(option: SimpleTableOptions, table: Element): Boolean {
         return option.value == table.getAttributeValue(option.id)
     }
 
-    @JvmStatic
+
 	  fun applySimpleTableOption(table: Element, option: SimpleTableOptions) {
         table.addAttribute(Attribute(option.id, option.value))
     }
 
-    @JvmStatic
 	  fun getCustomSimpleTableWidths(table: Element): IntArray? {
         if (hasSimpleTableOption(SimpleTableOptions.CUSTOM_WIDTHS, table)) {
             val attr = table.getAttributeValue("widths") ?: return null
@@ -300,7 +296,6 @@ object TableUtils {
         return null
     }
 
-    @JvmStatic
 	  fun applyCustomSimpleTableWidths(table: Element, widths: IntArray) {
         applySimpleTableOption(table, SimpleTableOptions.CUSTOM_WIDTHS)
         table.addAttribute(Attribute("widths", widths.joinToString(separator = ",") { it.toString() }))
@@ -311,7 +306,7 @@ object TableUtils {
      * @param table
      * @return
     </table> */
-	  @JvmStatic
+
 	  fun isTableCopy(table: Element): Boolean {
         return table.getAttribute(
             ATTRIB_TABLE_COPY,

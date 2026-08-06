@@ -47,7 +47,7 @@ class NimasZipArchiverLoader : ArchiverFactory.FileLoader {
         var bookPath: Path? = null
         var importedMetadata = ImportedSourceMetadata.defaults()
         val opfFiles = findOPFFilesInFolder(zipRoot)
-        if (!opfFiles.isEmpty()) {
+        if (opfFiles.isNotEmpty()) {
             if (opfFiles.size > 1) {
                 log.warn("Detected multiple OPF files, picking first: {}", opfFiles)
             }

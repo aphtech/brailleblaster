@@ -333,7 +333,7 @@ object EmphasisModule : AbstractModule(), SimpleListener {
             if (text.isEmpty()) {
                 return null
             }
-            var pivot = when {
+            val pivot = when {
                 caretOffset < text.length && isWordCharacter(text[caretOffset]) -> caretOffset
                 caretOffset > 0 && isWordCharacter(text[caretOffset - 1]) -> caretOffset - 1
                 else -> return null

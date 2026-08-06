@@ -20,6 +20,7 @@ import static org.testng.Assert.assertEquals;
 import java.util.Arrays;
 
 import org.brailleblaster.utd.ITranslationEngine;
+import org.brailleblaster.utd.properties.BrailleTableType;
 import org.brailleblaster.utd.testutils.MockTranslatorFactory;
 import org.mwhapples.jlouis.TranslationException;
 import org.mwhapples.jlouis.Louis.TypeForms;
@@ -36,7 +37,7 @@ public class TextTranslatorTest {
         Arrays.fill(typeForms, TypeForms.PLAIN_TEXT);
         ITranslationEngine contextMock = MockTranslatorFactory.createTranslationEngine(str, brlStr, index, indexOut, typeForms);
 
-        String result = TextTranslator.translateText(str, contextMock);
+        String result = TextTranslator.INSTANCE.translateText(str, contextMock, TypeForms.PLAIN_TEXT, BrailleTableType.LITERARY);
 
         assertEquals(result, brlStr);
     }

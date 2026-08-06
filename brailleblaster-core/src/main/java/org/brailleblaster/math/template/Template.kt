@@ -357,18 +357,13 @@ class Template : ISpatialMathContainer {
       return template != null
     }
 
-    fun isTemplate(node: Node?): Boolean {
-      if (node == null || node.document == null) {
-        return false
-      }
-      return XMLHandler.ancestorElementIs(node) { elm: Element? -> BBX.CONTAINER.TEMPLATE.isA(elm) }
-    }
+    fun isTemplate(node: Node?): Boolean =
+        !(node == null || node.document == null) && XMLHandler.ancestorElementIs(node) { elm: Element? -> BBX.CONTAINER.TEMPLATE.isA(elm) }
 
     fun getTemplateParent(node: Node): Element? {
       return XMLHandler.ancestorVisitorElement(node) { elm -> BBX.CONTAINER.TEMPLATE.isA(elm) }
     }
 
-    @JvmStatic
     fun initialize(node: Node): Element {
       val e = node as Element
       val t = getTemplateFromElement(e)

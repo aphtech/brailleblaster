@@ -52,7 +52,7 @@ public class SettingsChangeTest {
         String curTrans = test.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         String curTransNoExceptions = curTrans.substring(0, curTrans.lastIndexOf(','));
         Assert.assertEquals(
-                UTDConfig.loadBrailleSettings(
+                UTDConfig.INSTANCE.loadBrailleSettings(
                         BBIni.loadAutoProgramDataFile(UTDManager.UTD_FOLDER, "EBAE" + UTDManager.BRAILLE_SETTINGS_NAME)
                 ).getMainTranslationTable(),
                 curTransNoExceptions
@@ -76,7 +76,7 @@ public class SettingsChangeTest {
         curTrans = test.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         curTransNoExceptions = curTrans.substring(0, curTrans.lastIndexOf(','));
         Assert.assertEquals(
-                UTDConfig.loadBrailleSettings(
+                UTDConfig.INSTANCE.loadBrailleSettings(
                         BBIni.loadAutoProgramDataFile(UTDManager.UTD_FOLDER, "UEB-UNCONTRACTED" + UTDManager.BRAILLE_SETTINGS_NAME)
                 ).getMainTranslationTable(),
                 curTransNoExceptions

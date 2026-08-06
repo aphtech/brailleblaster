@@ -141,7 +141,7 @@ public class StyleOptionTest {
 				"</span>");
 		UTDTranslationEngine engine = UTDTestUtils.translateAndFormat(doc);
 		new UTDDocumentAsserter(doc, engine)
-			.hasTextAt(TransNoteAction.getStart("ueb")+"blue"+TransNoteAction.getEnd("ueb")+" 77777777777777777777777777777", 0, 1)
+			.hasTextAt(TransNoteAction.Companion.getStart("ueb")+"blue"+TransNoteAction.Companion.getEnd("ueb")+" 77777777777777777777777777777", 0, 1)
 			.hasTextAt("Test", 0, 2)
 			.hasTextAt("gggggggggggggggggggggggggggggggggggggggg", 0, 3)
 			.hasNoOtherMoveTo();

@@ -1015,10 +1015,10 @@ class TPagesDialog : DebugMenuToolModule {
         //Dumb SWT manipulation
         val values = items.map { it.getText(0) to it.getText(1) }
         symbolsTable.removeAll()
-        for (i in values) {
+        for ((first, second) in values) {
             val newItem = TableItem(symbolsTable, SWT.NONE)
-            newItem.setText(0, i.first)
-            newItem.setText(1, i.second)
+            newItem.setText(0, first)
+            newItem.setText(1, second)
         }
     }
 

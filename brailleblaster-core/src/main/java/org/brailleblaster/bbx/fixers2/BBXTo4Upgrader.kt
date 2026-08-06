@@ -26,7 +26,6 @@ import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.internal.xml.XMLHandler
 
 object BBXTo4Upgrader {
-    @JvmStatic
     fun upgrade(doc: Document) {
         if (BBX.getFormatVersion(doc) != 4) {
             fixStyleExtend(doc)

@@ -93,13 +93,10 @@ fun Node.getAncestorListLevel(): Int = BBX.CONTAINER.LIST.ATTRIB_LIST_LEVEL[XMLH
 object BBXUtils {
     private val log: Logger = LoggerFactory.getLogger(BBXUtils::class.java)
 
-    @JvmStatic
     fun isPageNumAncestor(node: Node): Boolean = node.isPageNumAncestor()
 
-    @JvmStatic
     fun findBlockChild(node: Element): Element = node.findBlockChild()
 
-    @JvmStatic
     fun findBlock(node: Node): Element = node.findBlock()
 
     /**
@@ -280,7 +277,6 @@ object BBXUtils {
      * only images to image containers. Node is any child of
      * the block, or the block itself. Returns the parent of the removed element
      */
-    @JvmStatic
     fun cleanupBlock(node: Node): Node? {
         val block = node.findBlockOrNull() ?: return null
         block.stripUTDRecursive()
@@ -376,8 +372,7 @@ object BBXUtils {
         transElement.appendChild(textToWrap)
         return transElement
     }
-
-    @JvmStatic
+    
     fun wrapAsTransNote(element: Element): Element {
         val newEl = wrapAsTransNote(element.value)
         element.removeChildren()

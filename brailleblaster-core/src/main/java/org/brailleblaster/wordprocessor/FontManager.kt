@@ -319,28 +319,23 @@ class FontManager(val m: Manager) {
             }
         }
 
-        @JvmStatic
         fun newTextFont(): Font {
             return SELECTED_TEXT_FONT.newFont(SELECTED_TEXT_FONT.defaultHeight + sizeDelta)
         }
 
-        @JvmStatic
         fun newBrailleFont(): Font {
             refreshBrailleFont()
             return SELECTED_BRAILLE_FONT.newFont(SELECTED_BRAILLE_FONT.defaultHeight + sizeDelta)
         }
 
-        @JvmStatic
         fun increaseFontSetting() {
             adjustSizeDelta(FONT_SIZE_DELTA)
         }
 
-        @JvmStatic
         fun decreaseFontSetting() {
             adjustSizeDelta(FONT_SIZE_DELTA * -1)
         }
 
-        @JvmStatic
         fun copyViewFont(m: Manager, view: BBEditorView, gc: GC) {
             if (view === m.text) {
                 gc.font = m.textView.font
@@ -349,7 +344,6 @@ class FontManager(val m: Manager) {
             }
         }
 
-        @JvmStatic
         val isShowBraille: Boolean
             get() = (BBIni.propertyFileManager.getProperty(SETTING_SHOW_BRAILLE, "true") == "true")
 

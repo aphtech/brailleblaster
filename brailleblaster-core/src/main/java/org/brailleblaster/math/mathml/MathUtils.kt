@@ -113,7 +113,6 @@ object MathUtils {
         return mapElements.map { it.node.findBlock() }.distinct()
     }
 
-    @JvmStatic
 	fun removeMathInSelectedRange(m: Manager) {
         val timmies = getAllTextMapElementsInSelectedRange(m)
         val blocks = ArrayList<Node>()
@@ -160,7 +159,6 @@ object MathUtils {
         }
     }
 
-    @JvmStatic
 	fun deleteMathFromSelectionHandlerEvent(m: Manager, mapElement: MathMLElement, start: Int, end: Int) {
         var end = end
         val block: ParentNode = mapElement.node.findBlock()

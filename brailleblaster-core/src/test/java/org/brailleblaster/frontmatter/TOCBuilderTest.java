@@ -43,7 +43,7 @@ import static org.testng.Assert.assertEquals;
 public class TOCBuilderTest {
 
 	public static void openTocTools(BBTestRunner test) {
-		if (!TOCBuilderBBX.isEnabled(test.manager)) {
+		if (!TOCBuilderBBX.Companion.isEnabled(test.manager)) {
 			test.openMenuItem(TopMenu.TOOLS, "TOC Builder");
 		}
 	}
@@ -2312,13 +2312,13 @@ public class TOCBuilderTest {
 	@Test
 	public void isNodeMovableTest() {
 		Document doc = TestXMLUtils.generateBookDoc("", "<p>who was phone</p><p testid='after'><span>test</span></p>");
-		doc = BookToBBXConverter.fromConfig().convert(doc);
+		doc = BookToBBXConverter.Companion.fromConfig("nimas").convert(doc);
 		
 		Element after = TestXMLUtils.getTestIdElement(doc, "after");
 		Element span = (Element) after.getChild(0);
 		Text text = (Text) span.getChild(0);
 		try {
-			Assert.assertEquals(TOCBuilderBBX.isPageMovable(text), after);
+			Assert.assertEquals(TOCBuilderBBX.Companion.isPageMovable(text), after);
 		} catch (Throwable e) {
 			throw new NodeException("failed", text, e);
 		}

@@ -22,105 +22,105 @@ import org.brailleblaster.math.spatial.SpatialMathEnum.IntervalType
 import org.slf4j.LoggerFactory
 
 class NumberLineSegmentPoint(
-  var circle: Fill = Fill.FULL,
-  var point: NumberLineComponent = NumberLineComponent(),
-  var interval: Int = 1
+    var circle: Fill = Fill.FULL,
+    var point: NumberLineComponent = NumberLineComponent(),
+    var interval: Int = 1
 ) :
-  Comparable<NumberLineSegmentPoint> {
+    Comparable<NumberLineSegmentPoint> {
 
-  override fun compareTo(other: NumberLineSegmentPoint): Int {
-    return if (interval < other.interval) {
-      -1
-    } else if (interval == other.interval) {
-      0
-    } else {
-      1
-    }
-  }
-
-  companion object {
-    private val log = LoggerFactory.getLogger(NumberLineSegmentPoint::class.java)
-    @JvmStatic
-		fun hasPoint(numberLine: NumberLine, interval: Int): Boolean {
-      for (i in numberLine.segmentPoints.indices) {
-        if (numberLine.segmentPoints[i].interval == interval) {
-          return true
+    override fun compareTo(other: NumberLineSegmentPoint): Int {
+        return if (interval < other.interval) {
+            -1
+        } else if (interval == other.interval) {
+            0
+        } else {
+            1
         }
-      }
-      return false
     }
 
-    @JvmStatic
-		@Throws(MathFormattingException::class)
-    fun getPotentialPoints(numberLine: NumberLine): ArrayList<NumberLineSegmentPoint> {
-      val array = ArrayList<NumberLineSegmentPoint>()
-      if (numberLine.mathFormattingChecks(true)) {
-        val interval = numberLine.numberLineText.interval.fraction
-        val lineStart = numberLine.numberLineText.lineStart.fraction
-        val lineEnd = numberLine.numberLineText.lineEnd.fraction
-        val totalUnits = lineEnd.subtract(lineStart).divideBy(interval).toDouble().toInt() + 1
-        for (i in 0 until totalUnits) {
-          val fraction: Fraction = if (i != 0) {
-            val additionalUnits = interval.multiplyBy(Fraction.getFraction(i.toDouble()))
-            lineStart.add(additionalUnits)
-          } else {
-            lineStart
-          }
-          val component: NumberLineComponent = when (numberLine.settings.intervalType) {
-            IntervalType.DECIMAL -> {
-              val doubleValue = fraction.toDouble().toString()
-              val parts = doubleValue.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-              NumberLineComponent(whole=parts[0],
-                decimal=parts[1])
+    companion object {
+        private val log = LoggerFactory.getLogger(NumberLineSegmentPoint::class.java)
+        fun hasPoint(numberLine: NumberLine, interval: Int): Boolean {
+            for (i in numberLine.segmentPoints.indices) {
+                if (numberLine.segmentPoints[i].interval == interval) {
+                    return true
+                }
             }
-
-            IntervalType.IMPROPER -> NumberLineComponent(
-              numerator=fraction.numerator.toString(),
-              denominator=fraction.denominator.toString())
-
-            IntervalType.MIXED -> NumberLineComponent(
-              whole=fraction.properWhole.toString(),
-              numerator=fraction.properNumerator.toString(),
-              denominator=fraction.denominator.toString())
-
-            IntervalType.WHOLE -> NumberLineComponent(
-              whole=fraction.toInt().toString())
-
-          }
-          array.add(
-            NumberLineSegmentPoint(point=component, interval=i + 1)
-          )
+            return false
         }
-      } else {
-        log.error("Get points called but math formatting checks failed")
-      }
-      return array
-    }
 
-    @JvmStatic
-		@Throws(MathFormattingException::class)
-    fun getPotentialPointsStringArray(numberLine: NumberLine): Array<String> {
-        return getPotentialPoints(numberLine).map {
-            val fraction = it.point.fraction
-            NumberLineMathUtils.getFractionString(numberLine, fraction)
-        }.toTypedArray()
-    }
+        @Throws(MathFormattingException::class)
+        fun getPotentialPoints(numberLine: NumberLine): ArrayList<NumberLineSegmentPoint> {
+            val array = ArrayList<NumberLineSegmentPoint>()
+            if (numberLine.mathFormattingChecks(true)) {
+                val interval = numberLine.numberLineText.interval.fraction
+                val lineStart = numberLine.numberLineText.lineStart.fraction
+                val lineEnd = numberLine.numberLineText.lineEnd.fraction
+                val totalUnits = lineEnd.subtract(lineStart).divideBy(interval).toDouble().toInt() + 1
+                for (i in 0 until totalUnits) {
+                    val fraction: Fraction = if (i != 0) {
+                        val additionalUnits = interval.multiplyBy(Fraction.getFraction(i.toDouble()))
+                        lineStart.add(additionalUnits)
+                    } else {
+                        lineStart
+                    }
+                    val component: NumberLineComponent = when (numberLine.settings.intervalType) {
+                        IntervalType.DECIMAL -> {
+                            val doubleValue = fraction.toDouble().toString()
+                            val parts = doubleValue.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                            NumberLineComponent(
+                                whole = parts[0],
+                                decimal = parts[1]
+                            )
+                        }
 
-    @JvmStatic
-		fun getPointFromIndex(numberLine: NumberLine, interval: Int): NumberLineSegmentPoint? {
-      for (i in numberLine.segmentPoints.indices) {
-        if (numberLine.segmentPoints[i].interval == interval) {
-          return numberLine.segmentPoints[i]
+                        IntervalType.IMPROPER -> NumberLineComponent(
+                            numerator = fraction.numerator.toString(),
+                            denominator = fraction.denominator.toString()
+                        )
+
+                        IntervalType.MIXED -> NumberLineComponent(
+                            whole = fraction.properWhole.toString(),
+                            numerator = fraction.properNumerator.toString(),
+                            denominator = fraction.denominator.toString()
+                        )
+
+                        IntervalType.WHOLE -> NumberLineComponent(
+                            whole = fraction.toInt().toString()
+                        )
+
+                    }
+                    array.add(
+                        NumberLineSegmentPoint(point = component, interval = i + 1)
+                    )
+                }
+            } else {
+                log.error("Get points called but math formatting checks failed")
+            }
+            return array
         }
-      }
-      return null
-    }
 
-    @JvmStatic
-		@Throws(MathFormattingException::class)
-    fun getPrettyString(numberLine: NumberLine, component: NumberLineComponent): String {
-      val fraction = component.fraction
-      return NumberLineMathUtils.getFractionString(numberLine, fraction)
+        @Throws(MathFormattingException::class)
+        fun getPotentialPointsStringArray(numberLine: NumberLine): Array<String> {
+            return getPotentialPoints(numberLine).map {
+                val fraction = it.point.fraction
+                NumberLineMathUtils.getFractionString(numberLine, fraction)
+            }.toTypedArray()
+        }
+
+        fun getPointFromIndex(numberLine: NumberLine, interval: Int): NumberLineSegmentPoint? {
+            for (i in numberLine.segmentPoints.indices) {
+                if (numberLine.segmentPoints[i].interval == interval) {
+                    return numberLine.segmentPoints[i]
+                }
+            }
+            return null
+        }
+        
+        @Throws(MathFormattingException::class)
+        fun getPrettyString(numberLine: NumberLine, component: NumberLineComponent): String {
+            val fraction = component.fraction
+            return NumberLineMathUtils.getFractionString(numberLine, fraction)
+        }
     }
-  }
 }

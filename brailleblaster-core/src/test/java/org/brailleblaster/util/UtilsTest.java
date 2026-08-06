@@ -72,7 +72,7 @@ public class UtilsTest {
                 .filter(node -> node instanceof Text)
                 .findFirst()
                 .get();
-        Assert.assertTrue(BBXUtils.isPageNumAncestor(textNode));
-        Assert.assertTrue(BBXUtils.isPageNumAncestor(textNode.getParent()));
+        Assert.assertTrue(BBXUtils.INSTANCE.isPageNumAncestor(textNode));
+        Assert.assertTrue(BBXUtils.INSTANCE.isPageNumAncestor(textNode.getParent()));
     }
 }

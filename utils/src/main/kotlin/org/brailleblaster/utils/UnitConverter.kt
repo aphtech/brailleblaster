@@ -64,7 +64,6 @@ class UnitConverter @JvmOverloads constructor(val isMetric: Boolean = Locale.get
          * @param usFormattedPattern
          * @return
          */
-        @JvmStatic
         fun newDecimalFormatUS(usFormattedPattern: String?): DecimalFormat {
             return DecimalFormat(usFormattedPattern, DecimalFormatSymbols(Locale.ENGLISH))
         }

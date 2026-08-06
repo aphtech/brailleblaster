@@ -21,7 +21,6 @@ import org.brailleblaster.utils.xml.UTD_NS
 
 class Meta : Element(PROTOTYPE) {
     companion object {
-        @JvmStatic
         private val PROTOTYPE = Element(UTDElements.META.qName, UTD_NS)
     }
 }

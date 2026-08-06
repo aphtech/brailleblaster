@@ -151,7 +151,6 @@ object UTDConfig {
      * Utility to load the styleMap and actionMap files with common prefixes and
      * standard suffixes
      */
-    @JvmStatic
     fun loadMappings(engine: UTDTranslationEngine, mappingsDir: File, mappingsPrefix: String) {
         require(mappingsDir.isDirectory) { "$mappingsDir for mappings is not a directory" }
         require(mappingsPrefix.isNotBlank()) { "Mapping file prefix cannot be blank" }
@@ -166,7 +165,6 @@ object UTDConfig {
         saveActions(File(mappingsDir, "$mappingsPrefix.actionMap.xml"), engine.actionMap)
     }
 
-    @JvmStatic
     fun loadPageSettings(pageSettingsFile: File): PageSettings {
         log.debug("Loading Page Settings from file {}", pageSettingsFile)
         return loadJAXB(
@@ -180,7 +178,6 @@ object UTDConfig {
         saveJAXB(pageSettingsFile, pageSettings, JAXB_CONTEXT_SETTINGS!!)
     }
 
-    @JvmStatic
     fun loadBrailleSettings(brailleSettingsFile: File): BrailleSettings {
         log.debug("Loading Braille Settings from file {}", brailleSettingsFile)
         return loadJAXB(
@@ -189,13 +186,11 @@ object UTDConfig {
         )
     }
 
-    @JvmStatic
     fun saveBrailleSettings(brailleSettingsFile: File, brailleSettings: BrailleSettings) {
         log.debug("Writing Braille Settings to file {}", brailleSettingsFile)
         saveJAXB(brailleSettingsFile, brailleSettings, JAXB_CONTEXT_SETTINGS!!)
     }
 
-    @JvmStatic
     fun loadActions(actionsFile: File): ActionMap? {
         log.debug("Loading ActionMap from file {}", actionsFile)
         val adapter = ActionMapAdapter()
@@ -206,8 +201,7 @@ object UTDConfig {
             )
         )
     }
-
-    @JvmStatic
+    
     fun saveActions(actionsFile: File, actionMap: IActionMap) {
         log.debug("Writing ActionMap to file {} - overwriting {}", actionsFile, actionsFile.exists())
         require(actionMap is ActionMap) { "Only supports ActionMap, " + "given " + actionMap + " " + actionMap.javaClass }

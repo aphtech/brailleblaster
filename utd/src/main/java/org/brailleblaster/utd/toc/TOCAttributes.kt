@@ -70,7 +70,6 @@ enum class TOCAttributes(@JvmField val origName: String) {
             for (curChild in elem.childElements) removeAllRecursive(curChild)
         }
 
-        @JvmStatic
 		fun removeAll(elem: Element) {
             for (curAttrib in entries) {
                 if (curAttrib.inElement(elem)) curAttrib.remove(elem)

@@ -95,7 +95,6 @@ class TableImportFixer : AbstractFixer() {
          * Detect table type when given table has no braille, without changing the
          * source document with table copies
          */
-        @JvmStatic
         fun detectTableTypeUntranslated(table: Element): TableTypes {
             BBX.CONTAINER.TABLE.assertIsA(table)
             val utdMan = ImportFixerCommon.UTD_MANAGER
@@ -196,7 +195,6 @@ class TableImportFixer : AbstractFixer() {
          * @param bbxTable
          * @return List of elements (blocks and maybe containers) that were under the table cell
          */
-        @JvmStatic
         fun stripTable(bbxTable: Element): List<Element> {
             BBX.CONTAINER.TABLE.assertIsA(bbxTable)
             val cells: MutableList<Element> = ArrayList()

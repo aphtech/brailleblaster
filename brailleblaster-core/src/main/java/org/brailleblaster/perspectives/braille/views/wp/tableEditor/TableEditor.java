@@ -147,26 +147,26 @@ public class TableEditor extends Dialog {
             EasySWT.makeLabel(container, "Cells between columns:", 1);
             Combo cellsBwColCombo = new Combo(container, SWT.READ_ONLY);
             cellsBwColCombo.setItems("1", "2");
-            cellsBwColCombo.select(options.contains(TableUtils.SimpleTableOptions.ONE_CELL_BETWEEN_COLUMNS) || TableUtils.hasSimpleTableOption(TableUtils.SimpleTableOptions.ONE_CELL_BETWEEN_COLUMNS, table) ? 0 : 1);
+            cellsBwColCombo.select(options.contains(TableUtils.SimpleTableOptions.ONE_CELL_BETWEEN_COLUMNS) || TableUtils.INSTANCE.hasSimpleTableOption(TableUtils.SimpleTableOptions.ONE_CELL_BETWEEN_COLUMNS, table) ? 0 : 1);
 
             EasySWT.makeLabel(container, "Guide dots:", 1);
             Combo guideDotsCombo = new Combo(container, SWT.READ_ONLY);
             guideDotsCombo.setItems("Enabled", "Disabled");
-            guideDotsCombo.select(options.contains(TableUtils.SimpleTableOptions.GUIDE_DOTS_DISABLED) || TableUtils.hasSimpleTableOption(TableUtils.SimpleTableOptions.GUIDE_DOTS_DISABLED, table) ? 1 : 0);
+            guideDotsCombo.select(options.contains(TableUtils.SimpleTableOptions.GUIDE_DOTS_DISABLED) || TableUtils.INSTANCE.hasSimpleTableOption(TableUtils.SimpleTableOptions.GUIDE_DOTS_DISABLED, table) ? 1 : 0);
 
             EasySWT.makeLabel(container, "Row headings:", 1);
             Combo rowHeadCombo = new Combo(container, SWT.READ_ONLY);
             rowHeadCombo.setItems("Enabled", "Disabled");
-            rowHeadCombo.select(options.contains(TableUtils.SimpleTableOptions.ROW_HEADING_DISABLED) || TableUtils.hasSimpleTableOption(TableUtils.SimpleTableOptions.ROW_HEADING_DISABLED, table) ? 1 : 0);
+            rowHeadCombo.select(options.contains(TableUtils.SimpleTableOptions.ROW_HEADING_DISABLED) || TableUtils.INSTANCE.hasSimpleTableOption(TableUtils.SimpleTableOptions.ROW_HEADING_DISABLED, table) ? 1 : 0);
             EasySWT.makeLabel(container, "Column headings:", 1);
             Combo colHeadCombo = new Combo(container, SWT.READ_ONLY);
             colHeadCombo.setItems("Enabled", "Disabled");
-            colHeadCombo.select(options.contains(TableUtils.SimpleTableOptions.COLUMN_HEADING_DISABLED) || TableUtils.hasSimpleTableOption(TableUtils.SimpleTableOptions.COLUMN_HEADING_DISABLED, table) ? 1 : 0);
+            colHeadCombo.select(options.contains(TableUtils.SimpleTableOptions.COLUMN_HEADING_DISABLED) || TableUtils.INSTANCE.hasSimpleTableOption(TableUtils.SimpleTableOptions.COLUMN_HEADING_DISABLED, table) ? 1 : 0);
 
             EasySWT.makeLabel(container, "Column widths:", 1);
             Combo colWidthCombo = new Combo(container, SWT.READ_ONLY);
             colWidthCombo.setItems("Default", "Custom");
-            colWidthCombo.select(options.contains(TableUtils.SimpleTableOptions.CUSTOM_WIDTHS) || TableUtils.hasSimpleTableOption(TableUtils.SimpleTableOptions.CUSTOM_WIDTHS, table) ? 1 : 0);
+            colWidthCombo.select(options.contains(TableUtils.SimpleTableOptions.CUSTOM_WIDTHS) || TableUtils.INSTANCE.hasSimpleTableOption(TableUtils.SimpleTableOptions.CUSTOM_WIDTHS, table) ? 1 : 0);
 
             Composite widthPanel = EasySWT.makeComposite(dialog, 1);
             if (colWidthCombo.getSelectionIndex() == 1)
@@ -260,8 +260,8 @@ public class TableEditor extends Dialog {
             final int[] colWidths;
             if (widths != null) {
                 colWidths = widths;
-            } else if (TableUtils.hasSimpleTableOption(TableUtils.SimpleTableOptions.CUSTOM_WIDTHS, table)) {
-                colWidths = Objects.requireNonNull(TableUtils.getCustomSimpleTableWidths(table));
+            } else if (TableUtils.INSTANCE.hasSimpleTableOption(TableUtils.SimpleTableOptions.CUSTOM_WIDTHS, table)) {
+                colWidths = Objects.requireNonNull(TableUtils.INSTANCE.getCustomSimpleTableWidths(table));
             } else {
                 colWidths = new int[columns];
                 for (int i = 0; i < colWidths.length; i++) {
@@ -491,7 +491,7 @@ public class TableEditor extends Dialog {
                             e.getChild(0).detach();
                         }
                         //Delete any parent boxes/lists that are now empty
-                        BBXUtils.cleanupBlock(e);
+                        BBXUtils.INSTANCE.cleanupBlock(e);
                     });
                     manager.getSimpleManager().dispatchEvent(new org.brailleblaster.perspectives.mvc.events.ModifyEvent(Sender.NO_SENDER, true, nodes));
                 }, n -> {
@@ -547,7 +547,7 @@ public class TableEditor extends Dialog {
         options.clear();
         if (!isFacingTable(tableNode) && !isFacingTable((Element) tableNode.getParent())) {
             options.addAll(findOptions(tableNode));
-            List<Element> captions = TableUtils.findCaption(tableNode, m.getEngine().getStyleMap());
+            List<Element> captions = TableUtils.INSTANCE.findCaption(tableNode, m.getEngine().getStyleMap());
             List<List<Node>> rows = getTableCells(tableNode);
             Element tnContainer = copyTNContainer(getTranscribersNote(tableNode));
             state = new InternalTable(rows, captions, tnContainer, getTableType(tableNode));
@@ -1500,7 +1500,7 @@ public class TableEditor extends Dialog {
 
     private Element createTNContainer(Element note, List<CellText> firstRow) {
         Element container = BBX.CONTAINER.TABLETN.create();
-        container.appendChild(BBXUtils.wrapAsTransNote(note));
+        container.appendChild(BBXUtils.INSTANCE.wrapAsTransNote(note));
         switch (state.getType()) {
             case STAIRSTEP:
                 for (int i = 0; i < firstRow.size(); i++) {
@@ -1585,15 +1585,15 @@ public class TableEditor extends Dialog {
             options.forEach((o) -> {
                 if (o == TableUtils.SimpleTableOptions.CUSTOM_WIDTHS) {
                     if (widths != null) {
-                        TableUtils.applyCustomSimpleTableWidths(newTable, widths);
+                        TableUtils.INSTANCE.applyCustomSimpleTableWidths(newTable, widths);
                     } else {
-                        int[] existingWidths = TableUtils.getCustomSimpleTableWidths(existingTable);
+                        int[] existingWidths = TableUtils.INSTANCE.getCustomSimpleTableWidths(existingTable);
                         if (existingWidths != null) {
-                            TableUtils.applyCustomSimpleTableWidths(newTable, existingWidths);
+                            TableUtils.INSTANCE.applyCustomSimpleTableWidths(newTable, existingWidths);
                         }
                     }
                 } else {
-                    TableUtils.applySimpleTableOption(newTable, o);
+                    TableUtils.INSTANCE.applySimpleTableOption(newTable, o);
                 }
             });
         }
@@ -1825,7 +1825,7 @@ public class TableEditor extends Dialog {
         int index = tableParent.indexOf(tableNode);
         if (tableParent.getChildCount() > index + 1
                 && BBX.CONTAINER.TABLE.isA(tableParent.getChild(index + 1))
-                && TableUtils.isTableCopy((Element) tableParent.getChild(index + 1))) {
+                && TableUtils.INSTANCE.isTableCopy((Element) tableParent.getChild(index + 1))) {
             tableParent.removeChild(index + 1);
         }
         tableParent.removeChild(index);
@@ -2015,15 +2015,15 @@ public class TableEditor extends Dialog {
     private List<TableUtils.SimpleTableOptions> findOptions(Element table) {
         List<TableUtils.SimpleTableOptions> options = new ArrayList<>();
         if ("simple".equals(table.getAttributeValue("format"))) {
-            if (TableUtils.hasSimpleTableOption(TableUtils.SimpleTableOptions.ONE_CELL_BETWEEN_COLUMNS, table))
+            if (TableUtils.INSTANCE.hasSimpleTableOption(TableUtils.SimpleTableOptions.ONE_CELL_BETWEEN_COLUMNS, table))
                 options.add(TableUtils.SimpleTableOptions.ONE_CELL_BETWEEN_COLUMNS);
-            if (TableUtils.hasSimpleTableOption(TableUtils.SimpleTableOptions.ROW_HEADING_DISABLED, table))
+            if (TableUtils.INSTANCE.hasSimpleTableOption(TableUtils.SimpleTableOptions.ROW_HEADING_DISABLED, table))
                 options.add(TableUtils.SimpleTableOptions.ROW_HEADING_DISABLED);
-            if (TableUtils.hasSimpleTableOption(TableUtils.SimpleTableOptions.COLUMN_HEADING_DISABLED, table))
+            if (TableUtils.INSTANCE.hasSimpleTableOption(TableUtils.SimpleTableOptions.COLUMN_HEADING_DISABLED, table))
                 options.add(TableUtils.SimpleTableOptions.COLUMN_HEADING_DISABLED);
-            if (TableUtils.hasSimpleTableOption(TableUtils.SimpleTableOptions.GUIDE_DOTS_DISABLED, table))
+            if (TableUtils.INSTANCE.hasSimpleTableOption(TableUtils.SimpleTableOptions.GUIDE_DOTS_DISABLED, table))
                 options.add(TableUtils.SimpleTableOptions.GUIDE_DOTS_DISABLED);
-            if (TableUtils.hasSimpleTableOption(TableUtils.SimpleTableOptions.CUSTOM_WIDTHS, table))
+            if (TableUtils.INSTANCE.hasSimpleTableOption(TableUtils.SimpleTableOptions.CUSTOM_WIDTHS, table))
                 options.add(TableUtils.SimpleTableOptions.CUSTOM_WIDTHS);
         }
         return options;

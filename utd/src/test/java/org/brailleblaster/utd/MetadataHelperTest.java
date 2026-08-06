@@ -48,7 +48,7 @@ public class MetadataHelperTest {
     @Test(enabled = false)
     public void addMetaTest() {
         Document doc = nodeBuilder();
-        MetadataHelper.changeBraillePageNumber(doc, "#a", "#b", null, false, true);
+        MetadataHelper.INSTANCE.changeBraillePageNumber(doc, "#a", "#b", null, false, true);
         try {
             Element head = (Element) doc.getChild(0).getChild(0);
             Element meta = (Element) head.getChild(0);
@@ -62,15 +62,15 @@ public class MetadataHelperTest {
     @Test(enabled = false)
     public void testFindPageChange() {
         Document doc = nodeBuilder();
-        assertNull(MetadataHelper.findPrintPageChange(doc.getDocument(), "1"));
-        MetadataHelper.changePrintPageNumber(doc, "1", "2", null, false);
-        MetadataHelper.changeBraillePageNumber(doc, "a", "b", null, false, true);
+        assertNull(MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1"));
+        MetadataHelper.INSTANCE.changePrintPageNumber(doc, "1", "2", null, false);
+        MetadataHelper.INSTANCE.changeBraillePageNumber(doc, "a", "b", null, false, true);
         try {
             Element head = (Element) doc.getChild(0).getChild(0);
             Element meta1 = (Element) head.getChild(0);
             Element meta2 = (Element) head.getChild(1);
-            Element findMeta1 = MetadataHelper.findPrintPageChange(doc.getDocument(), "1");
-            Element findMeta2 = MetadataHelper.findBraillePageChange(doc.getDocument(), "a");
+            Element findMeta1 = MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1");
+            Element findMeta2 = MetadataHelper.INSTANCE.findBraillePageChange(doc.getDocument(), "a");
             assertNotNull(findMeta1, "Meta tag for Print Page Change not found in document: " + doc.toXML());
             assertNotNull(findMeta2, "Meta tag for Braille Page Change not found in document: " + doc.toXML());
             assertEquals(meta1.toXML(), findMeta1.toXML(), "Meta tags not equal: " + meta1.toXML() + " || " + findMeta1.toXML());
@@ -83,13 +83,13 @@ public class MetadataHelperTest {
     @Test(enabled = false)
     public void testAdaptPageChangeWithNew() {
         Document doc = nodeBuilder();
-        assertNull(MetadataHelper.findPrintPageChange(doc.getDocument(), "1"));
-        MetadataHelper.changePrintPageNumber(doc, "1", "2", null, false);
-        MetadataHelper.changePrintPageNumber(doc, "2", "3", null, false);
+        assertNull(MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1"));
+        MetadataHelper.INSTANCE.changePrintPageNumber(doc, "1", "2", null, false);
+        MetadataHelper.INSTANCE.changePrintPageNumber(doc, "2", "3", null, false);
         try {
-            Element findMeta1 = MetadataHelper.findPrintPageChange(doc.getDocument(), "1");
+            Element findMeta1 = MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1");
             assertNotNull(findMeta1, "Meta tag for Print Page Change not found in document: " + doc.toXML());
-            assertEquals("3", findMeta1.getAttributeValue("new"));
+            assertEquals(findMeta1.getAttributeValue("new"), "3");
         } catch (ClassCastException | IndexOutOfBoundsException e) {
             fail("Malformed XML: " + doc.toXML(), e);
         }
@@ -98,13 +98,13 @@ public class MetadataHelperTest {
     @Test(enabled = false)
     public void testAdaptPageChangeWithBlank() {
         Document doc = nodeBuilder();
-        assertNull(MetadataHelper.findPrintPageChange(doc.getDocument(), "1"));
-        MetadataHelper.changePrintPageNumber(doc, "1", "2", null, false);
-        MetadataHelper.markBlankPrintPageNumber(doc, "2", null, false);
+        assertNull(MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1"));
+        MetadataHelper.INSTANCE.changePrintPageNumber(doc, "1", "2", null, false);
+        MetadataHelper.INSTANCE.markBlankPrintPageNumber(doc, "2", null, false);
         try {
-            Element findMeta1 = MetadataHelper.findPrintPageChange(doc.getDocument(), "1");
+            Element findMeta1 = MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1");
             assertNotNull(findMeta1, "Meta tag for Print Page Change not found in document: " + doc.toXML());
-            assertEquals("true", findMeta1.getAttributeValue("blank"));
+            assertEquals(findMeta1.getAttributeValue("blank"), "true");
         } catch (ClassCastException | IndexOutOfBoundsException e) {
             fail("Malformed XML: " + doc.toXML(), e);
         }
@@ -113,15 +113,15 @@ public class MetadataHelperTest {
     @Test(enabled = false)
     public void testAdaptPageChangeWithPageTypeNewAndCL() {
         Document doc = nodeBuilder();
-        assertNull(MetadataHelper.findPrintPageChange(doc.getDocument(), "1"));
-        MetadataHelper.changePrintPageNumber(doc, "1", "2", null, false);
-        MetadataHelper.changePrintPageNumber(doc, "2", "3", "a", "P_PAGE", null, false);
+        assertNull(MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1"));
+        MetadataHelper.INSTANCE.changePrintPageNumber(doc, "1", "2", null, false);
+        MetadataHelper.INSTANCE.changePrintPageNumber(doc, "2", "3", "a", "P_PAGE", null, false);
         try {
-            Element findMeta1 = MetadataHelper.findPrintPageChange(doc.getDocument(), "1");
+            Element findMeta1 = MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1");
             assertNotNull(findMeta1, "Meta tag for Print Page Change not found in document: " + doc.toXML());
-            assertEquals("3", findMeta1.getAttributeValue("new"));
-            assertEquals("a", findMeta1.getAttributeValue("cl"));
-            assertEquals("P_PAGE", findMeta1.getAttributeValue("pageType"));
+            assertEquals(findMeta1.getAttributeValue("new"), "3");
+            assertEquals(findMeta1.getAttributeValue("cl"), "a");
+            assertEquals(findMeta1.getAttributeValue("pageType"), "P_PAGE");
         } catch (ClassCastException | IndexOutOfBoundsException e) {
             fail("Malformed XML: " + doc.toXML(), e);
         }
@@ -130,13 +130,13 @@ public class MetadataHelperTest {
     @Test(enabled = false)
     public void testAdaptPageChangeWithBraillePage() {
         Document doc = nodeBuilder();
-        assertNull(MetadataHelper.findPrintPageChange(doc.getDocument(), "1"));
-        MetadataHelper.changeBraillePageNumber(doc, "1", "2", null, false, true);
-        MetadataHelper.changeBraillePageNumber(doc, "2", "3", null, false, true);
+        assertNull(MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1"));
+        MetadataHelper.INSTANCE.changeBraillePageNumber(doc, "1", "2", null, false, true);
+        MetadataHelper.INSTANCE.changeBraillePageNumber(doc, "2", "3", null, false, true);
         try {
-            Element findMeta1 = MetadataHelper.findBraillePageChange(doc.getDocument(), "1");
+            Element findMeta1 = MetadataHelper.INSTANCE.findBraillePageChange(doc.getDocument(), "1");
             assertNotNull(findMeta1, "Meta tag for Braille Page Change not found in document: " + doc.toXML());
-            assertEquals("3", findMeta1.getAttributeValue("new"));
+            assertEquals(findMeta1.getAttributeValue("new"), "3");
         } catch (ClassCastException | IndexOutOfBoundsException e) {
             fail("Malformed XML: " + doc.toXML(), e);
         }
@@ -145,13 +145,13 @@ public class MetadataHelperTest {
     @Test(enabled = false)
     public void testAdaptPageChangeWithBraillePageRunningHead() {
         Document doc = nodeBuilder();
-        assertNull(MetadataHelper.findPrintPageChange(doc.getDocument(), "1"));
-        MetadataHelper.changeBraillePageNumber(doc, "1", "2", null, false, false);
-        MetadataHelper.changeBraillePageNumber(doc, "2", "3", null, false, true);
+        assertNull(MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1"));
+        MetadataHelper.INSTANCE.changeBraillePageNumber(doc, "1", "2", null, false, false);
+        MetadataHelper.INSTANCE.changeBraillePageNumber(doc, "2", "3", null, false, true);
         try {
-            Element findMeta1 = MetadataHelper.findBraillePageChange(doc.getDocument(), "1");
+            Element findMeta1 = MetadataHelper.INSTANCE.findBraillePageChange(doc.getDocument(), "1");
             assertNotNull(findMeta1, "Meta tag for Braille Page Change not found in document: " + doc.toXML());
-            assertEquals("3", findMeta1.getAttributeValue("new"));
+            assertEquals(findMeta1.getAttributeValue("new"), "3");
             assertNull(findMeta1.getAttribute("runHead"));
         } catch (ClassCastException | IndexOutOfBoundsException e) {
             fail("Malformed XML: " + doc.toXML(), e);
@@ -161,20 +161,20 @@ public class MetadataHelperTest {
     @Test(enabled = false)
     public void testRunningHeadWithBraillePage() {
         Document doc = nodeBuilder();
-        assertNull(MetadataHelper.findPrintPageChange(doc.getDocument(), "1"));
-        MetadataHelper.changeBraillePageNumber(doc, "1", "2", null, false, false);
+        assertNull(MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1"));
+        MetadataHelper.INSTANCE.changeBraillePageNumber(doc, "1", "2", null, false, false);
 
         try {
-            Element findMeta1 = MetadataHelper.findBraillePageChange(doc.getDocument(), "1");
+            Element findMeta1 = MetadataHelper.INSTANCE.findBraillePageChange(doc.getDocument(), "1");
             assertNotNull(findMeta1, "Meta tag for Braille Page Change not found in document: " + doc.toXML());
-            assertEquals("false", findMeta1.getAttributeValue("runHead"));
+            assertEquals(findMeta1.getAttributeValue("runHead"), "false");
         } catch (ClassCastException | IndexOutOfBoundsException e) {
             fail("Malformed XML: " + doc.toXML(), e);
         }
 
-        MetadataHelper.changeBraillePageNumber(doc, "1", "2", null, false, true);
+        MetadataHelper.INSTANCE.changeBraillePageNumber(doc, "1", "2", null, false, true);
         try {
-            Element findMeta1 = MetadataHelper.findBraillePageChange(doc.getDocument(), "1");
+            Element findMeta1 = MetadataHelper.INSTANCE.findBraillePageChange(doc.getDocument(), "1");
             assertNotNull(findMeta1, "Meta tag for Braille Page Change not found in document: " + doc.toXML());
             assertNull(findMeta1.getAttribute("runHead"));
         } catch (ClassCastException | IndexOutOfBoundsException e) {

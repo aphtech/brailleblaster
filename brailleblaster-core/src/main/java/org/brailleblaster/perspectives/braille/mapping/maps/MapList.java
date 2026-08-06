@@ -478,12 +478,12 @@ public class MapList extends LinkedList<@NonNull TextMapElement> {
             n = potentialTable;
         }
 
-        if (BBX.CONTAINER.TABLE.isA(n) && !TableUtils.isTableCopy((Element) n)) {
+        if (BBX.CONTAINER.TABLE.isA(n) && !TableUtils.INSTANCE.isTableCopy((Element) n)) {
             ParentNode parent = n.getParent();
             int index = parent.indexOf(n);
             if (index + 1 < parent.getChildCount()
                     && BBX.CONTAINER.TABLE.isA(parent.getChild(index + 1))
-                    && TableUtils.isTableCopy((Element) parent.getChild(index + 1))) {
+                    && TableUtils.INSTANCE.isTableCopy((Element) parent.getChild(index + 1))) {
                 n = parent.getChild(index + 1);
             }
         }

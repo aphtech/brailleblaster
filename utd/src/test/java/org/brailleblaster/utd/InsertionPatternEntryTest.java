@@ -51,7 +51,7 @@ public class InsertionPatternEntryTest {
         expected.put("-", "#");
         expected.put("0", ";");
         expected.put("j", ";");
-        Map<String, String> actual = InsertionPatternEntry.listToMap(listInsertions);
+        Map<String, String> actual = InsertionPatternEntry.Companion.listToMap(listInsertions);
         assertEquals(actual.size(), expected.size());
         Iterator<Map.Entry<String, String>> expectedSet = expected.entrySet().iterator();
         Iterator<Map.Entry<String, String>> actualSet = actual.entrySet().iterator();
@@ -65,7 +65,7 @@ public class InsertionPatternEntryTest {
 
     @Test
     public void listToMapWithNull() {
-        Map<String, String> actual = InsertionPatternEntry.listToMap(null);
+        Map<String, String> actual = InsertionPatternEntry.Companion.listToMap(null);
         assertTrue(actual.isEmpty());
     }
 }

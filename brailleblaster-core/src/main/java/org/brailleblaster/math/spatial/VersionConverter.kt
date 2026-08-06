@@ -94,22 +94,34 @@ object VersionConverter {
                         NumberLineConstants.ATTRIB_INTERVAL_DECIMAL,
                         ele.namespaceURI
                     )
-                    val interval = NumberLineComponent(whole=intervalWhole,
-                        decimal=intervalDecimal)
+                    val interval = NumberLineComponent(
+                        whole = intervalWhole,
+                        decimal = intervalDecimal
+                    )
                     val startSegment = NumberLineComponent(
-                        decimal=startSegmentDecimal, whole=startSegmentWhole)
+                        decimal = startSegmentDecimal, whole = startSegmentWhole
+                    )
                     val endSegment = NumberLineComponent(
-                        whole=endSegmentWhole, decimal=endSegmentDecimal)
+                        whole = endSegmentWhole, decimal = endSegmentDecimal
+                    )
                     val startLine = NumberLineComponent(
-                        whole=startLineWhole,decimal=startLineDecimal)
-                    val endLine = NumberLineComponent(whole=endLineWhole,
-                        decimal=endLineDecimal)
-                    val text = NumberLineText(interval=interval,lineStart=startLine,
-                        lineEnd=endLine,
-                        segment=
-                            NumberLineSegment(segmentStart=startSegment,
-                                segmentEnd=endSegment, startSegmentCircle = numberLine.settings.startLineCircle, endSegmentCircle = numberLine.settings.endSegmentCircle)
-                        )
+                        whole = startLineWhole, decimal = startLineDecimal
+                    )
+                    val endLine = NumberLineComponent(
+                        whole = endLineWhole,
+                        decimal = endLineDecimal
+                    )
+                    val text = NumberLineText(
+                        interval = interval, lineStart = startLine,
+                        lineEnd = endLine,
+                        segment =
+                            NumberLineSegment(
+                                segmentStart = startSegment,
+                                segmentEnd = endSegment,
+                                startSegmentCircle = numberLine.settings.startLineCircle,
+                                endSegmentCircle = numberLine.settings.endSegmentCircle
+                            )
+                    )
                     numberLine.numberLineText = text
                 }
 
@@ -153,19 +165,25 @@ object VersionConverter {
                     )
 
                     val interval = NumberLineComponent(
-                        numerator=intervalNumerator, denominator=intervalDenominator)
+                        numerator = intervalNumerator, denominator = intervalDenominator
+                    )
                     val startSegment = NumberLineComponent(
-                        denominator=startSegmentDenominator, numerator=startSegmentNumerator)
+                        denominator = startSegmentDenominator, numerator = startSegmentNumerator
+                    )
                     val endSegment = NumberLineComponent(
-                        numerator=endSegmentNumerator, denominator=endSegmentDenominator)
+                        numerator = endSegmentNumerator, denominator = endSegmentDenominator
+                    )
                     val startLine = NumberLineComponent(
-                        numerator=startLineNumerator, denominator=startLineDenominator)
+                        numerator = startLineNumerator, denominator = startLineDenominator
+                    )
                     val endLine = NumberLineComponent(
-                        numerator=endLineNumerator, denominator=endLineDenominator)
-                    val text = NumberLineText(interval=interval, lineStart=startLine,
-                        lineEnd=endLine, segment=
-                            NumberLineSegment(segmentStart=startSegment, segmentEnd=endSegment)
-                        )
+                        numerator = endLineNumerator, denominator = endLineDenominator
+                    )
+                    val text = NumberLineText(
+                        interval = interval, lineStart = startLine,
+                        lineEnd = endLine, segment =
+                            NumberLineSegment(segmentStart = startSegment, segmentEnd = endSegment)
+                    )
                     numberLine.numberLineText = text
                 }
 
@@ -229,19 +247,31 @@ object VersionConverter {
                         ele.namespaceURI
                     )
 
-                    val interval = NumberLineComponent(whole=intervalWhole,
-                        numerator=intervalNumerator, denominator=intervalDenominator)
+                    val interval = NumberLineComponent(
+                        whole = intervalWhole,
+                        numerator = intervalNumerator, denominator = intervalDenominator
+                    )
                     val startSegment = NumberLineComponent(
-                        denominator=startSegmentDenominator, numerator=startSegmentNumerator, whole=startSegmentWhole)
+                        denominator = startSegmentDenominator,
+                        numerator = startSegmentNumerator,
+                        whole = startSegmentWhole
+                    )
                     val endSegment = NumberLineComponent(
-                        whole=endSegmentWhole, numerator=endSegmentNumerator, denominator=endSegmentDenominator)
+                        whole = endSegmentWhole, numerator = endSegmentNumerator, denominator = endSegmentDenominator
+                    )
                     val startLine = NumberLineComponent(
-                        whole=startLineWhole, numerator=startLineNumerator, denominator=startLineDenominator)
-                    val endLine = NumberLineComponent(whole=endLineWhole, numerator=endLineNumerator, denominator=endLineDenominator)
-                    val text = NumberLineText(interval=interval, lineStart=startLine,
-                        lineEnd=endLine, segment=
-                            NumberLineSegment(segmentStart=startSegment, segmentEnd=endSegment)
-                        )
+                        whole = startLineWhole, numerator = startLineNumerator, denominator = startLineDenominator
+                    )
+                    val endLine = NumberLineComponent(
+                        whole = endLineWhole,
+                        numerator = endLineNumerator,
+                        denominator = endLineDenominator
+                    )
+                    val text = NumberLineText(
+                        interval = interval, lineStart = startLine,
+                        lineEnd = endLine, segment =
+                            NumberLineSegment(segmentStart = startSegment, segmentEnd = endSegment)
+                    )
                     numberLine.numberLineText = text
                 }
 
@@ -266,18 +296,22 @@ object VersionConverter {
                         NumberLineConstants.ATTRIB_INTERVAL_WHOLE,
                         ele.namespaceURI
                     )
-                    val interval = NumberLineComponent(whole=intervalWhole)
+                    val interval = NumberLineComponent(whole = intervalWhole)
                     val startSegment = NumberLineComponent(
-                        whole=startSegmentWhole)
+                        whole = startSegmentWhole
+                    )
                     val endSegment = NumberLineComponent(
-                        whole=endSegmentWhole)
+                        whole = endSegmentWhole
+                    )
                     val startLine = NumberLineComponent(
-                        whole=startLineWhole)
-                    val endLine = NumberLineComponent(whole=endLineWhole)
-                    val text = NumberLineText(interval=interval, lineStart=startLine,
-                        lineEnd=endLine, segment=
-                            NumberLineSegment(segmentStart=startSegment, segmentEnd=endSegment)
-                        )
+                        whole = startLineWhole
+                    )
+                    val endLine = NumberLineComponent(whole = endLineWhole)
+                    val text = NumberLineText(
+                        interval = interval, lineStart = startLine,
+                        lineEnd = endLine, segment =
+                            NumberLineSegment(segmentStart = startSegment, segmentEnd = endSegment)
+                    )
                     numberLine.numberLineText = text
                 }
             }
@@ -310,14 +344,14 @@ object VersionConverter {
         }
         template.settings.isTranslateIdentifierAsMath = identifier
         template.identifier = MathText(
-            print=BBX.CONTAINER.TEMPLATE.IDENTIFIER[templateElement],
-            braille=translateIdentifier(BBX.CONTAINER.TEMPLATE.IDENTIFIER[templateElement], template))
+            print = BBX.CONTAINER.TEMPLATE.IDENTIFIER[templateElement],
+            braille = translateIdentifier(BBX.CONTAINER.TEMPLATE.IDENTIFIER[templateElement], template)
+        )
         template.settings.isLinear = BBX.CONTAINER.TEMPLATE.LINEAR[templateElement]
         return BBX.CONTAINER.TEMPLATE.create(template)
     }
 
-    @JvmStatic
-	fun convertMatrix(current: Element?): Element {
+    fun convertMatrix(current: Element?): Element {
         val matrix = Matrix()
         if (BBX.CONTAINER.MATRIX.isA(current)) {
             val array = BBX.CONTAINER.MATRIX.ASCII_MATH[current]
@@ -341,8 +375,7 @@ object VersionConverter {
         return BBX.CONTAINER.MATRIX.create(matrix)
     }
 
-    @JvmStatic
-	fun convertConnectingContainer(node: Element?): Element {
+    fun convertConnectingContainer(node: Element?): Element {
         val container = ConnectingContainer()
         if (BBX.CONTAINER.CONNECTING_CONTAINER.isA(node)) {
             val isMath = BBX.CONTAINER.CONNECTING_CONTAINER.IS_MATH[node]
@@ -352,14 +385,17 @@ object VersionConverter {
             container.settings.horizontal = horizontal
             container.settings.vertical = vertical
             container.settings.isTranslateAsMath = isMath
-            container.text = MathText(print=text,
-                braille=if (isMath) MathModuleUtils.translateMathPrint(text) else MathModuleUtils.translateMainPrint(text))
+            container.text = MathText(
+                print = text,
+                braille = if (isMath) MathModuleUtils.translateMathPrint(text) else MathModuleUtils.translateMainPrint(
+                    text
+                )
+            )
         }
         return BBX.CONTAINER.CONNECTING_CONTAINER.create(container)
     }
 
-    @JvmStatic
-	fun convertGrid(current: Element?): Element {
+    fun convertGrid(current: Element?): Element {
         val page = Grid()
         val rows = BBX.CONTAINER.SPATIAL_GRID.ROWS[current]
         val cols = BBX.CONTAINER.SPATIAL_GRID.COLS[current]

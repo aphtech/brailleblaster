@@ -30,15 +30,14 @@ class ImageBlockToContainerImportFixer : AbstractFixer() {
     }
 
     companion object {
-        @JvmStatic
-		fun convertImageBlockToContainer(imgElem: Element) {
+        fun convertImageBlockToContainer(imgElem: Element) {
             if (!BBX.SPAN.IMAGE.isA(imgElem) && !BBX.CONTAINER.IMAGE.isA(imgElem)) {
                 throw NodeException("Not an image", imgElem)
             }
             val parentBlock = requireNotNull(
                 XMLHandler.ancestorVisitorElement(imgElem) { node -> BBX.BLOCK.isA(node) }) {
                 "Cannot find a parent block"
-        }
+            }
             if (BBX.SPAN.IMAGE.isA(imgElem) && imgElem.childCount != 0) {
                 val wrappingBlock = BBX.BLOCK.DEFAULT.create()
                 val children = imgElem.childNodes.toList()

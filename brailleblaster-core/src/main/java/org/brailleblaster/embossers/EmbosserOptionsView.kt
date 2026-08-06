@@ -58,19 +58,20 @@ class EmbosserOptionsView(parent: Composite, style: Int = SWT.BORDER or SWT.H_SC
     fun removeValidateListener(listener: ValidateListener) {
         validateListeners -= listener
     }
-    private val scrolledComposite = ScrolledComposite(parent, style).apply {
-        expandHorizontal = true
-        expandVertical = true
-        showFocusedControl = true
-    }
+
     val control: Control
-        get() = scrolledComposite
+        field = ScrolledComposite(parent, style).apply {
+            expandHorizontal = true
+            expandVertical = true
+            showFocusedControl = true
+        }
+
     private fun updateOptionsView(options: Map<OptionIdentifier, EmbosserOption>) {
-        scrolledComposite.content?.dispose()
+        control.content?.dispose()
         val newContent = if (options.isEmpty()) {
-            EasySWT.makeLabel(scrolledComposite).text(LocaleHandler.getDefault()["EmbosserEditDialog.optionsView.noOptions"]).get()
+            EasySWT.makeLabel(control).text(LocaleHandler.getDefault()["EmbosserEditDialog.optionsView.noOptions"]).get()
         } else {
-            val optionsContainer = Composite(scrolledComposite, SWT.NONE)
+            val optionsContainer = Composite(control, SWT.NONE)
             optionsContainer.layout = GridLayout(2, false)
             for ((k, v) in options) {
                 EasySWT.makeLabel(optionsContainer).text(k.getDisplayName(Locale.getDefault()))
@@ -100,8 +101,8 @@ class EmbosserOptionsView(parent: Composite, style: Int = SWT.BORDER or SWT.H_SC
             }
             optionsContainer
         }
-        scrolledComposite.content = newContent
-        scrolledComposite.setMinSize(newContent.computeSize(SWT.DEFAULT, SWT.DEFAULT))
+        control.content = newContent
+        control.setMinSize(newContent.computeSize(SWT.DEFAULT, SWT.DEFAULT))
     }
     init {
         embosserOptions = options

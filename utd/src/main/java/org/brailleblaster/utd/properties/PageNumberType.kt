@@ -32,13 +32,10 @@ enum class PageNumberType {
     }
 
     companion object {
-        @JvmStatic
-		fun equivalentPage(pageType: String?): PageNumberType {
-            return when (pageType) {
-                "T_PAGE" -> T_PAGE
-                "P_PAGE" -> P_PAGE
-                else -> NORMAL
-            }
+        fun equivalentPage(pageType: String?): PageNumberType = when (pageType) {
+            "T_PAGE" -> T_PAGE
+            "P_PAGE" -> P_PAGE
+            else -> NORMAL
         }
     }
 }

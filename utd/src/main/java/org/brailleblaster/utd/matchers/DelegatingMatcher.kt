@@ -22,7 +22,7 @@ abstract class DelegatingMatcher : INodeMatcher {
     override fun hashCode(): Int {
         val prime = 31
         var result = 1
-        result = prime * result + (matcher?.hashCode() ?: 0)
+        result = prime * result + matcher.hashCode()
         return result
     }
 

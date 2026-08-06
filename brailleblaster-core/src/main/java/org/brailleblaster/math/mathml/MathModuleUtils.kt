@@ -147,7 +147,6 @@ object MathModuleUtils {
         }
     }
 
-    @JvmStatic
     fun isMath(currentNode: Node?): Boolean {
         return (currentNode is Element && currentNode.localName == "math")
                 || (currentNode != null && XMLHandler.ancestorElementIs(
@@ -159,7 +158,6 @@ object MathModuleUtils {
         return currentNode is Element && currentNode.localName == "math"
     }
 
-    @JvmStatic
     fun getMathText(node: Node?): String {
         val string = if (node is Element) node.getAttributeValue("alttext") else ""
         return string ?: ""
@@ -176,7 +174,6 @@ object MathModuleUtils {
         return n
     }
 
-    @JvmStatic
     fun blockContainsMath(curBlock: Node): Boolean {
         if (curBlock.childCount > 0) {
             for (i in 0 until curBlock.childCount) {
@@ -190,7 +187,6 @@ object MathModuleUtils {
         }
     }
 
-    @JvmStatic
     fun selectionContainsMath(m: Manager): Boolean {
         val tmes = m.mapList.getElementsOneByOne(
             m.textView.selection.x,
@@ -222,7 +218,6 @@ object MathModuleUtils {
         node.addAttribute(att)
     }
 
-    @JvmStatic
     fun makeMathFromSelection(m: Manager): Node? {
         val selectedText = m.textView.selectionText
         if (selectedText.isEmpty()) {
@@ -234,12 +229,10 @@ object MathModuleUtils {
         return inline
     }
 
-    @JvmStatic
     val isNemeth: Boolean
         get() = MathBraileCode.Nemeth == getInstance().controller.document
             .engine.brailleSettings.mathBrailleCode
-
-    @JvmOverloads
+    
     fun getBrailleText(node: Node, s: String = ""): String {
         var sb = StringBuilder(s)
         for (i in 0 until node.childCount) {
@@ -302,7 +295,6 @@ object MathModuleUtils {
         )
     }
 
-    @JvmStatic
     fun isSpatialMath(node: Node?): Boolean {
         return node != null && (XMLHandler.ancestorVisitorElement(
             node
@@ -322,7 +314,6 @@ object MathModuleUtils {
             ?: throw NoSuchElementException()
     }
 
-    @JvmStatic
     fun retranslateSpatial(document: BrailleDocument) {
         val nodes = XMLHandler.queryElements(
             document.doc,

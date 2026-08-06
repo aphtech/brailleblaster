@@ -30,8 +30,7 @@ object NemethIndicators {
     const val INLINE_BEGINNING_INDICATOR = BEGINNING_INDICATOR + MathModuleUtils.NBS
     const val INLINE_END_INDICATOR = MathModuleUtils.NBS + END_INDICATOR
     private val log = LoggerFactory.getLogger(NemethIndicators::class.java)
-    @JvmStatic
-	fun block(m: Manager) {
+    fun block(m: Manager) {
         log.error("Nemeth blocking ")
         if (m.simpleManager.currentSelection.isTextNoSelection) {
             return
@@ -48,8 +47,7 @@ object NemethIndicators {
         }
     }
 
-    @JvmStatic
-	fun inline(m: Manager) {
+    fun inline(m: Manager) {
         log.error("Nemeth inlining ")
         if (m.simpleManager.currentSelection.isTextNoSelection) {
             return

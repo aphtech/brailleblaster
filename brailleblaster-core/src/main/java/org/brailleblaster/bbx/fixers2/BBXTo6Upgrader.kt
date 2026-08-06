@@ -21,7 +21,6 @@ import org.brailleblaster.bbx.BBX
 import org.brailleblaster.utd.internal.xml.FastXPath
 
 object BBXTo6Upgrader {
-    @JvmStatic
 	fun upgrade(doc: Document) {
         tabCleanup(doc)
         BBX.setFormatVersion(doc, 6)

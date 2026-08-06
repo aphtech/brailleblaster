@@ -1082,7 +1082,7 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
     private fun getPreviousPageIndicator(caretOffset: Int): PageIndicator? {
         val line = view.getLineAtOffset(caretOffset)
         var prevIndicator =
-            if (manager.text.paintedElements.pageIndicators.isNotEmpty()) manager.text.paintedElements.pageIndicators[0] else null
+            manager.text.paintedElements.pageIndicators.firstOrNull()
         for (pi in manager.text.paintedElements.pageIndicators) {
             if (pi.line >= line) {
                 return prevIndicator

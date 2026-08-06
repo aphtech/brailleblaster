@@ -78,7 +78,7 @@ public class TextMapElement extends AbstractMapElement {
 
 	public boolean isSpatialMath() {
 		Node node = getNode();
-		return getNode() != null && node.getDocument() != null && MathModuleUtils.isSpatialMath(node);
+		return getNode() != null && node.getDocument() != null && MathModuleUtils.INSTANCE.isSpatialMath(node);
 	}
 
 	public boolean isMathML(){

@@ -57,25 +57,25 @@ public class BRFWriterTest {
         for (String testName : testNames) {
             UTDTranslationEngine engine = newEngine();
             engine.getBrailleSettings().setUseAsciiBraille(true);
-            engine.setBrailleSettings(UTDConfig.loadBrailleSettings(
+            engine.setBrailleSettings(UTDConfig.INSTANCE.loadBrailleSettings(
                     BBData.INSTANCE.getBrailleblasterPath("programData", "utd", "EBAE.brailleSettings.xml")));
             paramList.add(new Object[]{engine, testName, "EBAE-useAsciiBraille"});
 
             engine = newEngine();
             engine.getBrailleSettings().setUseAsciiBraille(false);
-            engine.setBrailleSettings(UTDConfig.loadBrailleSettings(
+            engine.setBrailleSettings(UTDConfig.INSTANCE.loadBrailleSettings(
                     BBData.INSTANCE.getBrailleblasterPath("programData", "utd", "EBAE.brailleSettings.xml")));
             paramList.add(new Object[]{engine, testName, "EBAE-charToDots"});
 
             engine = newEngine();
             engine.getBrailleSettings().setUseAsciiBraille(true);
-            engine.setBrailleSettings(UTDConfig.loadBrailleSettings(
+            engine.setBrailleSettings(UTDConfig.INSTANCE.loadBrailleSettings(
                     BBData.INSTANCE.getBrailleblasterPath("programData", "utd", "UEB.brailleSettings.xml")));
             paramList.add(new Object[]{engine, testName, "UEB-useAsciiBraille"});
 
             engine = newEngine();
             engine.getBrailleSettings().setUseAsciiBraille(false);
-            engine.setBrailleSettings(UTDConfig.loadBrailleSettings(
+            engine.setBrailleSettings(UTDConfig.INSTANCE.loadBrailleSettings(
                     BBData.INSTANCE.getBrailleblasterPath("programData", "utd", "UEB.brailleSettings.xml")));
             paramList.add(new Object[]{engine, testName, "UEB-charToDots"});
         }
@@ -89,10 +89,10 @@ public class BRFWriterTest {
         File bbProgramData = new File(BBData.INSTANCE.getBrailleblasterPath(), "programData");
         engine.getBrailleTranslator().setDataPath(bbProgramData.getAbsolutePath());
         File UTD_FOLDER = new File(bbProgramData, "utd");
-        engine.setPageSettings(UTDConfig.loadPageSettings(new File(UTD_FOLDER, "pageSettings.xml")));
-        engine.setBrailleSettings(UTDConfig.loadBrailleSettings(new File(UTD_FOLDER, "UEB.brailleSettings.xml")));
+        engine.setPageSettings(UTDConfig.INSTANCE.loadPageSettings(new File(UTD_FOLDER, "pageSettings.xml")));
+        engine.setBrailleSettings(UTDConfig.INSTANCE.loadBrailleSettings(new File(UTD_FOLDER, "UEB.brailleSettings.xml")));
         engine.setStyleDefinitions(UTDConfig.loadStyleDefinitions(new File(UTD_FOLDER, "styleDefs.xml")));
-        UTDConfig.loadMappings(engine, UTD_FOLDER, "nimas");
+        UTDConfig.INSTANCE.loadMappings(engine, UTD_FOLDER, "nimas");
 
         return engine;
     }
