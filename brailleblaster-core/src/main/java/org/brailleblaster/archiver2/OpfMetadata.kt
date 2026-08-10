@@ -27,15 +27,15 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
-class RequiredMetadataValues private constructor(private val values: List<String>) : AbstractList<String>() {
+class RequiredList private constructor(private val values: List<String>) : AbstractList<String>() {
     override val size: Int
         get() = values.size
 
     override fun get(index: Int): String = values[index]
 
     companion object {
-        fun from(values: List<String>, defaultValue: String = "-"): RequiredMetadataValues =
-            RequiredMetadataValues(values.filter { it.isNotBlank() }.ifEmpty { listOf(defaultValue) })
+        fun of(values: List<String>, defaultValue: String = "-"): RequiredList =
+            RequiredList(values.filter { it.isNotBlank() }.ifEmpty { listOf(defaultValue) })
     }
 }
 
@@ -53,15 +53,15 @@ class RequiredMetadataValues private constructor(private val values: List<String
  * that a source OPF or an eBraille package uses, so [fromOpf] can read both without a separate
  * BBX-only parser.
  */
-data class ImportedSourceMetadata(
+data class OpfMetadata(
     val title: String,
-    val creators: RequiredMetadataValues,
+    val creators: RequiredList,
     val identifier: String,
     val date: String
 ) {
     constructor(title: String, creators: List<String>, identifier: String, date: String) : this(
         title = title,
-        creators = RequiredMetadataValues.from(creators),
+        creators = RequiredList.of(creators),
         identifier = identifier,
         date = date
     )
@@ -91,15 +91,15 @@ data class ImportedSourceMetadata(
         private const val DEFAULT_CREATOR = "-"
 
         /** The default constants used to fill in any field the source doesn't provide. */
-        fun defaults(clock: Clock = Clock.systemUTC(), uuidProvider: () -> String = { UUID.randomUUID().toString() }): ImportedSourceMetadata =
-            ImportedSourceMetadata(
+        fun defaults(clock: Clock = Clock.systemUTC(), uuidProvider: () -> String = { UUID.randomUUID().toString() }): OpfMetadata =
+            OpfMetadata(
                 title = DEFAULT_TITLE,
-                creators = RequiredMetadataValues.from(emptyList(), DEFAULT_CREATOR),
+                creators = RequiredList.of(emptyList(), DEFAULT_CREATOR),
                 identifier = "urn:uuid:${uuidProvider()}",
                 date = LocalDate.now(clock).format(DateTimeFormatter.ISO_LOCAL_DATE)
             )
 
-        fun load(doc: Document, clock: Clock = Clock.systemUTC(), uuidProvider: () -> String = { UUID.randomUUID().toString() }): ImportedSourceMetadata {
+        fun load(doc: Document, clock: Clock = Clock.systemUTC(), uuidProvider: () -> String = { UUID.randomUUID().toString() }): OpfMetadata {
             val metadataElem = DocumentUTDConfig.NIMAS.getHeadElement(doc)
                 ?.getFirstChildElement(METADATA_ELEMENT, OPF_NS)
                 ?: return defaults(clock, uuidProvider)
@@ -111,11 +111,11 @@ data class ImportedSourceMetadata(
             opfSource: Node,
             clock: Clock = Clock.systemUTC(),
             uuidProvider: () -> String = { UUID.randomUUID().toString() }
-        ): ImportedSourceMetadata {
+        ): OpfMetadata {
             val defaults = defaults(clock, uuidProvider)
-            return ImportedSourceMetadata(
+            return OpfMetadata(
                 title = OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "title").firstOrNull { it.isNotBlank() } ?: defaults.title,
-                creators = RequiredMetadataValues.from(OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "creator"), DEFAULT_CREATOR),
+                creators = RequiredList.of(OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "creator"), DEFAULT_CREATOR),
                 identifier = OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "identifier").firstOrNull { it.isNotBlank() } ?: defaults.identifier,
                 date = OPFUtils.getDCElementValuesCaseInsensitive(opfSource, "date").firstOrNull { it.isNotBlank() } ?: defaults.date
             )
@@ -126,7 +126,7 @@ data class ImportedSourceMetadata(
             dtbookDocument: Document,
             clock: Clock = Clock.systemUTC(),
             uuidProvider: () -> String = { UUID.randomUUID().toString() }
-        ): ImportedSourceMetadata {
+        ): OpfMetadata {
             fun metaValues(name: String): List<String> = FastXPath.descendant(dtbookDocument)
                 .filterIsInstance<Element>()
                 .filter { it.localName == "meta" && (it.parent as? Element)?.localName == "head" }
@@ -136,9 +136,9 @@ data class ImportedSourceMetadata(
                 .toList()
 
             val defaults = defaults(clock, uuidProvider)
-            return ImportedSourceMetadata(
+            return OpfMetadata(
                 title = metaValues("dc:Title").firstOrNull() ?: defaults.title,
-                creators = RequiredMetadataValues.from(metaValues("dc:Creator"), DEFAULT_CREATOR),
+                creators = RequiredList.of(metaValues("dc:Creator"), DEFAULT_CREATOR),
                 identifier = metaValues("dc:Identifier").firstOrNull() ?: defaults.identifier,
                 date = metaValues("dc:Date").firstOrNull() ?: defaults.date
             )

@@ -56,9 +56,9 @@ object PandocArchiverLoader : ArchiverFactory.FileLoader {
         // Set where the document was really imported from, not the temp bbx.
         archiver.importedFrom = file
         val importedMetadata = if (fileData.type == ArchiverFactory.Types.EPUB) {
-            readEpubOpfMetadata(file) ?: ImportedSourceMetadata.defaults()
+            readEpubOpfMetadata(file) ?: OpfMetadata.defaults()
         } else {
-            ImportedSourceMetadata.defaults()
+            OpfMetadata.defaults()
         }
         importedMetadata.saveTo(archiver.bbxDocument)
         return archiver
@@ -69,10 +69,10 @@ object PandocArchiverLoader : ArchiverFactory.FileLoader {
      * own EPUB reader doesn't surface that metadata into the converted BBX, so it's read directly
      * from the zip here instead of relying on the pandoc conversion output.
      */
-    private fun readEpubOpfMetadata(file: Path): ImportedSourceMetadata? = try {
+    private fun readEpubOpfMetadata(file: Path): OpfMetadata? = try {
         FileSystems.newFileSystem(file, emptyMap<String, Any>()).use { fs ->
             OPFUtils.findOPFFilesInFolder(fs.getPath("/")).firstOrNull()?.let { opfFile ->
-                ImportedSourceMetadata.fromOpf(XMLHandler().load(opfFile))
+                OpfMetadata.fromOpf(XMLHandler().load(opfFile))
             }
         }
     } catch (e: Exception) {

@@ -292,7 +292,7 @@ class BBZArchiver(
         fun saveBBX(destPath: Path, doc: Document) {
             log.debug("Writing BBX to {}", destPath.toUri())
             val newDoc = doc.copy()
-            ImportedSourceMetadata.load(newDoc).saveTo(newDoc)
+            OpfMetadata.load(newDoc).saveTo(newDoc)
             newDoc.stripUTDRecursive()
             Files.newOutputStream(
                 destPath,

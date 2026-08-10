@@ -17,7 +17,7 @@ package org.brailleblaster.ebraille
 
 import nu.xom.Document
 import nu.xom.Element
-import org.brailleblaster.archiver2.ImportedSourceMetadata
+import org.brailleblaster.archiver2.OpfMetadata
 import org.brailleblaster.utd.BrailleSettings
 import org.brailleblaster.utd.ITranslationEngine
 import org.brailleblaster.utd.config.DocumentUTDConfig
@@ -34,7 +34,7 @@ class EBrailleExportToolTest {
     @Test
     fun buildExportDataUsesCanonicalMetadataWithoutWritingEbrailleSettings() {
         val doc = Document(Element("bbx"))
-        val expected = ImportedSourceMetadata(
+        val expected = OpfMetadata(
             title = "Canonical Title",
             creators = listOf("Author One", "Author Two"),
             identifier = "urn:isbn:9781234567890",

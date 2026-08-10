@@ -26,7 +26,7 @@ import java.time.temporal.ChronoUnit
 
 /**
  * The eBraille-specific metadata that BrailleBlaster emits into `package.opf` in addition to the
- * canonical bibliographic metadata already owned by [org.brailleblaster.archiver2.ImportedSourceMetadata].
+ * canonical bibliographic metadata already owned by [org.brailleblaster.archiver2.OpfMetadata].
  */
 data class EBrailleManifest(
     val format: String,

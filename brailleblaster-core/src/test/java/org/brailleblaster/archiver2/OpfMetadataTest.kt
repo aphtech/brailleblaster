@@ -28,7 +28,7 @@ import java.time.Clock
 import java.time.Instant
 import java.time.ZoneOffset
 
-class ImportedSourceMetadataTest {
+class OpfMetadataTest {
     private val fixedClock: Clock = Clock.fixed(Instant.parse("2026-07-22T00:00:00Z"), ZoneOffset.UTC)
     private val fixedUuid: () -> String = { "11111111-1111-1111-1111-111111111111" }
 
@@ -38,7 +38,7 @@ class ImportedSourceMetadataTest {
     fun fromOpfReadsNimasMetadataAndDropsBlankCreator() {
         val opf = XMLHandler().load(Paths.get("src/test/resources/nimasbaseline/0132027798NIMAS-metadata.opf"))
 
-        val result = ImportedSourceMetadata.fromOpf(opf)
+        val result = OpfMetadata.fromOpf(opf)
 
         Assert.assertEquals(result.title, "United States History: Reconstruction to the Present, Kentucky")
         Assert.assertEquals(
@@ -55,7 +55,7 @@ class ImportedSourceMetadataTest {
     fun fromOpfReadsEpubMetadata() {
         val opf = XMLHandler().load(Paths.get("src/test/resources/epubbaseline/9781593277956-metadata.opf"))
 
-        val result = ImportedSourceMetadata.fromOpf(opf)
+        val result = OpfMetadata.fromOpf(opf)
 
         Assert.assertEquals(result.title, "Invent Your Own Computer Games with Python")
         Assert.assertEquals(result.creators, listOf("Al Sweigart"))
@@ -69,7 +69,7 @@ class ImportedSourceMetadataTest {
     fun fromOpfDefaultsCreatorsWhenSourceHasNone() {
         val opf = XMLHandler().load(Paths.get("src/test/resources/fdr/FDR Inagural Address.opf"))
 
-        val result = ImportedSourceMetadata.fromOpf(opf, fixedClock, fixedUuid)
+        val result = OpfMetadata.fromOpf(opf, fixedClock, fixedUuid)
 
         Assert.assertEquals(result.title, "FDR's Inaugural Address for use as part of the following: NIMAS v1.0 Exemplar file: Social Studies")
         Assert.assertEquals(result.creators, listOf("-"))
@@ -82,7 +82,7 @@ class ImportedSourceMetadataTest {
     fun fromDtbookHeadReadsMetaElements() {
         val dtbook = XMLHandler().load(Paths.get("src/test/resources/nimasbaseline/NIMASXMLGtDepJan2009_valid3.xml"))
 
-        val result = ImportedSourceMetadata.fromDtbookHead(dtbook)
+        val result = OpfMetadata.fromDtbookHead(dtbook)
 
         Assert.assertEquals(result.title, "Valentin Haüy - the father of the education for the blind")
         Assert.assertEquals(result.creators, listOf("Beatrice Christensen Sköld"))
@@ -94,9 +94,9 @@ class ImportedSourceMetadataTest {
     fun fromDtbookHeadDefaultsAllFieldsWhenHeadHasNoDcMeta() {
         val dtbook = Document(Element("dtbook"))
 
-        val result = ImportedSourceMetadata.fromDtbookHead(dtbook, fixedClock, fixedUuid)
+        val result = OpfMetadata.fromDtbookHead(dtbook, fixedClock, fixedUuid)
 
-        Assert.assertEquals(result, ImportedSourceMetadata.defaults(fixedClock, fixedUuid))
+        Assert.assertEquals(result, OpfMetadata.defaults(fixedClock, fixedUuid))
         Assert.assertEquals(result.title, "-")
         Assert.assertEquals(result.creators, listOf("-"))
         Assert.assertEquals(result.identifier, "urn:uuid:11111111-1111-1111-1111-111111111111")
@@ -108,7 +108,7 @@ class ImportedSourceMetadataTest {
     @Test
     fun saveThenLoadRoundTripsThroughDocumentHead() {
         val doc = Document(Element("bbx"))
-        val metadata = ImportedSourceMetadata(
+        val metadata = OpfMetadata(
             title = "Round Trip Title",
             creators = listOf("Creator One", "Creator Two"),
             identifier = "urn:isbn:123",
@@ -117,7 +117,7 @@ class ImportedSourceMetadataTest {
 
         metadata.saveTo(doc)
         val reopened = reopen(doc)
-        val loaded = ImportedSourceMetadata.load(reopened)
+        val loaded = OpfMetadata.load(reopened)
 
         Assert.assertEquals(loaded, metadata)
     }
@@ -126,20 +126,20 @@ class ImportedSourceMetadataTest {
     fun loadReturnsDefaultsWhenNothingWasSaved() {
         val doc = Document(Element("bbx"))
 
-        val loaded = ImportedSourceMetadata.load(doc, fixedClock, fixedUuid)
+        val loaded = OpfMetadata.load(doc, fixedClock, fixedUuid)
 
-        Assert.assertEquals(loaded, ImportedSourceMetadata.defaults(fixedClock, fixedUuid))
+        Assert.assertEquals(loaded, OpfMetadata.defaults(fixedClock, fixedUuid))
     }
 
     @Test
     fun saveAlwaysWritesMetadataEvenWhenSourceHadNothingUsable() {
         val doc = Document(Element("bbx"))
-        ImportedSourceMetadata.defaults(fixedClock, fixedUuid).saveTo(doc)
+        OpfMetadata.defaults(fixedClock, fixedUuid).saveTo(doc)
 
         val reopened = reopen(doc)
-        val loaded = ImportedSourceMetadata.load(reopened, fixedClock, fixedUuid)
+        val loaded = OpfMetadata.load(reopened, fixedClock, fixedUuid)
 
-        Assert.assertEquals(loaded, ImportedSourceMetadata.defaults(fixedClock, fixedUuid))
+        Assert.assertEquals(loaded, OpfMetadata.defaults(fixedClock, fixedUuid))
     }
 
     @Test
@@ -151,7 +151,7 @@ class ImportedSourceMetadataTest {
             BBZArchiver.saveBBX(tempFile, doc)
 
             val reopened = XMLHandler().load(tempFile)
-            val loaded = ImportedSourceMetadata.load(reopened)
+            val loaded = OpfMetadata.load(reopened)
 
             Assert.assertEquals(loaded.title, "-")
             Assert.assertEquals(loaded.creators, listOf("-"))
@@ -165,7 +165,7 @@ class ImportedSourceMetadataTest {
     @Test
     fun saveBbxPreservesExplicitCanonicalMetadata() {
         val doc = Document(Element("bbx"))
-        val expected = ImportedSourceMetadata(
+        val expected = OpfMetadata(
             title = "Canonical Title",
             creators = listOf("Creator One", "Creator Two"),
             identifier = "urn:isbn:9781234567890",
@@ -179,7 +179,7 @@ class ImportedSourceMetadataTest {
             BBZArchiver.saveBBX(tempFile, doc)
 
             val reopened = XMLHandler().load(tempFile)
-            val loaded = ImportedSourceMetadata.load(reopened)
+            val loaded = OpfMetadata.load(reopened)
 
             Assert.assertEquals(loaded, expected)
         } finally {
@@ -189,7 +189,7 @@ class ImportedSourceMetadataTest {
 
     @Test
     fun constructorNormalizesCreatorsToANonEmptyTypedList() {
-        val blankCreators = ImportedSourceMetadata(
+        val blankCreators = OpfMetadata(
             title = "Title",
             creators = listOf("", "   "),
             identifier = "identifier",
@@ -197,7 +197,7 @@ class ImportedSourceMetadataTest {
         )
 
         Assert.assertEquals(blankCreators.creators, listOf("-"))
-        Assert.assertTrue(blankCreators.creators is RequiredMetadataValues)
+        Assert.assertTrue(blankCreators.creators is RequiredList)
     }
 
     private fun reopen(doc: Document): Document {

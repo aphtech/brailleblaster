@@ -16,7 +16,7 @@
 package org.brailleblaster.ebraille
 
 import nu.xom.Document
-import org.brailleblaster.archiver2.ImportedSourceMetadata
+import org.brailleblaster.archiver2.OpfMetadata
 import org.brailleblaster.ebraille.bbx2html.BBX2HTML
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
@@ -32,7 +32,7 @@ import kotlin.io.path.Path
 import kotlin.io.path.nameWithoutExtension
 
 internal data class EBrailleExportData(
-    val sourceMetadata: ImportedSourceMetadata,
+    val sourceMetadata: OpfMetadata,
     val manifest: EBrailleManifest
 )
 
@@ -45,7 +45,7 @@ internal fun createEbraille(outputPath: Path, docs: List<Document>, title: Strin
 }
 
 internal fun buildExportData(sourceDoc: Document?, engine: ITranslationEngine): EBrailleExportData {
-    val importedMetadata = sourceDoc?.let { ImportedSourceMetadata.load(it) } ?: ImportedSourceMetadata.defaults()
+    val importedMetadata = sourceDoc?.let { OpfMetadata.load(it) } ?: OpfMetadata.defaults()
     return EBrailleExportData(
         sourceMetadata = importedMetadata,
         manifest = EBrailleManifest.defaults(languages = listOf(defaultEbrailleLanguage(engine)))

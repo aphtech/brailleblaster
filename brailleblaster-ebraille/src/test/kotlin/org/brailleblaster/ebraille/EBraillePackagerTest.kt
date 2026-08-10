@@ -18,7 +18,7 @@ package org.brailleblaster.ebraille
 import nu.xom.Builder
 import nu.xom.Document
 import nu.xom.Element
-import org.brailleblaster.archiver2.ImportedSourceMetadata
+import org.brailleblaster.archiver2.OpfMetadata
 import org.brailleblaster.utd.BrailleSettings
 import org.brailleblaster.utd.ITranslationEngine
 import org.brailleblaster.utils.xml.OPF_NS
@@ -40,7 +40,7 @@ class EBraillePackagerTest {
         val outFile = Files.createTempFile("ebraille-phase2-", ".ebrl")
         try {
             val doc = Jsoup.parse("<html><body><h1>Chapter 1</h1><span role=\"doc-pagebreak\">1</span><p>Content</p></body></html>")
-            val sourceMetadata = ImportedSourceMetadata(
+            val sourceMetadata = OpfMetadata(
                 title = "Sample Title",
                 creators = listOf("Author One", "Author Two"),
                 identifier = "urn:isbn:9781234567890",
@@ -106,7 +106,7 @@ class EBraillePackagerTest {
     fun exportUsesProvidedStableManifestButRecalculatesVolatileFields() {
         val outFile = Files.createTempFile("ebraille-phase2-manifest-", ".ebrl")
         try {
-            val sourceMetadata = ImportedSourceMetadata(
+            val sourceMetadata = OpfMetadata(
                 title = "Canonical Title",
                 creators = listOf("Author One"),
                 identifier = "canonical-id",

@@ -18,13 +18,13 @@ package org.brailleblaster.ebraille
 import nu.xom.Attribute
 import nu.xom.Document
 import nu.xom.Element
-import org.brailleblaster.archiver2.ImportedSourceMetadata
+import org.brailleblaster.archiver2.OpfMetadata
 import org.brailleblaster.utils.xml.DC_NS
 import org.brailleblaster.utils.xml.OPF_NS
 import java.io.OutputStream
 import java.net.URL
 
-fun createOpf(items: List<PackageItem>, sourceMetadata: ImportedSourceMetadata, manifest: EBrailleManifest): Document = Document(Element("package", OPF_NS).apply {
+fun createOpf(items: List<PackageItem>, sourceMetadata: OpfMetadata, manifest: EBrailleManifest): Document = Document(Element("package", OPF_NS).apply {
     val itemMap = items.mapIndexed { i, item -> "file${i}" to item }.toMap()
     addNamespaceDeclaration("dc", DC_NS)
     addAttribute(Attribute("version", "3.0"))
@@ -49,7 +49,7 @@ fun createOpf(items: List<PackageItem>, sourceMetadata: ImportedSourceMetadata, 
     })
 })
 
-private fun createMetadataElement(sourceMetadata: ImportedSourceMetadata, manifest: EBrailleManifest): Element = Element("metadata", OPF_NS).apply {
+private fun createMetadataElement(sourceMetadata: OpfMetadata, manifest: EBrailleManifest): Element = Element("metadata", OPF_NS).apply {
     appendChild(createDcElement("title", sourceMetadata.title))
     sourceMetadata.creators.forEach { appendChild(createDcElement("creator", it)) }
     appendChild(createDcElement("format", manifest.format))

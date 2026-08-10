@@ -16,7 +16,7 @@
 package org.brailleblaster.ebraille
 
 import nu.xom.Element
-import org.brailleblaster.archiver2.ImportedSourceMetadata
+import org.brailleblaster.archiver2.OpfMetadata
 import org.jsoup.Jsoup
 import org.testng.Assert
 import org.testng.annotations.Test
@@ -65,7 +65,7 @@ class EBrailleManifestTest {
 
     @Test
     fun serializationPreservesRepeatedFieldCardinality() {
-        val importedMetadata = ImportedSourceMetadata(
+        val importedMetadata = OpfMetadata(
             title = "Title",
             creators = listOf("Creator One", "Creator Two"),
             identifier = "id",
@@ -84,7 +84,7 @@ class EBrailleManifestTest {
 
     @Test
     fun serializationUsesSpecCorrectPropertyNames() {
-        val metadata = metadataElement(ImportedSourceMetadata.defaults(), EBrailleManifest.defaults())
+        val metadata = metadataElement(OpfMetadata.defaults(), EBrailleManifest.defaults())
 
         Assert.assertEquals(countMetaProperty(metadata, "a11y:brailleCellType"), 1)
         Assert.assertEquals(countMetaProperty(metadata, "a11y:cellType"), 0)
@@ -92,7 +92,7 @@ class EBrailleManifestTest {
 
     @Test
     fun serializationOrderAndCardinalityAreStable() {
-        val importedMetadata = ImportedSourceMetadata(
+        val importedMetadata = OpfMetadata(
             title = "Title",
             creators = listOf("Author"),
             identifier = "identifier",
@@ -157,7 +157,7 @@ class EBrailleManifestTest {
         return count
     }
 
-    private fun metadataElement(importedMetadata: ImportedSourceMetadata, manifest: EBrailleManifest): Element =
+    private fun metadataElement(importedMetadata: OpfMetadata, manifest: EBrailleManifest): Element =
         createOpf(emptyList(), importedMetadata, manifest).rootElement.getFirstChildElement("metadata", org.brailleblaster.utils.xml.OPF_NS)
 
     private fun fakeItem(itemPath: String, itemMediaType: String): PackageItem = object : PackageItem {

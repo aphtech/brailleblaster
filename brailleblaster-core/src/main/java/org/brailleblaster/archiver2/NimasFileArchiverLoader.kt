@@ -31,7 +31,7 @@ object NimasFileArchiverLoader : ArchiverFactory.FileLoader {
         val rootName = fileData.doc!!.rootElement.localName
         return if (rootName == "dtbook") {
             val convertedDoc = convert(file, "nimas")
-            ImportedSourceMetadata.fromDtbookHead(fileData.doc).saveTo(convertedDoc)
+            OpfMetadata.fromDtbookHead(fileData.doc).saveTo(convertedDoc)
             val archiver: Archiver2 = BBZArchiver.createImportedBBZ(
                 file,
                 convertedDoc

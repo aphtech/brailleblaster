@@ -16,7 +16,7 @@
 package org.brailleblaster.ebraille
 
 import nu.xom.Serializer
-import org.brailleblaster.archiver2.ImportedSourceMetadata
+import org.brailleblaster.archiver2.OpfMetadata
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream
 import org.brailleblaster.utd.ITranslationEngine
@@ -26,7 +26,6 @@ import java.io.OutputStream
 import java.nio.channels.FileChannel
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
-import java.time.Clock
 
 private const val OPF_PATH = "package.opf"
 
@@ -39,7 +38,7 @@ object EBraillePackager {
     fun createEbraillePackage(
         outPath: Path,
         docs: List<Document>,
-        sourceMetadata: ImportedSourceMetadata = ImportedSourceMetadata.defaults(),
+        sourceMetadata: OpfMetadata = OpfMetadata.defaults(),
         translationEngine: ITranslationEngine = UTDTranslationEngine(),
         manifest: EBrailleManifest = EBrailleManifest.defaults(languages = listOf(defaultEbrailleLanguage(translationEngine)))
     ) {
@@ -53,7 +52,7 @@ object EBraillePackager {
     private fun packageDocument(
         outPath: Path,
         packageItems: List<PackageItem>,
-        sourceMetadata: ImportedSourceMetadata,
+        sourceMetadata: OpfMetadata,
         manifest: EBrailleManifest
     ) {
         ZipArchiveOutputStream(FileChannel.open(outPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE)).use { zos ->
@@ -84,7 +83,7 @@ private fun ZipArchiveOutputStream.writeItems(items: List<PackageItem>) {
 
 private fun ZipArchiveOutputStream.writeOpf(
     docItems: List<PackageItem>,
-    sourceMetadata: ImportedSourceMetadata,
+    sourceMetadata: OpfMetadata,
     manifest: EBrailleManifest
 ) {
     putArchiveEntry(ZipArchiveEntry(OPF_PATH))
