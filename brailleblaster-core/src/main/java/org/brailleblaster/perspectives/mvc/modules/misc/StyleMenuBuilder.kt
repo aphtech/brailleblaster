@@ -24,7 +24,6 @@ import org.brailleblaster.perspectives.mvc.menu.BBSeparator
 import org.brailleblaster.perspectives.mvc.menu.MenuManager.addToStyleMenu
 import org.brailleblaster.settings.ui.Loadout
 import org.brailleblaster.settings.ui.Loadout.Companion.getAcc
-import org.brailleblaster.settings.ui.Loadout.Companion.listLoadouts
 import org.brailleblaster.utd.IStyle
 import org.brailleblaster.utd.Shortcut
 import org.brailleblaster.utd.Style
@@ -44,12 +43,10 @@ import java.util.function.Consumer
 /**
  * Generates the Styles menu
  */
-class StyleMenuBuilder(shell: Shell, manager: Manager) : StylesBuilder(shell, manager) {
-    private val bbShell: Shell
+class StyleMenuBuilder(private val bbShell: Shell, manager: Manager) : StylesBuilder(bbShell, manager) {
 
     init {
         val utdMan = manager.document.settingsManager
-        bbShell = shell
         StyleId(utdMan)
 
         // label to display loadouts information
@@ -204,11 +201,10 @@ class StyleMenuBuilder(shell: Shell, manager: Manager) : StylesBuilder(shell, ma
         onTypeformSelect: Consumer<BBActionSelection>,
         onLevelSelect: Consumer<BBSelectionData>
     ) {
-        listLoadouts()
         val curSetting = BBIni.propertyFileManager.getProperty(USER_SETTINGS_STYLE_LEVELS)
         val curLoadout = BBIni.propertyFileManager.getProperty(CURRENT_STYLE_LOADOUT)
         val curLevel = curSetting?.toInt() ?: DEFAULT_STYLE_LEVELS
-        val curAcc = if (curLoadout == null) DEFAULT_LOADOUT else getAcc(curLoadout)
+        val curAcc = if (curLoadout == null) Loadout.DEFAULT_LOADOUT_ACCELERATOR else getAcc(curLoadout)
         val configureMenu = SubMenuBuilder(TopMenu.STYLES, "Configure")
         val styleLevelsMenu = SubMenuBuilder(configureMenu, "Style Levels")
         val loadoutsMenu = SubMenuBuilder(configureMenu, "Loadouts")
@@ -409,7 +405,7 @@ class StyleMenuBuilder(shell: Shell, manager: Manager) : StylesBuilder(shell, ma
     }
 
     private fun showStyleSelector(styleIds: List<String>, categoryName: String): Int {
-        val shell = Shell()
+        val shell = bbShell
         val dialog = StyleSelector(shell)
         val ids = styleIds.toTypedArray<String>()
         return dialog.open(localeHandler["styleLoadouts"], ids, categoryName)
@@ -424,7 +420,6 @@ class StyleMenuBuilder(shell: Shell, manager: Manager) : StylesBuilder(shell, ma
         private const val MISCELLANEOUS_CATEGORY_NAME = "miscellaneous"
         private const val USER_SETTINGS_STYLE_LEVELS = "styleLevels"
         private const val DEFAULT_STYLE_LEVELS = 8
-        private const val DEFAULT_LOADOUT = 393324 //List
         private const val CURRENT_STYLE_LOADOUT = "loadoutName"
         private val RESTRICTED_CATEGORIES: Set<String> =
             HashSet(listOf(INTERNAL_CATEGORY_NAME, OPTIONS_CATEGORY_NAME))

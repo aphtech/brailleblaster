@@ -293,6 +293,10 @@ function SmallCaps(s)
   return Strong(s)
 end
 
+function Underline(s)
+  return '<INLINE bb:type="EMPHASIS" bb:emphasis="UNDERLINE">' .. s .. '</INLINE>'
+end
+
 function Strikeout(s)
   return s
 end
