@@ -18,7 +18,7 @@ permissions:
   contents: write
 
 env:
-  BB_VERSION: '3.2.2'
+  BB_VERSION: '3.2.3'
   BB_CHANGELIST: ''
 
 jobs:
