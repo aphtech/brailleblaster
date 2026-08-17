@@ -36,8 +36,6 @@ const val BRAILLE_SPACE: Char = '\u2800'
  * Get the brl elements representing the content. The brl elements may not
  * necessarily be directly associated to the node passed in.
  *
- * @Param this@getBrlElements The node to find the brl elements for. This parameter should
- * not be null.
  * @Return the related brl elements representing the content. If there is no
  * brl elements related then an empty Nodes collection will be
  * returned.
@@ -61,8 +59,6 @@ fun Node.getBrlElements(): Nodes {
 /**
  * Get the directly associated brl element for the given node.
  *
- * @Param this@getAssociatedBrlElement The node to find the directly associated brl element for.
- * This parameter should not be null.
  * @Return The directly associated brl element. If there is no associated
  * brl element then null will be returned.
  * @Throw NullPointerException When null is passed in for the node
@@ -78,7 +74,6 @@ fun Node.getAssociatedBrlElement(): Element? {
 /**
  * Get the directly associated brl element for the given child node.
  *
- * @param this@getAssociatedBrlElement The parent element of the child node under query.
  * @param idx The index of the child node under query.
  * @return The directly associated brl element. If there is no associated
  * brl element then null will be returned.
@@ -101,8 +96,6 @@ fun ParentNode.getAssociatedBrlElement(idx: Int): Element? {
 /**
  * Get the original node associated with the specified brl element.
  *
- * @Param this@getAssociatedNode The brl element which to find the original associated
- * node. This should not be null.
  * @Return The original node associated to the brl element. If the brl
  * element is a Braille only element then null will be returned.
  * @Throw NullPointerException if the brlElement parameter is null.
@@ -148,7 +141,6 @@ fun getTableCopies(root: Node, onTable: Consumer<Element?>) {
 /**
  * Checks given node for any brl nodes. Returns true on first brl node encountered and is thus
  * faster than using getDescendantBrl
- * @param this@containsBrl
  * @return
  */
 fun Node.containsBrl(): Boolean {
@@ -183,13 +175,11 @@ fun startsWithWhitespace(str: String): Int = str.takeWhile { isUtdWhitespace(it)
 
 /**
  * Recursively remove all brl nodes and internal UTD attributes (utdAction, utdStyle)
- * @param this@stripUTDRecursive
  */
 fun Document.stripUTDRecursive() = this.rootElement.stripUTDRecursive()
 
 /**
  * Recursively remove all brl nodes and internal UTD attributes (utdAction, utdStyle)
- * @param this@stripUTDRecursive
  */
 fun Element.stripUTDRecursive() {
     if (UTDElements.BRL.isA(this) || (UTD_NS == this.namespaceURI && "tablebrl" == this.localName)) {
