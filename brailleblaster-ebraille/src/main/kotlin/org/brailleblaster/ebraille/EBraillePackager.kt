@@ -40,25 +40,27 @@ object EBraillePackager {
         docs: List<Document>,
         sourceMetadata: OpfMetadata = OpfMetadata.defaults(),
         translationEngine: ITranslationEngine = UTDTranslationEngine(),
-        manifest: EBrailleManifest = EBrailleManifest.defaults(languages = listOf(defaultEbrailleLanguage(translationEngine)))
+        languages: List<String> = listOf(defaultEbrailleLanguage(translationEngine))
     ) {
         val docItems = docs.mapIndexed { i, doc -> XHtmlItem("ebraille/document${i}.html", doc) }
         val navDoc = XHtmlItem("index.html", NavigationHtml.createNavigationHtml(docItems, title = sourceMetadata.title, translationEngine = translationEngine), properties = "nav")
         val packageItems = docItems + RESOURCE_ITEMS + navDoc
-        val exportManifest = manifest.withVolatileExportValues(docs, packageItems)
-        packageDocument(outPath, packageItems, sourceMetadata, exportManifest)
+        val exportMetadata = sourceMetadata.copy(modified = currentModifiedTime())
+        packageDocument(outPath, packageItems, exportMetadata, languages, deriveBrailleCellType(docs), deriveTactileGraphics(packageItems))
     }
 
     private fun packageDocument(
         outPath: Path,
         packageItems: List<PackageItem>,
         sourceMetadata: OpfMetadata,
-        manifest: EBrailleManifest
+        languages: List<String>,
+        brailleCellType: String,
+        tactileGraphics: String
     ) {
         ZipArchiveOutputStream(FileChannel.open(outPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE)).use { zos ->
             zos.writeMimetype()
             zos.writeItems(packageItems)
-            zos.writeOpf(packageItems, sourceMetadata, manifest)
+            zos.writeOpf(packageItems, sourceMetadata, languages, brailleCellType, tactileGraphics)
             zos.writeContainer()
             zos.closeArchiveEntry()
         }
@@ -84,10 +86,12 @@ private fun ZipArchiveOutputStream.writeItems(items: List<PackageItem>) {
 private fun ZipArchiveOutputStream.writeOpf(
     docItems: List<PackageItem>,
     sourceMetadata: OpfMetadata,
-    manifest: EBrailleManifest
+    languages: List<String>,
+    brailleCellType: String,
+    tactileGraphics: String
 ) {
     putArchiveEntry(ZipArchiveEntry(OPF_PATH))
-    createXomSerializer(this).write(createOpf(docItems, sourceMetadata, manifest))
+    createXomSerializer(this).write(createOpf(docItems, sourceMetadata, languages, brailleCellType, tactileGraphics))
 }
 
 private fun ZipArchiveOutputStream.writeContainer(opfPath: String = OPF_PATH) {

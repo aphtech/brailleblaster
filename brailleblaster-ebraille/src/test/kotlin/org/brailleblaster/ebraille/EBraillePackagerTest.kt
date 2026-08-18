@@ -44,7 +44,10 @@ class EBraillePackagerTest {
                 title = "Sample Title",
                 creators = listOf("Author One", "Author Two"),
                 identifier = "urn:isbn:9781234567890",
-                date = "2021-06-15"
+                date = "2021-06-15",
+                modified = "2021-06-15T00:00:00Z",
+                dateCopyrighted = "1970-01-01 00:00:00",
+                producers = listOf("Producer")
             )
 
             EBraillePackager.createEbraillePackage(
@@ -103,18 +106,17 @@ class EBraillePackagerTest {
     }
 
     @Test
-    fun exportUsesProvidedStableManifestButRecalculatesVolatileFields() {
+    fun exportUsesProvidedLanguageButAlwaysDerivesTactileGraphicsFromContent() {
         val outFile = Files.createTempFile("ebraille-phase2-manifest-", ".ebrl")
         try {
             val sourceMetadata = OpfMetadata(
                 title = "Canonical Title",
                 creators = listOf("Author One"),
                 identifier = "canonical-id",
-                date = "2021-06-15"
-            )
-            val customManifest = EBrailleManifest.defaults().copy(
-                languages = listOf("fr-Brai"),
-                tactileGraphics = "png"
+                date = "2021-06-15",
+                modified = "2021-06-15T00:00:00Z",
+                dateCopyrighted = "1970-01-01 00:00:00",
+                producers = listOf("Producer")
             )
             val doc = Jsoup.parse("<html><body><h1>Heading</h1><p>Body</p></body></html>")
 
@@ -123,7 +125,7 @@ class EBraillePackagerTest {
                 listOf(doc),
                 sourceMetadata = sourceMetadata,
                 translationEngine = mockTranslationEngine(),
-                manifest = customManifest
+                languages = listOf("fr-Brai")
             )
 
             ZipFile(outFile.toFile()).use { zip ->
@@ -132,6 +134,8 @@ class EBraillePackagerTest {
 
                 Assert.assertEquals(firstDcValue(metadata, "title"), "Canonical Title")
                 Assert.assertEquals(firstDcValue(metadata, "language"), "fr-Brai")
+                // tactileGraphics is always derived from the packaged content - there is no
+                // longer any parameter through which a caller could override it.
                 Assert.assertEquals(firstMetaProperty(metadata, "a11y:tactileGraphics"), "none")
             }
         } finally {

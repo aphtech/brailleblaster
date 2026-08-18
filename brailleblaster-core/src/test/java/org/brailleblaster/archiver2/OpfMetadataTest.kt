@@ -18,7 +18,10 @@ package org.brailleblaster.archiver2
 import nu.xom.Builder
 import nu.xom.Document
 import nu.xom.Element
+import org.brailleblaster.utd.config.DocumentUTDConfig
 import org.brailleblaster.utd.internal.xml.XMLHandler
+import org.brailleblaster.utils.xml.DC_NS
+import org.brailleblaster.utils.xml.OPF_NS
 import org.testng.Assert
 import org.testng.annotations.Test
 import java.nio.charset.StandardCharsets
@@ -112,7 +115,10 @@ class OpfMetadataTest {
             title = "Round Trip Title",
             creators = listOf("Creator One", "Creator Two"),
             identifier = "urn:isbn:123",
-            date = "2020-01-01"
+            date = "2020-01-01",
+            modified = "2020-01-02T03:04:05Z",
+            dateCopyrighted = "2019-12-25 00:00:00",
+            producers = listOf("Producer One", "Producer Two")
         )
 
         metadata.saveTo(doc)
@@ -120,6 +126,67 @@ class OpfMetadataTest {
         val loaded = OpfMetadata.load(reopened)
 
         Assert.assertEquals(loaded, metadata)
+    }
+
+    @Test
+    fun loadFallsBackToDefaultsForFieldsMissingFromAnOlderSavedDocument() {
+        // Simulates a .bbx file saved before modified/dateCopyrighted/producers existed: its
+        // opf:metadata block only has the original 4 elements.
+        val doc = Document(Element("bbx"))
+        val headElem = DocumentUTDConfig.NIMAS.getOrCreateHeadElement(doc)
+        val oldStyleMetadata = Element("metadata", OPF_NS).apply {
+            appendChild(Element("dc:title", DC_NS).apply { appendChild("Old Title") })
+            appendChild(Element("dc:creator", DC_NS).apply { appendChild("Old Creator") })
+            appendChild(Element("dc:identifier", DC_NS).apply { appendChild("old-id") })
+            appendChild(Element("dc:date", DC_NS).apply { appendChild("2015-01-01") })
+        }
+        headElem.appendChild(oldStyleMetadata)
+
+        val loaded = OpfMetadata.load(reopen(doc), fixedClock, fixedUuid)
+
+        Assert.assertEquals(loaded.title, "Old Title")
+        Assert.assertEquals(loaded.creators, listOf("Old Creator"))
+        Assert.assertEquals(loaded.identifier, "old-id")
+        Assert.assertEquals(loaded.date, "2015-01-01")
+        val defaults = OpfMetadata.defaults(fixedClock, fixedUuid)
+        Assert.assertEquals(loaded.modified, defaults.modified)
+        Assert.assertEquals(loaded.dateCopyrighted, defaults.dateCopyrighted)
+        Assert.assertEquals(loaded.producers, defaults.producers)
+    }
+
+    @Test
+    fun metadataToXomThenXomToMetadataRoundTrips() {
+        val metadata = OpfMetadata(
+            title = "Title",
+            creators = listOf("Creator One", "Creator Two"),
+            identifier = "urn:isbn:123",
+            date = "2020-01-01",
+            modified = "2020-01-02T03:04:05Z",
+            dateCopyrighted = "2019-12-25 00:00:00",
+            producers = listOf("Producer One", "Producer Two")
+        )
+
+        val roundTripped = xomToMetadata(metadataToXom(metadata))
+
+        Assert.assertEquals(roundTripped, metadata)
+    }
+
+    @Test
+    fun metadataToXomProducesExpectedElementNamesAndOrder() {
+        val metadata = OpfMetadata(
+            title = "Title",
+            creators = listOf("Creator One", "Creator Two"),
+            identifier = "id",
+            date = "2020-01-01",
+            modified = "2020-01-02T03:04:05Z",
+            dateCopyrighted = "2019-12-25 00:00:00",
+            producers = listOf("Producer One", "Producer Two")
+        )
+
+        val elements = metadataToXom(metadata).toList()
+
+        Assert.assertEquals(elements.map { if (it.localName == "meta") "meta:${it.getAttributeValue("property")}" else "dc:${it.localName}" },
+            listOf("dc:title", "dc:creator", "dc:creator", "dc:identifier", "dc:date", "meta:dcterms:modified", "meta:dcterms:dateCopyrighted", "meta:a11y:producer", "meta:a11y:producer"))
     }
 
     @Test
@@ -169,7 +236,10 @@ class OpfMetadataTest {
             title = "Canonical Title",
             creators = listOf("Creator One", "Creator Two"),
             identifier = "urn:isbn:9781234567890",
-            date = "2021-06-15"
+            date = "2021-06-15",
+            modified = "2021-06-15T00:00:00Z",
+            dateCopyrighted = "1970-01-01 00:00:00",
+            producers = listOf("Producer One")
         )
         val tempFile = Files.createTempFile("bbx-metadata-preserve-", ".bbx")
 
@@ -193,11 +263,16 @@ class OpfMetadataTest {
             title = "Title",
             creators = listOf("", "   "),
             identifier = "identifier",
-            date = "2021-06-15"
+            date = "2021-06-15",
+            modified = "2021-06-15T00:00:00Z",
+            dateCopyrighted = "1970-01-01 00:00:00",
+            producers = listOf("", "   ")
         )
 
         Assert.assertEquals(blankCreators.creators, listOf("-"))
         Assert.assertTrue(blankCreators.creators is RequiredList)
+        Assert.assertEquals(blankCreators.producers, listOf("-"))
+        Assert.assertTrue(blankCreators.producers is RequiredList)
     }
 
     private fun reopen(doc: Document): Document {

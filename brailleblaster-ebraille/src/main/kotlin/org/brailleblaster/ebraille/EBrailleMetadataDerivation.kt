@@ -19,49 +19,16 @@ import org.brailleblaster.utd.ITranslationEngine
 import org.jsoup.nodes.Document as JsoupDocument
 import java.time.Clock
 import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 /**
- * The eBraille-specific metadata that BrailleBlaster emits into `package.opf` in addition to the
- * canonical bibliographic metadata already owned by [org.brailleblaster.archiver2.OpfMetadata].
+ * Helpers that derive the eBraille-only `package.opf` metadata values - braille cell type,
+ * tactile graphics format summary, export timestamp, and default braille-table language - from
+ * the actual content being packaged. These are always recomputed at export time rather than
+ * stored, since they describe the specific export rather than the source document's canonical
+ * bibliographic metadata (owned by [org.brailleblaster.archiver2.OpfMetadata]).
  */
-data class EBrailleManifest(
-    val format: String,
-    val languages: List<String>,
-    val modified: String,
-    val dateCopyrighted: String,
-    val brailleCellType: String,
-    val brailleSystem: String,
-    val completeTranscription: String,
-    val producers: List<String>,
-    val tactileGraphics: String
-) {
-    companion object {
-        private val UTC_EPOCH_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-
-        fun defaults(
-            languages: List<String> = listOf("en-Brai"),
-            clock: Clock = Clock.systemUTC()
-        ): EBrailleManifest {
-            val now: Instant = Instant.now(clock).truncatedTo(ChronoUnit.SECONDS)
-            return EBrailleManifest(
-                format = "eBraille 1.0",
-                languages = languages.ifEmpty { listOf("en-Brai") },
-                modified = DateTimeFormatter.ISO_INSTANT.format(now),
-                dateCopyrighted = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC).format(UTC_EPOCH_FORMATTER),
-                brailleCellType = "6",
-                brailleSystem = "UEB",
-                completeTranscription = "true",
-                producers = listOf("-"),
-                tactileGraphics = "none"
-            )
-        }
-    }
-}
-
 private const val BRAILLE_PATTERN_BASE = 0x2800
 private const val DOT_7_8_MASK = 0xC0
 private val TABLE_LANGUAGE_PREFIX = Regex("^([a-z]{2,3})-")
@@ -108,13 +75,3 @@ internal fun defaultEbrailleLanguage(engine: ITranslationEngine?): String {
 
     return if (languageCode != null) "$languageCode-Brai" else "en-Brai"
 }
-
-internal fun EBrailleManifest.withVolatileExportValues(
-    docs: List<JsoupDocument>,
-    packageItems: List<PackageItem>,
-    clock: Clock = Clock.systemUTC()
-): EBrailleManifest = copy(
-    modified = currentModifiedTime(clock),
-    brailleCellType = deriveBrailleCellType(docs),
-    tactileGraphics = deriveTactileGraphics(packageItems)
-)

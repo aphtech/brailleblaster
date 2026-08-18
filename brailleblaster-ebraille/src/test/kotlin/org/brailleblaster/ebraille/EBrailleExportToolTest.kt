@@ -18,15 +18,7 @@ package org.brailleblaster.ebraille
 import nu.xom.Document
 import nu.xom.Element
 import org.brailleblaster.archiver2.OpfMetadata
-import org.brailleblaster.utd.BrailleSettings
-import org.brailleblaster.utd.ITranslationEngine
 import org.brailleblaster.utd.config.DocumentUTDConfig
-import org.mwhapples.jlouis.Louis
-import org.mwhapples.jlouis.TranslationResult
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.anyInt
-import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito
 import org.testng.Assert
 import org.testng.annotations.Test
 
@@ -38,34 +30,17 @@ class EBrailleExportToolTest {
             title = "Canonical Title",
             creators = listOf("Author One", "Author Two"),
             identifier = "urn:isbn:9781234567890",
-            date = "2021-06-15"
+            date = "2021-06-15",
+            modified = "2021-06-15T00:00:00Z",
+            dateCopyrighted = "1970-01-01 00:00:00",
+            producers = listOf("Producer")
         )
         expected.saveTo(doc)
 
-        val exportData = buildExportData(doc, mockTranslationEngine())
+        val sourceMetadata = buildExportData(doc)
 
         Assert.assertNull(DocumentUTDConfig.NIMAS.getSetting(doc, "ebrailleManifest.version"))
         Assert.assertNull(DocumentUTDConfig.NIMAS.getSetting(doc, "ebrailleManifest.title.value"))
-        Assert.assertEquals(exportData.sourceMetadata, expected)
-        Assert.assertEquals(exportData.manifest.languages, listOf("en-Brai"))
-    }
-
-    private fun mockTranslationEngine(): ITranslationEngine {
-        val translationResult = Mockito.mock(TranslationResult::class.java)
-        Mockito.`when`(translationResult.translation).thenReturn("x")
-        Mockito.`when`(translationResult.inputPos).thenReturn(intArrayOf(0))
-
-        val louis = Mockito.mock(Louis::class.java)
-        Mockito.`when`(louis.translate(anyString(), anyString(), any(), anyInt(), anyInt())).thenReturn(translationResult)
-
-        val settings = BrailleSettings().apply {
-            isUseAsciiBraille = true
-            mainTranslationTable = "en-us-g2.ctb"
-        }
-
-        val engine = Mockito.mock(ITranslationEngine::class.java)
-        Mockito.`when`(engine.brailleTranslator).thenReturn(louis)
-        Mockito.`when`(engine.brailleSettings).thenReturn(settings)
-        return engine
+        Assert.assertEquals(sourceMetadata, expected)
     }
 }

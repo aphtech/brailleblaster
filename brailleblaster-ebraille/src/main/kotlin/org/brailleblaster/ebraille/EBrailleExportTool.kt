@@ -31,26 +31,16 @@ import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.nameWithoutExtension
 
-internal data class EBrailleExportData(
-    val sourceMetadata: OpfMetadata,
-    val manifest: EBrailleManifest
-)
-
 @Suppress("UNUSED_PARAMETER")
 internal fun createEbraille(outputPath: Path, docs: List<Document>, title: String, engine: ITranslationEngine) {
-    val exportData = buildExportData(docs.firstOrNull(), engine)
+    val sourceMetadata = buildExportData(docs.firstOrNull())
 
     val html = docs.map { BBX2HTML.convertBbxToHtml(it) }
-    EBraillePackager.createEbraillePackage(outputPath, html, exportData.sourceMetadata, engine, exportData.manifest)
+    EBraillePackager.createEbraillePackage(outputPath, html, sourceMetadata, engine, listOf(defaultEbrailleLanguage(engine)))
 }
 
-internal fun buildExportData(sourceDoc: Document?, engine: ITranslationEngine): EBrailleExportData {
-    val importedMetadata = sourceDoc?.let { OpfMetadata.load(it) } ?: OpfMetadata.defaults()
-    return EBrailleExportData(
-        sourceMetadata = importedMetadata,
-        manifest = EBrailleManifest.defaults(languages = listOf(defaultEbrailleLanguage(engine)))
-    )
-}
+internal fun buildExportData(sourceDoc: Document?): OpfMetadata =
+    sourceDoc?.let { OpfMetadata.load(it) } ?: OpfMetadata.defaults()
 
 object EBrailleExportTool : MenuTool {
     override val topMenu = TopMenu.FILE

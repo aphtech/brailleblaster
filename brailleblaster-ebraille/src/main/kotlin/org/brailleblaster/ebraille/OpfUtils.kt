@@ -19,17 +19,28 @@ import nu.xom.Attribute
 import nu.xom.Document
 import nu.xom.Element
 import org.brailleblaster.archiver2.OpfMetadata
+import org.brailleblaster.archiver2.metadataToXom
 import org.brailleblaster.utils.xml.DC_NS
 import org.brailleblaster.utils.xml.OPF_NS
 import java.io.OutputStream
 import java.net.URL
 
-fun createOpf(items: List<PackageItem>, sourceMetadata: OpfMetadata, manifest: EBrailleManifest): Document = Document(Element("package", OPF_NS).apply {
+private const val EBRAILLE_FORMAT = "eBraille 1.0"
+private const val BRAILLE_SYSTEM = "UEB"
+private const val COMPLETE_TRANSCRIPTION = "true"
+
+fun createOpf(
+    items: List<PackageItem>,
+    sourceMetadata: OpfMetadata,
+    languages: List<String>,
+    brailleCellType: String,
+    tactileGraphics: String
+): Document = Document(Element("package", OPF_NS).apply {
     val itemMap = items.mapIndexed { i, item -> "file${i}" to item }.toMap()
     addNamespaceDeclaration("dc", DC_NS)
     addAttribute(Attribute("version", "3.0"))
     addAttribute(Attribute("unique-identifier", "bookid"))
-    appendChild(createMetadataElement(sourceMetadata, manifest))
+    appendChild(createMetadataElement(sourceMetadata, languages, brailleCellType, tactileGraphics))
     appendChild(Element("manifest", OPF_NS).apply {
         for ((id, item) in itemMap) {
             appendChild(Element("item", OPF_NS).apply {
@@ -49,28 +60,25 @@ fun createOpf(items: List<PackageItem>, sourceMetadata: OpfMetadata, manifest: E
     })
 })
 
-private fun createMetadataElement(sourceMetadata: OpfMetadata, manifest: EBrailleManifest): Element = Element("metadata", OPF_NS).apply {
-    appendChild(createDcElement("title", sourceMetadata.title))
-    sourceMetadata.creators.forEach { appendChild(createDcElement("creator", it)) }
-    appendChild(createDcElement("format", manifest.format))
-    appendChild(createIdentifierElement(sourceMetadata.identifier))
-    manifest.languages.forEach { appendChild(createDcElement("language", it)) }
-    appendChild(createDcElement("date", sourceMetadata.date))
-    appendChild(createMetaProperty("dcterms:modified", manifest.modified))
-    appendChild(createMetaProperty("dcterms:dateCopyrighted", manifest.dateCopyrighted))
-    appendChild(createMetaProperty("a11y:brailleCellType", manifest.brailleCellType))
-    appendChild(createMetaProperty("a11y:brailleSystem", manifest.brailleSystem))
-    appendChild(createMetaProperty("a11y:completeTranscription", manifest.completeTranscription))
-    manifest.producers.forEach { appendChild(createMetaProperty("a11y:producer", it)) }
-    appendChild(createMetaProperty("a11y:tactileGraphics", manifest.tactileGraphics))
+private fun createMetadataElement(
+    sourceMetadata: OpfMetadata,
+    languages: List<String>,
+    brailleCellType: String,
+    tactileGraphics: String
+): Element = Element("metadata", OPF_NS).apply {
+    metadataToXom(sourceMetadata).forEach { elem ->
+        if (elem.localName == "identifier") elem.addAttribute(Attribute("id", "bookid"))
+        appendChild(elem)
+    }
+    appendChild(createDcElement("format", EBRAILLE_FORMAT))
+    languages.forEach { appendChild(createDcElement("language", it)) }
+    appendChild(createMetaProperty("a11y:brailleCellType", brailleCellType))
+    appendChild(createMetaProperty("a11y:brailleSystem", BRAILLE_SYSTEM))
+    appendChild(createMetaProperty("a11y:completeTranscription", COMPLETE_TRANSCRIPTION))
+    appendChild(createMetaProperty("a11y:tactileGraphics", tactileGraphics))
 }
 
 private fun createDcElement(localName: String, value: String): Element = Element("dc:$localName", DC_NS).apply {
-    appendChild(value)
-}
-
-private fun createIdentifierElement(value: String): Element = Element("dc:identifier", DC_NS).apply {
-    addAttribute(Attribute("id", "bookid"))
     appendChild(value)
 }
 

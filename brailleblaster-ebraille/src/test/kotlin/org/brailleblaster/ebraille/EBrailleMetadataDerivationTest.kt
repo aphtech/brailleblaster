@@ -26,7 +26,7 @@ import java.time.Clock
 import java.time.Instant
 import java.time.ZoneOffset
 
-class EBrailleManifestDefaultsTest {
+class EBrailleMetadataDerivationTest {
 
     // --- brailleCellType ---
 
