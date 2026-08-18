@@ -16,8 +16,6 @@
 package org.brailleblaster.cli
 
 import picocli.CommandLine
-import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "export", description = ["Convert a document to Braille"])
-class ExportCommand {
-}
+class ExportCommand

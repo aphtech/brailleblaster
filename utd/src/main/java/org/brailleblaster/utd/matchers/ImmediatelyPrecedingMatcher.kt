@@ -24,9 +24,7 @@ import org.brailleblaster.utd.NamespaceMap
  */
 class ImmediatelyPrecedingMatcher : NodeAncestorMatcher() {
     override fun isMatch(node: Node, namespaces: NamespaceMap): Boolean {
-        return if (selfMatcher?.isMatch(node, namespaces) != false) {
-            matchParent(node, namespaces)
-        } else false
+        return selfMatcher?.isMatch(node, namespaces) != false && matchParent(node, namespaces)
     }
 
     private fun matchParent(node: Node, namespaces: NamespaceMap): Boolean {

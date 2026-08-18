@@ -358,7 +358,7 @@ class Template : ISpatialMathContainer {
     }
 
     fun isTemplate(node: Node?): Boolean =
-        !(node == null || node.document == null) && XMLHandler.ancestorElementIs(node) { elm: Element? -> BBX.CONTAINER.TEMPLATE.isA(elm) }
+        node?.document != null && XMLHandler.ancestorElementIs(node) { elm: Element? -> BBX.CONTAINER.TEMPLATE.isA(elm) }
 
     fun getTemplateParent(node: Node): Element? {
       return XMLHandler.ancestorVisitorElement(node) { elm -> BBX.CONTAINER.TEMPLATE.isA(elm) }

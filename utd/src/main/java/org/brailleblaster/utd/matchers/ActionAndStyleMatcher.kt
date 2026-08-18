@@ -105,10 +105,7 @@ open class ActionAndStyleMatcher @JvmOverloads constructor(
             return false
         }
         val o = other as ActionAndStyleMatcher
-        if (actions != o.actions) {
-            return false
-        }
-        return styles == o.styles
+        return actions == o.actions && styles == o.styles
     }
 
     companion object {

@@ -78,8 +78,6 @@ class InsertElementHandler(manager: Manager, vi: ViewInitializer?, list: MapList
 
     private fun isTRNote(e: Element): Boolean {
         val atr = e.getAttribute("overrideStyle", UTD_NS)
-        if (atr != null) return atr.value == "TRNote"
-
-        return false
+        return atr != null && atr.value == "TRNote"
     }
 }

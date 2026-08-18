@@ -532,9 +532,7 @@ private fun processNotice(label: String): Shell {
 private fun isGuideWordItem(node: Node): Boolean {
     val e = node.parent as Element
     //If parent is a block of a list item
-    return if (BBX.SPAN.DEFINITION_TERM.isA(e)) {
-        true
-    } else e.getAttribute("utd-style") != null && e.getAttributeValue("utd-style") == "Guide Word"
+    return BBX.SPAN.DEFINITION_TERM.isA(e) || e.getAttribute("utd-style") != null && e.getAttributeValue("utd-style") == "Guide Word"
     //If node has style list
 }
 private fun stripEmphasis(emphasis: Element): Text {
@@ -564,9 +562,7 @@ private fun normalizeTextNode(node: Text): Text {
 private fun isListItem(node: Node): Boolean {
     val e = node.parent as Element
     //If parent is a block of a list item
-    return if (BBX.BLOCK.LIST_ITEM.isA(e)) {
-        true
-    } else (e.getAttributeValue("utd-style")?.let { it.startsWith("L") && it[1].isDigit() } ?: false)
+    return BBX.BLOCK.LIST_ITEM.isA(e) || (e.getAttributeValue("utd-style")?.let { it.startsWith("L") && it[1].isDigit() } ?: false)
     //If node has style list
 }
 private fun validateEmphasis(nodeLength: Int, start: Int, end: Int): Boolean {

@@ -396,9 +396,7 @@ class BrailleDocument(dm: Manager, doc: Document) : BBDocument(dm, doc) {
 
         @JvmStatic
         fun isEmptyPlaceholder(e: Element): Boolean {
-            return if (BBX.BLOCK.ATTRIB_BLANKDOC_PLACEHOLDER.has(e)) {
-                e.value.isEmpty()
-            } else false
+            return BBX.BLOCK.ATTRIB_BLANKDOC_PLACEHOLDER.has(e) && e.value.isEmpty()
         }
     }
 }

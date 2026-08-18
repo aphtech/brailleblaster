@@ -36,8 +36,6 @@ class WrapperMatcher : HasChildDelegatingMatcher() {
             }
             i++
         }
-        return if (contentChildren == 1) {
-            super.isMatch(node, namespaces)
-        } else false
+        return contentChildren == 1 && super.isMatch(node, namespaces)
     }
 }

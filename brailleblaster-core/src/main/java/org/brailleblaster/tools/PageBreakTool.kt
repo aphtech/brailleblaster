@@ -177,7 +177,7 @@ object PageBreakTool : MenuToolModule {
     }
 
     private fun insideTable(selection: XMLNodeCaret): Boolean {
-        return if (BBX.CONTAINER.TABLE.isA(selection.node) && selection.cursorPosition == CursorPosition.ALL) true else XMLHandler.ancestorElementIs(
+        return BBX.CONTAINER.TABLE.isA(selection.node) && selection.cursorPosition == CursorPosition.ALL || XMLHandler.ancestorElementIs(
             selection.node
         ) { node: Element? -> BBX.CONTAINER.TABLETN.isA(node) }
     }
@@ -204,10 +204,8 @@ object PageBreakTool : MenuToolModule {
         }
         val textCaret = currentSelection.end
         val block = currentSelection.end.node.findBlock()
-        return if (textCaret.offset == 0 && textCaret.node === getFirstTextNode(block)) {
-            false
-        } else textCaret.offset != textCaret.node.value.length
-                || textCaret.node !== getLastTextNode(block)
+        return !(textCaret.offset == 0 && textCaret.node === getFirstTextNode(block)) && (textCaret.offset != textCaret.node.value.length
+                || textCaret.node !== getLastTextNode(block))
     }
 
     private fun getFirstTextNode(node: ParentNode): Text? {
@@ -253,9 +251,7 @@ object PageBreakTool : MenuToolModule {
             startIndex = start.offset
         }
         val nodesInBlock = endblock.query(".//text()")
-        return if (nodesInBlock.size() > 0) {
-            startIndex == 0
-        } else false
+        return nodesInBlock.size() > 0 && startIndex == 0
     }
 
         private val log = LoggerFactory.getLogger(PageBreakTool::class.java)

@@ -38,7 +38,6 @@ class SkipAction : IAction, IBlockAction {
     }
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        return if (other == null) false else javaClass == other.javaClass
+        return this === other || other != null && javaClass == other.javaClass
     }
 }

@@ -38,7 +38,7 @@ class Validator(var manager: Manager, var view: StyledText) {
         val currentEnd = stateObj.currentEnd
         val nextStart = stateObj.nextStart
         if (currentElement is PageIndicatorTextMapElement || currentElement is BoxLineTextMapElement) {
-            return if (selectionStart == currentStart && selectionLength == currentEnd - currentStart) false else if (selectionStart in currentStart until currentEnd && selectionLength <= currentEnd - selectionStart) false else selectionStart != currentEnd || selectionLength != 1 || selectionStart + selectionLength != nextStart
+            return !(selectionStart == currentStart && selectionLength == currentEnd - currentStart) && !(selectionStart in currentStart until currentEnd && selectionLength <= currentEnd - selectionStart) && (selectionStart != currentEnd || selectionLength != 1 || selectionStart + selectionLength != nextStart)
         } else if (selectionLength > 0) {
             val t = manager.mapList.getElementInRange(selectionStart)
             return t !is BoxLineTextMapElement && t !is PageIndicatorTextMapElement || selectionStart != t.getEnd(
@@ -61,7 +61,7 @@ class Validator(var manager: Manager, var view: StyledText) {
         val currentStart = stateObj.currentStart
         val currentEnd = stateObj.currentEnd
         if (currentElement is PageIndicatorTextMapElement || currentElement is BoxLineTextMapElement) {
-            return if (selectionStart == currentStart && selectionLength == currentEnd - currentStart) false else if (selectionStart in currentStart until currentEnd && selectionLength <= currentEnd - selectionStart) false else view.selectionRanges[1] != 0 && (selectionStart !in currentStart..currentEnd)
+            return !(selectionStart == currentStart && selectionLength == currentEnd - currentStart) && !(selectionStart in currentStart until currentEnd && selectionLength <= currentEnd - selectionStart) && view.selectionRanges[1] != 0 && (selectionStart !in currentStart..currentEnd)
         } else if (selectionLength > 0) {
             val t = manager.mapList.getElementInRange(selectionStart)
             return t !is BoxLineTextMapElement && t !is PageIndicatorTextMapElement || selectionStart != t.getEnd(
@@ -81,11 +81,7 @@ class Validator(var manager: Manager, var view: StyledText) {
         val currentEnd = stateObj.currentEnd
         val nextStart = stateObj.nextStart
         if (currentElement is Uneditable) {
-            return if (selectionStart >= currentStart && selectionStart + selectionLength <= currentEnd || selectionLength == 0) {
-                false
-            } else if (selectionLength <= 0 && view.caretOffset == currentEnd) {
-                false
-            } else selectionStart != currentEnd || selectionStart + selectionLength != nextStart || selectionLength != LINE_BREAK.length
+            return !(selectionStart >= currentStart && selectionStart + selectionLength <= currentEnd || selectionLength == 0) && !(selectionLength <= 0 && view.caretOffset == currentEnd) && (selectionStart != currentEnd || selectionStart + selectionLength != nextStart || selectionLength != LINE_BREAK.length)
         } else if (selectionLength <= 0 && manager.mapList.inPrintPageRange(view.caretOffset + LINE_BREAK.length) || selectionLength <= 0 && manager.mapList.getElementInRange(
                 view.caretOffset + LINE_BREAK.length
             ) is BoxLineTextMapElement
@@ -108,11 +104,7 @@ class Validator(var manager: Manager, var view: StyledText) {
         val currentEnd = stateObj.currentEnd
         val nextStart = stateObj.nextStart
         if (currentElement is Uneditable) {
-            return if (selectionStart >= currentStart && selectionStart + selectionLength <= currentEnd) {
-                false
-            } else if (selectionLength <= 0) {
-                false
-            } else selectionStart != currentEnd || selectionStart + selectionLength != nextStart || selectionLength != 1
+            return !(selectionStart >= currentStart && selectionStart + selectionLength <= currentEnd) && selectionLength > 0 && (selectionStart != currentEnd || selectionStart + selectionLength != nextStart || selectionLength != 1)
         } else if (selectionLength <= 0 && currentElement !is WhiteSpaceElement && (manager.mapList.inPrintPageRange(
                 view.caretOffset - 1
             ) || manager.mapList.getElementInRange(view.caretOffset - 1) is Uneditable)

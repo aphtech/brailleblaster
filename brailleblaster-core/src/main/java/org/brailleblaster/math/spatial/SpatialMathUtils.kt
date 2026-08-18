@@ -70,7 +70,7 @@ object SpatialMathUtils {
 
     @JvmStatic
     fun isSpatialMathPage(node: Node?): Boolean {
-        return node != null && node.document != null && XMLHandler.ancestorElementIs(node) { e: Element ->
+        return node?.document != null && XMLHandler.ancestorElementIs(node) { e: Element ->
             BBX.CONTAINER.SPATIAL_GRID.isA(
                 e
             )

@@ -32,10 +32,7 @@ object ViewUtils {
         val parent = n.parent as Element
         val index = parent.indexOf(n)
 
-        if (index > 0 && (parent.getChild(index - 1) is Element)) {
-            return UTDElements.BRLONLY.isA(parent.getChild(index - 1))
-        }
-        return false
+        return index > 0 && (parent.getChild(index - 1) is Element) && UTDElements.BRLONLY.isA(parent.getChild(index - 1))
     }
 
     fun followsNewPage(n: Node): Boolean {

@@ -1026,11 +1026,7 @@ class TextVerifyKeyListener(
     }
 
     private fun isBeginningOfDocument(t: TextMapElement): Boolean {
-        if (textView.view.getLineAtOffset(textView.view.caretOffset) == 0) {
-            return manager.indexOf(0, t) == 0
-        }
-
-        return false
+        return textView.view.getLineAtOffset(textView.view.caretOffset) == 0 && manager.indexOf(0, t) == 0
     }
 
     private fun isEndOfDocument(t: TextMapElement): Boolean {

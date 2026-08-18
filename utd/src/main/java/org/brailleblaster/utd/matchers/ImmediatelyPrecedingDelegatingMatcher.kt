@@ -21,9 +21,7 @@ import org.brailleblaster.utd.NamespaceMap
 class ImmediatelyPrecedingDelegatingMatcher : DelegatingMatcher() {
     var ignoreMatcher: INodeMatcher? = null
     override fun isMatch(node: Node, namespaces: NamespaceMap): Boolean {
-        return if (matcher == null) {
-            true
-        } else matchParent(node, namespaces)
+        return matcher == null || matchParent(node, namespaces)
     }
 
     private fun matchParent(node: Node, namespaces: NamespaceMap): Boolean {

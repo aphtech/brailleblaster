@@ -67,9 +67,7 @@ open class Renderer(@JvmField protected var manager: Manager, private val wpView
     protected fun moveToAfterNewPage(n: Node): Boolean {
         val parent = n.parent as Element
         val index = parent.indexOf(n)
-        return if (index > 1 && (parent.getChild(index - 2) is Element) && ViewUtils.followsMoveTo(n)) {
-            UTDElements.NEW_PAGE.isA(parent.getChild(index - 2))
-        } else false
+        return index > 1 && (parent.getChild(index - 2) is Element) && ViewUtils.followsMoveTo(n) && UTDElements.NEW_PAGE.isA(parent.getChild(index - 2))
     }
 
     fun findVPos(list: MapList, index: Int): Double {
@@ -147,9 +145,7 @@ open class Renderer(@JvmField protected var manager: Manager, private val wpView
 
     protected fun onSameLine(t: TextMapElement): Boolean {
         val b = t.brailleList.first()
-        return if (b.vPos == vPos) {
-            b.hPos != null && b.hPos > 0.0
-        } else false
+        return b.vPos == vPos && b.hPos != null && b.hPos > 0.0
     }
 
     protected fun followsTab(n: Node): Boolean {

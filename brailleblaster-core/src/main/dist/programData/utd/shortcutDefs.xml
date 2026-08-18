@@ -172,16 +172,6 @@
         <key-combination>CTRL+END</key-combination>
         <description>Go to the last page of the current document.</description>
     </shortcut>
-    <shortcut>
-        <id>actions/styleViewEntire</id>
-        <key-combination>ALT+SHIFT+S</key-combination>
-        <description>Open the entire document in the Style view.</description>
-    </shortcut>
-    <shortcut>
-        <id>actions/styleViewCursor</id>
-        <key-combination>ALT+S</key-combination>
-        <description>Open the selected text in the Style view.</description>
-    </shortcut>
     <!--- Transcriber-Defined Typeforms -->
     <shortcut>
         <id>actions/transAction1</id>
@@ -231,7 +221,7 @@
     <!-- STYLE LOADOUTS -->
     <shortcut>
         <id>styles/miscellaneous</id>
-        <key-combination>Ctrl+Shift+M</key-combination>
+        <key-combination>Ctrl+Shift+0</key-combination>
         <description>Set Miscellaneous style loadout.</description>
     </shortcut>
     <shortcut>
@@ -288,11 +278,6 @@
         <id>styles/notes</id>
         <key-combination>Ctrl+Shift+N</key-combination>
         <description>Set Notes style loadout.</description>
-    </shortcut>
-    <shortcut>
-        <id>styles/contents</id>
-        <key-combination>Ctrl+Shift+T</key-combination>
-        <description>Set Contents style loadout.</description>
     </shortcut>
     <shortcut>
         <id>styles/applyStyle</id>

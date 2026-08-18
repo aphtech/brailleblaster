@@ -47,9 +47,7 @@ object BrlOnlyBMEFactory {
     }
 
     private fun isBoxLine(element: Element): Boolean {
-        if (element.parent is Element)
-            return (element.parent as Element).getAttributeValue(TYPE_ATTR) == BOX_LINE_TYPE
-        return false
+        return element.parent is Element && (element.parent as Element).getAttributeValue(TYPE_ATTR) == BOX_LINE_TYPE
     }
 
     private fun isPageIndicator(element: Element): Boolean {

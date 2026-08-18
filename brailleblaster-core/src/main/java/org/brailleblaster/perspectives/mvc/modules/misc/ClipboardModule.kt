@@ -579,7 +579,7 @@ class ClipboardModule(private val manager: BBSimpleManager) : SimpleListener {
         // Move cursor to last pasted text
         val pasteNode = paste.node
         // Guard: PAGE_NUM blocks have no TME in the text view and cannot be navigated to
-        if (pasteNode != null && pasteNode.document != null
+        if (pasteNode?.document != null
             && !BBX.BLOCK.PAGE_NUM.isA(pasteNode) && !BBX.SPAN.PAGE_NUM.isA(pasteNode)
         ) {
             if (pasteNode is Text) {
@@ -1013,15 +1013,12 @@ class ClipboardModule(private val manager: BBSimpleManager) : SimpleListener {
      * Returns true if copiedBlock should not be added to the clipboard
      */
     private fun blockCopy(copiedBlock: Element, selection: XMLSelection, atStart: Boolean, atEnd: Boolean): Boolean {
-        if (copiedBlock.getChildCount() == 0) {
-            // RT #4707: If the selection is being done through the text view,
-            // and it has nothing actually selected (thus copiedBlock has no
-            // children)
-            // do not copy the block.
-            return (atStart && selection.start is XMLTextCaret)
-                    || (atEnd && selection.end is XMLTextCaret)
-        }
-        return false
+        return copiedBlock.getChildCount() == 0 && ((atStart && selection.start is XMLTextCaret)
+                || (atEnd && selection.end is XMLTextCaret))
+        // RT #4707: If the selection is being done through the text view,
+        // and it has nothing actually selected (thus copiedBlock has no
+        // children)
+        // do not copy the block.
     }
 
     private fun deleteTextViewSelection(manager: Manager, keepBlock: Boolean) {

@@ -270,14 +270,8 @@ class StyleMenuBuilder(private val bbShell: Shell, manager: Manager) : StylesBui
         }
         loadoutListener = Listener { e: Event ->
             try {
-                // CTRL/CMD + SHIFT + letter shortcut: set the style loadout
-                if (e.stateMask == SWT.MOD1 + SWT.MOD2 && e.keyCode >= 97 && e.keyCode <= 122) {
-                    val accelerator = SWT.MOD1 + SWT.MOD2 + e.keyCode
-                    showLoadoutDialog(accelerator)
-                }
-
                 // CTRL/CMD + a number 1-8: apply style
-                if (e.stateMask == SWT.MOD3 && e.keyCode >= 49 && e.keyCode <= 56) {
+                if (e.stateMask == SWT.MOD3 && e.keyCode in (49..56)) {
                     val currentLoadout = BBIni.propertyFileManager.getProperty("currentStyleLoadout")
                     if (!currentLoadout.isNullOrEmpty()) {
                         val styleIds: List<String> = if (currentLoadout == "plays") {

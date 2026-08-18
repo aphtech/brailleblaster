@@ -189,7 +189,7 @@ object MathUtils {
 
     fun previous(startNode: Node?, m: Manager): Node? {
         var startNode = startNode
-        if (startNode == null || startNode.document == null) {
+        if (startNode?.document == null) {
             val tme = m.mapList.current
             startNode = if (tme is WhiteSpaceElement) {
                 m.mapList.getCurrentNonWhitespace(m.mapList.currentIndex).node
@@ -203,7 +203,7 @@ object MathUtils {
 
     fun next(startNode: Node?, m: Manager): Node? {
         var startNode = startNode
-        if (startNode == null || startNode.document == null) {
+        if (startNode?.document == null) {
             val tme = m.mapList.current
             startNode = if (tme is WhiteSpaceElement) {
                 m.mapList.getCurrentNonWhitespace(m.mapList.currentIndex).node

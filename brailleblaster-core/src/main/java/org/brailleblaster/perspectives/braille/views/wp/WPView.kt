@@ -460,9 +460,7 @@ abstract class WPView(manager: Manager, parent: Composite) : AbstractView(manage
     protected fun isFirstInBlock(t: TextMapElement): Boolean {
         if (t.nodeParent.indexOf(t.node) == 0) {
             val block = manager.document.engine.findTranslationBlock(t.node) as Element
-            return if (block == t.nodeParent) true else {
-                block.indexOf(t.nodeParent) == 0
-            }
+            return block == t.nodeParent || block.indexOf(t.nodeParent) == 0
         }
         return false
     }

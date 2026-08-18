@@ -70,17 +70,11 @@ class FormatSelector(styleMap: IStyleMap?, styleStack: StyleStack?, engine: ITra
     }
 
     private fun isNewLine(node: Node): Boolean {
-        if (node is Element) {
-            return UTD_NS == node.namespaceURI && "newLine" == node.localName
-        }
-        return false
+        return node is Element && UTD_NS == node.namespaceURI && "newLine" == node.localName
     }
 
     private fun isIgnorableNode(node: Node): Boolean {
-        if (pageLimit != null && processedPages > pageLimit!!) {
-            return true
-        }
-        return if (node is Element) {
+        return pageLimit != null && processedPages > pageLimit!! || if (node is Element) {
             if (!PageBuilderHelper.isSkipLinesNode(node)) {
                 val action = node.getAttributeValue("utd-action")
                 val action2 =

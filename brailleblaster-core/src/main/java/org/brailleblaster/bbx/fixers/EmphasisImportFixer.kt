@@ -80,9 +80,7 @@ class EmphasisImportFixer : AbstractFixer() {
     @Suppress("UNUSED")
     class HasElementChildrenMatcher : INodeMatcher {
         override fun isMatch(node: Node, namespaces: NamespaceMap): Boolean {
-            return if (node !is Element) {
-                false
-            } else node.childElements.size() != 0
+            return node is Element && node.childElements.size() != 0
         }
     }
 

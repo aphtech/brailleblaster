@@ -220,10 +220,7 @@ class Grid : ISpatialMathContainer {
     }
 
     private fun hasIndicator(spatialMathContainer: ISpatialMathContainer): Boolean {
-        if (spatialMathContainer is Template) {
-            return spatialMathContainer.identifier.braille.isNotBlank()
-        }
-        return false
+        return spatialMathContainer is Template && spatialMathContainer.identifier.braille.isNotBlank()
     }
 
     fun getLinesForRow(row: Int): Int {

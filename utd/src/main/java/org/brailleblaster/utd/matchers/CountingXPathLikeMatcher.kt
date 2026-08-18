@@ -96,6 +96,6 @@ class CountingXPathLikeMatcher : NodeAncestorMatcher() {
         val obj = other as CountingXPathLikeMatcher
         if (!super.equals(obj)) return false
         if (comparer != obj.comparer) return false
-        return if (axes != obj.axes) false else count == obj.count
+        return axes == obj.axes && count == obj.count
     }
 }

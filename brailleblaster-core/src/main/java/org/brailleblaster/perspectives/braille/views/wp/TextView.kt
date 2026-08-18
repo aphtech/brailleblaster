@@ -1060,13 +1060,12 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
     }
 
     private fun offsetIsPrintPageNumberLine(offset: Int): Boolean {
-        return if (getPreviousPageIndicator(offset) != null) {
-            //Usually the page indicators are considered to be on the line before the print page number,
-            //however the very first page indicator is on the same line as the print page number
-            (getPreviousPageIndicator(offset)!!.line == (view.getLineAtOffset(offset) - 1).coerceAtLeast(0)
-                    && view.getLineAtOffset(offset) != 1 //Don't also count the second line as the print page number
-                    )
-        } else false
+        return getPreviousPageIndicator(offset) != null && (getPreviousPageIndicator(offset)!!.line == (view.getLineAtOffset(offset) - 1).coerceAtLeast(0)
+                && view.getLineAtOffset(offset) != 1 //Don't also count the second line as the print page number
+                )
+        //Usually the page indicators are considered to be on the line before the print page number,
+        //however the very first page indicator is on the same line as the print page number
+        //Don't also count the second line as the print page number
     }
 
     private fun atBraillePageLine(): Boolean {
@@ -1074,9 +1073,7 @@ class TextView(manager: Manager, sash: Composite) : WPView(manager, sash) {
     }
 
     private fun offsetIsBraillePageNumberLine(offset: Int): Boolean {
-        return if (getNextPageIndicator(offset) != null) {
-            getNextPageIndicator(offset)!!.line == view.getLineAtOffset(offset)
-        } else false
+        return getNextPageIndicator(offset) != null && getNextPageIndicator(offset)!!.line == view.getLineAtOffset(offset)
     }
 
     private fun getPreviousPageIndicator(caretOffset: Int): PageIndicator? {

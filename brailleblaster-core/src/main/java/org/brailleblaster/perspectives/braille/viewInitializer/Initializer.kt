@@ -512,9 +512,7 @@ open class Initializer {
      */
     private fun isBoxLine(e: Element): Boolean {
         val atr = e.getAttribute("type")
-        if (atr != null) return atr.value == "formatting"
-
-        return false
+        return atr != null && atr.value == "formatting"
     }
 
     private fun isGuideDots(e: Element): Boolean {
@@ -531,8 +529,7 @@ open class Initializer {
 
     private fun isNotSimpleTable(e: Element): Boolean {
         val format = e.getAttributeValue("class")
-        if (format != null) return format == "utd:tableListed" || format == "utd:tableStairstep" || format == "utd:tableLinear"
-        return false
+        return format != null && (format == "utd:tableListed" || format == "utd:tableStairstep" || format == "utd:tableLinear")
     }
 
     private fun hasBraille(parent: TextMapElement): Boolean {

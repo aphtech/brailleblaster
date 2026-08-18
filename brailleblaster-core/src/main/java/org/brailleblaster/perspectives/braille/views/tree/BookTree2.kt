@@ -155,11 +155,7 @@ class BookTree2(val manager: Manager, val dialog: BookTreeDialog) {
 
     private fun isHeading(e: Element): Boolean {
         val atr = e.getAttribute("overrideStyle", UTD_NS)
-        if (atr != null) {
-            return headings!!.contains(atr.value)
-        }
-
-        return false
+        return atr != null && headings!!.contains(atr.value)
     }
 
     private fun hasBlocks(e: Element): Boolean {
@@ -175,7 +171,7 @@ class BookTree2(val manager: Manager, val dialog: BookTreeDialog) {
 
     fun navigate(): Boolean {
         val item = tree.selection[0]
-        if (item != null && item.data != null) {
+        if (item?.data != null) {
             if (item.data is Text) {
                 val t = item.data as Text
                 manager.simpleManager.dispatchEvent(XMLCaretEvent(Sender.TREE, XMLTextCaret(t, 0)))

@@ -28,9 +28,6 @@ enum class PageNumberPosition {
         get() = this == TOP_RIGHT || this == BOTTOM_RIGHT
 
     fun differentLineAs(position: PageNumberPosition): Boolean {
-        if (isTop && position.isBottom) {
-            return true
-        }
-        return isBottom && position.isTop
+        return isTop && position.isBottom || isBottom && position.isTop
     }
 }

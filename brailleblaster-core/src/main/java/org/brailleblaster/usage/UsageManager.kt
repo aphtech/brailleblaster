@@ -88,23 +88,21 @@ class BBUsageManager(
             val json = StringWriter()
             JsonUsageWriter().write(records, json)
             val lastRecordTime = records.maxOfOrNull { it.time }
-            if (lastRecordTime != null) {
-                try {
-                    Utils.httpPost(
-                        url,
-                        mapOf(
-                            "uid" to InstallId.id.toString(),
-                            "records" to json.toString(),
-                            "version" to Project.BB.version
-                        )
+            lastRecordTime == null || try {
+                Utils.httpPost(
+                    url,
+                    mapOf(
+                        "uid" to InstallId.id.toString(),
+                        "records" to json.toString(),
+                        "version" to Project.BB.version
                     )
-                    sqlLogger.clearTo(lastRecordTime)
-                    true
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    false
-                }
-            } else true
+                )
+                sqlLogger.clearTo(lastRecordTime)
+                true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
         } else true
     }
 

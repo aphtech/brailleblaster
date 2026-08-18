@@ -33,12 +33,7 @@ class XMLSelection(@JvmField val start: XMLNodeCaret, @JvmField val end: XMLNode
             start.node === end.node
     val isTextNoSelection: Boolean
         get() {
-            if (!isSingleNode) {
-                return false
-            }
-            return if (!(start is XMLTextCaret && end is XMLTextCaret)) {
-                false
-            } else start.offset == end.offset
+            return isSingleNode && start is XMLTextCaret && end is XMLTextCaret && start.offset == end.offset
         }
     val selectedBlocks: MutableList<Element>
         /**

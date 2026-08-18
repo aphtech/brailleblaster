@@ -185,24 +185,15 @@ class ContextMenuModule(private val manager: Manager) : SimpleListener {
     }
 
     private fun isMultiSelected(event: XMLCaretEvent): Boolean {
-        if (event.start.node !== event.end.node) {
-            return true
-        }
-        return if (event.start is XMLTextCaret) {
-            event.start.offset != (event.end as XMLTextCaret).offset
-        } else false
+        return event.start.node !== event.end.node || event.start is XMLTextCaret && event.start.offset != (event.end as XMLTextCaret).offset
     }
 
     private fun isInTable(event: XMLCaretEvent): Boolean {
-        if (checkTable(event.start.node)) return true
-        return if (event.start !== event.end) {
-            checkTable(event.end.node)
-        } else false
+        return checkTable(event.start.node) || event.start !== event.end && checkTable(event.end.node)
     }
 
     private fun checkTable(node: Node): Boolean {
-        return if (node is Element && Manager.getTableParent(node) != null) true
-        else Manager.getTableParent(node.parent) != null
+        return node is Element && Manager.getTableParent(node) != null || Manager.getTableParent(node.parent) != null
     }
 
     private fun isGuideWord(event: XMLCaretEvent): Boolean {

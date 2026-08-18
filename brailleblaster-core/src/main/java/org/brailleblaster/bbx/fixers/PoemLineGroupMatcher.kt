@@ -25,9 +25,7 @@ import org.brailleblaster.utd.matchers.INodeMatcher
 @Suppress("UNUSED")
 class PoemLineGroupMatcher : INodeMatcher {
     override fun isMatch(node: Node, namespaces: NamespaceMap): Boolean {
-        return if (!BBX.CONTAINER.LIST.isA(node)) {
-            false
-        } else (BBX.CONTAINER.LIST.ATTRIB_LIST_TYPE[node as Element] == BBX.ListType.POEM_LINE_GROUP
+        return BBX.CONTAINER.LIST.isA(node) && (BBX.CONTAINER.LIST.ATTRIB_LIST_TYPE[node as Element] == BBX.ListType.POEM_LINE_GROUP
                 && XMLHandler.ancestorVisitorElement(
             node.parent
         ) { curAncestor: Element? ->

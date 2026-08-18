@@ -289,7 +289,7 @@ class TPagesDialog : DebugMenuToolModule {
                 if (volume!!.containsKey(category)) {
                     val titlePageCategory = volume[category]
                     //Skip this volume if it's not actually in the document
-                    if (titlePageCategory == null || titlePageCategory.parent == null || titlePageCategory.document == null) {
+                    if (titlePageCategory?.parent == null || titlePageCategory.document == null) {
                         continue
                     }
                     //If element has TPageFormatter's centered attribute, it will be centered

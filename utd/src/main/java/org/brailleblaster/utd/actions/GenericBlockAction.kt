@@ -223,7 +223,7 @@ open class GenericBlockAction : GenericAction(), IBlockAction {
     }
 
     override fun equals(other: Any?): Boolean {
-        return if (other == null) false else javaClass == other.javaClass
+        return other != null && javaClass == other.javaClass
         //Simple match on class name, gives sane .hashCode() while not breaking subclasses
     }
 

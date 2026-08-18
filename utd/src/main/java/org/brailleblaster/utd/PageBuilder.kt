@@ -810,16 +810,13 @@ class PageBuilder {
      * Line-wrapping helper. Returns true if word ends with one or more spaces that run off the end of the page
      */
     private fun wordHasTrailingSpacesAtEndOfLine(endsWithSpace: Boolean, word: String, lineWrapPoint: Int): Boolean {
-        return if (endsWithSpace) {
-            if (_x + word.length > lineWrapPoint && _x + word.length == lineWrapPoint + 1 && pageGrid.getCell(
-                    lineWrapPoint - 1,
-                    _y
-                ) == null
-            ) true else _x + word.length in 2..lineWrapPoint && pageGrid.getCell(
-                _x + word.length - 1,
-                _y
-            ) != null && pageGrid.getCell(_x + word.length - 2, _y) == null
-        } else false
+        return endsWithSpace && (_x + word.length > lineWrapPoint && _x + word.length == lineWrapPoint + 1 && pageGrid.getCell(
+            lineWrapPoint - 1,
+            _y
+        ) == null || _x + word.length in 2..lineWrapPoint && pageGrid.getCell(
+            _x + word.length - 1,
+            _y
+        ) != null && pageGrid.getCell(_x + word.length - 2, _y) == null)
     }
 
     /**
@@ -1939,11 +1936,9 @@ class PageBuilder {
     }
 
     private fun verifyPageNumberProperty(): Boolean {
-        return if (PageBuilderHelper.getPageProperty(braillePageNumber.pageNumber) == PageBuilderHelper.Property.ODD
-            && braillePageNumber.pageNumber % 2 == 0) {
-            false
-        } else PageBuilderHelper.getPageProperty(braillePageNumber.pageNumber) != PageBuilderHelper.Property.EVEN
-            || braillePageNumber.pageNumber % 2 == 0
+        return !(PageBuilderHelper.getPageProperty(braillePageNumber.pageNumber) == PageBuilderHelper.Property.ODD
+                && braillePageNumber.pageNumber % 2 == 0) && (PageBuilderHelper.getPageProperty(braillePageNumber.pageNumber) != PageBuilderHelper.Property.EVEN
+                || braillePageNumber.pageNumber % 2 == 0)
     }
 
     fun removeExistingPageNumbers() {
@@ -2638,11 +2633,8 @@ class PageBuilder {
     fun isSkipTop(): Boolean {
         val printPos = PageBuilderHelper.getPrintPageNumberAt(pageSettings, braillePageNumber.pageNumber)
         val brlPos = PageBuilderHelper.getBraillePageNumberAt(pageSettings, braillePageNumber.pageNumber)
-        return if (hasRunningHead()
-            && (brlPos.isTop || printPos.isTop && (printPageNumber.isNotEmpty() || pageNumberType == PageNumberType.T_PAGE))
-        ) {
-            true
-        } else skipTop
+        return (hasRunningHead()
+                && (brlPos.isTop || printPos.isTop && (printPageNumber.isNotEmpty() || pageNumberType == PageNumberType.T_PAGE))) || skipTop
     }
 
     fun setSkipNumberLines(position: NumberLinePosition?): PageBuilder {
@@ -3318,7 +3310,7 @@ class PageBuilder {
                                         findX,
                                         findY
                                     )?.node
-                                    if (node != null && node.parent != null && "true" == (node.parent as Element).getAttributeValue("tableHeading")
+                                    if (node?.parent != null && "true" == (node.parent as Element).getAttributeValue("tableHeading")
                                     ) {
                                         node.parent.insertChild(
                                             formattingNode,
@@ -3429,8 +3421,7 @@ class PageBuilder {
 
     private fun isPageFormattingNode(formattingNodes: List<Node>, index: Int): Boolean {
         val node = formattingNodes[index]
-        return if (node is NewPage || node is PageNumber || node is BrlOnly && "runningHead" == node.getAttributeValue("type")
-        ) true else node is MoveTo && index < formattingNodes.size - 1 && (formattingNodes[index + 1] is PageNumber || formattingNodes[index + 1] is BrlOnly)
+        return node is NewPage || node is PageNumber || node is BrlOnly && "runningHead" == node.getAttributeValue("type") || node is MoveTo && index < formattingNodes.size - 1 && (formattingNodes[index + 1] is PageNumber || formattingNodes[index + 1] is BrlOnly)
     }
 
     fun hasWrittenUTD(): Boolean {

@@ -32,7 +32,7 @@ object UpdaterModule : MenuToolModule {
     override val topMenu: TopMenu = TopMenu.HELP
     override val title: String = "Check For Updates"
     override val enabled: Boolean
-        get() = updater != null && updater.currentVersion != null
+        get() = updater?.currentVersion != null
 
     override fun onRun(bbData: BBSelectionData) {
         if (enabled) {

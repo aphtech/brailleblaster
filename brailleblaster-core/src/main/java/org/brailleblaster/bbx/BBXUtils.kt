@@ -48,17 +48,12 @@ fun Node.isPageNumAncestor(): Boolean = XMLHandler.ancestorElementIs(this) { it.
  * Checks if only descendant is a page num in addition to [.isPageNum]
  * and [.isPageNumAncestor]
  */
-fun Node.isPageNumEffectively(): Boolean = if (this.isPageNum() || this.isPageNumAncestor()) {
-    true
-} else if (this !is Element) {
-    false
-} else {
-    // Check if all text nodes are from a page num
-    FastXPath.descendant(this)
-        .filterIsInstance<Text>()
-        .filter { Searcher.Filters.noUTDAncestor(it) }
-        .all { it.isPageNumAncestor() }
-}
+fun Node.isPageNumEffectively(): Boolean = this.isPageNum() || this.isPageNumAncestor() || this is Element && FastXPath.descendant(this)
+    .filterIsInstance<Text>()
+    .filter { Searcher.Filters.noUTDAncestor(it) }
+    .all { it.isPageNumAncestor() }
+        // Check if all text nodes are from a page num
+// Check if all text nodes are from a page num
 
 fun Node?.isTOCText(): Boolean = this != null && (this.findBlock().let { BBX.BLOCK.MARGIN.isA(it) ||
         BBX.BLOCK.TOC_VOLUME_SPLIT.isA(it) })

@@ -63,7 +63,7 @@ class SelectionHandler(manager: Manager?, vi: ViewInitializer?, list: MapList?) 
                 nearest = streamCurrentBufferFromCurrentCursor(manager)
                     .firstOrNull { t -> t.node != null && t.node.document != null }
             }
-            if (nearest != null && nearest.node != null) {
+            if (nearest?.node != null) {
                 reformat(nearest.node, false)
             }
             return
@@ -225,7 +225,7 @@ class SelectionHandler(manager: Manager?, vi: ViewInitializer?, list: MapList?) 
                 if (firstEl.document != null || lastEl.document != null) {
                     reformat(if (firstEl.parent != null) firstEl else lastEl, false)
                 } else {
-                    val changedNodes: Array<Node> = if (parent == null || parent.document == null) emptyArray()
+                    val changedNodes: Array<Node> = if (parent?.document == null) emptyArray()
                     else arrayOf(parent)
                     manager.simpleManager.dispatchEvent(ModifyEvent(Sender.NO_SENDER, false, *changedNodes))
                 }

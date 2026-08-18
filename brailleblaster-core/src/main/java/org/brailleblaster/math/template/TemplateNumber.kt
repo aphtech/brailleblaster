@@ -157,10 +157,7 @@ class TemplateNumber private constructor(
     }
 
     fun equalsWithNullCheck(tn1: TemplateNumber?, tn2: TemplateNumber?): Boolean {
-      if (tn1 == null || tn2 == null) {
-        return false
-      }
-      return tn1 == tn2
+        return !(tn1 == null || tn2 == null) && tn1 == tn2
     }
   }
 }
