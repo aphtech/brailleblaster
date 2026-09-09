@@ -33,11 +33,6 @@ abstract class NodeMatcherMap<T> : ListOrderedMap<INodeMatcher, T>, INodeMatcher
         this.namespaces = map.namespaces
     }
 
-    override fun put(index: Int, key: INodeMatcher, value: T?): T? {
-//		log.debug("Inserted value {}", value);
-        return super.put(index, key, value)
-    }
-
     override fun put(key: INodeMatcher, value: T): T? {
         return put(0, key, value)
     }
