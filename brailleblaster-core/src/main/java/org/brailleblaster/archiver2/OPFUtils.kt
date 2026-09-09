@@ -80,6 +80,34 @@ object OPFUtils {
             .toList()
     }
 
+    /**
+     * Like [getDCElementValuesCaseInsensitive], but returns the elements themselves (in document
+     * order) rather than just their text values, so callers can also inspect attributes such as
+     * `id`/`xml:lang` on repeatable elements (e.g. `dc:title`).
+     */
+    fun getDCElementsCaseInsensitive(source: Node?, opfElemName: String?): List<Element> {
+        return FastXPath.descendant(source)
+            .filterIsInstance<Element>()
+            .filter { curElem: Element -> curElem.namespacePrefix == "dc" && curElem.localName.equals(opfElemName, ignoreCase = true) }
+            .toList()
+    }
+
+    /**
+     * Finds the value of a `meta` element that refines the element identified by [refId] with the
+     * given [property] (i.e. `<meta refines="#refId" property="...">value</meta>`), such as an
+     * EPUB `title-type` refinement on a `dc:title`.
+     */
+    fun getMetaRefinesProperty(source: Node?, refId: String, property: String): String? {
+        return FastXPath.descendant(source)
+            .filterIsInstance<Element>()
+            .firstOrNull { curElem: Element ->
+                curElem.localName == "meta" &&
+                    curElem.getAttributeValue("refines") == "#$refId" &&
+                    curElem.getAttributeValue("property")?.equals(property, ignoreCase = true) == true
+            }
+            ?.value
+    }
+
     fun getManifestItems(opfDocument: Document): List<ManifestEntry> {
         val namespace = opfDocument.rootElement.namespaceURI
         val manifestRoot = opfDocument.rootElement.getFirstChildElement(

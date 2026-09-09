@@ -66,8 +66,14 @@ private fun createMetadataElement(
     brailleCellType: String,
     tactileGraphics: String
 ): Element = Element("metadata", OPF_NS).apply {
+    // Only the first (primary) dc:identifier is the package's unique-identifier - id="bookid" must
+    // stay unique even when sourceMetadata carries more than one dc:identifier.
+    var bookIdAssigned = false
     metadataToXom(sourceMetadata).forEach { elem ->
-        if (elem.localName == "identifier") elem.addAttribute(Attribute("id", "bookid"))
+        if (!bookIdAssigned && elem.localName == "identifier") {
+            elem.addAttribute(Attribute("id", "bookid"))
+            bookIdAssigned = true
+        }
         appendChild(elem)
     }
     appendChild(createDcElement("format", EBRAILLE_FORMAT))

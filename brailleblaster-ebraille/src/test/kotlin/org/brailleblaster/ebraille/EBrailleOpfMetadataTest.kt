@@ -17,6 +17,9 @@ package org.brailleblaster.ebraille
 
 import nu.xom.Element
 import org.brailleblaster.archiver2.OpfMetadata
+import org.brailleblaster.archiver2.RequiredList
+import org.brailleblaster.archiver2.TitleEntry
+import org.brailleblaster.archiver2.TitleList
 import org.brailleblaster.utils.xml.OPF_NS
 import org.testng.Assert
 import org.testng.annotations.Test
@@ -43,6 +46,38 @@ class EBrailleOpfMetadataTest {
         Assert.assertEquals(countNamed(metadata, "dc:creator"), 2)
         Assert.assertEquals(countNamed(metadata, "dc:language"), 2)
         Assert.assertEquals(countMetaProperty(metadata, "a11y:producer"), 2)
+    }
+
+    // Regression coverage for the title/identifier-collapsing data-loss bug (see review.md):
+    // package.opf must carry every dc:title/dc:identifier the source document had, in order, and
+    // only the primary (first) identifier - the one the package's unique-identifier references -
+    // may carry id="bookid".
+    @Test
+    fun serializationPreservesMultipleTitlesAndOnlyMarksPrimaryIdentifierAsBookId() {
+        val importedMetadata = OpfMetadata(
+            titles = TitleList.of(listOf(
+                TitleEntry("Main Title", id = "t1", titleType = "main"),
+                TitleEntry("Subtitle", id = "t2", titleType = "subtitle")
+            )),
+            creators = RequiredList.of(listOf("Author")),
+            identifiers = RequiredList.of(listOf("urn:isbn:1", "urn:uuid:2")),
+            date = "2020-01-01",
+            modified = "2026-07-22T00:00:00Z",
+            dateCopyrighted = "1970-01-01 00:00:00",
+            producers = RequiredList.of(listOf("Producer"))
+        )
+
+        val metadata = metadataElement(importedMetadata, languages = listOf("en-Brai"))
+
+        Assert.assertEquals(countNamed(metadata, "dc:title"), 2)
+        Assert.assertEquals(countNamed(metadata, "dc:identifier"), 2)
+
+        val identifierElements = (0 until metadata.childElements.size())
+            .map { metadata.childElements[it] }
+            .filter { it.localName == "identifier" }
+        Assert.assertEquals(identifierElements.map { it.value }, listOf("urn:isbn:1", "urn:uuid:2"))
+        Assert.assertEquals(identifierElements[0].getAttributeValue("id"), "bookid")
+        Assert.assertNull(identifierElements[1].getAttributeValue("id"))
     }
 
     @Test

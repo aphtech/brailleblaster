@@ -79,6 +79,39 @@ class OpfMetadataTest {
         Assert.assertEquals(result.date, "2007-01-10")
     }
 
+    // --- fromOpf: multiple dc:title/dc:identifier elements (EPUB/eBraille both allow "one or
+    // more" of each - see review.md). Regression coverage for the title/identifier-collapsing
+    // data-loss bug: every title and identifier must be retained, in document order, along with
+    // each title's id/xml:lang/title-type refinement. ---
+
+    @Test
+    fun fromOpfPreservesAllTitlesInDocumentOrderWithRefinements() {
+        val opf = XMLHandler().load(Paths.get("src/test/resources/epubbaseline/multi-title-metadata.opf"))
+
+        val result = OpfMetadata.fromOpf(opf)
+
+        Assert.assertEquals(
+            result.titles,
+            listOf(
+                TitleEntry("Moby-Dick", id = "t1", titleType = "main"),
+                TitleEntry("or, the Whale", id = "t2", titleType = "subtitle"),
+                TitleEntry("Moby Dick, ou le Cachalot Blanc", id = "t3", lang = "fr", titleType = "alternate")
+            )
+        )
+        // The primary title is the first dc:title in document order (eBraille 1.0's rule).
+        Assert.assertEquals(result.title, "Moby-Dick")
+    }
+
+    @Test
+    fun fromOpfPreservesAllIdentifiersInDocumentOrder() {
+        val opf = XMLHandler().load(Paths.get("src/test/resources/epubbaseline/multi-title-metadata.opf"))
+
+        val result = OpfMetadata.fromOpf(opf)
+
+        Assert.assertEquals(result.identifiers, listOf("urn:isbn:9780000000048", "urn:uuid:1b8e6c0a-4b1e-4c8a-9b0a-0f1a2b3c4d5e"))
+        Assert.assertEquals(result.identifier, "urn:isbn:9780000000048")
+    }
+
     // --- fromDtbookHead: real NIMAS dtbook <head> fixture ---
 
     @Test
@@ -126,6 +159,115 @@ class OpfMetadataTest {
         val loaded = OpfMetadata.load(reopened)
 
         Assert.assertEquals(loaded, metadata)
+    }
+
+    @Test
+    fun saveThenLoadRoundTripsMultipleTitlesAndIdentifiersWithRefinements() {
+        val doc = Document(Element("bbx"))
+        val metadata = OpfMetadata(
+            titles = TitleList.of(listOf(
+                TitleEntry("Main Title", id = "ti1", titleType = "main"),
+                TitleEntry("Untertitel", id = "ti2", lang = "de", titleType = "subtitle")
+            )),
+            creators = RequiredList.of(listOf("Creator One", "Creator Two")),
+            identifiers = RequiredList.of(listOf("urn:isbn:1", "urn:uuid:2")),
+            date = "2020-01-01",
+            modified = "2020-01-02T03:04:05Z",
+            dateCopyrighted = "2019-12-25",
+            producers = RequiredList.of(listOf("Producer One", "Producer Two"))
+        )
+
+        metadata.saveTo(doc)
+        val reopened = reopen(doc)
+        val loaded = OpfMetadata.load(reopened)
+
+        Assert.assertEquals(loaded, metadata)
+    }
+
+    // --- Regression guard for the exact data-loss bug in review.md: a document imported with
+    // multiple dc:title/dc:identifier elements must keep all of them - not just the first - once
+    // it is saved as a .bbx and reopened. Before the fix, OpfMetadata.title/identifier were plain
+    // Strings and every read site used `.firstOrNull { ... }`, so BBZArchiver.saveBBX's
+    // load()+saveTo() round trip silently discarded every title/identifier but the first. ---
+
+    @Test
+    fun saveBbxPreservesMultipleTitlesAndIdentifiersFromAnImportedDocument() {
+        val opf = XMLHandler().load(Paths.get("src/test/resources/epubbaseline/multi-title-metadata.opf"))
+        val imported = OpfMetadata.fromOpf(opf)
+        val doc = Document(Element("bbx"))
+        imported.saveTo(doc)
+        val tempFile = Files.createTempFile("bbx-multi-title-", ".bbx")
+
+        try {
+            BBZArchiver.saveBBX(tempFile, doc)
+
+            val reopened = XMLHandler().load(tempFile)
+            val loaded = OpfMetadata.load(reopened)
+
+            Assert.assertEquals(loaded.titles.map { it.value }, listOf("Moby-Dick", "or, the Whale", "Moby Dick, ou le Cachalot Blanc"))
+            Assert.assertEquals(loaded.titles, imported.titles)
+            Assert.assertEquals(loaded.identifiers, imported.identifiers)
+            Assert.assertEquals(loaded.title, "Moby-Dick")
+        } finally {
+            Files.deleteIfExists(tempFile)
+        }
+    }
+
+    @Test
+    fun metadataToXomSynthesizesIdForTitleTypeWhenSourceHadNone() {
+        val metadata = OpfMetadata(
+            titles = TitleList.of(listOf(TitleEntry("Primary", titleType = "main"))),
+            creators = RequiredList.of(listOf("Creator")),
+            identifiers = RequiredList.of(listOf("id")),
+            date = "2020-01-01",
+            modified = "2020-01-02T03:04:05Z",
+            dateCopyrighted = "2019-12-25",
+            producers = RequiredList.of(listOf("Producer"))
+        )
+
+        val elements = metadataToXom(metadata).toList()
+        val titleElem = elements.first { it.localName == "title" }
+        val refinesElem = elements.first { it.localName == "meta" && it.getAttributeValue("property") == "title-type" }
+
+        val synthesizedId = titleElem.getAttributeValue("id")
+        Assert.assertNotNull(synthesizedId)
+        Assert.assertEquals(refinesElem.getAttributeValue("refines"), "#$synthesizedId")
+
+        val roundTripped = xomToMetadata(elements)
+        Assert.assertEquals(roundTripped.titles.first().value, "Primary")
+        Assert.assertEquals(roundTripped.titles.first().titleType, "main")
+        Assert.assertEquals(roundTripped.titles.first().id, synthesizedId)
+    }
+
+    @Test
+    fun metadataToXomInterleavesTitleTypeRefinementsAndPreservesIdentifierOrder() {
+        val metadata = OpfMetadata(
+            titles = TitleList.of(listOf(
+                TitleEntry("Main", id = "m1", titleType = "main"),
+                TitleEntry("Sub", id = "m2", titleType = "subtitle")
+            )),
+            creators = RequiredList.of(listOf("Creator")),
+            identifiers = RequiredList.of(listOf("id-one", "id-two")),
+            date = "2020-01-01",
+            modified = "2020-01-02T03:04:05Z",
+            dateCopyrighted = "2019-12-25",
+            producers = RequiredList.of(listOf("Producer"))
+        )
+
+        val elements = metadataToXom(metadata).toList()
+
+        Assert.assertEquals(
+            elements.map { if (it.localName == "meta") "meta:${it.getAttributeValue("property")}" else "dc:${it.localName}" },
+            listOf(
+                "dc:title", "meta:title-type",
+                "dc:title", "meta:title-type",
+                "dc:creator",
+                "dc:identifier", "dc:identifier",
+                "dc:date",
+                "meta:dcterms:modified", "meta:dcterms:dateCopyrighted",
+                "meta:a11y:producer"
+            )
+        )
     }
 
     @Test
