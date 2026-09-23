@@ -58,7 +58,7 @@ child.project.url.inherit.append.path="false">
         <slf4j.version>2.0.18</slf4j.version>
         <mathcat4j.version>1.0.3</mathcat4j.version>
         <mathcat4j-jni.version>0.7.6-rc.4-1</mathcat4j-jni.version>
-        <jlouis.version>7733050ea6b5152412e6ddb6dec996f9e024a082</jlouis.version>
+        <jlouis.version>1.0.7</jlouis.version>
         <libembosser.version>1.4.3</libembosser.version>
         <jaxbapi.version>4.0.5</jaxbapi.version>
         <jaxbruntime.version>4.0.9</jaxbruntime.version>
