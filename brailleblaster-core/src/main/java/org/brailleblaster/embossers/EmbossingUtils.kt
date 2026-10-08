@@ -15,7 +15,6 @@
  */
 package org.brailleblaster.embossers
 
-import kotlinx.serialization.json.Json
 import org.brailleblaster.BBIni
 import org.brailleblaster.document.BBDocument
 import org.brailleblaster.libembosser.embossing.attribute.*
@@ -324,7 +323,7 @@ object EmbossingUtils {
 
         @Throws(IOException::class)
         override fun consume(os: OutputStream) {
-            val configStr = Json.encodeToString(config)
+            val configStr = EmbosserConfigList.GSON.toJson(config)
             os.write(configStr.toByteArray(Charsets.UTF_8))
         }
 

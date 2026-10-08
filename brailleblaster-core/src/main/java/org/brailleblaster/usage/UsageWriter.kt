@@ -15,10 +15,9 @@
  */
 package org.brailleblaster.usage
 
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.buildJsonArray
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import java.io.Writer
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -32,24 +31,26 @@ interface UsageWriter {
 private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd, HH:mm:ss.SSS", Locale.US).withZone(ZoneOffset.ofHours(0))
 
 class JsonUsageWriter : UsageWriter {
-    private fun write(record: UsageRecord): JsonElement {
-        return buildJsonObject {
-            put("time", formatter.format(record.time))
-            put("tool", record.tool)
-            put("event", record.event)
-            put("msg", record.message)
-        }
+    private val gson = Gson()
+
+    private fun toJson(record: UsageRecord): JsonObject {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("time", formatter.format(record.time))
+        jsonObject.addProperty("tool", record.tool)
+        jsonObject.addProperty("event", record.event)
+        jsonObject.addProperty("msg", record.message)
+        return jsonObject
     }
 
     override fun write(record: UsageRecord, writer: Writer) {
-        writer.write(write(record).toString())
+        gson.toJson(toJson(record), writer)
     }
 
     override fun write(records: Iterable<UsageRecord>, writer: Writer) {
-        writer.write(buildJsonArray {
-            for (record in records) {
-                add(write(record))
-            }
-        }.toString())
+        val jsonArray = JsonArray()
+        for (record in records) {
+            jsonArray.add(toJson(record))
+        }
+        gson.toJson(jsonArray, writer)
     }
 }
