@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2025 American Printing House for the Blind
+ * Copyright (C) 2026 Michael Whapples
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -53,7 +54,8 @@ class UTDManager @JvmOverloads constructor(styleDefs: StyleDefinitions = loadSty
 
     // Doc specific settings
     var brailleStandard: String =
-        BBIni.propertyFileManager.getProperty(USER_SETTINGS_BRAILLE_STANDARD, "UEB")
+        startupBrailleStandardOverride
+            ?: BBIni.propertyFileManager.getProperty(USER_SETTINGS_BRAILLE_STANDARD, "UEB")
         private set
 
     var predominantQuoteSetting = PredominantQuoteSetting.findValue(
@@ -156,7 +158,9 @@ class UTDManager @JvmOverloads constructor(styleDefs: StyleDefinitions = loadSty
 
         // --- BrailleSettings ---
         // User can only set the braille standard they are using
-        brailleStandard = DocumentUTDConfig.NIMAS.getSetting(doc, USER_SETTINGS_BRAILLE_STANDARD) ?: brailleStandard
+        brailleStandard = startupBrailleStandardOverride
+            ?: DocumentUTDConfig.NIMAS.getSetting(doc, USER_SETTINGS_BRAILLE_STANDARD)
+            ?: brailleStandard
         predominantQuoteSetting =
             PredominantQuoteSetting.findValue(
                 DocumentUTDConfig.NIMAS.getSetting(doc, USER_SETTINGS_PREDOMINANT_QUOTE) ?: ""
@@ -604,6 +608,7 @@ class UTDManager @JvmOverloads constructor(styleDefs: StyleDefinitions = loadSty
         const val USER_SETTINGS_PREDOMINANT_QUOTE = "predominantQuote"
         const val USER_SETTINGS_FORMAT_STANDARD = "formatStandard"
         const val DOCUMENT_STYLE_NAME_PREFIX = "bbs-"
+        var startupBrailleStandardOverride: String? = null
         var totalMilliLoad: Long = 0
         private fun isCompatibleList(list: Element, itemStyleData: ListStyleData): Boolean {
             val actualList =

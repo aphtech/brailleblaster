@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2025 American Printing House for the Blind
+ * Copyright (C) 2026 American Printing House for the Blind
+ * Copyright (C) 2026 Michael Whapples
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -16,6 +17,7 @@
 package org.brailleblaster.ebraille
 
 import org.brailleblaster.Main
+import org.brailleblaster.cli.BaseBrailleExportCommand
 import org.brailleblaster.spi.Exporter
 import picocli.CommandLine
 import java.nio.file.Path
@@ -25,7 +27,7 @@ private const val CMD_NAME = "ebraille"
 private const val DESCRIPTION = "Create an eBraille"
 
 @CommandLine.Command(name = CMD_NAME, description = [DESCRIPTION])
-class EBrailleCommand : Exporter {
+class EBrailleCommand : BaseBrailleExportCommand(), Exporter {
     override val id = CMD_NAME
     override val description = DESCRIPTION
 
@@ -35,7 +37,7 @@ class EBrailleCommand : Exporter {
     @CommandLine.Parameters(paramLabel = "<output-file>", index = "1", description = ["The output file to create"])
     lateinit var outputFile: Path
     override fun call(): Int {
-        return Main.start(inputFile) {
+        return Main.start(inputFile, brailleProfile = brailleProfile) {
             try {
                 val manager = it.currentManager
                 if (manager != null && !manager.isDefaultFile) {

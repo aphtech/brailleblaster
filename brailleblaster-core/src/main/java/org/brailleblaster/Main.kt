@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2025 American Printing House for the Blind
+ * Copyright (C) 2026 Michael Whapples
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -22,6 +23,7 @@ import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.firstrun.runFirstRunWizard
 import org.brailleblaster.logging.initLogback
 import org.brailleblaster.logging.preLog
+import org.brailleblaster.settings.UTDManager
 import org.brailleblaster.usage.*
 import org.brailleblaster.userHelp.Project
 import org.brailleblaster.utd.exceptions.NodeException
@@ -66,13 +68,33 @@ object Main {
         )
     }
 
-    fun start(inputPath: Path?, debugArgs: List<String> = listOf(), action: (WPManager) -> Int): Int {
+    fun start(
+        inputPath: Path?,
+        debugArgs: List<String> = listOf(),
+        brailleProfile: String? = null,
+        action: (WPManager) -> Int
+    ): Int {
         var startupExitCode = 0
         try {
             val startupFileOpenError = inputPath?.let { validateStartupFile(it) }
             val fileToOpen: Path? = if (startupFileOpenError == null) inputPath else null
 
             initBB(debugArgs)
+            if (brailleProfile != null) {
+                val profileFile = BBIni.loadAutoProgramDataFileOrNull(
+                    UTDManager.UTD_FOLDER,
+                    brailleProfile + UTDManager.BRAILLE_SETTINGS_NAME
+                ) ?: BBIni.loadAutoProgramDataFileOrNull(
+                    UTDManager.UTD_FOLDER,
+                    "legacy",
+                    brailleProfile + UTDManager.BRAILLE_SETTINGS_NAME
+                )
+                if (profileFile == null) {
+                    println("No Braille profile of '$brailleProfile' exists.")
+                    return 1
+                }
+                UTDManager.startupBrailleStandardOverride = brailleProfile
+            }
             if (System.getProperty("dumpClassPath", "false") == "true") {
                 dumpClassLoader(ClassLoader.getSystemClassLoader())
                 //Handle maven-wrapper and presumably other IDE loaders
@@ -136,6 +158,7 @@ object Main {
             handleFatalException(e)
             startupExitCode = 1
         } finally {
+            UTDManager.startupBrailleStandardOverride = null
             ZipHandles.closeAll()
         }
         return startupExitCode
