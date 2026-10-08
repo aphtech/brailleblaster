@@ -10,7 +10,7 @@ Users who want to be on the bleeding edge and are prepared to take the risks of 
 
 ## Building BrailleBlaster
 
-BrailleBlaster uses the maven build system and requires a Java Development Kit of Java21 or higher to be installed. You do not need to have maven installed as BrailleBlaster includes some maven wrapper scripts which will be able to download the required version of maven. To build BrailleBlaster run the following command at the root of the source tree:
+BrailleBlaster uses the maven build system and requires a Java Development Kit of Java25 or higher to be installed. You do not need to have maven installed as BrailleBlaster includes some maven wrapper scripts which will be able to download the required version of maven. To build BrailleBlaster run the following command at the root of the source tree:
 ```command line
 mvnw package
 ```
@@ -18,7 +18,7 @@ Once the build finishes you will find the application in brailleblaster-app/targ
 
 ## Running a development build
 
-To run a development build of BrailleBlaster, either one you built yourself or from the continuous release, you will need Java21 or higher installed. On Windows or Linux issue the following command from the root of your build:
+To run a development build of BrailleBlaster, either one you built yourself or from the continuous release, you will need Java25 or higher installed. On Windows or Linux issue the following command from the root of your build:
 ```command line
 java -jar brailleblaster.jar
 ```

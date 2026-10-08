@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Display
 object JavaCheckerModule : SimpleListener {
     override fun onEvent(event: SimpleEvent) {
         if (event is AppStartedEvent) {
-            val minVersion = Runtime.Version.parse("21")
+            val minVersion = Runtime.Version.parse("25")
             val jvmVersion = Runtime.version()
             val propManager = BBIni.propertyFileManager
             val warnVersion = maxOf(jvmVersion, Runtime.Version.parse(propManager.getProperty("javaChecker.warn.version", "11")))
