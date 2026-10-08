@@ -60,22 +60,42 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    # Merging several PRs at once starts overlapping runs; serialise releases so they cannot race.
+    concurrency:
+      group: continuous-release
+      cancel-in-progress: false
     steps:
+    - name: Check this is still the head of main
+      id: head
+      uses: actions/github-script@v9
+      with:
+        script: |
+          const { data } = await github.rest.git.getRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: 'heads/main'
+          })
+          const latest = data.object.sha === context.sha
+          if (!latest) core.notice(`Skipping continuous release: ${context.sha} superseded by ${data.object.sha}`)
+          core.setOutput('latest', latest)
     - name: Download dist
+      if: steps.head.outputs.latest == 'true'
       uses: actions/download-artifact@v7
       with:
         name: brailleblaster
     - name: Update continuous tag
+      if: steps.head.outputs.latest == 'true'
       uses: actions/github-script@v9
       with:
         script: |
-          github.rest.git.updateRef({
+          await github.rest.git.updateRef({
             owner: context.repo.owner,
             repo: context.repo.repo,
             ref: 'tags/continuous',
             sha: context.sha
           })
     - name: Update continuous release
+      if: steps.head.outputs.latest == 'true'
       uses: softprops/action-gh-release@v3
       with:
         name: continuous
