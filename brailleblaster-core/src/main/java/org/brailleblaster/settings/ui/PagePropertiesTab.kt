@@ -503,28 +503,29 @@ class PagePropertiesTab private constructor(parent: Composite, engine: UTDTransl
         val pageSettings = engine.pageSettings
         val brailleSettings = engine.brailleSettings
 
+        // Evaluate every update even after an earlier property changed.
         return FormUIUtils.updateObject(
             brailleSettings::cellType,
             brailleCell
-        ) || FormUIUtils.updateObject(
+        ) or FormUIUtils.updateObject(
             pageSettings::paperHeight,
             pageHeight
-        ) || FormUIUtils.updateObject(
+        ) or FormUIUtils.updateObject(
             pageSettings::paperWidth,
             pageWidth
-        ) || FormUIUtils.updateObject(
+        ) or FormUIUtils.updateObject(
             pageSettings::topMargin,
             marginTop
-        ) || FormUIUtils.updateObject(
+        ) or FormUIUtils.updateObject(
             pageSettings::bottomMargin,
             marginBottom
-        ) || FormUIUtils.updateObject(
+        ) or FormUIUtils.updateObject(
             pageSettings::leftMargin,
             marginLeft
-        ) || FormUIUtils.updateObject(
+        ) or FormUIUtils.updateObject(
             pageSettings::rightMargin,
             marginRight
-        ) || FormUIUtils.updateObject(
+        ) or FormUIUtils.updateObject(
             pageSettings::interpoint,
             interpointCombo.text == "Yes"
         )
