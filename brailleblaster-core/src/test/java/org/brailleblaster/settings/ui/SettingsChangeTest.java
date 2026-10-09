@@ -21,8 +21,12 @@ import org.brailleblaster.settings.TableExceptions;
 import org.brailleblaster.settings.UTDManager;
 import org.brailleblaster.testrunners.BBTestRunner;
 import org.brailleblaster.testrunners.ViewTestRunner;
+import org.brailleblaster.utd.PageSettings;
+import org.brailleblaster.utd.properties.PageNumberPosition;
+import org.brailleblaster.utd.utils.Page;
 import org.brailleblaster.utd.config.DocumentUTDConfig;
 import org.brailleblaster.utd.config.UTDConfig;
+import org.brailleblaster.utils.LengthUtils;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.testng.Assert;
@@ -82,6 +86,57 @@ public class SettingsChangeTest {
                 curTransNoExceptions
         );
         Assert.assertTrue(curTrans.endsWith("UEB-UNCONTRACTED" + TableExceptions.EXCEPTIONS_TABLE_EXTENSION), "Have: " + curTrans);
+    }
+
+    @Test
+    public void changePageSettingsTest() {
+        BBTestRunner test = new BBTestRunner("", "<p>test</p>");
+        int pageIndex = 2;
+        Page expected = Page.STANDARD_PAGES.get(pageIndex);
+
+        test.openMenuItem(TopMenu.SETTINGS, "Page Properties");
+        SWTBot settingsBot = test.bot.activeShell().bot();
+        settingsBot.comboBoxWithLabel("Page Size").setSelection(pageIndex);
+        settingsBot.comboBoxWithLabel("Interpoint").setSelection("Yes");
+        ViewTestRunner.doPendingSWTWork();
+        settingsBot.buttonWithId(BrailleSettingsDialog.SWTBOT_OK_BUTTON).click();
+        ViewTestRunner.doPendingSWTWork();
+
+        PageSettings actual = test.manager.getDocument().getEngine().getPageSettings();
+        Assert.assertEquals(actual.getPaperHeight(), expected.getHeight(LengthUtils.Units.MILLIMETRES), 0.0);
+        Assert.assertEquals(actual.getPaperWidth(), expected.getWidth(LengthUtils.Units.MILLIMETRES), 0.0);
+        Assert.assertEquals(actual.getTopMargin(), expected.getTopMargin(LengthUtils.Units.MILLIMETRES), 0.0);
+        Assert.assertEquals(actual.getLeftMargin(), expected.getLeftMargin(LengthUtils.Units.MILLIMETRES), 0.0);
+        Assert.assertTrue(actual.getInterpoint());
+
+        PageSettings documentSettings = DocumentUTDConfig.NIMAS.loadPageSettings(test.getDoc());
+        Assert.assertEquals(documentSettings.getPaperWidth(), expected.getWidth(LengthUtils.Units.MILLIMETRES), 0.0);
+        Assert.assertTrue(documentSettings.getInterpoint());
+        ViewTestRunner.forceActiveShellHack();
+        ViewTestRunner.doPendingSWTWork();
+
+        test.openMenuItem(TopMenu.SETTINGS, "Page Numbers");
+        settingsBot = test.bot.activeShell().bot();
+        settingsBot.comboBoxWithLabel("Even Print Page Number").setSelection(PageNumberPosition.TOP_LEFT.name());
+        settingsBot.comboBoxWithLabel("Lettered Continuation Pages").setSelection("No");
+        settingsBot.comboBoxWithLabel("Continue Braille Pages Across Volumes").setSelection("Yes");
+        settingsBot.comboBoxWithLabel("Continuation Indicator For Print Pages").setSelection("Yes");
+        settingsBot.comboBoxWithLabel("Guide Words").setSelection("No");
+        ViewTestRunner.doPendingSWTWork();
+        settingsBot.buttonWithId(BrailleSettingsDialog.SWTBOT_OK_BUTTON).click();
+        ViewTestRunner.doPendingSWTWork();
+
+        actual = test.manager.getDocument().getEngine().getPageSettings();
+        Assert.assertEquals(actual.getEvenPrintPageNumberAt(), PageNumberPosition.TOP_LEFT);
+        Assert.assertFalse(actual.isPrintPageNumberRange());
+        Assert.assertTrue(actual.isContinuePages());
+        Assert.assertTrue(actual.isPrintPageLetterIndicator());
+        Assert.assertFalse(actual.isGuideWords());
+
+        documentSettings = DocumentUTDConfig.NIMAS.loadPageSettings(test.getDoc());
+        Assert.assertEquals(documentSettings.getEvenPrintPageNumberAt(), PageNumberPosition.TOP_LEFT);
+        Assert.assertFalse(documentSettings.isPrintPageNumberRange());
+        Assert.assertFalse(documentSettings.isGuideWords());
     }
 
     private static void changeBrailleStandard(BBTestRunner test, String currentStd, String newStd, String swtbotButton) {

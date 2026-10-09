@@ -129,19 +129,20 @@ class PageNumbersTab internal constructor(folder: TabFolder, pageSettingsDefault
         pageNumberLocations.add(PageNumberPosition.valueOf(oddPrintNumCombo.text))
         pageNumberLocations.add(PageNumberPosition.valueOf(evenBrailleNumCombo.text))
         pageNumberLocations.add(PageNumberPosition.valueOf(oddBrailleNumCombo.text))
+        // Evaluate every update even after an earlier property changed.
         return FormUIUtils.updateObject(
             pageSettings::pageNumberLocations,
             pageNumberLocations
-        ) || FormUIUtils.updateObject(
+        ) or FormUIUtils.updateObject(
             pageSettings::isPrintPageNumberRange,
             continueSymbolsCombo.text == "Yes"
-        ) || FormUIUtils.updateObject(
+        ) or FormUIUtils.updateObject(
             pageSettings::isContinuePages,
             continuePagesCombo.text == "Yes"
-        ) || FormUIUtils.updateObject(
+        ) or FormUIUtils.updateObject(
             pageSettings::isPrintPageLetterIndicator,
             continuationIndicatorCombo.text == "Yes"
-        ) || FormUIUtils.updateObject(
+        ) or FormUIUtils.updateObject(
             pageSettings::isGuideWords,
             guideWordsCombo.text == "Yes"
         )
