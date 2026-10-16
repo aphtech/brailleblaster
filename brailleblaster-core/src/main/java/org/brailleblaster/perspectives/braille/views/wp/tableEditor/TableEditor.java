@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2025 American Printing House for the Blind
+ * Copyright (C) 2026 Michael Whapples
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -112,6 +113,7 @@ public class TableEditor extends Dialog {
     public static final String ACCESSIBLE_TN_HEADING_NAME = "TN Heading";
 
     private UTDManager m;
+    private Manager manager;
     private Shell shell;
     private Element tableNode;
     private ComboViewer tableTypeCombo;
@@ -346,6 +348,7 @@ public class TableEditor extends Dialog {
     }
 
     public void initTable(Manager manager, boolean insert) {
+        this.manager = manager;
         this.m = manager.getDocument().getSettingsManager();
         mode = insert ? Mode.INSERT : Mode.EDIT;
         Node selectedNode = manager.getSimpleManager().getCurrentCaret().getNode();
@@ -461,6 +464,7 @@ public class TableEditor extends Dialog {
      * Logic for opening Table Editor through "Convert Text to Table" menu item
      */
     public void convertTextToTable(Manager manager) {
+        this.manager = manager;
         this.m = manager.getDocument().getSettingsManager();
         List<Element> blocks = manager.getSimpleManager().getCurrentSelection().getSelectedBlocks();
 
@@ -711,7 +715,7 @@ public class TableEditor extends Dialog {
         Label leftTableLabel = EasySWT.makeLabel(leftSC, "Left Page", 1);
         EasySWT.buildGridData().setAlign(SWT.CENTER, SWT.BEGINNING).applyTo(leftTableLabel);
         //Use the left-page table to create text boxes
-        List<CellText> leftBoxes = createTexts(leftSC, leftRows, ((InternalFacingTable) state).split, state.getRows(), new ArrayList<>(), null, false);
+        List<CellText> leftBoxes = createTexts(leftSC, leftRows, ((InternalFacingTable) state).split, state.getRows(), new ArrayList<>(), null, manager.getText().getSixKeyMode(), false);
         if (leftBoxes == null) {
             return;
         }
@@ -725,7 +729,7 @@ public class TableEditor extends Dialog {
         rightSC.setLayoutData("wmin 0, hmin 0, grow, dock east");
         rightSC.setLayout(new GridLayout(1, false));
         //Use the right page table to create text boxes
-        List<CellText> rightBoxes = createTexts(rightSC, rightRows, state.getCols() - ((InternalFacingTable) state).split, state.getRows(), new ArrayList<>(), null, false);
+        List<CellText> rightBoxes = createTexts(rightSC, rightRows, state.getCols() - ((InternalFacingTable) state).split, state.getRows(), new ArrayList<>(), null, manager.getText().getSixKeyMode(), false);
         if (rightBoxes == null) {
             return;
         }
@@ -831,6 +835,15 @@ public class TableEditor extends Dialog {
                 curText.toggleTag(tag);
         });
         mb.addToMenu("Translation")
+                .addCheckItem(localeHandler.get("SixKeyMode.menuItem"), SWT.MOD3 | 'X', manager.getText().getSixKeyMode(), e -> {
+                    boolean enabled = ((MenuItem) e.widget).getSelection();
+                    manager.getText().setSixKeyMode(enabled);
+                    texts.forEach(t -> t.getSixKeyHandler().setSixKeyMode(enabled));
+                    if (rightTexts != null) {
+                        rightTexts.forEach(t -> t.getSixKeyHandler().setSixKeyMode(enabled));
+                    }
+                    manager.getWpManager().buildToolBar();
+                })
                 .addPushItem("Direct Translation", EmphasisTags.CTEXACT.getDefaultAccelerator(), e -> {
                     BBStyleableText curText = getCurrentText(texts, rightTexts);
                     if (curText != null)
@@ -1052,7 +1065,7 @@ public class TableEditor extends Dialog {
     }
 
     private List<CellText> createTexts(Composite sc, boolean destroyable) {
-        return createTexts(sc, state.getNodes(), state.getDisplayedCols(), state.getDisplayedRows(), state.getCaptions(), state.getTNContainer(), destroyable);
+        return createTexts(sc, state.getNodes(), state.getDisplayedCols(), state.getDisplayedRows(), state.getCaptions(), state.getTNContainer(), manager.getText().getSixKeyMode(), destroyable);
     }
 
     /**
@@ -1067,6 +1080,7 @@ public class TableEditor extends Dialog {
             int displayRows,
             List<Element> captions,
             Element tnContainer,
+            boolean sixKeyMode,
             boolean destroyable) {
 
         List<CellText> returnList = new ArrayList<>();
@@ -1107,7 +1121,7 @@ public class TableEditor extends Dialog {
             Label captionLabel = EasySWT.makeLabel(labelAndTextContainer, "Caption", 1);
             EasySWT.buildGridData().setAlign(SWT.CENTER, SWT.CENTER).applyTo(captionLabel);
             Composite textHolder = EasySWT.makeComposite(labelAndTextContainer, 1);
-            CellText captionText = new CellText(textHolder, -1, -1);
+            CellText captionText = new CellText(textHolder, -1, -1, sixKeyMode);
             captionText.setCaption(true);
             EasySWT.buildGridData().setHint(400, 100).setAlign(SWT.CENTER, SWT.CENTER).applyTo(captionText.getWidget());
 
@@ -1135,7 +1149,7 @@ public class TableEditor extends Dialog {
             Label tnLabel = EasySWT.makeLabel(tnRow, "TN Heading", 1);
             EasySWT.buildGridData().setAlign(SWT.CENTER, SWT.CENTER).applyTo(tnLabel);
 
-            CellText tnHeadingText = new CellText(tnRow, -1, -1);
+            CellText tnHeadingText = new CellText(tnRow, -1, -1, sixKeyMode);
             EasySWT.buildGridData().setColumns(displayCols).setHint(400, 50).applyTo(tnHeadingText.getWidget());
             tnHeadingText.setTN(true);
             tnHeadingText.text.setXML((Element) containerCopy.getChild(0));
@@ -1157,7 +1171,7 @@ public class TableEditor extends Dialog {
 
                 for (int i = 0; i < displayCols; i++) {
                     Composite textComp = EasySWT.makeComposite(tnRow, 1);
-                    CellText newText = new CellText(textComp, -1, i);
+                    CellText newText = new CellText(textComp, -1, i, sixKeyMode);
                     EasySWT.buildGridData().setHint(200, 150).applyTo(newText.getWidget());
                     if (i + 1 < containerCopy.getChildCount()) {
                         try {
@@ -1216,7 +1230,7 @@ public class TableEditor extends Dialog {
             int totalTexts = 0;
             for (Node node : cellList) {
                 Composite textPanel = EasySWT.makeComposite(tableComp, 1);
-                CellText newText = new CellText(textPanel, tempRows.indexOf(cellList), cellList.indexOf(node));
+                CellText newText = new CellText(textPanel, tempRows.indexOf(cellList), cellList.indexOf(node), sixKeyMode);
                 EasySWT.buildGridData().setHint(200, 150).applyTo(newText.getWidget());
                 newText.text.setXML((Element) node);
                 returnList.add(newText);
