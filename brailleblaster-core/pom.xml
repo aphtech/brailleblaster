@@ -216,11 +216,13 @@
                     <timestampPropertyName>app.build-date</timestampPropertyName>
                     <timestampFormat>yyyy-MM-dd HH:mm:ss</timestampFormat>
                     <revisionPropertyName>app.build-hash</revisionPropertyName>
-                    <applicationPropertyName>app.display-name</applicationPropertyName>
-                    <applicationName>${project.parent.name}</applicationName>
+                    <!-- Using for CLI launcher -->
+                    <applicationPropertyName>app.jvm.cli.${app.fsname}-cli.main-class</applicationPropertyName>
+                    <applicationName>org.brailleblaster.Main</applicationName>
                     <versionPropertyName>app.version</versionPropertyName>
                     <version>${revision}</version>
                     <properties>
+                        <app.display-name>${project.parent.name}</app.display-name>
                         <app.fsname>${app.fsname}</app.fsname>
                         <app.description>${project.description}</app.description>
                         <app.vendor>${project.organization.name}</app.vendor>
