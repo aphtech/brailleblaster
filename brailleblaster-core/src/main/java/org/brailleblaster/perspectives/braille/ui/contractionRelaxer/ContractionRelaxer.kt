@@ -20,7 +20,9 @@ import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.settings.TableExceptions
 import org.brailleblaster.settings.TableExceptions.getCurrentExceptionFile
+import org.brailleblaster.settings.UTDManager.Companion.USER_SETTINGS_BRAILLE_STANDARD
 import org.brailleblaster.tools.MenuToolModule
+import org.brailleblaster.utd.config.DocumentUTDConfig
 import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
@@ -59,6 +61,17 @@ class ContractionRelaxer(parent: Shell) : Dialog(parent, SWT.NONE), MenuToolModu
       unitToggle = it.toInt()
     }
 
+    //Possible fix for Github ticket #189: Ensures translation mode syncs with translation settings.
+    val translationMode = DocumentUTDConfig.NIMAS.getSetting(bbData.manager.document.doc, USER_SETTINGS_BRAILLE_STANDARD)
+    if (translationMode == "UEB-UNCONTRACTED") {
+      //If the translation mode is UEB-UNCONTRACTED (grade 1)
+      unitToggle = 0
+    }
+    else if (translationMode == "UEB") {
+      //If the translation mode is UEB (grade 2)
+      unitToggle = UnitList.allUnits.lastIndex
+    }
+
     val shell = Shell(parent.display, SWT.DIALOG_TRIM or SWT.RESIZE or SWT.CENTER)
     shell.text = "Contraction Relaxer"
     shell.layout = GridLayout(1, false)
@@ -90,9 +103,7 @@ class ContractionRelaxer(parent: Shell) : Dialog(parent, SWT.NONE), MenuToolModu
       }
     }
 
-    //TODO
-    //The preview box never worked properly -
-    // just have a separate window to view the full list of selected contractions.
+    //Make a separate window to view the full list of selected contractions.
     val previewBtn = EasySWT.makeButton(buttonLayout, SWT.PUSH)
     previewBtn.text("View Contractions")
     previewBtn.onSelection {
