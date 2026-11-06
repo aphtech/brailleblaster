@@ -17,6 +17,11 @@ package org.brailleblaster.settings.ui
 
 import org.brailleblaster.BBIni
 import org.brailleblaster.document.BBDocument
+import org.brailleblaster.perspectives.braille.Manager
+import org.brailleblaster.perspectives.braille.ui.contractionRelaxer.UnitList
+import org.brailleblaster.settings.TableExceptions
+import org.brailleblaster.settings.TableExceptions.getCurrentExceptionFile
+import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
 import org.brailleblaster.utd.UTDTranslationEngine
 import org.brailleblaster.utd.config.UTDConfig
@@ -25,15 +30,22 @@ import org.brailleblaster.libembosser.spi.BrlCell
 import org.brailleblaster.utils.swt.EasySWT
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.SelectionEvent
+import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.layout.RowLayout
 import org.eclipse.swt.widgets.*
+import org.mwhapples.jlouis.Louis
 import org.slf4j.LoggerFactory
 import java.io.File
+import java.io.FileOutputStream
 import java.io.FilenameFilter
+import java.io.OutputStreamWriter
+import java.nio.charset.StandardCharsets
 import java.nio.file.Paths
+import kotlin.experimental.and
 
-class TranslationSettingsTab internal constructor(folder: TabFolder?, private val bbdoc: BBDocument) : SettingsUITab {
+class TranslationSettingsTab internal constructor(folder: TabFolder?, private val manager: Manager) : SettingsUITab {
+    private val bbdoc: BBDocument = manager.document
     private val config: Map<String, File>
     private val standardCombo: Combo
     private val brailleCellRadios: MutableMap<String, Button> = HashMap()
@@ -42,6 +54,10 @@ class TranslationSettingsTab internal constructor(folder: TabFolder?, private va
     private val unconTableText: Text
     private val mathTextTableText: Text
     private val mathExprTableText: Text
+    private val unitSelector: Combo
+    private val viewContractionsButton: Button
+    private var unitToggle: Int = 0
+    private val initialUnitToggle: Int
     lateinit var selectedName: String
         private set
 
@@ -62,6 +78,24 @@ class TranslationSettingsTab internal constructor(folder: TabFolder?, private va
         standardCombo = Combo(standardsGroup, SWT.READ_ONLY)
         EasySWT.setGridData(standardCombo)
         EasySWT.addSwtBotKey(standardCombo, SWTBOT_STANDARD_COMBO)
+
+        //Contraction Relaxer - only makes sense when the selected standard translates with the
+        //uncontracted (grade 1) UEB table, so it's enabled/disabled alongside the standard combo.
+        val relaxerGroup = Group(parent, SWT.NONE)
+        relaxerGroup.layout = GridLayout(3, false)
+        relaxerGroup.text = "Contraction Relaxer"
+        EasySWT.setGridData(relaxerGroup)
+        val relaxerLabel = EasySWT.addLabel(
+            relaxerGroup,
+            "Select a unit to allow specific contractions on top of uncontracted (grade 1) UEB."
+        )
+        relaxerLabel.layoutData = GridData(SWT.FILL, SWT.FILL, true, false, 3, 1)
+        EasySWT.addLabel(relaxerGroup, "Relax Level")
+        unitSelector = Combo(relaxerGroup, SWT.READ_ONLY)
+        EasySWT.setGridData(unitSelector)
+        for (unit in UnitList.allUnits) unitSelector.add(unit.unitName)
+        viewContractionsButton = Button(relaxerGroup, SWT.PUSH)
+        viewContractionsButton.text = "View Contractions"
 
         //Specific settings
         val settingsGroup = Group(parent, SWT.NONE)
@@ -101,11 +135,28 @@ class TranslationSettingsTab internal constructor(folder: TabFolder?, private va
         mathExprTableText.isEnabled = false
         EasySWT.setGridData(mathExprTableText)
 
+        //Get the saved unit toggle. The relaxer only applies while the standard translates
+        //using uncontracted (grade 1) UEB, so the saved level is trusted as-is here; it stays
+        //disabled below whenever the selected standard isn't uncontracted-compatible.
+        BBIni.propertyFileManager.getProperty(UNIT_TOGGLE_PROPERTY)?.let {
+            unitToggle = it.toInt()
+        }
+        //Clamp in case an older saved value refers to an index that no longer exists in the list.
+        unitToggle = unitToggle.coerceIn(0, UnitList.allUnits.lastIndex)
+        initialUnitToggle = unitToggle
+        unitSelector.select(unitToggle)
+
         //--Add listeners--
         standardCombo.addSelectionListener(EasySWT.makeSelectedListener { it: SelectionEvent ->
             updateUI(
                 standardCombo.text
             )
+        })
+        unitSelector.addSelectionListener(EasySWT.makeSelectedListener { it: SelectionEvent ->
+            unitToggle = unitSelector.selectionIndex
+        })
+        viewContractionsButton.addSelectionListener(EasySWT.makeSelectedListener { it: SelectionEvent ->
+            viewContractions(parent.shell)
         })
 
         //---Set data---
@@ -142,6 +193,12 @@ class TranslationSettingsTab internal constructor(folder: TabFolder?, private va
             mathTextTableText.text = BrailleTableType.MATH_TEXT.getTableName(selectedSettings)
             mathExprTableText.text = BrailleTableType.MATH.getTableName(selectedSettings)
             brailleCellRadios[selectedSettings.cellType.name]!!.selection = true
+
+            //Contraction Relaxer only makes sense when the standard translates using the
+            //uncontracted (grade 1) UEB table - disable it otherwise.
+            val isUncontractedUeb = mainTableText.text == UNCONTRACTED_UEB_TABLE
+            unitSelector.isEnabled = isUncontractedUeb
+            viewContractionsButton.isEnabled = isUncontractedUeb
         } catch (ex: Exception) {
             throw RuntimeException("Failed when loading standard $standardName", ex)
         }
@@ -153,7 +210,145 @@ class TranslationSettingsTab internal constructor(folder: TabFolder?, private va
     }
 
     override fun updateEngine(engine: UTDTranslationEngine): Boolean {
-        return bbdoc.settingsManager.brailleStandard != selectedName
+        var changed = bbdoc.settingsManager.brailleStandard != selectedName
+        if (unitSelector.isEnabled && unitToggle != initialUnitToggle) {
+            writeContractionExceptions()
+            BBIni.propertyFileManager.saveAsInt(UNIT_TOGGLE_PROPERTY, unitToggle)
+            engine.brailleTranslator.close()
+            changed = true
+        }
+        return changed
+    }
+
+    private fun writeContractionExceptions() {
+        val file = getCurrentExceptionFile(manager)
+            ?: throw RuntimeException("Unable to save exceptions to translation correction file - no file found.")
+
+        val fileContent = file.readText(StandardCharsets.UTF_8)
+        val headerIndex = fileContent.indexOf(RELAXER_HEADER)
+        val footerIndex = fileContent.lastIndexOf(RELAXER_FOOTER)
+
+        val contractionList = makeContractionList()
+
+        if (headerIndex == -1 && footerIndex == -1) {
+            //Header and footer not found - append new header and footer along with contraction list.
+            OutputStreamWriter(FileOutputStream(file), StandardCharsets.UTF_8).use { writer ->
+                writer.append(RELAXER_HEADER)
+                writer.append(LINE_BREAK)
+                writer.append(contractionList)
+                writer.append(RELAXER_FOOTER)
+            }
+        } else if (headerIndex < footerIndex) {
+            //Doc is structured correctly, so clear everything between the header and footer.
+            val newContent =
+                "${fileContent.take(headerIndex + RELAXER_HEADER.length)}$LINE_BREAK$contractionList${
+                    fileContent.substring(
+                        footerIndex
+                    )
+                }"
+
+            OutputStreamWriter(FileOutputStream(file), StandardCharsets.UTF_8).use { writer ->
+                writer.write(newContent)
+            }
+        } else {
+            //Shouldn't happen, but if it does, just overwrite the file.
+            OutputStreamWriter(FileOutputStream(file), StandardCharsets.UTF_8).use { writer ->
+                writer.write("")
+                writer.append(RELAXER_HEADER)
+                writer.append(LINE_BREAK)
+                writer.append(contractionList)
+                writer.append(RELAXER_FOOTER)
+            }
+        }
+    }
+
+    private fun makeContractionList(): String {
+        return when (unitToggle) {
+            0 -> ""
+            else -> {
+                //Start at 1, since the 0th unit has no contraction list. Includes everything up
+                //to and including the selected unit (there's no "fully contracted" sentinel here -
+                //switching to full grade 2 is done via the standard combo itself).
+                UnitList.allUnits.drop(1).take(unitToggle)
+                    .flatMap { unit -> unit.contractions.map { "$it${System.lineSeparator()}" } }
+                    .joinToString(separator = "")
+            }
+        }
+    }
+
+    private fun makePrettyContractionList(): String {
+        //This is used for the preview window.
+        val f = StringBuilder()
+        for (i in 0..unitToggle) {
+            val unit = UnitList.allPrettyUnits[i]
+            for (c in unit) {
+                f.append(c)
+                f.append(System.lineSeparator())
+            }
+        }
+        return f.toString()
+    }
+
+    private fun viewContractions(parentShell: Shell) {
+        //Make a legible list of contractions for each unit. The liblouis tables are not exactly human-readable.
+        val contractionList = makePrettyContractionList()
+
+        val vc = Shell(parentShell, SWT.APPLICATION_MODAL or SWT.DIALOG_TRIM)
+        vc.text = "Contraction List"
+        vc.layout = GridLayout(1, false)
+
+        val comp = Composite(vc, SWT.NONE)
+        comp.layout = GridLayout(1, false)
+        comp.layoutData = GridData(SWT.FILL, SWT.FILL, true, true)
+
+        val myGrid = GridData(SWT.FILL, SWT.FILL, true, true)
+        val bounds = Display.getCurrent().primaryMonitor.clientArea
+        myGrid.widthHint = bounds.width / 4
+        myGrid.heightHint = bounds.height / 3
+
+        val st = Text(comp, SWT.BORDER or SWT.V_SCROLL or SWT.H_SCROLL or SWT.MULTI or SWT.READ_ONLY)
+        st.layoutData = myGrid
+        st.text = contractionList
+        st.editable = false
+
+        vc.pack()
+        vc.open()
+    }
+
+    //Convert an ascii braille string into a dot string
+    //IE "for" -> "123456"
+    //Braille is now hard-coded, but I used this method to generate it. Keep it - it's useful.
+    @Suppress("unused")
+    fun brailleAsciiToDots(brailleAscii: String): String {
+        val translation = manager.document.engine.brailleTranslator
+        val inputBuffer = Louis.WideChar(brailleAscii)
+        val outputBuffer = Louis.WideChar(brailleAscii.length)
+        translation.charToDots(
+            TableExceptions.getCurrentExceptionTable(manager),
+            inputBuffer, outputBuffer, brailleAscii.length, 0
+        )
+        val brailleDots = outputBuffer.getText(outputBuffer.length())
+        val brailleBytes = brailleDots.toByteArray(StandardCharsets.UTF_16LE)
+
+        var mask: Byte = 0x01
+        val result = StringBuilder()
+        for (d in brailleBytes) {
+            //Don't include negative bytes.
+            if (d >= 0) {
+                for (c in 1..6) {
+                    if ((d and mask) == mask) {
+                        result.append(c)
+                    }
+                    mask = (mask.toInt() shl 1).toByte()
+                }
+                result.append("-")
+            }
+            mask = 0x01
+        }
+        //Delete the last char, as it will always be a dash regardless of the final length of the string.
+        result.deleteCharAt(result.length - 1)
+
+        return result.toString()
     }
 
     companion object {
@@ -161,6 +356,10 @@ class TranslationSettingsTab internal constructor(folder: TabFolder?, private va
         private val log = LoggerFactory.getLogger(TranslationSettingsTab::class.java)
         private const val FILE_SUFFIX = ".brailleSettings.xml"
         const val SWTBOT_STANDARD_COMBO = "translationSettingsTab.standard"
+        private const val UNCONTRACTED_UEB_TABLE = "en-ueb-g1.ctb"
+        private const val UNIT_TOGGLE_PROPERTY = "ContractionRelaxer.unitToggle"
+        private const val RELAXER_HEADER = "#Begin UEB Contraction Relaxer"
+        private const val RELAXER_FOOTER = "#End UEB Contraction Relaxer"
 
         // settings constants for testing 
         const val UEB_PLUS_NEMETH = "UEB-PLUS-NEMETH"
