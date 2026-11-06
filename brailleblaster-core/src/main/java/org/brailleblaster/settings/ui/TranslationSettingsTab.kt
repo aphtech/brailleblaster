@@ -19,7 +19,6 @@ import org.brailleblaster.BBIni
 import org.brailleblaster.document.BBDocument
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.ui.contractionRelaxer.UnitList
-import org.brailleblaster.settings.TableExceptions
 import org.brailleblaster.settings.TableExceptions.getCurrentExceptionFile
 import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.utils.localization.LocaleHandler.Companion.getDefault
@@ -34,7 +33,6 @@ import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.layout.RowLayout
 import org.eclipse.swt.widgets.*
-import org.mwhapples.jlouis.Louis
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileOutputStream
@@ -42,7 +40,7 @@ import java.io.FilenameFilter
 import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
 import java.nio.file.Paths
-import kotlin.experimental.and
+
 
 class TranslationSettingsTab internal constructor(folder: TabFolder?, private val manager: Manager) : SettingsUITab {
     private val bbdoc: BBDocument = manager.document
@@ -313,42 +311,6 @@ class TranslationSettingsTab internal constructor(folder: TabFolder?, private va
 
         vc.pack()
         vc.open()
-    }
-
-    //Convert an ascii braille string into a dot string
-    //IE "for" -> "123456"
-    //Braille is now hard-coded, but I used this method to generate it. Keep it - it's useful.
-    @Suppress("unused")
-    fun brailleAsciiToDots(brailleAscii: String): String {
-        val translation = manager.document.engine.brailleTranslator
-        val inputBuffer = Louis.WideChar(brailleAscii)
-        val outputBuffer = Louis.WideChar(brailleAscii.length)
-        translation.charToDots(
-            TableExceptions.getCurrentExceptionTable(manager),
-            inputBuffer, outputBuffer, brailleAscii.length, 0
-        )
-        val brailleDots = outputBuffer.getText(outputBuffer.length())
-        val brailleBytes = brailleDots.toByteArray(StandardCharsets.UTF_16LE)
-
-        var mask: Byte = 0x01
-        val result = StringBuilder()
-        for (d in brailleBytes) {
-            //Don't include negative bytes.
-            if (d >= 0) {
-                for (c in 1..6) {
-                    if ((d and mask) == mask) {
-                        result.append(c)
-                    }
-                    mask = (mask.toInt() shl 1).toByte()
-                }
-                result.append("-")
-            }
-            mask = 0x01
-        }
-        //Delete the last char, as it will always be a dash regardless of the final length of the string.
-        result.deleteCharAt(result.length - 1)
-
-        return result.toString()
     }
 
     companion object {
