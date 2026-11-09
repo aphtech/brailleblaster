@@ -15,7 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.ui.contractionRelaxer
 
-import org.brailleblaster.perspectives.braille.ui.contractionRelaxer.ContractionRelaxer.Unit
+class Unit(val unitName: String, val contractions: List<String>)
 
 object UnitList {
 
@@ -1974,12 +1974,9 @@ object UnitList {
 
     val EmptyUnit = listOf<String>()
 
-    val FullContracted = Unit(
-      "Fully Contracted (Grade 2 UEB)", listOf()
-    )
-
     //Index 0 signals the Contraction Relaxer to change the translator to UEB-Uncontracted, and have no added contractions.
-    // The last index signals a change to UEB Grade 2, and to have no added contractions.
+    //There is no "Fully Contracted (Grade 2 UEB)" entry here - switching to grade 2 is handled by
+    //picking the standard directly in the Translation Settings tab, not by this unit list.
     val allUnits = listOf(
       FullUncontracted,
       Unit2,
@@ -1992,8 +1989,7 @@ object UnitList {
       Unit12,
       Unit14,
       Unit15,
-      Unit17,
-      FullContracted
+      Unit17
     )
 
     val allPrettyUnits = listOf(
@@ -2008,8 +2004,7 @@ object UnitList {
       Unit12Pretty,
       Unit14Pretty,
       Unit15Pretty,
-      Unit17Pretty,
-      EmptyUnit
+      Unit17Pretty
     )
 
 }

@@ -17,7 +17,6 @@ package org.brailleblaster.perspectives.braille
 
 import org.brailleblaster.perspectives.braille.ui.CellTabTool
 import org.brailleblaster.perspectives.braille.ui.CorrectTranslationDialog
-import org.brailleblaster.perspectives.braille.ui.contractionRelaxer.ContractionRelaxer
 import org.brailleblaster.perspectives.braille.views.style.BreadcrumbsToolbar
 import org.brailleblaster.perspectives.braille.views.wp.PageNumberDialog
 import org.brailleblaster.perspectives.mvc.BBSimpleManager
@@ -85,7 +84,6 @@ class CoreModulesFactory : ModuleFactory {
         addAll(ElementNavigationModule.tools)
         add(PageDownUpModule(manager))
         add(InsertUnicode(manager.wpManager.shell))
-        add(ContractionRelaxer(manager.wpManager.shell))
         add(InsertLinkTool(manager))
         add(InsertBookmarkTool(manager))
     }
