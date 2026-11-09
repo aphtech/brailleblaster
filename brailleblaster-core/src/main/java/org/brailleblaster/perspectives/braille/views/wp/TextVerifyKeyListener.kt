@@ -19,6 +19,7 @@ import nu.xom.*
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBXUtils
 import org.brailleblaster.bbx.findBlock
+import org.brailleblaster.bbx.findBlockOrNull
 import org.brailleblaster.bbx.fixers2.LiveFixer
 import org.brailleblaster.exceptions.EditingException
 import org.brailleblaster.math.mathml.MathModuleUtils
@@ -389,23 +390,29 @@ class TextVerifyKeyListener(
                 // Potential workaround for issue #4871
                 var lastTME = manager.mapList.findPreviousNonWhitespace(manager.mapList.size - 1)
                 var lastBlock: Element? = null
+                // Skip trailing TMEs outside any block, e.g. a bottom box line whose brl follows the box container
                 while (lastTME != null) {
-                    lastBlock = lastTME.node.findBlock()
+                    lastBlock = lastTME.node.findBlockOrNull()
                     if (lastBlock != null) {
                         break
                     } else {
-                        lastTME = manager.mapList.findPreviousNonWhitespace(manager.mapList.indexOf(lastTME))
+                        lastTME = manager.mapList.findPreviousNonWhitespace(manager.mapList.indexOf(lastTME) - 1)
                     }
                 }
                 if (lastBlock == null) {
                     throw RuntimeException("Could not find last block")
                 }
 
+                // A box draws its bottom line after its last block, so start the new page after the box itself
+                val outerBox = generateSequence(lastBlock.parent) { it.parent }
+                    .takeWhile { BBX.CONTAINER.isA(it) }
+                    .lastOrNull { BBX.CONTAINER.BOX.isA(it) } as Element?
+                val pageBreakTarget = outerBox ?: lastBlock
                 manager.document.settingsManager.applyStyleWithOption(
-                    (manager.getStyle(lastBlock) as Style),
+                    (manager.getStyle(pageBreakTarget) as Style),
                     Style.StyleOption.NEW_PAGES_AFTER,
                     1,
-                    lastBlock
+                    pageBreakTarget
                 )
 
                 //Break out of containers. See RT 6603
@@ -415,7 +422,8 @@ class TextVerifyKeyListener(
                     lastBlockParent = lastBlock!!.parent
                 }
 
-                val lastStyle = lastBlock.getAttributeValue("utd-style")
+                // Reusing a box's style would draw a new box around the placeholder block
+                val lastStyle = lastBlock.takeUnless { BBX.CONTAINER.BOX.isA(it) }?.getAttributeValue("utd-style")
                 val newBlock = if (lastStyle != null) {
                     val style = manager.simpleManager.utdManager.getBaseStyle(lastStyle, lastBlock)
                     BBX.BLOCK.STYLE.create(style)
