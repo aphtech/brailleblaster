@@ -19,6 +19,7 @@ data class PendingSpacing(
     var linesBefore: Int = 0,
     var linesAfter: Int = 0,
     var newLinesOverride: Int = 0, // When 0 no override
+    var keptNewLines: Int = 0, // How many of newLinesOverride survive a forced page break
     var spaces: Int = 0,
     var pages: Int = 0,
     var explicitPages: Int = 0
