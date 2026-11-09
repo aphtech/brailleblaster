@@ -1254,7 +1254,9 @@ public class Manager extends Controller {
         viewInitializer.initializeMap(this);
         viewInitializer.getSectionList().get(sectionIndex).setInView(true);
         list = viewInitializer.reformatViews(this, sectionIndex);
-        if (list.isEmpty() && viewInitializer instanceof NimasInitializer)
+        // No editable element (empty, or only blank lines e.g. before a lone page number): add the
+        // blank document placeholder so the caret has somewhere to go. Issue 68392
+        if (list.stream().allMatch(t -> t instanceof WhiteSpaceElement) && viewInitializer instanceof NimasInitializer)
             list = ((NimasInitializer) viewInitializer).formatTemplateDocument(this);
         onPostBuffer(list);
     }
