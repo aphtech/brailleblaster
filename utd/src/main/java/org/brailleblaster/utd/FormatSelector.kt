@@ -73,6 +73,9 @@ class FormatSelector(styleMap: IStyleMap?, styleStack: StyleStack?, engine: ITra
         return node is Element && UTD_NS == node.namespaceURI && "newLine" == node.localName
     }
 
+    private fun isKeptAfterPageBreak(node: Node): Boolean =
+        (node as Element).getAttributeValue(UTDElements.UTD_KEEP_AFTER_PAGE_BREAK_ATTRIB, UTD_NS).toBoolean()
+
     private fun isIgnorableNode(node: Node): Boolean {
         return pageLimit != null && processedPages > pageLimit!! || if (node is Element) {
             if (!PageBuilderHelper.isSkipLinesNode(node)) {
@@ -114,7 +117,7 @@ class FormatSelector(styleMap: IStyleMap?, styleStack: StyleStack?, engine: ITra
             return formatNode(node.rootElement, pageBuilders)
         }
         if (isNewLine(node)) {
-            return handleNewLine(pageBuilders)
+            return handleNewLine(node, pageBuilders)
         }
         if (isIgnorableNode(node)) {
             log.debug("Ignoring node")
@@ -175,9 +178,9 @@ class FormatSelector(styleMap: IStyleMap?, styleStack: StyleStack?, engine: ITra
         return pageBuilder
     }
 
-    private fun handleNewLine(pageBuilders: Set<PageBuilder>): PageBuilder {
+    private fun handleNewLine(node: Node, pageBuilders: Set<PageBuilder>): PageBuilder {
         var curPage = writePagesUTD(pageBuilders)
-        val pages: Set<PageBuilder> = curPage.insertNewLineOverride()
+        val pages: Set<PageBuilder> = curPage.insertNewLineOverride(isKeptAfterPageBreak(node))
         curPage = writePagesUTD(pages)
         return curPage
     }

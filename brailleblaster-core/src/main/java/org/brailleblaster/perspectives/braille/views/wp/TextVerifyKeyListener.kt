@@ -60,6 +60,9 @@ import org.brailleblaster.util.SoundManager.playSelectionBell
 import org.brailleblaster.util.Utils.combineAdjacentTextNodes
 import org.brailleblaster.util.WhitespaceUtils.appendLineBreakElement
 import org.brailleblaster.util.WhitespaceUtils.convertWhiteSpaceToLineBreaks
+import org.brailleblaster.util.WhitespaceUtils.isKeptAfterPageBreak
+import org.brailleblaster.util.WhitespaceUtils.isPageBreakBetween
+import org.brailleblaster.util.WhitespaceUtils.keepAfterPageBreak
 import org.brailleblaster.util.WhitespaceUtils.prependLineBreakElement
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.ST
@@ -479,13 +482,18 @@ class TextVerifyKeyListener(
             // At the end of the document. Do nothing.
             return
         }
+        // Across a forced page break the new line belongs at the top of the next page
+        val acrossPageBreak = t1 != null && isPageBreakBetween(t1, t2, manager.mapList)
         if (t1 != null) {
             convertWhiteSpaceToLineBreaks(t1, t2, manager.mapList)
         }
-        if (prepend) {
+        val lineBreak = if (prepend) {
             prependLineBreakElement(t2.node)
         } else if (t1 != null) {
             appendLineBreakElement(t1.node)
+        } else null
+        if (acrossPageBreak && lineBreak != null) {
+            keepAfterPageBreak(lineBreak)
         }
     }
 
@@ -801,14 +809,15 @@ class TextVerifyKeyListener(
             convertWhiteSpaceToLineBreaks(prev!!, next!!, manager.mapList)
         }
 
-        var lbe: LineBreakElement? = null
-        for (i in manager.mapList.indexOf(prev) + 1 until manager.mapList.indexOf(next)) {
-            if (manager.mapList[i] is LineBreakElement
-                && !(manager.mapList[i] as LineBreakElement).isEndOfLine
-            ) {
-                lbe = manager.mapList[i] as LineBreakElement
-                break
-            }
+        val lineBreaks = (manager.mapList.indexOf(prev) + 1 until manager.mapList.indexOf(next))
+            .map { manager.mapList[it] }
+            .filterIsInstance<LineBreakElement>()
+            .filterNot { it.isEndOfLine }
+        // Across a forced page break only the kept newLines make blank lines, the others are dropped by the formatter
+        val lbe = if (prev != null && next != null && isPageBreakBetween(prev, next, manager.mapList)) {
+            lineBreaks.lastOrNull { isKeptAfterPageBreak(it.node) }
+        } else {
+            lineBreaks.firstOrNull()
         }
         if (lbe != null) {
             var modifyNode = if (prev == null) (if (next == null) lbe.nodeParent else next.node) else prev.node

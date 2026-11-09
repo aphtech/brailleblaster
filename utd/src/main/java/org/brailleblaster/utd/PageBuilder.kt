@@ -1226,8 +1226,8 @@ class PageBuilder {
                 //Zero out the pending lines after but carry over any potential pending lines before for the next pages
                 pendingLinesAfter = 0
                 pendingSpacing.linesAfter = pendingLinesAfter
-                //#7243: Page breaks should ignore line breaks 
-                newLinesOverride = 0
+                //#7243: Page breaks should ignore line breaks, except those placed on the new page
+                newLinesOverride = pendingSpacing.keptNewLines
                 while (pendingPages > 0) {
                     pendingPages--
                     pb.pendingSpacing.pages = pendingPages
@@ -2793,6 +2793,9 @@ class PageBuilder {
         get() = pendingSpacing.newLinesOverride
         set(newLinesOverride) {
             pendingSpacing.newLinesOverride = newLinesOverride
+            if (newLinesOverride == 0) {
+                pendingSpacing.keptNewLines = 0
+            }
         }
 
     // They will have already been inserted.
@@ -4114,12 +4117,20 @@ class PageBuilder {
         nonsequentialPages = nonsequential
     }
 
-    fun insertNewLineOverride(): SetList<PageBuilder> {
+    /**
+     * @param keepAfterPageBreak the line belongs at the top of the page started by a pending forced page break,
+     * so it is not dropped along with the other pending lines when that page break is processed
+     */
+    @JvmOverloads
+    fun insertNewLineOverride(keepAfterPageBreak: Boolean = false): SetList<PageBuilder> {
         if (addingSkipLines) {
             processSpacing()
         }
         val overrideLines = newLinesOverride + 1
         newLinesOverride = overrideLines
+        if (keepAfterPageBreak) {
+            pendingSpacing.keptNewLines++
+        }
         val pages: SetList<PageBuilder> = SetList()
         pages.add(this)
         return pages

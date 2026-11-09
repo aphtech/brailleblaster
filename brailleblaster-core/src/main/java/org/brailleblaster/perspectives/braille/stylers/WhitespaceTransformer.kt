@@ -39,6 +39,8 @@ import org.brailleblaster.perspectives.braille.messages.WhitespaceMessage
 import org.brailleblaster.perspectives.mvc.XMLTextCaret
 import org.brailleblaster.perspectives.mvc.events.XMLCaretEvent
 import org.brailleblaster.util.WhitespaceUtils.appendLineBreakElement
+import org.brailleblaster.util.WhitespaceUtils.followsPageBreak
+import org.brailleblaster.util.WhitespaceUtils.keepAfterPageBreak
 import org.brailleblaster.util.WhitespaceUtils.prependLineBreakElement
 import org.brailleblaster.util.WhitespaceUtils.removeLineBreakElements
 
@@ -81,8 +83,11 @@ class WhitespaceTransformer(manager: Manager) : Handler(manager, manager.viewIni
         // represented by a single maplist entry, so the maplist-index-based blankLinesBefore
         // is always 1.  Override it with the actual visual distance from the previous text
         // element to the cursor so that the correct number of blank lines is inserted before
-        // the new text.
-        if (wse is PageBreakWhiteSpaceElement && pendingCursorOffset >= 0 && !atBeginning && curElement != null) {
+        // the new text.  The zero-width LineBreakElements that follow the page break belong
+        // to the same area, and are not counted by the maplist index distance either.
+        val inPageBreakArea = !atBeginning &&
+                (wse is PageBreakWhiteSpaceElement || (wse is LineBreakElement && followsPageBreak(wse, list)))
+        if (inPageBreakArea && pendingCursorOffset >= 0) {
             val view = manager.text.view
             // curElement.getEnd(list) is the charCount at the moment curElement finished
             // rendering, which equals the widget offset of the '\r' that terminates
@@ -98,7 +103,7 @@ class WhitespaceTransformer(manager: Manager) : Handler(manager, manager.viewIni
                 val pbStartLine = view.getLineAtOffset(pbStart)
                 val cursorLine = view.getLineAtOffset(pendingCursorOffset.coerceIn(0, view.charCount - 1))
                 val visualBlankLines = cursorLine - pbStartLine
-                if (visualBlankLines > blankLinesBefore) {
+                if (visualBlankLines > blankLinesBefore || wse is LineBreakElement) {
                     blankLinesBefore = visualBlankLines
                 }
             }
@@ -171,10 +176,17 @@ class WhitespaceTransformer(manager: Manager) : Handler(manager, manager.viewIni
         //		Element result = manager.getDocument().insertElement((Element)parent, insertIndex,t);
         parent.insertChild(node, insertIndex)
 
-        //Only add line breaks if there is a blank line between the new text and the previous tme
-        //(Unless we're at the beginning of the document. In that case the math changes a little)
-        //Otherwise don't add anything and rely on automatic formatting
-        if (blankLinesBefore > 1 || (atBeginning && blankLinesBefore > 0)) {
+        if (inPageBreakArea && getStyle(targetElement).newPagesAfter > 0) {
+            //The new text starts the page that follows targetElement: the first line after curElement is the
+            //page break, the rest are blank lines at the top of the new page. Mark them so the formatter keeps
+            //them there rather than dropping them with the page break.
+            repeat(blankLinesBefore - 1) {
+                keepAfterPageBreak(appendLineBreakElement(curElement.node))
+            }
+        } else if (blankLinesBefore > 1 || (atBeginning && blankLinesBefore > 0)) {
+            //Only add line breaks if there is a blank line between the new text and the previous tme
+            //(Unless we're at the beginning of the document. In that case the math changes a little)
+            //Otherwise don't add anything and rely on automatic formatting
             while (blankLinesBefore > 0) {
                 if (atBeginning) {
                     try {
