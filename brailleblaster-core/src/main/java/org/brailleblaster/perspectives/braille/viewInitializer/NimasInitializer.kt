@@ -53,9 +53,7 @@ class NimasInitializer(doc: BrailleDocument, text: TextView, braille: BrailleVie
 
     //adds or tracks a text node for a blank document when user starts
     fun formatTemplateDocument(m: Manager): MapList {
-        // Only called when nothing is editable. Any blank lines left (e.g. before a lone page number) have no
-        // following content, so they are not displayed and would only shadow the placeholder at offset 0
-        val list = sectionList[0].list.apply { clear() }
+        val list = sectionList[0].list
 
         //search for blank document placeholder
         //if it does not exist create placeholder element

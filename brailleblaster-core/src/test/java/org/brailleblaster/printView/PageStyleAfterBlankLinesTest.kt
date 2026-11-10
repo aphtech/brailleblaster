@@ -35,9 +35,11 @@ import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 /**
- * Issue 68392: Styles > Miscellaneous > Page on a selected number that follows several blank lines
- * in a new document crashed while restoring the caret. The page number block has no text view
- * element, so the map list held only blank line elements and caret lookup found nothing.
+ * Issue 68392: Styles > Miscellaneous > Page on a selected number that follows blank lines in a new
+ * document. The blank lines (utd:newLine) were still pending when the formatter reached the page
+ * number, so it treated the number as the first thing on the braille page and drew no print page
+ * indicator. With nothing else in the document the views then had nothing but blank lines, and caret
+ * restoration crashed looking for a text element.
  */
 class PageStyleAfterBlankLinesTest {
     // ---- driving the editor, see EnterAtEndOfDocumentTest for why the listeners are called directly
@@ -65,6 +67,11 @@ class PageStyleAfterBlankLinesTest {
             textViewWidget.caretOffset = offset + 1
         }
         manager.text.update(false)
+        ViewTestRunner.doPendingSWTWork()
+    }
+
+    private fun BBTestRunner.moveCaret(offset: Int) {
+        manager.text.setCurrentElement(offset)
         ViewTestRunner.doPendingSWTWork()
     }
 
@@ -99,16 +106,33 @@ class PageStyleAfterBlankLinesTest {
         assertEquals(marker.getAttributeValue("page"), "bbAdded")
     }
 
-    /** The caret resolves to editable text outside the page number, rather than throwing */
+    /** Caret restoration (the call that threw) works, and the caret is on the page number or editable text */
     private fun BBTestRunner.assertCaretUsable() {
-        // Same call that threw the NullPointerException
         val caret = manager.text.createNodeCaret(manager.mapList.current, 0)
         listOf(caret, manager.simpleManager.currentCaret).forEach {
-            assertTrue(it.node is Text, "Caret on ${it.node.toXML()}")
-            val block = it.node.findBlockOrNull()
-            assertNotNull(block, "Caret inside a block")
-            assertFalse(BBX.BLOCK.PAGE_NUM.isA(block), "Caret must not be inside the page number")
+            val target = it.node.findBlockOrNull() ?: it.node
+            assertTrue(BBX.BLOCK.isA(target), "Caret on ${it.node.toXML()}")
         }
+    }
+
+    private val BBTestRunner.brailleLines: List<String> get() = brailleViewWidget.text.lines()
+    private val BBTestRunner.textLines: List<String> get() = textViewWidget.text.lines()
+
+    private val BBTestRunner.cellsPerLine: Int
+        get() = manager.document.engine.let {
+            (it.pageSettings.drawableWidth / it.brailleSettings.cellType.width.toDouble()).toInt()
+        }
+
+    /**
+     * Print page change indicator for page 12 on the given braille line: dots 3-6 across the line, the print
+     * page number #ab at the right margin. The print view shows the same line with the print number.
+     */
+    private fun BBTestRunner.assertIndicatorOnLine(line: Int) {
+        val indicator = "-".repeat(cellsPerLine - 3) + "#ab"
+        assertEquals(brailleLines.indexOf(indicator), line, "Braille view: $brailleLines")
+        assertEquals(textLines.indexOfFirst { Regex("-{3,}12").matches(it) }, line, "Text view: $textLines")
+        // The page number is not also placed in the top corner, as when a print page starts a braille page
+        assertFalse(brailleLines.first().contains("#ab"), "Top line: ${brailleLines.first()}")
     }
 
     private fun newDocWithNumberAfterBlankLines(blankLines: Int): BBTestRunner =
@@ -125,14 +149,19 @@ class PageStyleAfterBlankLinesTest {
         bbTest.assertPageMarker("12")
         bbTest.assertCaretUsable()
         val blankLinesKept = List(blankLines) { "NL" }
-        assertEquals(bbTest.sectionSnapshot(), blankLinesKept + listOf("PAGE_NUM:12", "DEFAULT:"))
+        assertEquals(bbTest.sectionSnapshot(), blankLinesKept + "PAGE_NUM:12")
+        // The blank lines still come first, the page number is on the line after them
+        bbTest.assertIndicatorOnLine(blankLines)
 
-        // Editing continues after the page number, nothing before it is disturbed
+        // Editing continues on the line below the indicator, nothing before it is disturbed
+        val belowIndicator = bbTest.textViewWidget.getOffsetAtLine(blankLines + 1)
+        bbTest.moveCaret(belowIndicator)
         bbTest.type("Next")
         val after = bbTest.sectionSnapshot()
         assertEquals(after.dropLast(1), blankLinesKept + "PAGE_NUM:12", "Blocks: $after")
         assertTrue(after.last().endsWith(":Next"), "Typed text goes into a new block: $after")
-        assertTrue(bbTest.textViewWidget.text.contains("Next"))
+        bbTest.assertIndicatorOnLine(blankLines)
+        assertTrue(bbTest.textLines.drop(blankLines + 1).any { it.contains("Next") }, "Text view: ${bbTest.textLines}")
     }
 
     @Test
@@ -141,6 +170,7 @@ class PageStyleAfterBlankLinesTest {
     @Test
     fun pageAfterThreeBlankLines_issue68392() = assertPageAfterBlankLines(3)
 
+    /** First thing on the braille page: no indicator line, the number goes in the top corner (unchanged) */
     @Test
     fun pageWithoutBlankLines() {
         val bbTest = newDocWithNumberAfterBlankLines(0)
@@ -149,6 +179,7 @@ class PageStyleAfterBlankLinesTest {
 
         bbTest.assertPageMarker("12")
         bbTest.assertCaretUsable()
+        assertFalse(bbTest.brailleLines.any { it.startsWith("---") }, "Braille view: ${bbTest.brailleLines}")
     }
 
     @Test
@@ -162,10 +193,11 @@ class PageStyleAfterBlankLinesTest {
         bbTest.assertPageMarker("12")
         bbTest.assertCaretUsable()
         assertEquals(bbTest.sectionSnapshot(), List(5) { "NL" } + listOf("PAGE_NUM:12", "STYLE:After"))
-        assertTrue(bbTest.textViewWidget.text.contains("After"))
+        bbTest.assertIndicatorOnLine(5)
+        assertTrue(bbTest.brailleLines[6].contains(",af"), "'After' follows the indicator: ${bbTest.brailleLines}")
     }
 
-    /** Text before and after the number: the marker lands mid braille page and shows a page change indicator */
+    /** Text before and after the number: the marker lands mid braille page (unchanged behavior) */
     @Test
     fun pageInMiddleOfBraillePage() {
         val bbTest = BBTestRunner(Manager.DEFAULT_FILE.toFile())
@@ -179,18 +211,12 @@ class PageStyleAfterBlankLinesTest {
         bbTest.applyPageStyle()
 
         bbTest.assertPageMarker("12")
-        // With text around it the caret may rest on the page indicator line itself, which is navigable
-        assertNotNull(bbTest.manager.text.createNodeCaret(bbTest.manager.mapList.current, 0))
+        bbTest.assertCaretUsable()
         assertEquals(bbTest.sectionSnapshot(), before.map { if (it == "STYLE:12") "PAGE_NUM:12" else it })
 
-        // Print page change indicator: dots 3-6 across the line, print page number #ab (12) at the right margin
-        val engine = bbTest.manager.document.engine
-        val cellsPerLine = (engine.pageSettings.drawableWidth / engine.brailleSettings.cellType.width.toDouble()).toInt()
-        val brailleLines = bbTest.brailleViewWidget.text.lines()
-        val indicator = brailleLines.indexOfFirst { Regex("-{3,}#ab").matches(it) }
-        assertTrue(indicator >= 0, "No print page change indicator in braille view: $brailleLines")
-        assertEquals(brailleLines[indicator].length, cellsPerLine, "Indicator spans the line")
-        assertTrue(brailleLines.take(indicator).any { it.contains(",2f") }, "'Before' precedes the indicator")
-        assertTrue(brailleLines.drop(indicator + 1).any { it.contains(",af") }, "'After' follows the indicator")
+        val indicator = bbTest.brailleLines.indexOf("-".repeat(bbTest.cellsPerLine - 3) + "#ab")
+        assertTrue(indicator > 0, "No print page change indicator in braille view: ${bbTest.brailleLines}")
+        assertTrue(bbTest.brailleLines.take(indicator).any { it.contains(",2f") }, "'Before' precedes the indicator")
+        assertTrue(bbTest.brailleLines.drop(indicator + 1).any { it.contains(",af") }, "'After' follows the indicator")
     }
 }

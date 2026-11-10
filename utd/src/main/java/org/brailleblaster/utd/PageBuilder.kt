@@ -2009,8 +2009,15 @@ class PageBuilder {
             if (!empty) break
             lineCheck++
         }
-        return !empty || pageNumber.isEmpty() || printPageNumber.isEmpty()
+        return !empty || isBelowForcedBlankLines || pageNumber.isEmpty() || printPageNumber.isEmpty()
     }
+
+    /**
+     * The current line was reached only through blank lines the user inserted (utd:newLine), so whatever is
+     * placed here is not at the top of the braille page even though the lines above it are empty.
+     */
+    val isBelowForcedBlankLines: Boolean
+        get() = _y > 0 && disablePPIChecks == _y
 
     /**
      * Inserts the print page indicator whenever a new page number has been

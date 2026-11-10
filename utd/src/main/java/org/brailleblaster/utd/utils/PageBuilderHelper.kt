@@ -206,6 +206,16 @@ object PageBuilderHelper {
         val results: MutableSet<PageBuilder> = LinkedHashSet()
         results.add(pageBuilder)
 
+        if (pageBuilder.newLinesOverride > 0) {
+            //Blank lines the user typed before the page number are still pending. Lay them down while the previous
+            //print page is in effect: they move the page number down the braille page, so it gets an indicator
+            //line there rather than being treated as the top of the page. Issue 68392
+            results.addAll(pageBuilder.processSpacing())
+            pageBuilder = results.last()
+            //The page's own numbers belong to the print page in effect before this one, as when text comes first
+            if (!pageBuilder.hasAddedPageNumbers()) pageBuilder.addPageNumbers()
+        }
+
         var addIndicator = true
         //Update the page number only if it's not the same as the one you currently have
         if (pageBuilder.printPageNumber != brl.getAttributeValue("printPage")) {
@@ -241,7 +251,7 @@ object PageBuilderHelper {
                         i++
                     }
                     isEmpty = if (pageBuilder.hasRunningHead()) (isEmpty) else pageBuilder.isEmptyNumberLine(0)
-                    if (isEmpty && pageBuilder.hasAddedPageNumbers()) {
+                    if (isEmpty && pageBuilder.hasAddedPageNumbers() && !pageBuilder.isBelowForcedBlankLines) {
                         //If it is the first thing on the page, you need to update your print page number
                         pageBuilder.decrementContinuationLetter()
                         pageBuilder.addPageNumbers()
