@@ -20,6 +20,7 @@ import nu.xom.Node
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.findBlock
+import org.brailleblaster.bbx.findBlockOrNull
 import org.brailleblaster.exceptions.EditingException
 import org.brailleblaster.math.mathml.MathModuleUtils
 import org.brailleblaster.math.numberLine.NumberLine.Companion.getNumberLineParent
@@ -30,6 +31,7 @@ import org.brailleblaster.math.spatial.SpatialMathUtils.isSpatialMathPage
 import org.brailleblaster.math.template.Template.Companion.getTemplateParent
 import org.brailleblaster.math.template.Template.Companion.isTemplate
 import org.brailleblaster.perspectives.braille.Manager
+import org.brailleblaster.perspectives.braille.document.BrailleDocument.Companion.isEmptyPlaceholder
 import org.brailleblaster.perspectives.braille.mapping.elements.BoxLineTextMapElement
 import org.brailleblaster.perspectives.braille.mapping.elements.LineBreakElement
 import org.brailleblaster.perspectives.braille.mapping.elements.PageBreakWhiteSpaceElement
@@ -74,6 +76,8 @@ class WhitespaceTransformer(manager: Manager) : Handler(manager, manager.viewIni
         //Calculate how many blank lines come before and after the new element
         var blankLinesBefore = if (atBeginning) index else index - list.indexOf(curElement)
         var blankLinesAfter = if (nextElement == null) -1 else list.indexOf(nextElement) - index
+
+        val afterEmptyPlaceholder = !atBeginning && curElement.node.findBlockOrNull()?.let(::isEmptyPlaceholder) == true
 
         if (wse is LineBreakElement && !atBeginning) {
             blankLinesBefore-- //An extra line break element is added to the previous tme
@@ -183,9 +187,11 @@ class WhitespaceTransformer(manager: Manager) : Handler(manager, manager.viewIni
             repeat(blankLinesBefore - 1) {
                 keepAfterPageBreak(appendLineBreakElement(curElement.node))
             }
-        } else if (blankLinesBefore > 1 || (atBeginning && blankLinesBefore > 0)) {
+        } else if (blankLinesBefore > 1 || ((atBeginning || afterEmptyPlaceholder) && blankLinesBefore > 0)) {
             //Only add line breaks if there is a blank line between the new text and the previous tme
             //(Unless we're at the beginning of the document. In that case the math changes a little)
+            //An empty blank document placeholder has no braille and is removed once the document has content, so
+            //the line it shows in the view is a blank line before the new text as well
             //Otherwise don't add anything and rely on automatic formatting
             while (blankLinesBefore > 0) {
                 if (atBeginning) {
