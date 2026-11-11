@@ -89,20 +89,12 @@ class BrailleDocument(dm: Manager, doc: Document) : BBDocument(dm, doc) {
         var parentNode = if (currentNode is Text) currentNode.parent else currentNode
         changeTextNode(currentNode, text)
         val parent = BBXUtils.cleanupBlock(parentNode)
-        // If last text node of document, remove line break elements between
-        // this and the previous
-        // element
-        if (parentNode.document == null && list.getPrevious(true) != null) {
-            var lastTextTME = true
-            for (index in list.currentIndex + 1 until list.size) {
-                if (list[index] !is WhiteSpaceElement) {
-                    lastTextTME = false
-                    break
-                }
-            }
-            if (lastTextTME) {
-                removeLineBreakElements(list, list.indexOf(list.getPrevious(true)), list.size - 1)
-            }
+        // If the last block of the document was removed, remove the line break elements between it and the
+        // previous element. With no previous element these are blank lines before nothing, so remove them all:
+        // the document is then empty and gets its blank document placeholder back (issue 70995)
+        if (parentNode.document == null && list.drop(list.currentIndex + 1).all { it is WhiteSpaceElement }) {
+            val start = list.getPrevious(true)?.let { list.indexOf(it) } ?: 0
+            removeLineBreakElements(list, start, list.size - 1)
         }
         if (parent != null) {
             parentNode = parent
