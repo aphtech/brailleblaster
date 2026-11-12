@@ -512,9 +512,11 @@ class ClipboardModule(private val manager: BBSimpleManager) : SimpleListener {
                 index = (startNodeParent.indexOf(startNode)
                         + (if (sel.start.cursorPosition == XMLNodeCaret.CursorPosition.BEFORE) 0 else 1))
             }
+            // Look up the list once: pasting the first clip into a new document's whitespace reformats it, which
+            // detaches the empty placeholder block (startNode), and a detached node has no ancestors to search
+            val listParent =
+                XMLHandler.ancestorVisitor(startNode) { node: Node? -> BBX.CONTAINER.LIST.isA(node) }
             for (i in clips.indices) {
-                val listParent =
-                    XMLHandler.ancestorVisitor(startNode) { node: Node? -> BBX.CONTAINER.LIST.isA(node) }
                 val clipboardNode = clips[i].node
                 if (clipboardNode.value.trim { it <= ' ' }.isEmpty()) {
                     continue
