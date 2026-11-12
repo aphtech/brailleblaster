@@ -408,10 +408,12 @@ class ClipboardModule(private val manager: BBSimpleManager) : SimpleListener {
             if (BBX.BLOCK.isA(clips.first().node)) {
                 val firstClipBlock = clips.first().node as Element
                 // Apply the block type/style from the clip to the destination block
-                // so that pasting into a new/blank document preserves the source style
+                // so that pasting into a new/blank document preserves the source style.
+                // The text's parent may be an inline (e.g. direct translation), so style the enclosing block.
                 if (BBX.BLOCK.STYLE.isA(firstClipBlock)) {
-                    BBX._ATTRIB_TYPE[parent as Element] = "STYLE"
-                    BBX._ATTRIB_OVERRIDE_STYLE[parent] = BBX._ATTRIB_OVERRIDE_STYLE[firstClipBlock]
+                    val destinationBlock = findBlock(startNode)
+                    BBX._ATTRIB_TYPE[destinationBlock] = "STYLE"
+                    BBX._ATTRIB_OVERRIDE_STYLE[destinationBlock] = BBX._ATTRIB_OVERRIDE_STYLE[firstClipBlock]
                 }
                 for (i in 0..<clips.first().node.childCount) {
                     val child = clips.first().node.getChild(i).copy()
