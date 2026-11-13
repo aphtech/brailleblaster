@@ -27,6 +27,7 @@ import org.brailleblaster.settings.ResetBB
 import org.brailleblaster.settings.ui.PrivacyTool
 import org.brailleblaster.spi.ModuleFactory
 import org.brailleblaster.tools.BlankPrintPageIndicatorTool
+import org.brailleblaster.tools.DocumentSwitchTools
 import org.brailleblaster.tools.InsertBookmarkTool
 import org.brailleblaster.tools.InsertLinkTool
 import org.brailleblaster.tools.LineBreakTool
@@ -53,6 +54,7 @@ class CoreModulesFactory : ModuleFactory {
         add(PageNumberDialog(manager.wpManager.shell))
         add(SearchDialog(manager.wpManager.shell, 0))
         addAll(NavigateModule.tools)
+        addAll(DocumentSwitchTools.tools)
         add(CorrectTranslationDialog(manager.wpManager.shell, SWT.APPLICATION_MODAL))
         add(SixKeyModeModule(manager))
         addAll(SettingsModule.tools)
