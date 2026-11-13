@@ -23,7 +23,9 @@ import org.brailleblaster.testrunners.BBTestRunner
 import org.brailleblaster.testrunners.BBXDocFactory
 import org.brailleblaster.testrunners.ViewTestRunner
 import org.brailleblaster.utd.internal.xml.FastXPath
+import org.brailleblaster.utd.internal.xml.XMLHandler
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.wordprocessor.WPManager
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.ST
 import org.eclipse.swt.widgets.Event
@@ -31,11 +33,16 @@ import org.testng.Assert.assertEquals
 import org.testng.Assert.assertFalse
 import org.testng.Assert.assertSame
 import org.testng.annotations.Test
+import java.io.File
 
 /**
  * Issue 70999: copying a heading and the paragraph under it, opening a new document, pressing Enter once and pasting
  * crashed BrailleBlaster. Pasting the first paragraph removes the new document's empty placeholder, which paste
  * still used to look up the list it was pasting into for the following paragraphs.
+ *
+ * It still failed when the new document was opened and Enter pressed before the source was opened, and the new
+ * document's tab was then clicked again: focusing the style pane moved the braille view's caret to a line the braille
+ * view did not have yet, the exception stopped the tab switch, and Paste went to the source document instead.
  */
 class PasteIntoNewDocumentTest {
     private val heading = "GED TEST TIP"
@@ -45,12 +52,12 @@ class PasteIntoNewDocumentTest {
     private fun styled(style: String, text: String): Element =
         BBX.BLOCK.STYLE.create(style).apply { appendChild(text) }
 
-    private fun sourceDocument() = BBTestRunner(
-        BBXDocFactory()
-            .append(styled("Cell 5 Heading", heading))
-            .append(styled("Body Text", tip))
-            .append(styled("Body Text", after))
-    )
+    private fun sourceFactory() = BBXDocFactory()
+        .append(styled("Cell 5 Heading", heading))
+        .append(styled("Body Text", tip))
+        .append(styled("Body Text", after))
+
+    private fun sourceDocument() = BBTestRunner(sourceFactory())
 
     /** Blocks as (style, print text) pairs, ignoring translated braille */
     private fun Manager.blockSnapshot(): List<Pair<String?, String>> =
@@ -66,11 +73,11 @@ class PasteIntoNewDocumentTest {
             .toList()
 
     /** Select the heading through the end of the tip paragraph and use the Copy menu */
-    private fun BBTestRunner.copyHeadingAndTip() {
-        val end = textViewWidget.getOffsetAtLine(1) + tip.length
-        manager.text.highlight(0, end)
+    private fun BBTestRunner.copyHeadingAndTip(source: Manager = manager) {
+        val end = source.textView.getOffsetAtLine(1) + tip.length
+        source.text.highlight(0, end)
         ViewTestRunner.doPendingSWTWork()
-        assertEquals(textViewWidget.selectionText.lines(), listOf(heading, tip))
+        assertEquals(source.textView.selectionText.lines(), listOf(heading, tip))
         copy()
         ViewTestRunner.doPendingSWTWork()
     }
@@ -98,15 +105,45 @@ class PasteIntoNewDocumentTest {
         assertFalse(event.doit, "Enter is always handled by the editor")
     }
 
-    private fun BBTestRunner.pasteAndCheck(newDoc: Manager, expectedLines: List<String>) {
-        val source = manager
+    /** What File > Open does with the source document, keeping the new document open */
+    private fun BBTestRunner.openSourceDocument(): Manager {
+        val file = File.createTempFile("bbTest70999", ".bbx").apply { deleteOnExit() }
+        XMLHandler().save(sourceFactory().root.document, file)
+        wpManager.addDocumentManager(file.toPath())
+        ViewTestRunner.doPendingSWTWork()
+        return wpManager.controller
+    }
+
+    /** Click a document's tab, delivered to the tab folder's mouse listener */
+    private fun WPManager.clickTab(target: Manager) {
+        val bounds = folder.getItem(list.indexOf(target)).bounds
+        listOf(SWT.MouseDown, SWT.MouseUp).forEach { type ->
+            folder.notifyListeners(type, Event().apply {
+                button = 1
+                count = 1
+                x = bounds.x + bounds.width / 2
+                y = bounds.y + bounds.height / 2
+            })
+            ViewTestRunner.doPendingSWTWork()
+        }
+    }
+
+    /** Ctrl+Page Up, as the tab folder receives it */
+    private fun WPManager.previousTab() {
+        folder.notifyListeners(SWT.Traverse, Event().apply { detail = SWT.TRAVERSE_PAGE_PREVIOUS; doit = true })
+        ViewTestRunner.doPendingSWTWork()
+    }
+
+    private fun BBTestRunner.pasteAndCheck(
+        newDoc: Manager, expectedLines: List<String>, source: Manager = manager, openDocuments: Int = 2
+    ) {
         val sourceBlocks = source.blockSnapshot()
 
         paste()
         ViewTestRunner.doPendingSWTWork()
 
-        // Both documents are still open and the paste went into the new one
-        assertEquals(wpManager.list.size, 2, "Source and new document are still open")
+        // All documents are still open and the paste went into the new one
+        assertEquals(wpManager.list.size, openDocuments, "Source and new document are still open")
         assertSame(wpManager.controller, newDoc)
         assertEquals(source.blockSnapshot(), sourceBlocks, "Source document is unchanged")
 
@@ -141,6 +178,27 @@ class PasteIntoNewDocumentTest {
             .parent
         assertEquals(UTDElements.NEW_LINE.isA(section.getChild(0)), true, "Blank line from Enter is kept: ${section.toXML()}")
     }
+
+    /** Open a new document and press Enter, then open the source, copy and switch back to the new document */
+    private fun pasteAfterSwitchingBack(switchBack: WPManager.(Manager) -> Unit) {
+        // The runner needs a document to start with; it stays open as a third tab
+        val bbTest = BBTestRunner(BBXDocFactory().append(styled("Body Text", after)))
+        val newDoc = bbTest.openNewDocument()
+        newDoc.pressEnter()
+        val source = bbTest.openSourceDocument()
+        bbTest.copyHeadingAndTip(source)
+
+        bbTest.wpManager.switchBack(newDoc)
+        assertSame(bbTest.wpManager.controller, newDoc, "Switching tabs makes the new document current")
+
+        bbTest.pasteAndCheck(newDoc, listOf("", heading, tip), source, openDocuments = 3)
+    }
+
+    @Test
+    fun pasteAfterClickingBackToNewDocument() = pasteAfterSwitchingBack { clickTab(it) }
+
+    @Test
+    fun pasteAfterKeyboardSwitchBackToNewDocument() = pasteAfterSwitchingBack { previousTab() }
 
     @Test
     fun pasteHeadingAndParagraphIntoNewDocument() {
