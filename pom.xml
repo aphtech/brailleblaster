@@ -380,7 +380,12 @@ child.project.url.inherit.append.path="false">
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>33.5.0-jre</version>
+                <version>33.8.0-jre</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.errorprone</groupId>
+                <artifactId>error_prone_annotations</artifactId>
+                <version>2.52.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
@@ -471,7 +476,7 @@ child.project.url.inherit.append.path="false">
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
-                <version>2.13.2</version>
+                <version>2.15.0</version>
             </dependency>
             <dependency>
                 <groupId>com.github.aphtech</groupId>
