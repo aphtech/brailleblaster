@@ -56,7 +56,7 @@ child.project.url.inherit.append.path="false">
         <jetbrains.annotations.version>26.1.0</jetbrains.annotations.version>
         <slf4j.version>2.0.18</slf4j.version>
         <mathcat4j.version>1.0.3</mathcat4j.version>
-        <mathcat4j-jni.version>0.7.6-rc.4-1</mathcat4j-jni.version>
+        <mathcat4j-jni.version>0.7.7-1</mathcat4j-jni.version>
         <jlouis.version>1.0.7</jlouis.version>
         <libembosser.version>1.4.3</libembosser.version>
         <jaxbapi.version>4.0.5</jaxbapi.version>
