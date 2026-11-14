@@ -68,6 +68,12 @@ enum class UTDElements(val elementName: String) {
         const val UTD_ACTION_ATTRIB = "utd-action"
         const val UTD_STYLE_ATTRIB = "utd-style"
         const val UTD_SKIP_LINES_ATTRIB = "skipLines"
+
+        /**
+         * Marks a newLine the editor placed at the top of the page that follows a forced page break.
+         * Unmarked newLines pending at a forced page break are dropped (#7243); marked ones are kept on the new page.
+         */
+        const val UTD_KEEP_AFTER_PAGE_BREAK_ATTRIB = "keepAfterPageBreak"
         fun getByName(name: String): UTDElements? {
             for (element in entries) {
                 if (element.elementName == name) {

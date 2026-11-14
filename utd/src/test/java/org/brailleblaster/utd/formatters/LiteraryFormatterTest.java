@@ -232,6 +232,55 @@ public class LiteraryFormatterTest {
 		assertFalse(pageBuilder.toBRF().contains(PAGE_INDICATOR), "Expected no page indicator\n" + pageBuilder);
 	}
 	
+	/**
+	 * Issue 68392: blank lines (newLine) before a page number move it down the braille page, so it gets an
+	 * indicator line there instead of being treated as the first thing on the page
+	 */
+	@Test
+	public void insertPrintPageIndicatorAfterBlankLines(){
+		for (boolean textAfter : new boolean[]{false, true}) {
+			Element root = new Element("book");
+			for (int i = 0; i < 5; i++) {
+				root.appendChild(UTDElements.NEW_LINE.create());
+			}
+			Element pagenum = new Element("pagenum");
+			pagenum.appendChild("12");
+			Element pagenumBrl = UTDElements.BRL.create();
+			pagenumBrl.addAttribute(new Attribute("printPage", "12"));
+			pagenumBrl.addAttribute(new Attribute("printPageBrl", "#ab"));
+			pagenumBrl.addAttribute(new Attribute("pageType", "NORMAL"));
+			pagenum.appendChild(pagenumBrl);
+			root.appendChild(pagenum);
+			if (textAfter) {
+				Element p = new Element("p");
+				p.appendChild("test");
+				Element brl = UTDElements.BRL.create();
+				brl.appendChild("te/");
+				p.appendChild(brl);
+				root.appendChild(p);
+			}
+
+			UTDTranslationEngine engine = generateDefaultEngine();
+			PageBuilder pb = new PageBuilder(engine, new Cursor());
+			Set<PageBuilder> pbs = new LinkedHashSet<>();
+			pbs.add(pb);
+			StyleStack ss = new StyleStack();
+			FormatSelector formatter = new FormatSelector(getStyleMap(), ss, engine);
+			pb = Iterables.getLast(new LiteraryFormatter().format(root, ss, pbs, formatter));
+
+			String[] lines = pb.toBRF().toLowerCase().split("\r?\n", -1);
+			String message = "textAfter=" + textAfter + "\n" + pb.toBRF();
+			assertEquals(lines[5], PAGE_INDICATOR + "#ab", message);
+			for (int i = 1; i < 5; i++) {
+				assertTrue(lines[i].isBlank(), "Blank line " + i + " kept\n" + message);
+			}
+			assertFalse(lines[0].contains("#ab"), "Print page number not at the top of the page\n" + message);
+			if (textAfter) {
+				assertEquals(lines[6].trim(), "te/", message);
+			}
+		}
+	}
+
 	@Test
 	public void insertPrintPageIndicatorAtBottom(){
 		Element root = new Element("book");

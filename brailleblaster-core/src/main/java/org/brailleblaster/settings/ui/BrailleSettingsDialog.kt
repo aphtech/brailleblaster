@@ -79,7 +79,7 @@ class BrailleSettingsDialog(parent: Shell?, m: Manager?, tabToOpen: Class<out Se
             (folder.layoutData as GridData).grabExcessVerticalSpace = true
 
             pageProperties = PagePropertiesTab.create(folder, engine, this.shell)
-            translationTab = TranslationSettingsTab(folder, m.document)
+            translationTab = TranslationSettingsTab(folder, m)
             pageNumTab = PageNumbersTab(folder, engine.pageSettings)
             formatTab = FormatSettingsTab(folder, m.document)
             embosserTab = EmbosserSettingsTab(folder)
