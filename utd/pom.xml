@@ -14,7 +14,7 @@
     <properties>
         <findbugsXML>false</findbugsXML>
         <!-- Versioning -->
-        <xmlunitmatchers.version>2.11.0</xmlunitmatchers.version>
+        <xmlunitmatchers.version>2.14.0</xmlunitmatchers.version>
         <findbugsmavenplugin.version>3.0.5</findbugsmavenplugin.version>
         <mavenpmdplugin.version>3.13.0</mavenpmdplugin.version>
     </properties>

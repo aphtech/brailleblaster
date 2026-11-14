@@ -14,7 +14,6 @@
         <main.dist.directory>${project.build.directory}/mainDist</main.dist.directory>
         <native.directory>native</native.directory>
         <!-- Versioning -->
-        <miglayoutswt.version>11.4.2</miglayoutswt.version>
         <jeuclid.version>3dd136499d543bf4863e05a94b8b1169834cf963</jeuclid.version>
 
         <!-- For exec:java, put here so mainClass can be overridden with -Dexec.mainClass -->
@@ -96,7 +95,6 @@
         <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout-swt</artifactId>
-            <version>${miglayoutswt.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.eclipse.swt</groupId>
