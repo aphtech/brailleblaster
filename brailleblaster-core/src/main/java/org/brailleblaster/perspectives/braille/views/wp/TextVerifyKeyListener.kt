@@ -19,6 +19,7 @@ import nu.xom.*
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.BBXUtils
 import org.brailleblaster.bbx.findBlock
+import org.brailleblaster.bbx.findBlockOrNull
 import org.brailleblaster.bbx.fixers2.LiveFixer
 import org.brailleblaster.exceptions.EditingException
 import org.brailleblaster.math.mathml.MathModuleUtils
@@ -59,6 +60,9 @@ import org.brailleblaster.util.SoundManager.playSelectionBell
 import org.brailleblaster.util.Utils.combineAdjacentTextNodes
 import org.brailleblaster.util.WhitespaceUtils.appendLineBreakElement
 import org.brailleblaster.util.WhitespaceUtils.convertWhiteSpaceToLineBreaks
+import org.brailleblaster.util.WhitespaceUtils.isKeptAfterPageBreak
+import org.brailleblaster.util.WhitespaceUtils.isPageBreakBetween
+import org.brailleblaster.util.WhitespaceUtils.keepAfterPageBreak
 import org.brailleblaster.util.WhitespaceUtils.prependLineBreakElement
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.ST
@@ -389,23 +393,29 @@ class TextVerifyKeyListener(
                 // Potential workaround for issue #4871
                 var lastTME = manager.mapList.findPreviousNonWhitespace(manager.mapList.size - 1)
                 var lastBlock: Element? = null
+                // Skip trailing TMEs outside any block, e.g. a bottom box line whose brl follows the box container
                 while (lastTME != null) {
-                    lastBlock = lastTME.node.findBlock()
+                    lastBlock = lastTME.node.findBlockOrNull()
                     if (lastBlock != null) {
                         break
                     } else {
-                        lastTME = manager.mapList.findPreviousNonWhitespace(manager.mapList.indexOf(lastTME))
+                        lastTME = manager.mapList.findPreviousNonWhitespace(manager.mapList.indexOf(lastTME) - 1)
                     }
                 }
                 if (lastBlock == null) {
                     throw RuntimeException("Could not find last block")
                 }
 
+                // A box draws its bottom line after its last block, so start the new page after the box itself
+                val outerBox = generateSequence(lastBlock.parent) { it.parent }
+                    .takeWhile { BBX.CONTAINER.isA(it) }
+                    .lastOrNull { BBX.CONTAINER.BOX.isA(it) } as Element?
+                val pageBreakTarget = outerBox ?: lastBlock
                 manager.document.settingsManager.applyStyleWithOption(
-                    (manager.getStyle(lastBlock) as Style),
+                    (manager.getStyle(pageBreakTarget) as Style),
                     Style.StyleOption.NEW_PAGES_AFTER,
                     1,
-                    lastBlock
+                    pageBreakTarget
                 )
 
                 //Break out of containers. See RT 6603
@@ -415,7 +425,8 @@ class TextVerifyKeyListener(
                     lastBlockParent = lastBlock!!.parent
                 }
 
-                val lastStyle = lastBlock.getAttributeValue("utd-style")
+                // Reusing a box's style would draw a new box around the placeholder block
+                val lastStyle = lastBlock.takeUnless { BBX.CONTAINER.BOX.isA(it) }?.getAttributeValue("utd-style")
                 val newBlock = if (lastStyle != null) {
                     val style = manager.simpleManager.utdManager.getBaseStyle(lastStyle, lastBlock)
                     BBX.BLOCK.STYLE.create(style)
@@ -471,13 +482,18 @@ class TextVerifyKeyListener(
             // At the end of the document. Do nothing.
             return
         }
+        // Across a forced page break the new line belongs at the top of the next page
+        val acrossPageBreak = t1 != null && isPageBreakBetween(t1, t2, manager.mapList)
         if (t1 != null) {
             convertWhiteSpaceToLineBreaks(t1, t2, manager.mapList)
         }
-        if (prepend) {
+        val lineBreak = if (prepend) {
             prependLineBreakElement(t2.node)
         } else if (t1 != null) {
             appendLineBreakElement(t1.node)
+        } else null
+        if (acrossPageBreak && lineBreak != null) {
+            keepAfterPageBreak(lineBreak)
         }
     }
 
@@ -793,14 +809,15 @@ class TextVerifyKeyListener(
             convertWhiteSpaceToLineBreaks(prev!!, next!!, manager.mapList)
         }
 
-        var lbe: LineBreakElement? = null
-        for (i in manager.mapList.indexOf(prev) + 1 until manager.mapList.indexOf(next)) {
-            if (manager.mapList[i] is LineBreakElement
-                && !(manager.mapList[i] as LineBreakElement).isEndOfLine
-            ) {
-                lbe = manager.mapList[i] as LineBreakElement
-                break
-            }
+        val lineBreaks = (manager.mapList.indexOf(prev) + 1 until manager.mapList.indexOf(next))
+            .map { manager.mapList[it] }
+            .filterIsInstance<LineBreakElement>()
+            .filterNot { it.isEndOfLine }
+        // Across a forced page break only the kept newLines make blank lines, the others are dropped by the formatter
+        val lbe = if (prev != null && next != null && isPageBreakBetween(prev, next, manager.mapList)) {
+            lineBreaks.lastOrNull { isKeptAfterPageBreak(it.node) }
+        } else {
+            lineBreaks.firstOrNull()
         }
         if (lbe != null) {
             var modifyNode = if (prev == null) (if (next == null) lbe.nodeParent else next.node) else prev.node

@@ -34,6 +34,7 @@ import org.brailleblaster.perspectives.mvc.events.AppStartedEvent
 import org.brailleblaster.perspectives.mvc.events.BuildToolBarEvent
 import org.brailleblaster.perspectives.mvc.modules.misc.ExceptionReportingModule
 import org.brailleblaster.perspectives.mvc.modules.misc.ExceptionReportingModule.exceptionRecoveryLevel
+import org.brailleblaster.perspectives.mvc.modules.misc.ToggleViewsModule
 import org.brailleblaster.printers.PrintPreview
 import org.brailleblaster.usage.SimpleUsageManager
 import org.brailleblaster.usage.UsageManager
@@ -50,6 +51,7 @@ import org.eclipse.swt.custom.CTabFolder
 import org.eclipse.swt.custom.CTabFolder2Adapter
 import org.eclipse.swt.custom.CTabFolderEvent
 import org.eclipse.swt.custom.CTabItem
+import org.eclipse.swt.custom.StyledText
 import org.eclipse.swt.events.*
 import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.layout.FormAttachment
@@ -518,6 +520,43 @@ class WPManager private constructor(val usageManager: UsageManager) {
                 buildToolBar()
             }
         }.also { resizeListener = it })
+    }
+
+    /** Switch to the document in the tab to the right, wrapping to the first tab. Does nothing with one document open */
+    fun selectNextDocument() = selectDocumentBy(1)
+
+    /** Switch to the document in the tab to the left, wrapping to the last tab. Does nothing with one document open */
+    fun selectPreviousDocument() = selectDocumentBy(-1)
+
+    /**
+     * Select a tab the same way the close code does, so folderListener runs changeManager exactly as a tab click
+     * would, then give focus to the view that had it in the document that was left.
+     */
+    private fun selectDocumentBy(offset: Int) {
+        val count = folder.itemCount
+        val current = folder.selectionIndex
+        if (openingDoc || count < 2 || current < 0) return
+        val focusedView = getControllerOrNull()?.focusedView()
+        folder.setSelection(Math.floorMod(current + offset, count))
+        folder.notifyListeners(SWT.Selection, Event())
+        controller.focusView(focusedView)
+    }
+
+    private fun Manager.editorViews(): Map<ToggleViewsModule.Views, StyledText> = mapOf(
+        ToggleViewsModule.Views.PRINT to textView,
+        ToggleViewsModule.Views.BRAILLE to brailleView,
+        ToggleViewsModule.Views.STYLE to stylePane.widget
+    )
+
+    private fun Manager.focusedView(): ToggleViewsModule.Views? =
+        editorViews().entries.firstOrNull { (_, widget) -> !widget.isDisposed && widget.isFocusControl }?.key
+
+    /** Focus [view] if it is showing, otherwise the Print view, as when a document is first opened */
+    private fun Manager.focusView(view: ToggleViewsModule.Views?) {
+        val views = editorViews()
+        listOfNotNull(view, ToggleViewsModule.Views.PRINT)
+            .mapNotNull { views[it] }
+            .firstOrNull { !it.isDisposed && it.isVisible && it.setFocus() }
     }
 
     private fun changeManager(manager: Manager) {

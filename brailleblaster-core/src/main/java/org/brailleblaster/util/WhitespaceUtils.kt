@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.util
 
+import nu.xom.Attribute
 import nu.xom.Element
 import nu.xom.Node
 import org.brailleblaster.bbx.BBX
@@ -24,6 +25,9 @@ import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.braille.mapping.elements.*
 import org.brailleblaster.perspectives.braille.mapping.maps.MapList
 import org.brailleblaster.utd.properties.UTDElements
+import org.brailleblaster.utd.properties.UTDElements.Companion.UTD_KEEP_AFTER_PAGE_BREAK_ATTRIB
+import org.brailleblaster.utd.properties.UTDElements.Companion.UTD_PREFIX
+import org.brailleblaster.utils.xml.UTD_NS
 
 object WhitespaceUtils {
     @JvmStatic
@@ -82,6 +86,39 @@ object WhitespaceUtils {
         val lineBreak = UTDElements.NEW_LINE.create()
         Utils.insertChildCountSafe(parent, lineBreak, parent.indexOf(block) + offset)
         return lineBreak
+    }
+
+    /**
+     * Mark a newLine as placed on the page that follows a forced page break, so the formatter keeps it
+     * there instead of dropping it with the page break (#7243)
+     */
+    @JvmStatic
+    fun keepAfterPageBreak(lineBreak: Element): Element = lineBreak.apply {
+        addAttribute(Attribute("$UTD_PREFIX:$UTD_KEEP_AFTER_PAGE_BREAK_ATTRIB", UTD_NS, "true"))
+    }
+
+    @JvmStatic
+    fun isKeptAfterPageBreak(lineBreak: Node): Boolean =
+        (lineBreak as? Element)?.getAttributeValue(UTD_KEEP_AFTER_PAGE_BREAK_ATTRIB, UTD_NS).toBoolean()
+
+    /**
+     * Whether the newLine sits between a forced page break and the next element. Such newLines never get a line of
+     * their own in the view: the formatter drops them (#7243), or, when marked by [keepAfterPageBreak], their blank
+     * lines are part of the [PageBreakWhiteSpaceElement] area at the top of the new page.
+     */
+    @JvmStatic
+    fun followsPageBreak(lineBreak: LineBreakElement, list: MapList): Boolean =
+        generateSequence(list.indexOf(lineBreak) - 1) { it - 1 }
+            .takeWhile { it >= 0 }
+            .map { list[it] }
+            .firstOrNull { it !is LineBreakElement } is PageBreakWhiteSpaceElement
+
+    /** Whether a forced page break separates the two elements in the map list */
+    @JvmStatic
+    fun isPageBreakBetween(t1: TextMapElement, t2: TextMapElement, list: MapList): Boolean {
+        val start = list.indexOf(t1)
+        val end = list.indexOf(t2)
+        return start in 0..<end && list.subList(start + 1, end).any { it is PageBreakWhiteSpaceElement }
     }
 
     @JvmStatic

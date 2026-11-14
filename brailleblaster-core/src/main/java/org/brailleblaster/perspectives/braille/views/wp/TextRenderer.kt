@@ -29,6 +29,7 @@ import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.util.LINE_BREAK
 import org.brailleblaster.utils.xom.childNodes
 import org.brailleblaster.util.Utils
+import org.brailleblaster.util.WhitespaceUtils.followsPageBreak
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.StyleRange
 import org.eclipse.swt.custom.StyledText
@@ -56,7 +57,7 @@ class TextRenderer(manager: Manager, private val textView: TextView) : Renderer(
             }
 
             is LineBreakElement -> {
-                if (!pastFirstNewPage || pastLastNewPage) {
+                if (!pastFirstNewPage || pastLastNewPage || followsPageBreak(t, list)) {
                     t.isFullyVisible = false
                 } else {
                     addLineBreak(t, state, list)

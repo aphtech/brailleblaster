@@ -369,10 +369,11 @@ class StylePane(parent: Composite, private val m: Manager) : BBEditorView {
     }
 
     private fun setCurrent() {
-        val pos = widget.caretOffset
-        val line = widget.getLineAtOffset(pos)
-        m.textView.takeUnless { it.isDisposed && it.content.lineCount <= line }?.also { it.caretOffset = it.getOffsetAtLine(line) }
-        m.brailleView.takeUnless { it.isDisposed && it.content.lineCount <= line }?.also { it.caretOffset = it.getOffsetAtLine(line) }
+        val line = widget.getLineAtOffset(widget.caretOffset)
+        // A view can have fewer lines than the style pane, e.g. the braille view after Enter in a new document
+        listOf(m.textView, m.brailleView)
+            .filter { !it.isDisposed && line < it.content.lineCount }
+            .forEach { it.caretOffset = it.getOffsetAtLine(line) }
     }
 
     private fun updateTextView() {
