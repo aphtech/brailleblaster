@@ -27,7 +27,6 @@ import javax.xml.parsers.ParserConfigurationException
 object ASCIIMathML {
     private const val MATHML_NS = "http://www.w3.org/1998/Math/MathML"
 
-    @JvmStatic
     @Throws(ParserConfigurationException::class, IOException::class)
     fun parseMath(math: String?, latex: Boolean): Element {
         val factory = DocumentBuilderFactory.newInstance()
@@ -326,7 +325,7 @@ object ASCIIMathML {
             var result = parseSexpr(input)
             var node = result.node
             input = result.rest
-            var symbol = getSymbol(input)
+            val symbol = getSymbol(input)
             if (symbol.type == Type.INFIX && symbol.input != "/") {
                 input = removeCharsAndBlanks(input, symbol.input.length)
                 result = parseSexpr(input)
@@ -374,7 +373,7 @@ object ASCIIMathML {
             do {
                 input = removeCharsAndBlanks(input)
                 var result = parseIexpr(input)
-                var node = result.node
+                val node = result.node
                 input = result.rest
                 symbol = getSymbol(input)
                 if (symbol.type == Type.INFIX && symbol.input == "/") {
