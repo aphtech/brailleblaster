@@ -268,7 +268,7 @@ object ASCIIMathML {
                     input = removeCharsAndBlanks(input, symbol.input.length)
                     result = parseExpression(input, false)
                     nestingDepth--
-                    val lastValue = result.node?.lastChild?.firstChild?.nodeValue?.toString().orEmpty()
+                    val lastValue = result.node?.lastChild?.firstChild?.nodeValue.orEmpty()
                     if (lastValue == "|") {
                         return Result(createNode("mrow", createNode("mo", textNode(symbol.output))).also {
                             if (result.node != null) it.appendChild(result.node)
@@ -409,12 +409,12 @@ object ASCIIMathML {
             if (lastRow.tagName != "mrow" || lastRow.lastChild?.firstChild?.nodeValue == null) return
             val right = lastRow.lastChild.firstChild.nodeValue.toString()
             if (right != ")" && right != "]") return
-            val left = lastRow.firstChild?.firstChild?.nodeValue?.toString() ?: return
+            val left = lastRow.firstChild?.firstChild?.nodeValue ?: return
             if (!((left == "(" && right == ")" && closing.output != "}") || (left == "[" && right == "]"))) return
             val rows = children.filterIndexed { index, _ -> index % 2 == 0 }
             if (rows.any { it !is Element || it.tagName != "mrow" ||
-                    it.firstChild?.firstChild?.nodeValue?.toString() != left ||
-                    it.lastChild?.firstChild?.nodeValue?.toString() != right }) return
+                    it.firstChild?.firstChild?.nodeValue != left ||
+                    it.lastChild?.firstChild?.nodeValue != right }) return
             if (children.filterIndexed { index, _ -> index % 2 == 1 }.any {
                     it.nodeName != "mo" || it.firstChild?.nodeValue != ","
                 }) return
