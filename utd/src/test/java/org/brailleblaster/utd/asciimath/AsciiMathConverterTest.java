@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2025 American Printing House for the Blind
+ * Copyright (C) 2026 Michael Whapples
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -16,6 +17,7 @@
 package org.brailleblaster.utd.asciimath;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.testng.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
@@ -42,6 +44,7 @@ import nu.xom.ParsingException;
 import nu.xom.ValidityException;
 import nu.xom.XPathContext;
 import nu.xom.canonical.Canonicalizer;
+import nu.xom.converters.DOMConverter;
 
 public class AsciiMathConverterTest {
 	private final Logger log = LoggerFactory.getLogger(AsciiMathConverterTest.class);
@@ -83,7 +86,7 @@ public class AsciiMathConverterTest {
 		String result = converter.toAsciiMath(new Nodes(root), true, MathTextFinder.ALTTEXT_ATTRIBUTE);
 		assertEquals(result, expected);
 	}
-	@Test(dataProvider="conversionsProvider", enabled = false)
+	@Test(dataProvider="conversionsProvider")
 	public void basicConvertToMathML(String asciiMath, String mathml) {
 		// Make the expected MathML canonical
 		String expected;
@@ -111,6 +114,120 @@ public class AsciiMathConverterTest {
 		} else {
 			assertThat(actual, CompareMatcher.isSimilarTo(mathml).ignoreWhitespace());
 		}
+	}
+	@Test
+	public void converterPreservesMarkerHandlingAndBothMathMLOutputs() {
+		String asciiMath = "`a^2`";
+		Nodes xomNodes = converter.toMathML(asciiMath, true, true);
+		Element xomMath = (Element) xomNodes.get(0);
+		org.w3c.dom.Element domMath = converter.toMathMLHTMLNodes(asciiMath);
+		Element convertedDomMath = DOMConverter.convert(domMath);
+
+		assertEquals(xomMath.getAttributeValue("alttext"), asciiMath);
+		assertEquals(xomMath.getChild(0).toXML(), convertedDomMath.getChild(0).toXML());
+		assertEquals(domMath.getNamespaceURI(), "http://www.w3.org/1998/Math/MathML");
+		assertEquals(domMath.getLocalName(), "math");
+		assertEquals(domMath.getFirstChild().getLocalName(), "msup");
+	}
+	@Test
+	public void parserAddsPlaceholderForMissingCombinedScriptInBothConverters() {
+		String[][] cases = {
+				{"(x_1^)+z", "msubsup", "<mo>□</mo>"},
+				{"(sum_1^)+z", "munderover", "<mo>□</mo>"},
+				{"(x_1^2)+z", "msubsup", "<mn>2</mn>"},
+				{"(sum_1^2)+z", "munderover", "<mn>2</mn>"}
+		};
+		for (String[] testCase : cases) {
+			Element xomMath = (Element) converter.toMathML(testCase[0], false, false).get(0);
+			Nodes scripts = xomMath.query(".//*[local-name()='" + testCase[1] + "']");
+			assertEquals(scripts.size(), 1);
+			Element script = (Element) scripts.get(0);
+			assertEquals(script.getChildCount(), 3);
+			assertEquals(script.getChild(2).toXML(), testCase[2]);
+			assertThat(xomMath.getValue(), containsString(")"));
+			assertThat(xomMath.getValue(), containsString("z"));
+
+			org.w3c.dom.Element domMath = converter.toMathMLHTMLNodes(testCase[0]);
+			assertThat(DOMConverter.convert(domMath).toXML(),
+					CompareMatcher.isSimilarTo(xomMath.toXML()).ignoreWhitespace());
+		}
+	}
+	@Test
+	public void normPreservesOriginalDelimitersInBothConverters() {
+		String expectedDelimiter = "\u2225";
+		Element xomMath = (Element) converter.toMathML("norm(x)", false, false).get(0);
+		Element xomRow = (Element) xomMath.getChild(0);
+		assertEquals(xomRow.getLocalName(), "mrow");
+		assertEquals(xomRow.getChildCount(), 3);
+		assertEquals(xomRow.getChild(0).toXML(), "<mo>\u2225</mo>");
+		Element xomArgument = (Element) xomRow.getChild(1);
+		assertEquals(xomArgument.getLocalName(), "mrow");
+		assertEquals(xomArgument.getChild(0).toXML(), "<mi>x</mi>");
+		assertEquals(xomRow.getChild(2).toXML(), "<mo>\u2225</mo>");
+
+		org.w3c.dom.Element domMath = converter.toMathMLHTMLNodes("norm(x)");
+		org.w3c.dom.Element domRow = (org.w3c.dom.Element) domMath.getFirstChild();
+		assertEquals(domRow.getLocalName(), "mrow");
+		assertEquals(domRow.getChildNodes().getLength(), 3);
+		assertEquals(domRow.getFirstChild().getLocalName(), "mo");
+		assertEquals(domRow.getFirstChild().getTextContent(), expectedDelimiter);
+		org.w3c.dom.Element domArgument = (org.w3c.dom.Element) domRow.getChildNodes().item(1);
+		assertEquals(domArgument.getLocalName(), "mrow");
+		assertEquals(domArgument.getFirstChild().getLocalName(), "mi");
+		assertEquals(domArgument.getFirstChild().getTextContent(), "x");
+		assertEquals(domRow.getLastChild().getLocalName(), "mo");
+		assertEquals(domRow.getLastChild().getTextContent(), expectedDelimiter);
+	}
+	@Test
+	public void parserContinuesAfterColorSymbolsInBothConverters() {
+		String[][] cases = {
+				{"color(red)(y)+z", "y", "z"},
+				{"x color(red)(y)+z", "x", "y", "z"},
+				{"(x+color(red)(y)+z)", "x", "y", "z"}
+		};
+		for (String[] testCase : cases) {
+			Nodes xomNodes = converter.toMathML(testCase[0], false, false);
+			Element xomMath = (Element) xomNodes.get(0);
+			org.w3c.dom.Element domMath = converter.toMathMLHTMLNodes(testCase[0]);
+			Element convertedDomMath = DOMConverter.convert(domMath);
+
+			assertThat(xomMath.toXML(), containsString("<mstyle mathcolor=\"red\">"));
+			for (int i = 1; i < testCase.length; i++) {
+				assertThat(xomMath.getValue(), containsString(testCase[i]));
+			}
+			assertThat(convertedDomMath.toXML(), CompareMatcher.isSimilarTo(xomMath.toXML()).ignoreWhitespace());
+		}
+	}
+	@Test
+	public void parserTrimsEcmaScriptLeadingWhitespaceInBothConverters() {
+		for (int whitespaceCodePoint : new int[] {
+				0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020, 0x00A0, 0x1680,
+				0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007,
+				0x2008, 0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F, 0x3000, 0xFEFF
+		}) {
+			String whitespace = String.valueOf((char) whitespaceCodePoint);
+			String asciiMath = whitespace + "x";
+			Element xomMath = (Element) converter.toMathML(asciiMath, false, false).get(0);
+			org.w3c.dom.Element domMath = converter.toMathMLHTMLNodes(asciiMath);
+
+			assertEquals(xomMath.getChildCount(), 1);
+			assertEquals(xomMath.getChild(0).toXML(), "<mi>x</mi>");
+			assertEquals(domMath.getChildNodes().getLength(), 1);
+			assertEquals(domMath.getFirstChild().getLocalName(), "mi");
+			assertEquals(domMath.getFirstChild().getTextContent(), "x");
+		}
+
+		String internalNbsp = "x\u00A0y";
+		Element xomMath = (Element) converter.toMathML(internalNbsp, false, false).get(0);
+		assertEquals(xomMath.getValue(), internalNbsp);
+		assertThat(DOMConverter.convert(converter.toMathMLHTMLNodes(internalNbsp)).toXML(),
+				CompareMatcher.isSimilarTo(xomMath.toXML()).ignoreWhitespace());
+
+		String nonEcmaWhitespace = String.valueOf((char) 0x0085) + "x";
+		xomMath = (Element) converter.toMathML(nonEcmaWhitespace, false, false).get(0);
+		assertEquals(xomMath.getValue(), nonEcmaWhitespace);
+		assertThat(DOMConverter.convert(converter.toMathMLHTMLNodes(nonEcmaWhitespace)).toXML(),
+				CompareMatcher.isSimilarTo(xomMath.toXML()).ignoreWhitespace());
 	}
 	@DataProvider(name="asciiMathParserTestsProvider")
 	public Iterator<Object[]> asciiMathParserTestsProvider() throws IOException, ParsingException {
@@ -145,7 +262,7 @@ public class AsciiMathConverterTest {
 		}
 		return data.iterator();
 	}
-	@Test(dataProvider="asciiMathParserTestsProvider", enabled = false)
+	@Test(dataProvider="asciiMathParserTestsProvider")
 	public void asciiMathParserTest(String asciiMath, String mml) {
 		Nodes actualNodes = converter.toMathML(asciiMath, false, true);
 		assertEquals(actualNodes.size(), 1);
@@ -162,15 +279,15 @@ public class AsciiMathConverterTest {
 		Node root = doc.getRootElement();
 		data.add(new Object[] {"y=x+2", root, true, alttextFinder});
 		data.add(new Object[] {"y=x+2", root, false, alttextFinder});
-		data.add(new Object[] {"`y = x + 2`", root, true, new MathTextFinder[] {MathTextFinder.NONE}});
-		data.add(new Object[] {"y = x + 2", root, false, new MathTextFinder[] {MathTextFinder.NONE}});
+		data.add(new Object[] {"`y=x+2`", root, true, new MathTextFinder[] {MathTextFinder.NONE}});
+		data.add(new Object[] {"y=x+2", root, false, new MathTextFinder[] {MathTextFinder.NONE}});
 		mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" alttext=\"`y=x+2`\"><mi>y</mi><mo>=</mo><mi>x</mi><mo>+</mo><mn>3</mn></math>";
 		doc = builder.build(mathml, "");
 		root = doc.getRootElement();
-		data.add(new Object[] {"`y = x + 3`", root, true, alttextFinder});
-		data.add(new Object[] {"y = x + 3", root, false, alttextFinder});
-		data.add(new Object[] {"`y = x + 3`", root, true, new MathTextFinder[] {MathTextFinder.NONE}});
-		data.add(new Object[] {"y = x + 3", root, false, new MathTextFinder[] {MathTextFinder.NONE}});
+		data.add(new Object[] {"`y=x+3`", root, true, alttextFinder});
+		data.add(new Object[] {"y=x+3", root, false, alttextFinder});
+		data.add(new Object[] {"`y=x+3`", root, true, new MathTextFinder[] {MathTextFinder.NONE}});
+		data.add(new Object[] {"y=x+3", root, false, new MathTextFinder[] {MathTextFinder.NONE}});
 		mathml = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
 		doc = builder.build(mathml, "");
 		root = doc.getRootElement();
@@ -194,7 +311,7 @@ public class AsciiMathConverterTest {
 		data.add(new Object[] {"``", root, true, alttextFinder});
 		return data.iterator();
 	}
-	@Test(dataProvider="storedASCIIMathProvider", enabled = false)
+	@Test(dataProvider="storedASCIIMathProvider")
 	public void testUseStored(String asciiMath, Node mathml, boolean includeMathMarkers, MathTextFinder[] finders) {
 		AsciiMathConverter convert = AsciiMathConverter.INSTANCE;
 		String result = convert.toAsciiMath(new Nodes(mathml), includeMathMarkers, finders);
