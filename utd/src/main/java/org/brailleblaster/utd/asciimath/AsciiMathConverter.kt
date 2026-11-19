@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2025 American Printing House for the Blind
+ * Copyright (C) 2026 Michael Whapples
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -15,7 +16,6 @@
  */
 package org.brailleblaster.utd.asciimath
 
-import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
 import nu.xom.*
 import nu.xom.converters.DOMConverter
 import nu.xom.xslt.XSLException
@@ -23,27 +23,15 @@ import nu.xom.xslt.XSLTransform
 import org.brailleblaster.utd.UTDTranslationEngine
 import org.brailleblaster.utd.properties.UTDElements
 import org.brailleblaster.utils.xom.childNodes
-import org.graalvm.polyglot.Context
-import org.w3c.dom.Document
-import org.xml.sax.InputSource
-import org.xml.sax.SAXException
 import java.io.IOException
-import java.io.InputStreamReader
-import java.io.StringReader
-import java.nio.charset.StandardCharsets
 import java.util.*
 import java.util.function.Predicate
 import java.util.stream.Collectors
 import java.util.stream.IntStream
-import javax.script.Invocable
-import javax.script.ScriptException
-import javax.xml.parsers.DocumentBuilderFactory
-import javax.xml.parsers.ParserConfigurationException
 
 object AsciiMathConverter : AutoCloseable {
 
     private const val ASCII_MATH_XSLT_PATH: String = "/org/brailleblaster/utd/xslt/MathML2AsciiMath.xsl"
-    private const val ASCII_MATH_PARSER_JS: String = "/org/brailleblaster/utd/js/ASCIIMathML.js"
     private const val MATHML_NS = "http://www.w3.org/1998/Math/MathML"
     private val MATHML_ATTRS_LIST: List<String> = listOf(
         "accent",
@@ -149,18 +137,10 @@ object AsciiMathConverter : AutoCloseable {
     }
 
 
-    private val jsEngine: GraalJSScriptEngine
-
     override fun close() {
-        jsEngine.close()
-    }
-
-    interface ASCIIMathParser {
-        fun parseMath(math: String?, latex: Boolean): org.w3c.dom.Element
     }
 
     private var transformer: XSLTransform
-    private val amParser: ASCIIMathParser
 
     fun toAsciiMath(mathml: Nodes): String {
         return toAsciiMath(mathml, MathTextFinder.NONE)
@@ -222,19 +202,6 @@ object AsciiMathConverter : AutoCloseable {
     }
 
     init {
-        val navigator = JSNavigator("BrailleBlaster UTD")
-        val window = JSWindow()
-        val dbf = DocumentBuilderFactory.newInstance()
-        val jsDoc: Document = try {
-            val db = dbf.newDocumentBuilder()
-            db.parse(InputSource(StringReader("<html><head/><body/></html>")))
-        } catch (e1: ParserConfigurationException) {
-            throw RuntimeException("Problem creating the DOM for the JavaScript library", e1)
-        } catch (e1: SAXException) {
-            throw RuntimeException("Problem creating the DOM for the JavaScript library", e1)
-        } catch (e1: IOException) {
-            throw RuntimeException("Problem creating the DOM for the JavaScript library", e1)
-        }
         val builder = Builder()
         try {
             this.javaClass.getResourceAsStream(ASCII_MATH_XSLT_PATH).use { `in` ->
@@ -248,31 +215,6 @@ object AsciiMathConverter : AutoCloseable {
         } catch (e: IOException) {
             throw RuntimeException("Problem accessing the ASCIIMath XSL", e)
         }
-
-        jsEngine = GraalJSScriptEngine.create(
-            null,
-            Context.newBuilder("js")
-                .allowAllAccess(true)
-                .allowExperimentalOptions(true)
-                .option("js.nashorn-compat", "true")
-        )
-        jsEngine.put("navigator", navigator)
-        jsEngine.put("document", jsDoc)
-        jsEngine.put("window", window)
-        try {
-            requireNotNull(javaClass.getResourceAsStream(ASCII_MATH_PARSER_JS)).use { `in` ->
-                jsEngine.eval(
-                    InputStreamReader(`in`, StandardCharsets.UTF_8)
-                )
-            }
-        } catch (e: ScriptException) {
-            throw RuntimeException("Problem running the ASCIIMath parser javascript", e)
-        } catch (e: IOException) {
-            throw RuntimeException("Problem reading the ASCIIMath parser javascript", e)
-        }
-        window.onload?.run()
-        val o = jsEngine["asciimath"]
-        amParser = (jsEngine as Invocable).getInterface(o, ASCIIMathParser::class.java)
     }
 
     private fun compareMathML(m1: Nodes, m2: Nodes): Boolean {
@@ -356,7 +298,7 @@ object AsciiMathConverter : AutoCloseable {
         if (stripMathMarkers) {
             // The ASCIIMath parser's parseMath method does not strip the ` character
             if (amStr.startsWith("`")) {
-                amStr = amStr.take(1)
+                amStr = amStr.drop(1)
             } else {
                 altTextStr = "`$altTextStr"
             }
@@ -366,7 +308,7 @@ object AsciiMathConverter : AutoCloseable {
                 altTextStr = "$altTextStr`"
             }
         }
-        val n = amParser.parseMath(amStr, false)
+        val n = ASCIIMathML.parseMath(amStr, false)
         val e = DOMConverter.convert(n)
         if (addAltText) {
             e.addAttribute(Attribute("alttext", altTextStr))
@@ -380,7 +322,7 @@ object AsciiMathConverter : AutoCloseable {
     fun toMathMLHTMLNodes(asciiMath: String): org.w3c.dom.Element {
         // The ASCIIMath parser's parseMath method does not strip the ` character
         val amStr = asciiMath.trim { it <= ' ' }.removeSurrounding("`", "`")
-        return amParser.parseMath(amStr, false)
+        return ASCIIMathML.parseMath(amStr, false)
     }
 
     /*
