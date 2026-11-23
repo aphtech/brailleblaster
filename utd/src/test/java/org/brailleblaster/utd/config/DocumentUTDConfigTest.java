@@ -87,7 +87,6 @@ public class DocumentUTDConfigTest {
 			() -> settingsLoadTest(pageSettings, docConfig::loadPageSettings),
 			() -> settingsLoadTest(brailleSettings, docConfig::loadBrailleSettings),
 			() -> settingsLoadTest(styleMap, (Document doc) -> docConfig.loadStyle(doc, styleDefs)),
-//			() -> settingsLoadTest(actionMap, NimasUTDConfig::loadActions),
 			//
 			() -> settingsLoadMissingTest(PageSettings.class, docConfig::loadPageSettings),
 			() -> settingsLoadMissingTest(BrailleSettings.class, docConfig::loadBrailleSettings),

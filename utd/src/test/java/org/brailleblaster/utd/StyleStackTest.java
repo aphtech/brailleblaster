@@ -263,33 +263,6 @@ public class StyleStackTest {
         assertEquals(stack.getNewPagesAfter(), 0);
     }
 
-    //Disabled -- DontSplit can work the same way as KeepWithNext with PageBuilder. Only needs to be set once.
-//	@Test
-    public void findDontSplit() {
-        boolean dontSplitSet = false;
-        assertFalse(stack.isDontSplit());
-        for (Style style : styles) {
-            stack.push(style);
-            if (style.isDontSplit()) {
-                dontSplitSet = true;
-            }
-            assertEquals(stack.isDontSplit(), dontSplitSet);
-        }
-
-        for (int i = styles.length - 1; i >= 0; i--) {
-            Iterator<IStyle> iter = stack.iterator();
-            dontSplitSet = false;
-
-            while (iter.hasNext() && !dontSplitSet) {
-                dontSplitSet = iter.next().isDontSplit();
-            }
-            assertEquals(stack.isDontSplit(), dontSplitSet);
-            stack.pop();
-        }
-
-        assertFalse(stack.isDontSplit());
-    }
-
     @Test
     public void findKeepWithNext() {
         assertFalse(stack.isKeepWithNext());
