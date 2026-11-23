@@ -206,16 +206,24 @@ public class BBTestRunner {
         return manager.getDoc();
     }
 
+    /**
+     * Menu lookup in BrailleBlaster's own shell. bot.menu() goes through SWTBot's active shell, which is null
+     * when the window doesn't have OS focus ("The widget was null").
+     */
+    public SWTBotMenu findMenu(String text, boolean recursive) {
+        return new org.eclipse.swtbot.swt.finder.widgets.SWTBotShell(wpManager.getShell()).menu().menu(text, recursive, 0);
+    }
+
     public void cut() {
-        bot.menu("&Cut").click();
+        findMenu("&Cut", true).click();
     }
 
     public void copy() {
-        bot.menu("&Copy").click();
+        findMenu("&Copy", true).click();
     }
 
     public void paste() {
-        bot.menu("&Paste").click();
+        findMenu("&Paste", true).click();
     }
 
     public void navigateBrailleView(int offset) {
@@ -227,7 +235,7 @@ public class BBTestRunner {
     }
 
     public void selectTree(SWTBot bot, String menu) {
-        SWTBotMenu menuBot = bot.menu("Tree");
+        SWTBotMenu menuBot = findMenu("Tree", true);
         menuBot.menu(menu).click();
     }
 
@@ -265,7 +273,7 @@ public class BBTestRunner {
     }
 
     public void selectToolbarOption(String menuItem) {
-        bot.menu(menuItem).click();
+        findMenu(menuItem, true).click();
         doPendingSWTWork();
     }
 
@@ -276,7 +284,7 @@ public class BBTestRunner {
 
         SWTBotMenu selectedMenu;
         try {
-            selectedMenu = bot.menu(StringUtils.capitalize(topLevelMenu.name().toLowerCase()), false);
+            selectedMenu = findMenu(StringUtils.capitalize(topLevelMenu.name().toLowerCase()), false);
         } catch (WidgetNotFoundException e) {
             throw new RuntimeException("TopMenu " + topLevelMenu + " not found?", e);
         }
@@ -289,7 +297,7 @@ public class BBTestRunner {
     }
 
     public void clickStyleMenuItem(String category, String menuItem) {
-        SWTBotMenu selectedMenu = bot.menu(StringUtils.capitalize(TopMenu.STYLES.name().toLowerCase()));
+        SWTBotMenu selectedMenu = findMenu(StringUtils.capitalize(TopMenu.STYLES.name().toLowerCase()), false);
         selectedMenu = _doClickMenu(selectedMenu, category, false);
         selectedMenu = _doClickMenu(selectedMenu, menuItem, true);
         selectedMenu.click();
