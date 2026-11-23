@@ -882,37 +882,4 @@ public class VolumeTest {
 //		assertEquals(bbTest.bot.textWithId("pageCurrent").getText(), "3");
 //		assertEquals(bbTest.bot.labelWithId("volumeInfo").getText(), "Volume 2");
 //	}
-//	@DataProvider
-//	public Iterator<Object[]> slowInsertVolumeEverywhereTestDataProvider() {
-//		List<Object[]> params = new ArrayList<>();
-//
-//		WPManager startBB = startBB(TOC_RAW_FILE);
-//		Manager m = getManager(startBB);
-//		for (int i = 0; i < m.getTextView().getCharCount(); i++) {
-//			params.add(new Object[]{i});
-//		}
-//		log.debug("testSize " + params.size());
-//
-//		return params.iterator();
-//	}
-//
-//	//WARNING: THIS IS EXTREMELY SLOW, CAN RUN OVER 1 HOUR
-//	@Test(dataProvider = "slowInsertVolumeEverywhereTestDataProvider", enabled = false)
-//	public void slowInsertVolumeEverywhereTest(int offset) {
-//		WPManager startBB = startBB(TOC_RAW_FILE);
-//		Manager manager = getManager(startBB);
-//
-//		textViewBot.setFocus();
-//		doPendingSWTWork();
-//		StyledText textView = manager.getTextView();
-//
-//		textViewBot.navigateTo(0, 0);
-//		for (int i = 0; i < offset; i++) {
-//			textViewBot.pressShortcut(KeyStroke.getInstance(SWT.ARROW_RIGHT));
-//		}
-//		doPendingSWTWork();
-//
-//		bot.menu("Insert Volume before Cursor").click();
-//		doPendingSWTWork();
-//	}
 }

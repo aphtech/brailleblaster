@@ -90,16 +90,6 @@ public class BBTest {
         ViewTestRunner.doPendingSWTWork();
     }
 
-    @Test(groups = TestGroups.BROKEN_TESTS) //No idea what this is testing, hg blame mentiones cdata
-    //but it's splitting <h1><p>Overly nested elements</p></h1> ?
-    public void splitHeadingTest() {
-        BBTestRunner bbTest = new BBTestRunner(new File("src/test/resources/org/brailleblaster/easierxml/nimas-test.xml"));
-
-        bbTest.textViewTools.navigateToText("nested");
-        bbTest.textViewBot.typeText(System.lineSeparator());
-        ViewTestRunner.doPendingSWTWork();
-    }
-
     @Test(groups = TestGroups.TODO_FIX_LATER) // TODO: Why does this still fail...
     public void issue3650() {
         BBTestRunner bbTest = new BBTestRunner("", "<p><strong>K</strong>now</p>");
