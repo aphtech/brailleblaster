@@ -14,7 +14,6 @@ See test_fix.md, Phase 2.
 | `utd/.../tables/ListedTableFormatterTest.java` | Same as above. |
 | `utd/.../tables/SimpleTableFormatterTest.java` | Same as above. |
 | `utd/.../tables/StairstepTableFormatterTest.java` | Same as above. |
-| `brailleblaster-core/.../frontmatter/TPageTest.java` | Drives Tools > T-Page Generator, which no longer exists in the app. |
 | `utd/.../actions/InsertUncontractedTest.java` | Unfinished stub (asserts `""`) for `InsertUncontractedAction`, which has no production users. |
 
 ## Needs new test documents
