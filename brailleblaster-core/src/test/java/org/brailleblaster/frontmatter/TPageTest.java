@@ -26,9 +26,8 @@ import org.testng.annotations.Test;
 
 @GuiTest
 public class TPageTest {
-	// Disabled: T-Page Generator is registered by brailleblaster-debug-tools (DebugModulesFactory), which core's tests
-	// can't load, so there is no Debug menu here. See test_fix.md Phase 7a.
-	@Test(enabled = false)
+	// Needs the debug-tools modules, registered for tests by TestDebugModulesFactory
+	@Test
 	public void emptyDocument_rt4646() {
 		BBTestRunner bbTest = new BBTestRunner(org.brailleblaster.utils.BBData.INSTANCE.getBrailleblasterPath("programData", "xmlTemplates", "bbxTemplate.bbx"));
 		
