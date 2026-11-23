@@ -38,7 +38,18 @@ public class BBViewTestRunner extends ViewTestRunner {
     private static final Logger log = LoggerFactory.getLogger(BBViewTestRunner.class);
     public static final File BB_PATH = BBData.INSTANCE.getBrailleblasterPath();
     public static final File BB_USER_PATH = BBData.INSTANCE.getUserDataPath();
-    public static final File TEST_DIR = Paths.get("dist", "programData", "testFiles").toFile();
+    /** Per-run folder for generated test books; dist/programData/testFiles no longer exists */
+    public static final File TEST_DIR = createTestDir();
+
+    private static File createTestDir() {
+        try {
+            File dir = java.nio.file.Files.createTempDirectory("bbTestFiles").toFile();
+            dir.deleteOnExit();
+            return dir;
+        } catch (java.io.IOException e) {
+            throw new java.io.UncheckedIOException("Cannot create test files folder", e);
+        }
+    }
 
     public final WPManager wpManager;
     public final Manager manager;

@@ -74,13 +74,14 @@ public class BBTestInit extends TestListenerAdapter {
 	public void onTestSkipped(ITestResult tr) {
 		//We should never have skipped tests as they can hide real problems (eg broken DataProviders)
 		//since TestNG doesn't give us any exception
+		// Report it as a failure and keep going; exiting the JVM here used to hide every later result
 		tr.setStatus(ITestResult.FAILURE);
+		if (tr.getThrowable() == null) {
+			tr.setThrowable(new AssertionError("Test was skipped (broken DataProvider or failed configuration method?)"));
+		}
 		super.onTestFailure(tr);
-		log.error("============== Test skipped (dataprovider?), crashing as TestNG ignores Failure on skipped tests", tr.getThrowable());
+		log.error("============== Test skipped, reported as a failure: {}", tr.getName(), tr.getThrowable());
 		cleanupBB();
-
-		// crash as TestNG no longer reports failures?
-		System.exit(2);
 	}
 
 	@Override

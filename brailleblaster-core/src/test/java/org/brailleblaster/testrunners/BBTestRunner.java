@@ -62,7 +62,7 @@ import static org.testng.Assert.*;
 public class BBTestRunner {
     public static final File BB_PATH = BBData.INSTANCE.getBrailleblasterPath();
     public static final File BB_USER_PATH = BBData.INSTANCE.getUserDataPath();
-    public static final File TEST_DIR = Paths.get("dist", "programData", "testFiles").toFile();
+    public static final File TEST_DIR = BBViewTestRunner.TEST_DIR;
 
     public final WPManager wpManager;
     public final Manager manager;
@@ -182,6 +182,7 @@ public class BBTestRunner {
         }
 
         textViewTools = new ViewTools();
+        textViewTools.setManager(manager);
         brailleViewTools = new ViewTools();
         updateViewReferences();
 
@@ -483,9 +484,20 @@ public class BBTestRunner {
         brailleViewTools.setBot(brailleViewBot);
     }
 
+    /**
+     * Keyboard and caret helpers for one view.
+     * <p>
+     * By default keys are delivered straight to the widget ({@link DirectKeys}), which doesn't need OS focus and so
+     * works on local Windows runs. {@code -Dbb.test.realKeys=true} goes back to OS-level SWTBot keystrokes, e.g. to
+     * debug real keyboard handling on Linux/Xvfb. See test_fix.md Phase 4c.
+     */
     public static class ViewTools {
+        public static final boolean REAL_KEYS = Boolean.getBoolean("bb.test.realKeys");
+
         public StyledText widget;
         public SWTBotStyledText bot;
+        /** Set for the text view, whose caret can be placed through TextView like the Kotlin tests do */
+        private Manager manager;
 
         public ViewTools() {
         }
@@ -499,38 +511,55 @@ public class BBTestRunner {
             this.widget = bot.widget;
         }
 
+        /** Enables placing the caret through {@code manager.getText()} instead of arrow keys */
+        public void setManager(Manager manager) {
+            this.manager = manager;
+        }
+
         public void pressKey(int keyCode, int times) {
             for (int i = 0; i < times; i++) {
-                bot.pressShortcut(KeyStroke.getInstance(keyCode));
+                if (REAL_KEYS) {
+                    bot.pressShortcut(KeyStroke.getInstance(keyCode));
+                } else {
+                    DirectKeys.press(widget, 0, keyCode, DirectKeys.characterFor(keyCode));
+                }
             }
 
             doPendingSWTWork();
         }
 
         public void cutShortCut() {
-            pressShortcut(bot, SWT.CTRL, 'x');
+            pressShortcut(SWT.CTRL, 'x');
         }
 
         public void pasteShortcut() {
-            pressShortcut(bot, SWT.CTRL, 'v');
+            pressShortcut(SWT.CTRL, 'v');
         }
 
-        public void pressShortcut(int keyCode, char c) {
-            pressShortcut(bot, keyCode, c);
-        }
-
-        public void pressShortcut(int modificationKeys, int keyCode, char c) {
-            bot.pressShortcut(modificationKeys, keyCode, c);
+        public void pressShortcut(int modificationKeys, char c) {
+            if (REAL_KEYS) {
+                bot.pressShortcut(modificationKeys, c);
+            } else {
+                DirectKeys.press(widget, modificationKeys, Character.toLowerCase(c), DirectKeys.characterFor(modificationKeys, c));
+            }
             doPendingSWTWork();
         }
 
-        private void pressShortcut(SWTBotStyledText textBot, int keyCode, char c) {
-            textBot.pressShortcut(keyCode, c);
+        public void pressShortcut(int modificationKeys, int keyCode, char c) {
+            if (REAL_KEYS) {
+                bot.pressShortcut(modificationKeys, keyCode, c);
+            } else {
+                DirectKeys.press(widget, modificationKeys, keyCode, c);
+            }
             doPendingSWTWork();
         }
 
         public void pressShortcut(KeyStroke... keys) {
-            bot.pressShortcut(keys);
+            if (REAL_KEYS) {
+                bot.pressShortcut(keys);
+            } else {
+                DirectKeys.press(widget, keys);
+            }
             doPendingSWTWork();
         }
 
@@ -540,7 +569,33 @@ public class BBTestRunner {
          * @param offset
          */
         public void navigate(int offset) {
-            navigate(bot, offset);
+            if (REAL_KEYS) {
+                navigate(bot, offset);
+            } else if (manager != null) {
+                // Commit a pending edit first, as the arrow keys leaving the element would
+                manager.getText().update(false);
+                manager.getText().setCurrentElement(offset);
+                doPendingSWTWork();
+                assertEquals(widget.getCaretOffset(), offset, "View is not on given offset");
+            } else {
+                arrowTo(offset);
+            }
+        }
+
+        /** Moves the caret with emulated arrow keys, for views without a TextView to place it through */
+        private void arrowTo(int offset) {
+            int lastOffset = -1;
+            int sameCount = 0;
+            int curOffset;
+            while ((curOffset = widget.getCaretOffset()) != offset) {
+                DirectKeys.press(widget, 0, curOffset < offset ? SWT.ARROW_RIGHT : SWT.ARROW_LEFT, '\0');
+                doPendingSWTWork();
+                sameCount = curOffset == lastOffset ? sameCount + 1 : 0;
+                lastOffset = curOffset;
+                if (sameCount > 20) {
+                    throw new RuntimeException("Same offset " + curOffset + " for 20 arrow keys, wanted " + offset);
+                }
+            }
         }
 
         public void navigateToLine(int line) {
@@ -585,6 +640,12 @@ public class BBTestRunner {
 
         public void navigateRelative(int offset) {
             doPendingSWTWork();
+            if (!REAL_KEYS) {
+                // Relative navigation exists to exercise the arrow-key path, so keep using arrow keys
+                arrowTo(offset);
+                assertEquals(widget.getCaretOffset(), offset, "View is not on given offset");
+                return;
+            }
             int curOffset;
             while ((curOffset = bot.widget.getCaretOffset()) != offset) {
 //				log.trace("pressing right, viewBot {}, index '{}'", curOffset, textBot.widget.getText().substring(curOffset, curOffset));
@@ -637,16 +698,14 @@ public class BBTestRunner {
         public void navigateToEndOfLine() {
             int curLinePos = bot.cursorPosition().column;
             for (int i = 0; i < bot.getTextOnCurrentLine().length() - curLinePos; i++) {
-                bot.pressShortcut(Keystrokes.RIGHT);
-                doPendingSWTWork();
+                pressKey(SWT.ARROW_RIGHT, 1);
             }
         }
 
         public void selectLeft(int chars) {
 //			updateSelection(chars, 0);
             for (int i = 0; i < chars; i++) {
-                bot.pressShortcut(SWT.SHIFT, SWT.ARROW_LEFT, '\0');
-                doPendingSWTWork();
+                pressShortcut(SWT.SHIFT, SWT.ARROW_LEFT, '\0');
             }
         }
 
@@ -656,8 +715,7 @@ public class BBTestRunner {
 
         public void selectRight(int chars, boolean skipNewlines) {
             for (int i = 0; i < chars; i++) {
-                bot.pressShortcut(SWT.SHIFT, SWT.ARROW_RIGHT, '\0');
-                doPendingSWTWork();
+                pressShortcut(SWT.SHIFT, SWT.ARROW_RIGHT, '\0');
 
                 if (skipNewlines && bot.getSelection().endsWith(System.lineSeparator()) && widget.getCaretOffset() != bot.getText().length() - 1) {
                     i--;
@@ -733,7 +791,11 @@ public class BBTestRunner {
         }
 
         public void typeText(String text) {
-            bot.typeText(text);
+            if (REAL_KEYS) {
+                bot.typeText(text);
+            } else {
+                DirectKeys.type(widget, text);
+            }
             doPendingSWTWork();
         }
 
