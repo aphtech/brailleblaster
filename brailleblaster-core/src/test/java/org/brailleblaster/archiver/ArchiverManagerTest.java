@@ -44,11 +44,14 @@ public class ArchiverManagerTest {
 	private static final Logger log = LoggerFactory.getLogger(ArchiverManagerTest.class);
 	private final ArchiverFactory archiverManager = ArchiverFactory.INSTANCE;
 
-	@Test(enabled = false)
+	@Test
 	public void nimasFileTest() throws IOException {
-		Archiver2 out = archiverManager.load(Paths.get("src/test/resources/fdr/fdr.xml"));
-		MatcherAssert.assertThat(out, instanceOf(BBXArchiver.class));
-		assertValidNimas(out, true);
+		// Imported DTBook files are converted into a new BBZ (NimasFileArchiverLoader -> BBZArchiver.createImportedBBZ)
+		try (Archiver2 out = archiverManager.load(Paths.get("src/test/resources/fdr/fdr.xml"))) {
+			MatcherAssert.assertThat(out, instanceOf(BBZArchiver.class));
+			// no OPF: only NIMAS zips carry one into the BBZ
+			assertValidNimas(out, false);
+		}
 	}
 	
 	private static Path createTempZip() throws IOException {
@@ -244,6 +247,8 @@ public class ArchiverManagerTest {
 		}
 	}
 	
+	// Disabled: after Save As, the archive still holds the original zip open, so saving back to it hits
+	// BBZArchiver.saveNew's "Cannot save over other open file" guard. Product decision for issue 6359, see test_fix.md Phase 6.
 	@Test(enabled = false)
 	public void saveAsZipAgain_newFile2_issue6359() throws IOException {
 		Path origZipFile = createTempZip();
@@ -258,6 +263,8 @@ public class ArchiverManagerTest {
 		}
 	}
 	
+	// Disabled: after Save As, the archive still holds the original zip open, so saving back to it hits
+	// BBZArchiver.saveNew's "Cannot save over other open file" guard. Product decision for issue 6359, see test_fix.md Phase 6.
 	@Test(enabled = false)
 	public void saveAsZipAgain_newFil3_issue6359() throws IOException {
 		Path origZipFile = createTempZip();
