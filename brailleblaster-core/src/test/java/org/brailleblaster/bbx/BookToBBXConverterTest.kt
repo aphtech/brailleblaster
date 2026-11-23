@@ -1136,7 +1136,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun lineBreakTableCell() {
         convertAndAssertFirst(
             "<table>"
@@ -1683,7 +1683,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun imageBlock() {
         convertAndAssert(
             "<p><img src='evil1.jpg'/></p>"
@@ -1792,7 +1792,7 @@ class BookToBBXConverterTest {
     }
 
     //----------------------- Tables -------------------------
-    @Test(enabled = false)
+    @Test
     fun tableGroupTest() {
         convertAndAssertFirst(
             "<table>"
@@ -1860,7 +1860,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableTest() {
         convertAndAssertFirst(
             "<table>"
@@ -1897,7 +1897,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableTextWrapTest() {
         convertAndAssertFirst(
             "<table>"
@@ -1934,7 +1934,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableInsideList() {
         convertAndAssert(
             "<list><li>first</li><li>some text<table>"
@@ -1994,7 +1994,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableWithSidebarAndList() {
         convertAndAssertFirst(
             "<table><tr>"
@@ -2038,7 +2038,7 @@ class BookToBBXConverterTest {
             }
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableWithSidebarAndListAndText() {
         convertAndAssertFirst(
             "<table><tr>"
@@ -2082,7 +2082,7 @@ class BookToBBXConverterTest {
             }
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableWithImage() {
         convertAndAssertFirst(
             "<table>"
@@ -2115,7 +2115,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableWithImage_OnlyImageInCell_issue5817() {
         convertAndAssertFirst(
             "<table>"
@@ -2152,7 +2152,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableNonWithListAndText() {
         convertAndAssert(
             "<table><tr>"
@@ -2175,7 +2175,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableNonWithEmptyTableCell() {
         convertAndAssert(
             "<table><tbody><tr>"

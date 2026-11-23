@@ -26,6 +26,7 @@ private val TEST_STYLE_FILE = File(TEST_FOLDER, "test.styleMap.xml")
 private val TEST_STYLEDEFS_FILE = File(TEST_FOLDER, "styleDefs.xml")
 
 class File2UTDTest {
+    // Disabled: liblouis table en-us-g2.ctb isn't on the utd-cli test classpath (test_fix.md Phase 6)
     @Test(enabled = false)
     @Throws(Exception::class)
     fun parseBasicDTBook() {
