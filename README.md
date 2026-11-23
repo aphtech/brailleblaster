@@ -103,7 +103,7 @@ By default the build runs only headless tests. Tests that open BrailleBlaster wi
 
 GUI tests take over the desktop. On Windows, keep the desktop unlocked and don't touch the mouse or keyboard while they run.
 
-New test classes that create a `BBTestRunner`, `SWTBot`, or an SWT `Shell` must be marked `@GuiTest`.
+New test classes that create a `BBTestRunner`, `SWTBot`, or an SWT `Shell` must be marked `@GuiTest`. `GuiGroupTaggingTest` fails the headless build if one isn't.
 
 ## Running a development build
 
