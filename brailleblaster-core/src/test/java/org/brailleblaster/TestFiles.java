@@ -20,9 +20,6 @@ import org.brailleblaster.testrunners.TestXMLUtils;
 import nu.xom.Document;
 
 public class TestFiles {
-    // These paths exist on Jenkins and the testFast scripts
-    public static final String litBook = "/media/brailleblaster/nimas-books/9780133268195NIMAS_revised.xml";
-    public static final String collections = "/media/brailleblaster/nimas-books/9780544087507NIMAS_collections.xml";
     public static final String mathGuts = "<p><m:math><m:mi>x</m:mi><m:mo>+</m:mo><m:mn>2</m:mn></m:math></p>";
     public static final String mathPrintView = "x + 2";
     public static final Document simpleMath = TestXMLUtils.generateBookDoc("", mathGuts);

@@ -19,7 +19,6 @@ public class TestGroups {
     public static final String BROKEN_TESTS = "brokenTests";
     public static final String CLIPBOARD_TESTS = "clipboardTests";
     public static final String TODO_FIX_LATER = "todoFixLater";
-    public static final String SLOW_TESTS = "slowTests";
     /** Opens SWT windows. Added by {@link GuiGroupTransformer} to classes marked {@link GuiTest}. */
     public static final String GUI = "gui";
 }

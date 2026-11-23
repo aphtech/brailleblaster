@@ -30,21 +30,6 @@ import org.testng.annotations.Test;
 public class TransNoteEmphasisTest {
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/printView/TransNoteEmphasisTest.bbx");
 
-    /*
-     * Just open the collections book and add a transcriber note rt 6539
-     */
-    @Test(enabled = false)
-    public void trans_note_collections() {
-        BBTestRunner bbTest = new BBTestRunner(new File(TestFiles.collections));
-        String expectedBraille = ",h>c`.<|rt ,p`.>ubli%+ ,company";
-
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6) + 4);
-        bbTest.textViewTools.selectRight(6);
-        bbTest.openMenuItem(TopMenu.EMPHASIS, EmphasisItem.TNSYMBOLS.longName);
-
-        assertEquals(bbTest.brailleViewBot.getTextOnLine(6), expectedBraille);
-    }
-
     @Test(enabled = false)
     public void partialElement() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);

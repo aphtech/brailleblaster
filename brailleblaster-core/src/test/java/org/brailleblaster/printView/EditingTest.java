@@ -61,22 +61,6 @@ public class EditingTest {
     private static final File TOC_TEST_FILE = new File("src/test/resources/org/brailleblaster/easierxml/toc-complete.bbx");
 
     @Test(enabled = false)
-    public void type_translate_collections_rt6550() {
-        BBTestRunner bbTest = new BBTestRunner(new File(TestFiles.litBook));
-        //go to braille page 1
-        GoToPageTest.goToPage(bbTest, GoToPageDialog.PageType.BRAILLE, "1", false);
-        //go to line after "Easily capture notes and complete assignments online"
-        String passage = "assignments online";
-        bbTest.textViewTools.navigateToText(passage, 0);
-        bbTest.textViewTools.pressKey(SWT.ARROW_DOWN, 1);
-        //type test
-        bbTest.textViewTools.typeText("test");
-        //arrow down to retranslate
-        bbTest.textViewTools.pressKey(SWT.ARROW_DOWN, 1);
-        //no exception thrown
-    }
-
-    @Test(enabled = false)
     public void SimpleInsert_AtStart() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "PPage 8 Sample Presentations";
