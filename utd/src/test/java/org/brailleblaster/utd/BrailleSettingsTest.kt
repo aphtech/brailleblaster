@@ -60,11 +60,10 @@ class BrailleSettingsTest {
     }
 
     /**
-     * Disabled to stop this test failing when the tables are changed (eg us to UEB)
-     *
-     * @throws IOException
+     * Save then load must give back equal settings. Compares objects rather than saved XML so the test doesn't
+     * break whenever the default tables change (eg US to UEB) or a field is added.
      */
-    @Test(enabled = false)
+    @Test
     @Throws(IOException::class)
     fun saveEngine() {
         val brailleSettings = BrailleSettings()
@@ -73,7 +72,7 @@ class BrailleSettingsTest {
 
         val tempOutput = File.createTempFile("utdEngine", "test")
         saveBrailleSettings(tempOutput, brailleSettings)
-        UTDConfigUtils.compareOutputToSaved(tempOutput, UTDConfigUtils.TEST_BRAILLE_SETTINGS_FILE)
+        Assert.assertEquals(loadBrailleSettings(tempOutput), brailleSettings)
     }
 
     @Test
