@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.utd;
 
+import org.brailleblaster.bbx.BookToBBXConverter;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -85,7 +86,12 @@ public class BRFTestRunner {
     }
 
     public Document translate(Document doc, int opts) {
-        utdManager.loadEngineFromDoc(doc, "nimas");
+        // Translation only runs on BBX now (there is no nimas.actionMap.xml), so convert DTBook input
+        // the way opening a book does
+        if (!"bbdoc".equals(doc.getRootElement().getLocalName())) {
+            doc = BookToBBXConverter.Companion.fromConfig("nimas").convert(doc);
+        }
+        utdManager.loadEngineFromDoc(doc, "bbx");
 
         utdManager.getEngine().getBrailleSettings().setUseAsciiBraille(!((OPTS_UNICODE & opts) == OPTS_UNICODE));
         doc = utdManager.getEngine().translateAndFormatDocument(doc);
