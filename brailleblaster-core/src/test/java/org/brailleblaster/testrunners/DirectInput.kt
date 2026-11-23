@@ -41,11 +41,18 @@ import org.testng.Assert.assertTrue
 
 private fun pump() = ViewTestRunner.doPendingSWTWork()
 
+/** Lets the background Reformatter finish before input, so edits don't race a view rebuild (same as ViewTools.settle) */
+private fun BBTestRunner.settle() {
+    manager.waitForFormatting(true)
+    pump()
+}
+
 // ---- caret and selection
 
 /** Moves the caret through the text view, as a click would. Asserts the caret landed on [offset] unless told not to. */
 @JvmOverloads
 fun BBTestRunner.moveCaret(offset: Int, assertLanded: Boolean = true) {
+    settle()
     manager.text.setCurrentElement(offset)
     pump()
     if (assertLanded) assertEquals(textViewWidget.caretOffset, offset, "Caret not at requested offset")
@@ -107,6 +114,7 @@ fun BBTestRunner.pressDelete() {
 
 /** Types [text] at the caret, then commits the edit to the document as leaving the block would */
 fun BBTestRunner.type(text: String) {
+    settle()
     text.forEach { c -> typeKey(c) }
     manager.text.update(false)
     pump()
@@ -114,6 +122,7 @@ fun BBTestRunner.type(text: String) {
 
 /** Types [text] at the caret one key at a time without committing, so the edit is still pending in the view */
 fun BBTestRunner.typeKeys(text: String) {
+    settle()
     text.forEach { c ->
         typeKey(c)
         pump()

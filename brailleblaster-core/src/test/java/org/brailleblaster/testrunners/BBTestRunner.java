@@ -36,6 +36,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -185,6 +187,7 @@ public class BBTestRunner {
         textViewTools.setManager(manager);
         brailleViewTools = new ViewTools();
         updateViewReferences();
+        textViewTools.settle();
 
         //TODO: no longer needed in BBX?
 //		bot.menu("&Open").click();
@@ -214,6 +217,22 @@ public class BBTestRunner {
         return new org.eclipse.swtbot.swt.finder.widgets.SWTBotShell(wpManager.getShell()).menu().menu(text, recursive, 0);
     }
 
+    /**
+     * The newest visible window of this BrailleBlaster, normally the dialog a test just opened. Use instead of
+     * bot.activeShell(), which asks the OS for the focused window and is null when BrailleBlaster isn't focused.
+     */
+    public SWTBotShell activeShell() {
+        Shell main = wpManager.getShell();
+        Shell[] shells = Display.getCurrent().getShells();
+        for (int i = shells.length - 1; i >= 0; i--) {
+            Shell shell = shells[i];
+            if (!shell.isDisposed() && shell.isVisible() && shell != main) {
+                return new SWTBotShell(shell);
+            }
+        }
+        return new SWTBotShell(main);
+    }
+
     public void cut() {
         findMenu("&Cut", true).click();
     }
@@ -239,9 +258,18 @@ public class BBTestRunner {
         menuBot.menu(menu).click();
     }
 
+    /**
+     * Commits a pending text view edit. The old way moved focus away and back so TextView's focusLost listener ran,
+     * but focus events don't fire reliably without OS focus, so by default do what that listener does.
+     */
     public void updateTextView() {
-        brailleViewBot.setFocus();
-        textViewBot.setFocus();
+        if (ViewTools.REAL_KEYS) {
+            brailleViewBot.setFocus();
+            textViewBot.setFocus();
+        } else if (manager.getText().textChanged) {
+            manager.getText().update(false);
+            manager.getText().setCurrent(textViewWidget.getCaretOffset());
+        }
         doPendingSWTWork();
     }
 
@@ -590,10 +618,7 @@ public class BBTestRunner {
             if (REAL_KEYS) {
                 navigate(bot, offset);
             } else if (manager != null) {
-                // Let the background Reformatter finish first; instant caret moves otherwise race it and
-                // edits (eg Enter splitting a block) are sometimes lost
-                manager.waitForFormatting(true);
-                doPendingSWTWork();
+                settle();
                 // Commit a pending edit first, as the arrow keys leaving the element would
                 manager.getText().update(false);
                 manager.getText().setCurrentElement(offset);
@@ -601,6 +626,17 @@ public class BBTestRunner {
                 assertEquals(widget.getCaretOffset(), offset, "View is not on given offset");
             } else {
                 arrowTo(offset);
+            }
+        }
+
+        /**
+         * Lets the background Reformatter finish so the view text is final. Instant caret moves and offsets computed
+         * from the text otherwise race it: edits are lost, or the caret lands where the text used to be.
+         */
+        public void settle() {
+            if (!REAL_KEYS && manager != null) {
+                manager.waitForFormatting(true);
+                doPendingSWTWork();
             }
         }
 
@@ -622,6 +658,14 @@ public class BBTestRunner {
 
         public void navigateToLine(int line) {
             navigate(widget.getOffsetAtLine(line));
+        }
+
+        /**
+         * Offset just after the last character of {@code line}. Old tests wrote this as
+         * {@code getOffsetAtLine(line + 1) - 1}, which only works with one-character line breaks.
+         */
+        public int endOfLine(int line) {
+            return widget.getOffsetAtLine(line) + widget.getLine(line).length();
         }
 
         public static void navigate(SWTBotStyledText textBot, int offset) {
@@ -692,11 +736,13 @@ public class BBTestRunner {
             if (skip < 0) {
                 throw new IllegalArgumentException("skip must be positive");
             }
-            int index = bot.getText().indexOf(text);
-            assertNotEquals(index, -1, "Cannot find string '" + text + "' in text: " + bot.getText());
+            settle();
+            // widget, not bot: SWTBot's getText() turns \r\n into \n, so its offsets are wrong on Windows
+            int index = widget.getText().indexOf(text);
+            assertNotEquals(index, -1, "Cannot find string '" + text + "' in text: " + widget.getText());
             for (int i = 0; i < skip; i++) {
-                index = bot.getText().indexOf(text, index + text.length());
-                assertNotEquals(index, -1, "Cannot find string '" + text + "' at skip " + i + " in text: " + bot.getText());
+                index = widget.getText().indexOf(text, index + text.length());
+                assertNotEquals(index, -1, "Cannot find string '" + text + "' at skip " + i + " in text: " + widget.getText());
             }
             navigate(index);
         }
@@ -709,11 +755,12 @@ public class BBTestRunner {
             if (skip < 0) {
                 throw new IllegalArgumentException("skip must be positive");
             }
-            int index = bot.getText().indexOf(text);
+            settle();
+            int index = widget.getText().indexOf(text);
             for (int i = 0; i < skip; i++) {
-                index = bot.getText().indexOf(text, index + text.length());
+                index = widget.getText().indexOf(text, index + text.length());
             }
-            assertNotEquals(index, -1, "Cannot find string '" + text + "' in text: " + bot.getText());
+            assertNotEquals(index, -1, "Cannot find string '" + text + "' in text: " + widget.getText());
             navigateRelative(index);
         }
 
@@ -739,7 +786,7 @@ public class BBTestRunner {
             for (int i = 0; i < chars; i++) {
                 pressShortcut(SWT.SHIFT, SWT.ARROW_RIGHT, '\0');
 
-                if (skipNewlines && bot.getSelection().endsWith(System.lineSeparator()) && widget.getCaretOffset() != bot.getText().length() - 1) {
+                if (skipNewlines && bot.getSelection().endsWith(System.lineSeparator()) && widget.getCaretOffset() != widget.getText().length() - 1) {
                     i--;
                 }
             }
@@ -813,6 +860,7 @@ public class BBTestRunner {
         }
 
         public void typeText(String text) {
+            settle();
             if (REAL_KEYS) {
                 bot.typeText(text);
             } else {
@@ -834,7 +882,7 @@ public class BBTestRunner {
         }
 
         public String getTextStripped(int offset) {
-            return stripNewlines(bot.getText().substring(offset).trim());
+            return stripNewlines(widget.getText().substring(offset).trim());
         }
 
         public void clickContextMenu(String menuItem) {
