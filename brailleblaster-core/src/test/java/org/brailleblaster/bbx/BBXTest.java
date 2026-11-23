@@ -92,15 +92,16 @@ public class BBXTest {
 		}
 	}
 	
-	@Test(dataProvider = "coreTypeDataProvider", enabled = false)
+	@Test(dataProvider = "coreTypeDataProvider")
 	public void subtypesListMatchesField(BBX.CoreType type) throws Exception {
-		int counter = 0;
+		// Compare as sets: getFields() order isn't guaranteed, and subTypes order doesn't matter to callers
+		java.util.Set<Object> fieldValues = new java.util.HashSet<>();
 		for (Field curField : type.getClass().getFields()) {
-			if (!BBX.SubType.class.isAssignableFrom(curField.getType())) {
-				continue;
+			if (BBX.SubType.class.isAssignableFrom(curField.getType())) {
+				fieldValues.add(curField.get(type));
 			}
-			
-			Assert.assertEquals(curField.get(type), type.subTypes.get(counter++), "subTypes list doesn't match fields");
 		}
+		Assert.assertEquals(type.subTypes.size(), new java.util.HashSet<>(type.subTypes).size(), "subTypes list has duplicates");
+		Assert.assertEquals(new java.util.HashSet<Object>(type.subTypes), fieldValues, "subTypes list doesn't match fields");
 	}
 }
