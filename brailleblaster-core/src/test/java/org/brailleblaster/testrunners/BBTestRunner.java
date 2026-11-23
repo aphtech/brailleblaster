@@ -300,6 +300,16 @@ public class BBTestRunner {
         try {
             return selectedMenu.menu(curMenuItem, recursive, 0);
         } catch (WidgetNotFoundException e) {
+            // The Styles menu shows BANA display labels (bana-styles.properties, e.g. L1-3 -> "List 1"),
+            // while tests name styles by their styleDefs name
+            String label = org.brailleblaster.utils.localization.LocaleHandler.Companion.getBanaStyles(java.util.Locale.getDefault()).get(curMenuItem);
+            if (!label.equals(curMenuItem)) {
+                try {
+                    return selectedMenu.menu(label, recursive, 0);
+                } catch (WidgetNotFoundException ignored) {
+                    // report the original name below
+                }
+            }
             StringBuilder sb = new StringBuilder();
 
             MenuItem curParent = selectedMenu.widget;
@@ -572,6 +582,10 @@ public class BBTestRunner {
             if (REAL_KEYS) {
                 navigate(bot, offset);
             } else if (manager != null) {
+                // Let the background Reformatter finish first; instant caret moves otherwise race it and
+                // edits (eg Enter splitting a block) are sometimes lost
+                manager.waitForFormatting(true);
+                doPendingSWTWork();
                 // Commit a pending edit first, as the arrow keys leaving the element would
                 manager.getText().update(false);
                 manager.getText().setCurrentElement(offset);
@@ -599,7 +613,7 @@ public class BBTestRunner {
         }
 
         public void navigateToLine(int line) {
-            navigate(bot, widget.getOffsetAtLine(line));
+            navigate(widget.getOffsetAtLine(line));
         }
 
         public static void navigate(SWTBotStyledText textBot, int offset) {
