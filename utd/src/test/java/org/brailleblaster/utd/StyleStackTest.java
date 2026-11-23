@@ -388,12 +388,10 @@ public class StyleStackTest {
     /**
      * Test both StyleStack's equals (special since it extends a List) and Style's
      */
-     /*
-     todo this is broken.
     @Test
     public void equalsAndHashCodeTest() {
         StyleStack stack = makeTestStack();
-todo check why this is not working         assertNotEquals(new StyleStack(), stack);
+        assertNotEquals(new StyleStack(), stack);
         assertEquals(makeTestStack(), stack);
         assertEquals(stack.hashCode(), makeTestStack().hashCode());
 
@@ -410,7 +408,6 @@ todo check why this is not working         assertNotEquals(new StyleStack(), sta
 
         assertNotEquals(stack2, stack1);
     }
-    */
     private static StyleStack makeTestStack() {
         Style style = new Style();
         style.setFirstLineIndent(20);

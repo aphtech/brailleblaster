@@ -65,7 +65,8 @@ public class LiteraryFormatterTest {
 	//This is disabled due to a possibly temporary change in how new pages are maintained.
 	//A set in FormatSelector will maintain the page builders, LiteraryFormatter will only return
 	//the pages it worked on. 
-//	@Test(dataProvider="mapAndDocumentProvider")
+	// Disabled: expects print page 21, gets braille page number; formatting review (test_fix.md Phase 6)
+	@Test(enabled = false, dataProvider="mapAndDocumentProvider")
 	public void testNewPageBefore(StyleMap map, Document doc){
 		UTDTranslationEngine engine = new UTDTranslationEngine();
 		StyleStack mockStyleStack = mock(StyleStack.class);
@@ -398,7 +399,8 @@ public class LiteraryFormatterTest {
 		assertTrue(pageBuilder.toBRF().contains(PAGE_INDICATOR), "Expected print page indicator on line 1\n" + pageBuilder);
 	}
 	
-//	@Test
+	// Disabled: 'Unable to insert a separator line on non-empty line'; formatting review (test_fix.md Phase 6)
+	@Test(enabled = false)
 	public void insertSeparatorLines (){
 		StyleMap map = getStyleMap();
 		
@@ -422,7 +424,9 @@ public class LiteraryFormatterTest {
 		StyleStack mockStyleStack = mock(StyleStack.class);
 		when(mockStyleStack.getStartSeparator()).thenReturn("7");
 		when(mockStyleStack.getEndSeparator()).thenReturn("g");
-		
+		// PageBuilder rejects the mock's default of 0; 1 is the real default
+		when(mockStyleStack.getLineSpacing()).thenReturn(1);
+
 		FormatSelector formatter = new FormatSelector(map, mockStyleStack, engine);
 		Set<PageBuilder> results = new LinkedHashSet<>();
 		PageBuilder pageBuilder = new PageBuilder(engine, new Cursor());
