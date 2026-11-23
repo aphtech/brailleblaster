@@ -220,4 +220,39 @@ class UTDHelperTest {
             ), 3
         )
     }
+
+    private fun docWithHead(vararg headChildren: String): Pair<Document, Element> {
+        val head = Element("head").apply { headChildren.forEach { appendChild(Element(it)) } }
+        val root = Element("dtbook").apply {
+            appendChild(head)
+            appendChild(Element("book"))
+        }
+        return Document(root) to head
+    }
+
+    @Test
+    fun getDocumentHead_emptyHead() {
+        val (doc, head) = docWithHead()
+        Assert.assertSame(doc.getDocumentHead(), head)
+    }
+
+    @Test
+    fun getDocumentHead_headWithChildren() {
+        // Regression: the head's first child was returned instead of the head itself
+        val (doc, head) = docWithHead("meta", "meta")
+        Assert.assertSame(doc.getDocumentHead(), head)
+    }
+
+    @Test
+    fun getDocumentHead_nestedHead() {
+        val head = Element("head").apply { appendChild(Element("meta")) }
+        val doc = Document(Element("html").apply { appendChild(Element("wrapper").apply { appendChild(head) }) })
+        Assert.assertSame(doc.getDocumentHead(), head)
+    }
+
+    @Test
+    fun getDocumentHead_noHead() {
+        val doc = Document(Element("dtbook").apply { appendChild(Element("book")) })
+        Assert.assertNull(doc.getDocumentHead())
+    }
 }
