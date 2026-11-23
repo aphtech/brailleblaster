@@ -419,6 +419,9 @@
             </activation>
             <properties>
                 <bb.excludedTests>brokenTests,todoFixLater,${moreExcludedTests}</bb.excludedTests>
+                <!-- A fresh JVM per test class: a single JVM runs out of Windows GUI handles ('No more handles') after a few hundred BrailleBlaster windows -->
+                <forkCount>1</forkCount>
+                <reuseForks>false</reuseForks>
             </properties>
         </profile>
         <!-- Run only GUI tests:  mvnw test -pl brailleblaster-core -Pgui-only -->
@@ -427,6 +430,9 @@
             <properties>
                 <bb.excludedTests>brokenTests,todoFixLater,${moreExcludedTests}</bb.excludedTests>
                 <groups>gui</groups>
+                <!-- A fresh JVM per test class: a single JVM runs out of Windows GUI handles ('No more handles') after a few hundred BrailleBlaster windows -->
+                <forkCount>1</forkCount>
+                <reuseForks>false</reuseForks>
             </properties>
         </profile>
         <profile>
