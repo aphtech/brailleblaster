@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
 @GuiTest
 public class ClearSelectionTest {
 
-    @Test(enabled = false)
+    @Test
     public void editAfterStyleChange() {
         BBTestRunner bbTest = new BBTestRunner("", "<h1>Heading</h1><p>Line 1</p><p>Line 2</p><p>Line 3</p>");
         String text = "test Line 1";
@@ -46,7 +46,7 @@ public class ClearSelectionTest {
         assertEquals(braille, bbTest.brailleViewBot.getTextOnLine(2));
     }
 
-    @Test(enabled = false)
+    @Test
     public void deleteAfterLineChange() {
         BBTestRunner bbTest = new BBTestRunner("", "<h1>Heading</h1><p>Line 1</p><p>Line 2</p><p>Line 3</p>");
         String text = "ine 1";
@@ -62,7 +62,7 @@ public class ClearSelectionTest {
         assertEquals(braille, bbTest.brailleViewBot.getTextOnLine(2));
     }
 
-    @Test(enabled = false)
+    @Test
     public void backspaceAfterLineChange() {
         BBTestRunner bbTest = new BBTestRunner("", "<h1>Heading</h1><p>Line 1</p><p>Line 2</p><p>Line 3</p>");
         String text = "Line 1";

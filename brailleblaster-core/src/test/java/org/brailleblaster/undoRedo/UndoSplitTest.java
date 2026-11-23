@@ -37,7 +37,7 @@ public class UndoSplitTest {
 
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/undoRedo/UndoSplitTests.xml");
 
-    @Test(enabled = false)
+    @Test
     public void splitBlockElement() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
 
@@ -51,7 +51,8 @@ public class UndoSplitTest {
         String brailleAfter2 = "  graph on ,page";
 
 
-        bbTest.navigateTextView(37);
+        // "Second Para|graph": the old offset 37 assumed one-character line breaks
+        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(1) + textAfter.length());
         bbTest.textViewTools.pressKey(SWT.LF, 1);
         //TextEditingTests.navigateTo(textBot, 37);
         //TextEditingTests.pressKey(textBot, SWT.LF, 1);
@@ -74,7 +75,7 @@ public class UndoSplitTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(2));
     }
 
-    @Test(enabled = false)
+    @Test
     public void splitInlineElement() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
 
@@ -109,12 +110,12 @@ public class UndoSplitTest {
     }
 
     private void undo(BBTestRunner bbTest) {
-        bbTest.textViewBot.pressShortcut(SWT.MOD1, 'z');
+        bbTest.textViewTools.pressShortcut(SWT.MOD1, 'z');
         BBViewTestRunner.doPendingSWTWork();
     }
 
     private void redo(BBTestRunner bbTest) {
-        bbTest.textViewBot.pressShortcut(SWT.MOD1, 'y');
+        bbTest.textViewTools.pressShortcut(SWT.MOD1, 'y');
         BBViewTestRunner.doPendingSWTWork();
     }
 }

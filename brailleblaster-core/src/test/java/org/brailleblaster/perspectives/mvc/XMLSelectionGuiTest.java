@@ -34,6 +34,7 @@ import nu.xom.Element;
 public class XMLSelectionGuiTest {
     private static final Logger log = LoggerFactory.getLogger(XMLSelectionGuiTest.class);
 
+    // Disabled: breadcrumbs now show only the block, not its section ancestors; confirm intended (test_fix.md Phase 7a)
     @Test(enabled = false)
     public void blocks_sectionSelection_Test() {
         BBTestRunner test = new BBTestRunner("", "<h1>Stuff 1</h1><h2>More 2</h2><p>Things 3</p>");

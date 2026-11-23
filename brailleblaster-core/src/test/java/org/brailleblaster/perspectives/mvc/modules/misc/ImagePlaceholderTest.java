@@ -36,6 +36,7 @@ public class ImagePlaceholderTest {
         localeHandler = LocaleHandler.getDefault();
     }
 
+    // Disabled: the dialog now requires an image path, which can only be chosen in a native file dialog a test can't drive (test_fix.md Phase 7a)
     @Test(enabled = false)
     public void insertImagePlaceholder_issue4961_issue5014() {
         BBTestRunner bbTest = new BBTestRunner("", "<h2>this is</h2><h1>testing</h1>");
@@ -46,7 +47,8 @@ public class ImagePlaceholderTest {
         SWTBot placeholderBot = bbTest.bot.activeShell().bot();
         placeholderBot.text(0).setText("10");
         ViewTestRunner.doPendingSWTWork();
-        placeholderBot.button(0).click();
+        // By label: button 0 is now "Select Image", which opens a native file dialog that hangs the test
+        placeholderBot.button("Insert").click();
         ViewTestRunner.doPendingSWTWork();
 
         //Issue 4961: Should not get an exception at this point

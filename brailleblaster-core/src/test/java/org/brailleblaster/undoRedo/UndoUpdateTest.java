@@ -30,7 +30,7 @@ public class UndoUpdateTest {
 
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/undoRedo/UndoUpdateTests.xml");
 
-    @Test(enabled = false)
+    @Test
     public void basic_Undo_Redo_Update() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Second Paragraph on Page 22";
@@ -38,7 +38,8 @@ public class UndoUpdateTest {
         String expectedText2 = "Second Paragraph on Page 2";
         String expectedBraille2 = "  ,second ,p>agraph on ,page #b";
 
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+        // End of line 3; offsetAtLine(4) - 1 assumed a one-character line break
+        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(3) + bbTest.textViewWidget.getLine(3).length());
         bbTest.textViewTools.typeText("2");
         bbTest.updateTextView();
 
@@ -54,7 +55,7 @@ public class UndoUpdateTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(3));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void basic_Undo_Redo__Selection_Update() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Second Paragraph on Paragraph";
@@ -84,7 +85,7 @@ public class UndoUpdateTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(3));
     }
 
-    @Test(enabled = false)
+    @Test
     public void multiple_undo_redo_update() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Page 2 paragraph";

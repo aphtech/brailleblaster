@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
 public class DontSplitSelectionTest {
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/printView/dontSplitSelectionTest.bbx");
 
-    @Test(enabled = false)
+    @Test
     public void inlineElementSelection() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
 
@@ -42,7 +42,7 @@ public class DontSplitSelectionTest {
         bbTest.assertRootSection_NoBrlCopy().child(0).child(1).isContainer(BBX.CONTAINER.DONT_SPLIT);
     }
 
-    @Test(enabled = false)
+    @Test
     public void singleElement() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
 
@@ -53,7 +53,7 @@ public class DontSplitSelectionTest {
         bbTest.assertRootSection_NoBrlCopy().child(0).child(0).isContainer(BBX.CONTAINER.DONT_SPLIT);
     }
 
-    @Test(enabled = false)
+    @Test
     public void singleWithInlineElement() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
 
