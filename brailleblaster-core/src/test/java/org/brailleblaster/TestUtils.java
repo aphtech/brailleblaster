@@ -55,7 +55,7 @@ public class TestUtils {
     public static SWTBot refreshReturnActiveBot(BBTestRunner test) {
         ViewTestRunner.doPendingSWTWork();
         ViewTestRunner.forceActiveShellHack();
-        return test.bot.activeShell().bot();
+        return test.activeShell().bot();
     }
 
     public static void forceShellByName(String s) {
@@ -84,8 +84,8 @@ public class TestUtils {
 
     public static void changeSettings(BBTestRunner bb, String translationTable) {
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(translationTable);
-        bb.bot.activeShell().bot().button(EasySWT.OK_LABEL).click();
+        bb.activeShell().bot().comboBox(0).setSelection(translationTable);
+        bb.activeShell().bot().button(EasySWT.OK_LABEL).click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
     }

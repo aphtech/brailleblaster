@@ -63,7 +63,7 @@ public class FindReplaceReplaceAllTest {
     public void basicReplaceAll() {
         BBTestRunner bb = new BBTestRunner(multiples);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         bot.comboBox(0).setText("word");
         bot.comboBox(1).setText("success");
@@ -77,7 +77,7 @@ public class FindReplaceReplaceAllTest {
     public void replaceAllWithEmphasis() {
         BBTestRunner bb = new BBTestRunner(emphasis);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
         bot = TestUtils.refreshReturnActiveBot(bb);
@@ -98,7 +98,7 @@ public class FindReplaceReplaceAllTest {
     public void replaceAllWithStyles() {
         BBTestRunner bb = new BBTestRunner(style);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
         bot = TestUtils.refreshReturnActiveBot(bb);
@@ -119,7 +119,7 @@ public class FindReplaceReplaceAllTest {
     public void replaceAllStylesAndEmphasis() {
         BBTestRunner bb = new BBTestRunner(multiples);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
         bot = TestUtils.refreshReturnActiveBot(bb);
@@ -143,7 +143,7 @@ public class FindReplaceReplaceAllTest {
     public void replaceAllCaseSensitive() {
         BBTestRunner bb = new BBTestRunner(caseSensitive);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.checkMatchCase(bb);
         bot = TestUtils.refreshReturnActiveBot(bb);
@@ -166,7 +166,7 @@ public class FindReplaceReplaceAllTest {
     public void replaceAllCaseSensitiveOneLetter() {
         BBTestRunner bb = new BBTestRunner(oneLetter);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.checkMatchCase(bb);
         bot = TestUtils.refreshReturnActiveBot(bb);
@@ -184,7 +184,7 @@ public class FindReplaceReplaceAllTest {
     public void RT5279makeBoldIntoItalicsAndRemoveBold() {
         BBTestRunner bb = new BBTestRunner(alreadyBold);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
 

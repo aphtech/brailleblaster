@@ -60,7 +60,7 @@ public class EditingTest {
     //For guide dot editing tests
     private static final File TOC_TEST_FILE = new File("src/test/resources/org/brailleblaster/easierxml/toc-complete.bbx");
 
-    @Test(enabled = false)
+    @Test
     public void SimpleInsert_AtStart() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "PPage 8 Sample Presentations";
@@ -76,7 +76,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     public void SimpleInsert_AtMiddle() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Page 8 Samples Presentations";
@@ -98,7 +98,7 @@ public class EditingTest {
      * Identical to SimpleInsert_AtMiddle, but we press the down arrow
      * instead of calling updateTextView()
      */
-    @Test(enabled = false)
+    @Test
     public void rt_4709() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Page 8 Samples Presentations";
@@ -112,7 +112,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     public void SimpleInsert_AtEnd() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Page 8 Sample Presentations'";
@@ -130,7 +130,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     public void SimpleDeleteStart() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "age 8 Sample Presentations";
@@ -148,7 +148,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     public void SimpleDeleteMiddle() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Page 8 ample Presentations";
@@ -166,7 +166,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     public void SimpleDeleteEnd() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Page 8 Sample Presentation";
@@ -184,7 +184,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     public void SimpleBackspaceStart() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "age 8 Sample Presentations";
@@ -202,7 +202,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     public void SimpleBackspaceMiddle() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Page 8 ample Presentations";
@@ -220,7 +220,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     public void SimpleBackspaceEnd() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Page 8 Sample Presentation";
@@ -238,7 +238,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     public void insert_WordSelection_SameLength() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "PaZe 8 Sample Presentations";
@@ -254,7 +254,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     public void AtStart_Selection_SameLength() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Gage 8 Sample Presentations";
@@ -270,7 +270,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     //highlight a selection the same length as the text entered and type a single char
     public void AtEnd_Selection_SameLength() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -287,7 +287,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     public void atStart_Selection_SameLength_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "age 8 Sample Presentations";
@@ -303,7 +303,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     public void atStart_Selection_SameLength_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "age 8 Sample Presentations";
@@ -319,7 +319,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void atStart_Selection_SameLength_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "age 8 Sample Presentations";
@@ -335,7 +335,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void atStart_Selection_SameLength_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "age 8 Sample Presentations";
@@ -351,7 +351,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void inside_Selection_SameLength_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -368,7 +368,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     public void inside_Selection_SameLength_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Page 8 Sample resentations";
@@ -384,7 +384,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void inside_Selection_SameLength_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Page 8 Sample resentations";
@@ -400,7 +400,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     public void inside_Selection_SameLength_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Page 8 Sample resentations";
@@ -416,7 +416,7 @@ public class EditingTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     //Selects and deletes a character at the end of the range, uses delete key
     public void test_AtEnd_Selection_SameLength_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -435,7 +435,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //Selects and deletes a character at the end of the range, uses backspace key
     public void test_AtEnd_Selection_SameLength_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -454,7 +454,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     //Selects and deletes a character at the end of the range, uses cut menu item
     public void test_AtEnd_Selection_SameLength_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -473,7 +473,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     //Selects and deletes a character at the end of the range, uses cut keyboard shortcut
     public void test_AtEnd_Selection_SameLength_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -492,7 +492,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //Selects multiple characters inside a range and replaces it with an amount less than selection length
     //in this case a single typed character
     public void test_Inside_Selection_Shorter() {
@@ -512,7 +512,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     //Selects multiple characters inside a range and replaces it with an amount less than selection length
     //uses paste menu item
     public void test_Inside_Selection_Shorter_Paste() {
@@ -538,7 +538,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //Selects multiple characters at the start of a range and replaces it with an amount less than selection length
     //in this case a single typed character
     public void test_AtStart_Selection_Shorter() {
@@ -558,7 +558,8 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    // Disabled: the text view now shows a pilcrow at the start of the pasted line; expectation predates it (test_fix.md Phase 7b)
+    @Test(enabled = false, groups = TestGroups.CLIPBOARD_TESTS)
     //Selects multiple characters at the start of a range and replaces it with an amount less than selection length
     //uses paste
     public void test_AtStart_Selection_Paste() {
@@ -584,7 +585,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //Selects multiple characters at the end of a range and replaces it with an amount less than selection length
     //in this case a single typed character
     public void test_AtEnd_Selection_Shorter() {
@@ -602,7 +603,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     //Selects multiple characters at the end of a range and replaces it with an amount less than selection length
     //uses paste menu item
     public void test_AtEnd_Selection_Shorter_Paste() {
@@ -628,7 +629,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //From start of range deletes a multiple char selection shorter than the element length
     //uses delete key
     public void test_AtStart_Selection_Shorter_Delete() {
@@ -648,7 +649,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //From start of range deletes a multiple char selection shorter than the element length
     //uses delete key
     public void test_AtStart_Selection_Shorter_Backspace() {
@@ -668,7 +669,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     //From start of range deletes a multiple char selection shorter than the element length
     //uses cut menu item
     public void test_AtStart_Selection_Delete_Cut() {
@@ -688,7 +689,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //From start of range deletes a multiple char selection shorter than the element length
     //uses cut keyboard shortcut
     public void test_AtStart_Selection_Shorter_CutShortcut() {
@@ -708,7 +709,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //From inside range deletes a multiple char selection shorter than the element length, but not reaching the end position
     //uses delete
     public void test_Inside_Selection_Shorter_Delete() {
@@ -727,7 +728,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //From inside range deletes a multiple char selection shorter than the element length, but not reaching the end position
     //uses delete
     public void test_Inside_Selection_Shorter_Backspace() {
@@ -746,7 +747,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     //From inside range deletes a multiple char selection shorter than the element length, but not reaching the end position
     //uses cut menu item
     public void test_Inside_Selection_Shorter_Cut() {
@@ -765,7 +766,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     //From inside range deletes a multiple char selection shorter than the element length, but not reaching the end position
     //uses cut keyboard shortcut
     public void test_Inside_Selection_Shorter_CutShortcut() {
@@ -784,7 +785,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //deletes a multiple char selection from inside range to last position
     //uses delete
     public void test_AtEnd_Selection_Shorter_Delete() {
@@ -803,7 +804,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //deletes a multiple char selection from inside range to last position
     //uses delete
     public void test_AtEnd_Selection_Shorter_Backspace() {
@@ -822,7 +823,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     //deletes a multiple char selection from inside range to last position
     //uses delete
     public void test_AtEnd_Selection_Shorter_Cut() {
@@ -841,7 +842,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //deletes a multiple char selection from inside range to last position
     //uses delete
     public void test_AtEnd_Selection_Shorter_CutShortcut() {
@@ -860,7 +861,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //From start of element range enters text longer than the selected text
     public void test_AtStart_Selection_Longer() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -877,7 +878,8 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    // Disabled: the text view now shows a pilcrow at the start of the pasted line; expectation predates it (test_fix.md Phase 7b)
+    @Test(enabled = false, groups = TestGroups.CLIPBOARD_TESTS)
     //From start of element range pastes text longer than the selected text
     //uses menu item
     public void test_AtStart_Selection_Longer_Paste() {
@@ -902,7 +904,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //From inside element range enters text longer than the selected text, but not the the last position
     public void test_Inside_Selection_Longer() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -919,7 +921,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     //From inside element range pastes text longer than the selected text, but not the the last position
     //uses menu item
     public void test_Inside_Selection_Longer_Paste() {
@@ -944,7 +946,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //From inside element range enters text longer than the selected text to the the last position
     public void test_atEnd_Selection_Longer() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -961,7 +963,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     //From inside element range pastes text longer than the selected text to the the last position
     //uses menu item
     public void test_atEnd_Selection_Longer_Paste() {
@@ -986,7 +988,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //Deletes the space between two element using delete key, elements are merged
     public void test_BetweenElement_OutsideRange_delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1003,7 +1005,7 @@ public class EditingTest {
         assertEquals(expectedBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     public void test_Selection() {
         BBTestRunner bbTest = new BBTestRunner("", "<list><li><span>Not</span> a paragraph</li></list>");
 
@@ -1015,6 +1017,7 @@ public class EditingTest {
         assertEquals(bbTest.textViewBot.getSelection(), "");
     }
 
+    // Disabled: Edit > Hide is no longer in the menu; feature removed or moved? (test_fix.md Phase 7b)
     @Test(enabled = false)
     public void test_Hide() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>first</p><p>hide me</p>");
@@ -1037,7 +1040,7 @@ public class EditingTest {
         );
     }
 
-    @Test(enabled = false)
+    @Test
     public void restoreCursorAfterBold_rt4287() {
         String out = "<p>test</p>".repeat(15) +
                 "<p><strong>this is bold text</strong></p>" +
@@ -1053,6 +1056,7 @@ public class EditingTest {
         assertEquals(bbTest.textViewWidget.getCaretOffset(), oldPos);
     }
 
+    // Disabled: assertion fails after deleting the whole file; needs investigation (test_fix.md Phase 7b)
     @Test(enabled = false)
     public void deleteAllOfLargeFile_rt5820() {
         StringBuilder content = new StringBuilder();
@@ -1078,7 +1082,7 @@ public class EditingTest {
         assertTrue(bbTest.textViewWidget.getText().isEmpty());
     }
 
-    @Test(enabled = false)
+    @Test
     public void enterAfterTypingParagraph() {
         BBTestRunner bbTest = new BBTestRunner("", "");
         final String testText = "This is an example of a long line of text that will line wrap multiple times";
@@ -1091,6 +1095,7 @@ public class EditingTest {
                 .noNextChild();
     }
 
+    // Disabled: caret ends at 95, expected 94; likely a CRLF offset, needs checking (test_fix.md Phase 7b)
     @Test(enabled = false)
     public void rt5282_KeepCursorInPlaceAfterFormatting() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>Test 1</p><p>Test 2</p><p>Test 3</p>");
@@ -1124,7 +1129,7 @@ public class EditingTest {
         assertEquals(bbTest.textViewWidget.getText().indexOf("Test 3") + 1, bbTest.textViewWidget.getCaretOffset());
     }
 
-    @Test(enabled = false)
+    @Test
     public void guideDotsUneditable() {
         BBTestRunner bbTest = new BBTestRunner(TOC_TEST_FILE);
 
@@ -1151,6 +1156,7 @@ public class EditingTest {
         assertEquals(curLine, getTextOfCurLine(bbTest), "Character key press inside guide dots not blocked");
     }
 
+    // Disabled: TabTextMapElement not found in the map list after a page break; needs investigation (test_fix.md Phase 7b)
     @Test(enabled = false)
     public void rt5916_renderTabsAtBeginningOfPageBreak() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>Test 1</p><p>Test 2</p>");
@@ -1159,7 +1165,7 @@ public class EditingTest {
         bbTest.textViewTools.pressShortcut(Keystrokes.CTRL, Keystrokes.CR);
         bbTest.textViewTools.navigateToText("Test 2");
         bbTest.openMenuItem(TopMenu.EDIT, "Set Cell Position");
-        SWTBot cellPosBot = bbTest.bot.activeShell().bot();
+        SWTBot cellPosBot = bbTest.activeShell().bot();
         cellPosBot.text().typeText("5");
         ViewTestRunner.doPendingSWTWork();
         cellPosBot.button().click();
@@ -1184,7 +1190,7 @@ public class EditingTest {
         assertEquals(foundTab.getEnd(mapList), mapList.get(tabIndex + 1).getStart(mapList));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void rt6027_copyEmphasis() {
         BBTestRunner bbTest = new BBTestRunner("", "<p><strong>bold</strong> unbold <strong>bold</strong> unbold</p>");
 
@@ -1208,7 +1214,7 @@ public class EditingTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
     public void rt6028_backspaceEmphasisBetweenLines() {
         final String FULL_LINE = StringUtils.repeat('a', 38);
         BBTestRunner bbTest = new BBTestRunner("", "<p>Test</p><p>" + FULL_LINE + "</p><p><strong>Bold</strong></p>");
@@ -1232,7 +1238,7 @@ public class EditingTest {
         //Pass if no exception
     }
 
-    @Test(enabled = false)
+    @Test
     public void rt6028_moveCursorAtBeginningOfLineMidElement() {
         final String FULL_LINE = StringUtils.repeat('a', 38);
         BBTestRunner bbTest = new BBTestRunner("", "<p>Test</p><p>" + FULL_LINE + "</p><p><strong>Bold</strong></p>");
@@ -1246,7 +1252,7 @@ public class EditingTest {
         assertEquals(bbTest.textViewWidget.getLine(2), "Bold");
     }
 
-    @Test(enabled = false)
+    @Test
     public void rt5919_adjacentTabs() {
         Element tab1 = BBX.SPAN.TAB.create();
         tab1.addAttribute(new Attribute(BBX.SPAN.TAB.ATTRIB_VALUE.name, "10"));
@@ -1275,7 +1281,7 @@ public class EditingTest {
                                 .nextChildIsText("Tab 2"));
     }
 
-    @Test(enabled = false)
+    @Test
     public void rt5878_deleteAllLineBreaks() {
         BBTestRunner bbTest = new BBTestRunner(new BBXDocFactory()
                 .append(BBX.BLOCK.STYLE.create("Body Text"), "Test 1")
@@ -1292,6 +1298,7 @@ public class EditingTest {
                 .noNextChild();
     }
 
+    // Disabled: NodeException 'No coreType found for element <utd:newLine />' inserting an image placeholder on whitespace; possible product bug (test_fix.md Phase 7b)
     @Test(enabled = false)
     public void rt5724_insertImagePlaceholderOnWhitespace() {
         BBTestRunner bbTest = new BBTestRunner(new BBXDocFactory()
@@ -1304,7 +1311,7 @@ public class EditingTest {
         bbTest.textViewTools.navigateToLine(1);
         bbTest.openMenuItem(TopMenu.INSERT, ImagePlaceholderTool.MENU_ITEM_NAME);
 
-        bbTest.bot.activeShell().bot().text().typeText("3" + SWT.CR);
+        bbTest.activeShell().bot().text().typeText("3" + SWT.CR);
         ViewTestRunner.doPendingSWTWork();
 
         bbTest.assertRootSection_NoBrlCopy()
@@ -1317,7 +1324,8 @@ public class EditingTest {
                 .noNextChild();
     }
 
-    @Test(groups = TestGroups.TODO_FIX_LATER, enabled = false) // table doesn't have blank line before now
+    // Disabled: blank line not inserted before the table where expected; table layout review (test_fix.md Phase 7b)
+    @Test(enabled = false, groups = TestGroups.TODO_FIX_LATER) // table doesn't have blank line before now
     public void rt5995_insertLineBeforeTable() {
         BBTestRunner bbTest = new BBTestRunner("", "<table><tr><td>Heading 1</td><td>Heading 2</td></tr><tr><td>Column 1</td><td>Column 2</td></tr></table>");
 
@@ -1334,7 +1342,7 @@ public class EditingTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
     public void rt6627_deletePageBreakWithDelKey() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>Test 1</p><p>Test 2</p>");
 
@@ -1351,7 +1359,7 @@ public class EditingTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
     public void rt5881_ExceptionWhenDeletingMultiTypeElements() {
         File testFile = new File("src/test/resources/org/brailleblaster/printView/RT5881.bbx");
         BBTestRunner bbTest = new BBTestRunner(testFile);
@@ -1360,7 +1368,7 @@ public class EditingTest {
         bbTest.textViewTools.cutShortCut();
     }
 
-    @Test(enabled = false)
+    @Test
     public void rt5882_ExceptionWhenDeletingUnderscores() {
         File testFile = new File("src/test/resources/org/brailleblaster/printView/RT5882.bbx");
         BBTestRunner bbTest = new BBTestRunner(testFile);
@@ -1369,7 +1377,7 @@ public class EditingTest {
         bbTest.textViewTools.cutShortCut();
     }
 
-    @Test(enabled = false)
+    @Test
     public void rt6137_ExceptionCuttingParitalEmphasizedText() {
         File testFile = new File("src/test/resources/org/brailleblaster/printView/RT6137.bbx");
         BBTestRunner bbTest = new BBTestRunner(testFile);
@@ -1378,7 +1386,7 @@ public class EditingTest {
         bbTest.textViewTools.cutShortCut();
     }
 
-    @Test(enabled = false)
+    @Test
     public void rt6138_ExceptionNullPointerPastingPartiallyEmphasized() {
         File testFile = new File("src/test/resources/org/brailleblaster/printView/RT6138.bbx");
         BBTestRunner bbTest = new BBTestRunner(testFile);
@@ -1388,7 +1396,7 @@ public class EditingTest {
         bbTest.textViewTools.pasteShortcut();
     }
 
-    @Test(enabled = false)
+    @Test
     public void rt6107_NonworkingDeleteKey() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         bbTest.textViewTools.navigateToLine(9);
@@ -1399,7 +1407,7 @@ public class EditingTest {
         assertEquals(qStr, "q");
     }
 
-    @Test(enabled = false)
+    @Test
     public void rt5927_shifLeftException() {
         File testFile = new File("src/test/resources/org/brailleblaster/printView/blankTemplate.bbx");
         BBTestRunner bbTest = new BBTestRunner(testFile);
@@ -1407,7 +1415,7 @@ public class EditingTest {
         bbTest.textViewTools.pressShortcut(Keystrokes.SHIFT, Keystrokes.LEFT);
     }
 
-    @Test(enabled = false)
+    @Test
     public void rt6180_pageIndicatorDeletion() {
         File testFile = new File("src/test/resources/org/brailleblaster/printView/RT6180.bbx");
         BBTestRunner bbTest = new BBTestRunner(testFile);
@@ -1417,7 +1425,7 @@ public class EditingTest {
         bbTest.textViewTools.navigateToText("help their community.");
     }
 
-    @Test(enabled = false)
+    @Test
     public void tab_issue6629() {
         File testFile = new File("src/test/resources/org/brailleblaster/printView/blankTemplate.bbx");
         BBTestRunner bbTest = new BBTestRunner(testFile);
@@ -1430,7 +1438,7 @@ public class EditingTest {
                 .hasText("test    test");
     }
 
-    @Test(enabled = false)
+    @Test
     public void deleteLineBreak() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>This test</p>");
 
@@ -1444,7 +1452,7 @@ public class EditingTest {
                         .hasText("This test"));
     }
 
-    @Test(enabled = false)
+    @Test
     public void rt6818_deleteLineBreakInsideInline() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>This <strong>be</strong>test</p>");
 

@@ -69,7 +69,7 @@ public class FindAndReplaceTest {
     public void dollarSign() {
         BBTestRunner bb = new BBTestRunner(dollarSign);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = cleanSettings(bot, bb);
         String dollar = "$";
         bot.comboBox(0).setText(dollar);
@@ -85,7 +85,7 @@ public class FindAndReplaceTest {
     public void questionMark() {
         BBTestRunner bb = new BBTestRunner(questionMark);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = cleanSettings(bot, bb);
 
         bot.comboBox(0).setText(question);
@@ -98,7 +98,7 @@ public class FindAndReplaceTest {
     public void basicFind() {
         BBTestRunner bb = new BBTestRunner(basic);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
 
         bot.comboBox(0).setText(normal);
         FindReplaceBotHelper.clickFind(bb);
@@ -110,7 +110,7 @@ public class FindAndReplaceTest {
     public void basicReplace() {
         BBTestRunner bb = new BBTestRunner(basic);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
 
         bot.comboBox(0).setText(normal);
         bot.comboBox(1).setText(replaced);
@@ -174,7 +174,7 @@ public class FindAndReplaceTest {
          */
         BBTestRunner bb = new BBTestRunner(oddSpacing);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = cleanSettings(bot, bb);
 
         bot.comboBox(0).setText(odd);
@@ -194,7 +194,7 @@ public class FindAndReplaceTest {
     public void repeatLastSearch() {
         BBTestRunner bb = new BBTestRunner(repeat);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = cleanSettings(bot, bb);
         bot.comboBox(0).setText("word");
         FindReplaceBotHelper.clickFind(bb);
@@ -216,7 +216,7 @@ public class FindAndReplaceTest {
     public void replaceWithEmptyText() {
         BBTestRunner bb = new BBTestRunner(emptyText);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
 
         bot.comboBox(0).setText("bad");
         bot.comboBox(1).setText("");
@@ -241,7 +241,7 @@ public class FindAndReplaceTest {
     public void periodMatchingAllWords() {
         BBTestRunner bb = new BBTestRunner(periodTest);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
 
         bot.comboBox(0).setText("word.");
         FindReplaceBotHelper.clickFind(bb);
@@ -252,11 +252,11 @@ public class FindAndReplaceTest {
     // Utils
 
     public static SWTBotCombo findBox(BBTestRunner bb) {
-        return bb.bot.activeShell().bot().comboBox(0);
+        return bb.activeShell().bot().comboBox(0);
     }
 
     public static SWTBotCombo replaceBox(BBTestRunner bb) {
-        return bb.bot.activeShell().bot().comboBox(1);
+        return bb.activeShell().bot().comboBox(1);
     }
 
     public static SWTBot cleanSettings(SWTBot bot, BBTestRunner bb) {
@@ -295,7 +295,7 @@ public class FindAndReplaceTest {
      */
     public static REPLACE_OUTCOME clickReplace(BBTestRunner bb) {
         if (!isFNRDialog(bb)) {
-            log.error("Find replace with wrong shell, shell is " + bb.bot.activeShell().getText());
+            log.error("Find replace with wrong shell, shell is " + bb.activeShell().getText());
             if (isEndDoc(bb)) {
                 return REPLACE_OUTCOME.END_DOC;
             }
@@ -323,7 +323,7 @@ public class FindAndReplaceTest {
      */
     public static FIND_OUTCOME clickFind(BBTestRunner bb) {
         if (!isFNRDialog(bb)) {
-            log.error("Find replace with wrong shell, shell is " + bb.bot.activeShell().getText());
+            log.error("Find replace with wrong shell, shell is " + bb.activeShell().getText());
             if (isEndDoc(bb)) {
                 return FIND_OUTCOME.END_DOC;
             }

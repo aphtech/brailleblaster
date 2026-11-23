@@ -120,7 +120,7 @@ public class SimpleImageDescriberTest {
 
     public static void openImageDescriber(BBTestRunner bbTest, boolean sixkey) {
         bbTest.openMenuItem(TopMenu.TOOLS, SimpleImageDescriberModule.MENU_ITEM_NAME);
-        SWTBot describerBot = bbTest.bot.activeShell().bot();
+        SWTBot describerBot = bbTest.activeShell().bot();
         if (!sixkey) {
             describerBot.menu("Styled Text").click();
         }
@@ -145,7 +145,7 @@ public class SimpleImageDescriberTest {
         bbTest.textViewTools.navigateToText("before");
         openImageDescriber(bbTest, false);
         ViewTestRunner.forceActiveShellHack();
-        SWTBot describerBot = bbTest.bot.activeShell().bot();
+        SWTBot describerBot = bbTest.activeShell().bot();
         SWTBotStyledText describerTextBot = describerBot.styledText(0);
 
         describerTextBot.setText("This is a description");
@@ -178,7 +178,7 @@ public class SimpleImageDescriberTest {
         bbTest.textViewTools.navigateToText("block");
         openImageDescriber(bbTest, false);
         ViewTestRunner.forceActiveShellHack();
-        SWTBot describerBot = bbTest.bot.activeShell().bot();
+        SWTBot describerBot = bbTest.activeShell().bot();
         SWTBotStyledText describerTextBot = describerBot.styledText(0);
         describerTextBot.setText("This is a description");
         doPendingSWTWork();
@@ -216,7 +216,7 @@ public class SimpleImageDescriberTest {
         bbTest.textViewTools.navigateToText("before");
         openImageDescriber(bbTest, false);
         ViewTestRunner.forceActiveShellHack();
-        SWTBot describerBot = bbTest.bot.activeShell().bot();
+        SWTBot describerBot = bbTest.activeShell().bot();
         SWTBotStyledText describerTextBot = describerBot.styledText(0);
 
         describerTextBot.setText("This is a description");
@@ -268,7 +268,7 @@ public class SimpleImageDescriberTest {
                 break;
             }
         }
-        SWTBot describerBot = bbTest.bot.activeShell().bot();
+        SWTBot describerBot = bbTest.activeShell().bot();
         SWTBotStyledText describerTextBot = describerBot.styledText(0);
 
         describerTextBot.setText("This is a description");
@@ -436,7 +436,7 @@ public class SimpleImageDescriberTest {
         doPendingSWTWork();
 
         TestUtils.forceShellByName(shellName);
-        describerBot = bbTest.bot.activeShell().bot();
+        describerBot = bbTest.activeShell().bot();
         describerTextBot = describerBot.styledText(0);
 
         s = describerTextBot.getText();
@@ -472,12 +472,12 @@ public class SimpleImageDescriberTest {
         doPendingSWTWork();
 
         TestUtils.forceShellByName(shellName);
-        describerBot = bbTest.bot.activeShell().bot();
+        describerBot = bbTest.activeShell().bot();
         describerBot.button("Next Image").click();
         doPendingSWTWork();
 
         TestUtils.forceShellByName(shellName);
-        describerBot = bbTest.bot.activeShell().bot();
+        describerBot = bbTest.activeShell().bot();
         describerTextBot = describerBot.styledText(0);
 
         s = describerTextBot.getText();
@@ -487,7 +487,7 @@ public class SimpleImageDescriberTest {
         doPendingSWTWork();
 
         TestUtils.forceShellByName(shellName);
-        describerBot = bbTest.bot.activeShell().bot();
+        describerBot = bbTest.activeShell().bot();
         describerTextBot = describerBot.styledText(0);
 
         s = describerTextBot.getText();
@@ -515,7 +515,7 @@ public class SimpleImageDescriberTest {
 //		bbTest.openMenuItem(MenuManager.TopMenu.TOOLS, SimpleImageDescriberModule.MENU_ITEM_NAME);
 
         ViewTestRunner.forceActiveShellHack();
-        SWTBot imgBot = bbTest.bot.activeShell().bot();
+        SWTBot imgBot = bbTest.activeShell().bot();
         imgBot.styledText(0).setText("oo");
         ViewTestRunner.doPendingSWTWork();
 
@@ -571,7 +571,7 @@ public class SimpleImageDescriberTest {
 //		assertEquals(bbTest.textViewTools.getSelectionStripped(), "test");
 
         ViewTestRunner.forceActiveShellHack();
-        SWTBot imgBot = bbTest.bot.activeShell().bot();
+        SWTBot imgBot = bbTest.activeShell().bot();
         String testText = "oo";
         imgBot.styledText(0).setText(testText);
         ViewTestRunner.doPendingSWTWork();

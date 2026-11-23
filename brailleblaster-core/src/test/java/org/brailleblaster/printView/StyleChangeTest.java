@@ -610,7 +610,7 @@ public class StyleChangeTest {
         test.textViewTools.selectToEndOf("List Heading");
         test.openMenuItem(TopMenu.STYLES, "Options", "New Pages Before");
 
-        SWTBotShell activeShell = test.bot.activeShell();
+        SWTBotShell activeShell = test.activeShell();
         activeShell.widget.forceActive();
         doPendingSWTWork();
         SWTBot bot = activeShell.bot();
@@ -651,7 +651,7 @@ public class StyleChangeTest {
         test.textViewTools.selectToEndOf("List Heading");
         test.openMenuItem(TopMenu.STYLES, "Options", "New Pages Before");
 
-        SWTBotShell activeShell = test.bot.activeShell();
+        SWTBotShell activeShell = test.activeShell();
         activeShell.widget.forceActive();
         doPendingSWTWork();
         SWTBot bot = activeShell.bot();
@@ -686,7 +686,7 @@ public class StyleChangeTest {
         BBX.BLOCK.DEFAULT.assertIsA(first);
         test.openMenuItem(TopMenu.STYLES, "Options", "New Pages After");
 
-        SWTBot newPagesAfterBot = test.bot.activeShell().bot();
+        SWTBot newPagesAfterBot = test.activeShell().bot();
         newPagesAfterBot.text(0).setText("6");
         doPendingSWTWork();
         newPagesAfterBot.button("OK").click();
@@ -720,14 +720,14 @@ public class StyleChangeTest {
         BBX.BLOCK.DEFAULT.assertIsA(first);
 
         test.openMenuItem(TopMenu.STYLES, "Options", "New Pages After");
-        SWTBot newPagesAfterBot = test.bot.activeShell().bot();
+        SWTBot newPagesAfterBot = test.activeShell().bot();
         newPagesAfterBot.text(0).setText("6");
         doPendingSWTWork();
         newPagesAfterBot.button("OK").click();
         doPendingSWTWork();
 
         test.openMenuItem(TopMenu.STYLES, "Options", "New Pages Before");
-        SWTBot newPagesBeforeBot = test.bot.activeShell().bot();
+        SWTBot newPagesBeforeBot = test.activeShell().bot();
         newPagesBeforeBot.text(0).setText("8");
         doPendingSWTWork();
         newPagesBeforeBot.button("OK").click();
@@ -736,7 +736,7 @@ public class StyleChangeTest {
         test.openMenuItem(TopMenu.STYLES, "Heading", "Cell 5 Heading");
 
         test.openMenuItem(TopMenu.STYLES, "Options", "Lines Before");
-        SWTBot linesBeforeBot = test.bot.activeShell().bot();
+        SWTBot linesBeforeBot = test.activeShell().bot();
         linesBeforeBot.text(0).setText("4");
         doPendingSWTWork();
         linesBeforeBot.button("OK").click();

@@ -185,7 +185,7 @@ public class FindReplaceCaseSensitiveTest {
     private BBTestRunner setUp(Document TEST_FILE) {
         BBTestRunner bb = new BBTestRunner(TEST_FILE);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         SWTBotCheckBox matchCase = bot.checkBox(SearchConstants.CASE_SENSITIVE);
         if (!matchCase.isChecked()) {
@@ -193,7 +193,7 @@ public class FindReplaceCaseSensitiveTest {
         }
         assertTrue(matchCase.isChecked());
 
-        bot = bb.bot.activeShell().bot();
+        bot = bb.activeShell().bot();
         matchCase = bot.checkBox(SearchConstants.MATCH_CASE);
         if (!matchCase.isChecked()) {
             matchCase.click();

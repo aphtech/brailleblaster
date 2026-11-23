@@ -48,9 +48,9 @@ public class CorrectTranslationTest {
         setup();
         BBTestRunner bb = new BBTestRunner(defined);
         openCorrectTranslation(bb);
-        bb.bot.activeShell().bot().text(0).setText(dollarSign);
-        bb.bot.activeShell().bot().text(1).setText(equalsSign);
-        bb.bot.activeShell().bot().button("Save Translation Locally").click();
+        bb.activeShell().bot().text(0).setText(dollarSign);
+        bb.activeShell().bot().text(1).setText(equalsSign);
+        bb.activeShell().bot().button("Save Translation Locally").click();
         bb.manager.refresh();
         Assert.assertEquals(getBraille(bb), equalsSign);
         breakDown();
@@ -61,7 +61,7 @@ public class CorrectTranslationTest {
         setup();
         BBTestRunner bb = new BBTestRunner(undefined);
         openCorrectTranslation(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot.text(0).setText(blackTriangle);
         bot.text(1).setText(equalsSign);
         bot.button("Save Translation Locally").click();
@@ -82,7 +82,7 @@ public class CorrectTranslationTest {
         setup();
         BBTestRunner bb = new BBTestRunner(undefined);
         openCorrectTranslation(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot.radio("Define New Character").click();
         bot = TestUtils.refreshReturnActiveBot(bb);
         bot.text(0).setText(blackTriangle);
@@ -97,7 +97,7 @@ public class CorrectTranslationTest {
         setup();
         BBTestRunner bb = new BBTestRunner(undefined);
         openCorrectTranslation(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot.text(0).setText(blackTriangle);
         bot.text(1).setText(equalsSign);
         bot.radio("Define New Character").click();
@@ -121,7 +121,7 @@ public class CorrectTranslationTest {
         setup();
         BBTestRunner bb = new BBTestRunner(defined);
         openCorrectTranslation(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot.radio("Six Key").click();
         bot = TestUtils.refreshReturnActiveBot(bb);
         bot.text(0).setText(dollarSign);
@@ -136,7 +136,7 @@ public class CorrectTranslationTest {
         setup();
         BBTestRunner bb = new BBTestRunner(undefined);
         openCorrectTranslation(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot.radio("Six Key").click();
         bot = TestUtils.refreshReturnActiveBot(bb);
         bot.text(0).setText(blackTriangle);
@@ -161,7 +161,7 @@ public class CorrectTranslationTest {
         setup();
         BBTestRunner bb = new BBTestRunner(undefined);
         openCorrectTranslation(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot.radio("Six Key").click();
         bot = TestUtils.refreshReturnActiveBot(bb);
         bot.radio("Define New Character").click();
@@ -178,7 +178,7 @@ public class CorrectTranslationTest {
         setup();
         BBTestRunner bb = new BBTestRunner(defined);
         openCorrectTranslation(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot.radio("Define New Character").click();
         bot = TestUtils.refreshReturnActiveBot(bb);
         bot.radio("Six Key").click();

@@ -44,7 +44,7 @@ public class FindReplaceStyleEmphasisTextTest {
 
         BBTestRunner bb = new BBTestRunner(acrossNodesDoc);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
         FindReplaceBotHelper.addTextAttributes(bb);
@@ -72,7 +72,7 @@ public class FindReplaceStyleEmphasisTextTest {
 
         BBTestRunner bb = new BBTestRunner(TEST_FILE);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
         FindReplaceBotHelper.addTextAttributes(bb);
@@ -108,7 +108,7 @@ public class FindReplaceStyleEmphasisTextTest {
 
         BBTestRunner bb = new BBTestRunner(acrossNodesDoc);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
         FindReplaceBotHelper.removeTextAttributes(bb);

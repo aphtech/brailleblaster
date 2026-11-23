@@ -60,45 +60,45 @@ public class MatrixTest {
 
     public void openMatrixBuilder(BBTestRunner bb) {
         bb.openMenuItem(TopMenu.MATH, MathModuleUtils.SPATIAL_COMBO);
-        bb.bot.activeShell().bot().menu(GridEditor.CONTAINER_TYPE_LABEL)
+        bb.activeShell().bot().menu(GridEditor.CONTAINER_TYPE_LABEL)
                 .menu(SpatialMathEnum.SpatialMathContainers.MATRIX.prettyName).click();
         setNoPassage(bb);
     }
 
     public void setNoPassage(BBTestRunner bb) {
         if (!MathModuleUtils.INSTANCE.isNemeth()) {
-            bb.bot.activeShell().bot().menu(TemplateConstants.SETTINGS).menu(GridConstants.PASSAGE_TYPE).menu(Passage.NONE.getPrettyName())
+            bb.activeShell().bot().menu(TemplateConstants.SETTINGS).menu(GridConstants.PASSAGE_TYPE).menu(Passage.NONE.getPrettyName())
                     .click();
         }
     }
 
     public void setWideType(BBTestRunner bb, Wide type) {
-        bb.bot.activeShell().bot().menu(MatrixConstants.WIDE_LABEL).menu(type.getLabel()).click();
+        bb.activeShell().bot().menu(MatrixConstants.WIDE_LABEL).menu(type.getLabel()).click();
     }
 
     public void clickFillEllipsis(BBTestRunner bb) {
-        if (!bb.bot.activeShell().bot().menu(MatrixConstants.MENU_SETTINGS).menu(MatrixConstants.ELLIPSIS_LABEL)
+        if (!bb.activeShell().bot().menu(MatrixConstants.MENU_SETTINGS).menu(MatrixConstants.ELLIPSIS_LABEL)
                 .isChecked()) {
-            bb.bot.activeShell().bot().menu(MatrixConstants.MENU_SETTINGS).menu(MatrixConstants.ELLIPSIS_LABEL).click();
+            bb.activeShell().bot().menu(MatrixConstants.MENU_SETTINGS).menu(MatrixConstants.ELLIPSIS_LABEL).click();
         }
     }
 
     public void pressOk(BBTestRunner bb) {
-        bb.bot.activeShell().bot().button(SpatialMathUtils.OK_LABEL).click();
+        bb.activeShell().bot().button(SpatialMathUtils.OK_LABEL).click();
     }
 
     public void fillSkinnyEntries(BBTestRunner bb) {
         for (int i = 0; i < skinnyEntries.length; i++) {
-            bb.bot.activeShell().bot().styledText(i).setText(skinnyEntries[i]);
+            bb.activeShell().bot().styledText(i).setText(skinnyEntries[i]);
         }
     }
 
     public void fillSkinnyEllipsis(BBTestRunner bb) {
         for (int i = 0; i < skinnyEntries.length; i++) {
             if (i == 2) {
-                bb.bot.activeShell().bot().styledText(i).setText("");
+                bb.activeShell().bot().styledText(i).setText("");
             } else {
-                bb.bot.activeShell().bot().styledText(i).setText(skinnyEntries[i]);
+                bb.activeShell().bot().styledText(i).setText(skinnyEntries[i]);
             }
         }
     }
@@ -106,7 +106,7 @@ public class MatrixTest {
     public void fillWideEntries(BBTestRunner bb, int wideTestChars) {
         for (int i = 0; i < skinnyEntries.length; i++) {
             String cell = StringUtils.repeat(skinnyEntries[i].charAt(0), wideTestChars);
-            bb.bot.activeShell().bot().styledText(i).setText(cell);
+            bb.activeShell().bot().styledText(i).setText(cell);
         }
     }
 
@@ -254,7 +254,7 @@ public class MatrixTest {
         BBTestRunner bb = new BBTestRunner(MATRIX_DOC);
         openMatrixBuilder(bb);
         for (int i = 0; i < skinnyEntries.length; i++) {
-            Assert.assertEquals(bb.bot.activeShell().bot().styledText(i).getText(), skinnyEntries[i]);
+            Assert.assertEquals(bb.activeShell().bot().styledText(i).getText(), skinnyEntries[i]);
         }
     }
 

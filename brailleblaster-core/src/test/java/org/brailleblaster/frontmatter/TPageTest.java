@@ -34,7 +34,7 @@ public class TPageTest {
 		// T-Page Generator moved to the Debug menu (TPagesDialog is a DebugMenuToolModule)
 		bbTest.openMenuItem(TopMenu.DEBUG, "T-Page Generator");
 		
-		SWTBot bot = bbTest.bot.activeShell().bot();
+		SWTBot bot = bbTest.activeShell().bot();
 		bot.styledText(0).typeText("this is a test");
 		ViewTestRunner.doPendingSWTWork();
 		bot.buttonWithId(TPagesDialog.SWTBOT_OK_BUTTON).click();

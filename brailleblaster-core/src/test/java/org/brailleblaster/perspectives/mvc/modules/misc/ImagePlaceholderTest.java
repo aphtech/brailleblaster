@@ -44,7 +44,7 @@ public class ImagePlaceholderTest {
         bbTest.textViewTools.navigateToText("testing");
         bbTest.openMenuItem(TopMenu.INSERT, localeHandler.get("&ImagePlaceholder"));
 
-        SWTBot placeholderBot = bbTest.bot.activeShell().bot();
+        SWTBot placeholderBot = bbTest.activeShell().bot();
         placeholderBot.text(0).setText("10");
         ViewTestRunner.doPendingSWTWork();
         // By label: button 0 is now "Select Image", which opens a native file dialog that hangs the test

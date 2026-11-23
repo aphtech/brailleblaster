@@ -77,7 +77,7 @@ public class TableTest {
         SWTBotShell dialog = openInsertDialog(test);
         clickCancel(dialog);
 
-        assertNotSame(test.bot.activeShell(), dialog);
+        assertNotSame(test.activeShell(), dialog);
     }
 
     @Test(enabled = false)
@@ -98,7 +98,7 @@ public class TableTest {
         test.textViewTools.navigateToText(TEST_COLUMN);
         test.textViewBot.contextMenu(ContextMenuModule.Items.EDIT_TABLE.getLabel()).click();
         doPendingSWTWork();
-        verifyDialog(test.bot.activeShell());
+        verifyDialog(test.activeShell());
     }
 
     @Test(enabled = false)
@@ -166,7 +166,7 @@ public class TableTest {
 
         openInsertDialog(test);
 
-        assertEquals(test.bot.activeShell().getText(), TableEditor.ERROR_DIALOG_TITLE);
+        assertEquals(test.activeShell().getText(), TableEditor.ERROR_DIALOG_TITLE);
     }
 
     @Test(enabled = false)
@@ -292,7 +292,7 @@ public class TableTest {
         test.textViewTools.navigateToText(TEST_HEADING);
         test.textViewBot.contextMenu(ContextMenuModule.Items.EDIT_TABLE.getLabel()).click();
 
-        SWTBot tableEditorBot = test.bot.activeShell().bot();
+        SWTBot tableEditorBot = test.activeShell().bot();
         tableEditorBot.button(TableEditor.REFORMAT_BUTTON).click();
         doPendingSWTWork();
 
@@ -318,7 +318,7 @@ public class TableTest {
         dialog.bot().button("X").click();
         doPendingSWTWork();
 
-        SWTBotShell placementDialog = test.bot.activeShell();
+        SWTBotShell placementDialog = test.activeShell();
         placementDialog.bot().button(TableEditor.OK_BUTTON).click();
         doPendingSWTWork();
 
@@ -551,17 +551,17 @@ public class TableTest {
 
     private SWTBotShell openInsertDialog(BBTestRunner test) {
         test.openMenuItem(TopMenu.INSERT, TableEditor.INSERT_MENUITEM);
-        return test.bot.activeShell();
+        return test.activeShell();
     }
 
     private SWTBotShell openEditDialog(BBTestRunner test) {
         test.openMenuItem(TopMenu.TOOLS, TableEditor.EDIT_MENUITEM);
-        return test.bot.activeShell();
+        return test.activeShell();
     }
 
     private SWTBotShell openConvertDialog(BBTestRunner test) {
         test.openMenuItem(TopMenu.TOOLS, TableEditor.CONVERT_MENU_ITEM);
-        return test.bot.activeShell();
+        return test.activeShell();
     }
 
     private SWTBotShell convertToColumns(BBTestRunner test, int columns) {
@@ -571,7 +571,7 @@ public class TableTest {
         doPendingSWTWork();
         curShell.bot().button(TableEditor.OK_BUTTON).click();
         doPendingSWTWork();
-        return test.bot.activeShell();
+        return test.activeShell();
     }
 
     private void clickSave(SWTBotShell dialog) {
@@ -587,7 +587,7 @@ public class TableTest {
     }
 
     private void verifyBlockedEditMessage(BBTestRunner test) {
-        assertEquals(test.bot.activeShell().widget.getText(), TableSelectionModule.TABLE_WARNING_DIALOG_TITLE);
+        assertEquals(test.activeShell().widget.getText(), TableSelectionModule.TABLE_WARNING_DIALOG_TITLE);
     }
 
     private void verifyDialog(SWTBotShell dialog) {
@@ -612,7 +612,7 @@ public class TableTest {
     }
 
     private void handlePicker(BBTestRunner test, String styleName) {
-        SWTBotShell stylePicker = test.bot.activeShell();
+        SWTBotShell stylePicker = test.activeShell();
         assertEquals(stylePicker.widget.getText(), PickerDialog.SHELL_TITLE);
         stylePicker.bot().text(0).widget.forceFocus();
         doPendingSWTWork();

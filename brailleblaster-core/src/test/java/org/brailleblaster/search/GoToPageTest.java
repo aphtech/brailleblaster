@@ -56,7 +56,7 @@ public class GoToPageTest {
 
         test.textViewTools.clickContextMenu(PageNumberDialog.MENU_NAME);
 
-        SWTBot pageNumBot = test.bot.activeShell().bot();
+        SWTBot pageNumBot = test.activeShell().bot();
         SWTBotStyledText printPageNumberText = pageNumBot.styledTextWithId(PageNumberDialog.SWTBOT_PRINT_PAGE_NUMBER_TEXT);
         Assert.assertEquals(printPageNumberText.getText(), "2");
         printPageNumberText.setText("2-5");
@@ -86,7 +86,7 @@ public class GoToPageTest {
 
         bbTest.openMenuItem(TopMenu.NAVIGATE, "Go To Page");
 
-        SWTBot bot = bbTest.bot.activeShell().bot();
+        SWTBot bot = bbTest.activeShell().bot();
         Assert.assertEquals(bot.activeShell().getText(), "Go To");
 
         if (selectVolume) {
@@ -113,7 +113,7 @@ public class GoToPageTest {
     public void deletePageIndicator(BBTestRunner test, String expectedPage) {
         test.textViewTools.clickContextMenu(PageNumberDialog.MENU_NAME);
 
-        SWTBot pageNumBot = test.bot.activeShell().bot();
+        SWTBot pageNumBot = test.activeShell().bot();
         Assert.assertEquals(
                 pageNumBot.styledTextWithId(PageNumberDialog.SWTBOT_PRINT_PAGE_NUMBER_TEXT).getText(),
                 expectedPage

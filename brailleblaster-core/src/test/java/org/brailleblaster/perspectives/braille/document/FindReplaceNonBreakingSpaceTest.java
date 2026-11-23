@@ -53,7 +53,7 @@ public class FindReplaceNonBreakingSpaceTest {
     public void breakToNonOneWord() {
         BBTestRunner bb = new BBTestRunner(rs);
         bb.textViewTools.pressShortcut(SWT.CTRL, 'f');
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         /*
          * Test non breaking to regular
@@ -75,7 +75,7 @@ public class FindReplaceNonBreakingSpaceTest {
     public void nonToBreakOneWord() {
         BBTestRunner bb = new BBTestRunner(nbs);
         bb.textViewTools.pressShortcut(SWT.CTRL, 'f');
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         /*
          * Test regular to non breaking
@@ -95,7 +95,7 @@ public class FindReplaceNonBreakingSpaceTest {
     public void nonToBreakPhrase() {
         BBTestRunner bb = new BBTestRunner(mlnbs);
         bb.textViewTools.pressShortcut(SWT.CTRL, 'f');
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         /*
          * Test regular to non breaking
@@ -114,7 +114,7 @@ public class FindReplaceNonBreakingSpaceTest {
     public void breakToNonPhrase() {
         BBTestRunner bb = new BBTestRunner(mlrs);
         bb.textViewTools.pressShortcut(SWT.CTRL, 'f');
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         /*
          * Test non breaking to regular

@@ -40,7 +40,7 @@ public class BlankLineTest {
 
     private static final String BOXLINE = "----------------------------------------";
 
-    @Test(enabled = false)
+    @Test
     public void enterAfterParagraph() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         final String targetParagraph = "Paragraph 2";
@@ -56,7 +56,7 @@ public class BlankLineTest {
         assertEquals(startLine + 1, getCurrentLine(bbTest), "Move cursor to next line");
     }
 
-    @Test(enabled = false)
+    @Test
     public void enterBeforeParagraph() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         final String targetParagraph = "Paragraph 3";
@@ -71,7 +71,7 @@ public class BlankLineTest {
         assertEquals(startLine + 1, getCurrentLine(bbTest), "Move cursor to next line");
     }
 
-    @Test(enabled = false)
+    @Test
     public void enterAtTopOfDocument() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         final String targetParagraph = "Paragraph 1";
@@ -90,7 +90,7 @@ public class BlankLineTest {
      * Ensure the proper number of blank lines are added after pressing enter before an element
      * with existing blank lines
      */
-    @Test(enabled = false)
+    @Test
     public void enterWithLinesBefore() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         final String targetParagraph = "Paragraph 1";
@@ -108,7 +108,7 @@ public class BlankLineTest {
         assertEquals(startLine + 1, getCurrentLine(bbTest));
     }
 
-    @Test(enabled = false)
+    @Test
     public void ctrlEnterThenEnter() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         final String targetParagraph = "Paragraph 3";
@@ -130,7 +130,7 @@ public class BlankLineTest {
         assertTrue(getCurrentLine(bbTest) == startLine2 + 1 && atBeginningOfLine(bbTest), "Cursor moved to beginning of second line of page");
     }
 
-    @Test(enabled = false)
+    @Test
     public void enterThenBackspaceBeforeParagraph() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         final String targetParagraph = "Paragraph 3";
@@ -151,7 +151,7 @@ public class BlankLineTest {
         assertTrue(getCurrentLine(bbTest) == startLine && atBeginningOfLine(bbTest), "Move cursor to previous line");
     }
 
-    @Test(enabled = false)
+    @Test
     public void backspaceWithLinesBefore() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         final String targetParagraph = "Paragraph 2";
@@ -165,7 +165,7 @@ public class BlankLineTest {
         assertTrue(getCurrentLine(bbTest) == startLine - 1 && atBeginningOfLine(bbTest), "Move cursor to previous line");
     }
 
-    @Test(enabled = false)
+    @Test
     public void backspaceOnWhiteSpace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         final String targetParagraph = "Paragraph 1";
@@ -183,7 +183,7 @@ public class BlankLineTest {
     /**
      * Make sure cursor does not move on delete
      */
-    @Test(enabled = false)
+    @Test
     public void deleteAtEndOfLine() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         final String targetParagraph = "Paragraph 1";
@@ -198,6 +198,7 @@ public class BlankLineTest {
         assertTrue(getCurrentLine(bbTest) == startLine && atEndOfLine(bbTest), "Cursor remained in place");
     }
 
+    // Disabled: BoxLineSelectionTests.bbx is BBX format 1 and the .bbx load path (BBXArchiverLoader -> createImportedBBZ) never runs BookToBBXConverter.upgradeFormat, so it fails with 'Missing subtype SIDEBAR' (test_fix.md Phase 7b)
     @Test(enabled = false)
     public void addBlankBeforeBox() {
         BBTestRunner bbTest = new BBTestRunner(BOX_FILE);
@@ -219,6 +220,7 @@ public class BlankLineTest {
         assertTrue(getCurrentLine(bbTest) == startLine + 1 && atBeginningOfLine(bbTest), "Cursor moved to beginning of line");
     }
 
+    // Disabled: BoxLineSelectionTests.bbx is BBX format 1 and the .bbx load path (BBXArchiverLoader -> createImportedBBZ) never runs BookToBBXConverter.upgradeFormat, so it fails with 'Missing subtype SIDEBAR' (test_fix.md Phase 7b)
     @Test(enabled = false)
     public void deleteBlankBeforeBox() {
         BBTestRunner bbTest = new BBTestRunner(BOX_FILE);
@@ -240,6 +242,7 @@ public class BlankLineTest {
         assertTrue(getCurrentLine(bbTest) == startLine - 1 && atBeginningOfLine(bbTest), "Cursor moved to beginning of previous line");
     }
 
+    // Disabled: BoxLineSelectionTests.bbx is BBX format 1 and the .bbx load path (BBXArchiverLoader -> createImportedBBZ) never runs BookToBBXConverter.upgradeFormat, so it fails with 'Missing subtype SIDEBAR' (test_fix.md Phase 7b)
     @Test(enabled = false)
     public void addBlankAfterBox() {
         BBTestRunner bbTest = new BBTestRunner(BOX_FILE);
@@ -263,6 +266,7 @@ public class BlankLineTest {
         assertEquals(startLine + 1, getCurrentLine(bbTest), "Cursor moved down");
     }
 
+    // Disabled: BoxLineSelectionTests.bbx is BBX format 1 and the .bbx load path (BBXArchiverLoader -> createImportedBBZ) never runs BookToBBXConverter.upgradeFormat, so it fails with 'Missing subtype SIDEBAR' (test_fix.md Phase 7b)
     @Test(enabled = false)
     public void deleteBlankAfterBox() {
         BBTestRunner bbTest = new BBTestRunner(BOX_FILE);
@@ -284,6 +288,7 @@ public class BlankLineTest {
         assertTrue(getCurrentLine(bbTest) == startLine && atEndOfLine(bbTest), "Cursor unmoved");
     }
 
+    // Disabled: BoxLineSelectionTests.bbx is BBX format 1 and the .bbx load path (BBXArchiverLoader -> createImportedBBZ) never runs BookToBBXConverter.upgradeFormat, so it fails with 'Missing subtype SIDEBAR' (test_fix.md Phase 7b)
     @Test(enabled = false)
     public void addBlankAfterTopBoxLine() {
         BBTestRunner bbTest = new BBTestRunner(BOX_FILE);
@@ -305,6 +310,7 @@ public class BlankLineTest {
         assertEquals(startLine + 1, getCurrentLine(bbTest), "Cursor moved to next line");
     }
 
+    // Disabled: BoxLineSelectionTests.bbx is BBX format 1 and the .bbx load path (BBXArchiverLoader -> createImportedBBZ) never runs BookToBBXConverter.upgradeFormat, so it fails with 'Missing subtype SIDEBAR' (test_fix.md Phase 7b)
     @Test(enabled = false)
     public void addBlankBeforeBottomBoxLine() {
         BBTestRunner bbTest = new BBTestRunner(BOX_FILE);
@@ -326,12 +332,12 @@ public class BlankLineTest {
         assertTrue(getCurrentLine(bbTest) == startLine + 1 && atBeginningOfLine(bbTest), "Cursor moved to beginning of next line");
     }
 
-    @Test(enabled = false)
+    @Test
     public void keepWithNextBlankLines() {
         keepWithNextBlankLines(GAUNTLET_FILE);
     }
 
-    @Test(enabled = false)
+    @Test
     public void keepWithNextBlankLinesRunningHeads() {
         keepWithNextBlankLines(GAUNTLET_RUNNING_HEADS_FILE);
     }
@@ -358,11 +364,12 @@ public class BlankLineTest {
         assertTrue(getCurrentLine(bbTest) == startLine && atBeginningOfLine(bbTest), "Cursor moved to previous line");
     }
 
-    @Test(enabled = false)
+    @Test
     public void chainedKeepWithNextBlankLines() {
         chainedKeepWithNextBlankLines(GAUNTLET_FILE);
     }
 
+    // Disabled: running-heads variant: line positions differ from the passing non-running-heads version; braille page layout review (test_fix.md Phase 7b)
     @Test(enabled = false)
     public void chainedKeepWithNextBlankLinesRunningHeads() {
         chainedKeepWithNextBlankLines(GAUNTLET_RUNNING_HEADS_FILE);
@@ -418,7 +425,7 @@ public class BlankLineTest {
         assertTrue(getCurrentLine(bbTest) == startLine + 1 && atBeginningOfLine(bbTest), "Cursor moved to previous line");
     }
 
-    @Test(enabled = false)
+    @Test
     public void addBlankLineBeforeTable() {
         BBTestRunner bbTest = new BBTestRunner(GAUNTLET_FILE);
         final String targetParagraph = "Paragraph 27";
@@ -436,7 +443,7 @@ public class BlankLineTest {
         assertEquals(startLine + 1, getCurrentLine(bbTest), "Cursor moved to next line");
     }
 
-    @Test(enabled = false)
+    @Test
     public void addBlankLineBeforeListedTable() {
         BBTestRunner bbTest = new BBTestRunner(GAUNTLET_FILE);
         final String targetParagraph = "Paragraph 37";
@@ -454,6 +461,7 @@ public class BlankLineTest {
         assertEquals(startLine + 1, getCurrentLine(bbTest), "Cursor moved to next line");
     }
 
+    // Disabled: running-heads variant: line positions differ from the passing non-running-heads version; braille page layout review (test_fix.md Phase 7b)
     @Test(enabled = false)
     public void addBlankLineBeforeTableRunningHeads() {
         BBTestRunner bbTest = new BBTestRunner(GAUNTLET_RUNNING_HEADS_FILE);
@@ -472,12 +480,12 @@ public class BlankLineTest {
         assertEquals(startLine + 1, getCurrentLine(bbTest), "Cursor moved to next line");
     }
 
-    @Test(enabled = false)
+    @Test
     public void addBlankLineAfterTable() {
         addBlankLineAfterTable(GAUNTLET_FILE);
     }
 
-    @Test(enabled = false)
+    @Test
     public void addBlankLineAfterTableRunningHeads() {
         addBlankLineAfterTable(GAUNTLET_RUNNING_HEADS_FILE);
     }
@@ -497,11 +505,12 @@ public class BlankLineTest {
         assertEquals(bbTest.textViewWidget.getLine(startLine + 2), targetParagraph, "Two blank lines before text");
     }
 
-    @Test(enabled = false)
+    @Test
     public void removeBlankLineBeforeTable() {
         removeBlankLineBeforeTable(GAUNTLET_FILE);
     }
 
+    // Disabled: running-heads variant: line positions differ from the passing non-running-heads version; braille page layout review (test_fix.md Phase 7b)
     @Test(enabled = false)
     public void removeBlankLineBeforeTableRunningHeads() {
         removeBlankLineBeforeTable(GAUNTLET_RUNNING_HEADS_FILE);
@@ -526,12 +535,12 @@ public class BlankLineTest {
         assertTrue(getCurrentLine(bbTest) == startLine - 1 && atEndOfLine(bbTest), "Cursor moved to end of previous line");
     }
 
-    @Test(enabled = false)
+    @Test
     public void removeBlankLineAfterTable() {
         removeBlankLineAfterTable(GAUNTLET_FILE);
     }
 
-    @Test(enabled = false)
+    @Test
     public void removeBlankLineAfterTableRunningHeads() {
         removeBlankLineAfterTable(GAUNTLET_RUNNING_HEADS_FILE);
     }
@@ -552,7 +561,7 @@ public class BlankLineTest {
         assertTrue(getCurrentLine(bbTest) == startLine - 1 && atEndOfLine(bbTest), "Cursor moved to end of previous line");
     }
 
-    @Test(enabled = false)
+    @Test
     public void deleteLastTextNode() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         final String targetParagraph = "Paragraph 6";
@@ -572,7 +581,7 @@ public class BlankLineTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
     public void deleteMultipleLastTextNodes() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         final String targetParagraph = "Paragraph 5";

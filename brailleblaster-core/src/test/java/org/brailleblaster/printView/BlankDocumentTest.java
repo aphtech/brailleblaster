@@ -40,7 +40,7 @@ public class BlankDocumentTest {
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/printView/blankTemplate.bbx");
     private static final String BLANK_LINE = "";
 
-    @Test(enabled = false)
+    @Test
     public void basicParagraph() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Paragraph 1";
@@ -57,7 +57,7 @@ public class BlankDocumentTest {
         assertEquals(bbTest.brailleViewBot.getTextOnLine(1), BLANK_LINE);
     }
 
-    @Test(enabled = false)
+    @Test
     public void multipleParagraph() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Paragraph 1";
@@ -91,7 +91,7 @@ public class BlankDocumentTest {
     }
 
     //New volume cannot be inserted in an empty document
-    @Test(enabled = false)
+    @Test
     public void insertVolume() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         TestUtils.assertException(Notify.DebugException.class,
@@ -103,7 +103,7 @@ public class BlankDocumentTest {
     }
 
     //note separation line cannot be inserted in an empty document
-    @Test(enabled = false)
+    @Test
     public void noteSeperationLine() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         TestUtils.assertException(
@@ -116,19 +116,20 @@ public class BlankDocumentTest {
     }
 
     //image placeholder cannot be inserted in an empty document
+    // Disabled: Image Manager no longer shows the empty-document warning on a blank document; product decision (test_fix.md Phase 7b)
     @Test(enabled = false)
     public void imagePlaceHolder() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         TestUtils.assertException(
                 Notify.DebugException.class,
-                () -> bbTest.selectToolbarOption("Image Placeholder")
+                () -> bbTest.selectToolbarOption(org.brailleblaster.utils.localization.LocaleHandler.getDefault().get("&ImagePlaceholder"))
         );
 
         assertEquals(bbTest.textViewBot.getTextOnLine(0), BLANK_LINE);
         assertEquals(bbTest.brailleViewBot.getTextOnLine(0), BLANK_LINE);
     }
 
-    @Test(groups = TestGroups.TODO_FIX_LATER, enabled = false) // Issue #6405: We don't do anything on empty documents
+    @Test(groups = TestGroups.TODO_FIX_LATER) // Issue #6405: We don't do anything on empty documents
     public void blankDocumentEmphasisTest() {
 
         BBTestRunner test = new BBTestRunner(blankDoc);

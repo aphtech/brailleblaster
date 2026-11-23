@@ -219,7 +219,7 @@ public class VolumeTest {
 			ViewTestRunner.forceActiveShellHack();
 			bbTest.openMenuItem(TopMenu.FILE, "Save BRF");
 
-			SWTBot saveBot = bbTest.bot.activeShell().bot();
+			SWTBot saveBot = bbTest.activeShell().bot();
 			SWTBotTable table = saveBot.table(0);
 			assertEquals(table.rowCount(), 2, "Unexpected number of volumes");
 
@@ -274,7 +274,7 @@ public class VolumeTest {
 
 		bbTest.openMenuItem(TopMenu.FILE, "Save BRF");
 
-		SWTBot saveBot = bbTest.bot.activeShell().bot();
+		SWTBot saveBot = bbTest.activeShell().bot();
 		SWTBotTable table = saveBot.table(0);
 		assertEquals(table.rowCount(), 2, "Unexpected number of volumes");
 
@@ -375,7 +375,7 @@ public class VolumeTest {
 		);
 
 		bbTest.openMenuItem(TopMenu.FILE, "Save BRF");
-		SWTBot saveBot = bbTest.bot.activeShell().bot();
+		SWTBot saveBot = bbTest.activeShell().bot();
 		if (false) {
 			SWTBotTable volumesTable = saveBot.table(0);
 			assertEquals(volumesTable.rowCount(), 10);
@@ -509,7 +509,7 @@ public class VolumeTest {
 		bbTest.textViewBot.setFocus();
 		bbTest.textViewTools.pressShortcut(SWT.CTRL, 'g');
 
-		SWTBot goToBot = bbTest.bot.activeShell().bot();
+		SWTBot goToBot = bbTest.activeShell().bot();
 		SWTBotCombo goToCombo = goToBot.comboBox(0);
 
 		assertEquals(goToCombo.itemCount(), 3);
@@ -532,7 +532,7 @@ public class VolumeTest {
 		bbTest.textViewBot.setFocus();
 		bbTest.textViewTools.pressShortcut(SWT.CTRL, 'g');
 
-		goToBot = bbTest.bot.activeShell().bot();
+		goToBot = bbTest.activeShell().bot();
 		goToCombo = goToBot.comboBox(0);
 
 		goToCombo.setSelection(2);
@@ -566,7 +566,7 @@ public class VolumeTest {
 		bbTest.textViewBot.setFocus();
 		bbTest.textViewTools.pressShortcut(SWT.CTRL, 'g');
 
-		SWTBot goToBot = bbTest.bot.activeShell().bot();
+		SWTBot goToBot = bbTest.activeShell().bot();
 		SWTBotCombo goToCombo = goToBot.comboBox(0);
 
 		assertEquals(goToCombo.itemCount(), 3);
@@ -593,7 +593,7 @@ public class VolumeTest {
 		bbTest.textViewBot.setFocus();
 		bbTest.textViewTools.pressShortcut(SWT.CTRL, 'g');
 
-		goToBot = bbTest.bot.activeShell().bot();
+		goToBot = bbTest.activeShell().bot();
 		goToCombo = goToBot.comboBox(0);
 
 		goToCombo.setSelection(2);

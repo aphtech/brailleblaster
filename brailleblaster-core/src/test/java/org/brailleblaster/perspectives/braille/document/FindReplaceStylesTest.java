@@ -45,7 +45,7 @@ public class FindReplaceStylesTest {
 
         BBTestRunner bb = new BBTestRunner(TEST_FILE);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
 
@@ -71,7 +71,7 @@ public class FindReplaceStylesTest {
     public void makeList() {
         BBTestRunner bb = new BBTestRunner(TEST_FILE);
         bb.textViewTools.pressShortcut(SWT.CTRL, 'f');
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
         bot = TestUtils.refreshReturnActiveBot(bb);
@@ -95,7 +95,7 @@ public class FindReplaceStylesTest {
     public void makeBox() {
         BBTestRunner bb = new BBTestRunner(TEST_FILE);
         bb.textViewTools.pressShortcut(SWT.CTRL, 'f');
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
         bot = TestUtils.refreshReturnActiveBot(bb);
@@ -119,7 +119,7 @@ public class FindReplaceStylesTest {
 
         BBTestRunner bb = new BBTestRunner(alreadyHeading);
         bb.textViewTools.pressShortcut(SWT.CTRL, 'f');
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
         bot = TestUtils.refreshReturnActiveBot(bb);

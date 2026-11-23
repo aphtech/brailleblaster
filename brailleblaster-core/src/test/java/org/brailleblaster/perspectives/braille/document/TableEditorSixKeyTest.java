@@ -82,7 +82,7 @@ public class TableEditorSixKeyTest {
 
     private SWTBotShell openTableEditor(BBTestRunner test) {
         test.openMenuItem(TopMenu.TOOLS, TableEditor.EDIT_MENUITEM);
-        return test.bot.activeShell();
+        return test.activeShell();
     }
 
     private SWTBotMenu getSixKeyMenu(SWTBotShell dialog) {

@@ -41,7 +41,7 @@ public class CellTabTest {
         test.textViewTools.navigateToText("Make");
 
         test.openMenuItem(TopMenu.EDIT, CellTab.MENU_NAME);
-        SWTBot dialogBot = test.bot.activeShell().bot();
+        SWTBot dialogBot = test.activeShell().bot();
         dialogBot.text(0).setText("15");
         ViewTestRunner.doPendingSWTWork();
         dialogBot.button(0).click();
@@ -61,7 +61,7 @@ public class CellTabTest {
 
         TestUtils.forceShellByName("BrailleBlaster");
         test.openMenuItem(TopMenu.EDIT, CellTab.MENU_NAME);
-        dialogBot = test.bot.activeShell().bot();
+        dialogBot = test.activeShell().bot();
 
         SWTBotText tabValueText = dialogBot.text(0);
         Assert.assertEquals(tabValueText.getText(), "15");
@@ -103,7 +103,7 @@ public class CellTabTest {
         test.textViewTools.navigateToText("off");
 
         test.openMenuItem(TopMenu.EDIT, CellTab.MENU_NAME);
-        SWTBot dialogBot = test.bot.activeShell().bot();
+        SWTBot dialogBot = test.activeShell().bot();
         dialogBot.text(0).setText("6");
         ViewTestRunner.doPendingSWTWork();
         dialogBot.button(0).click();
@@ -131,7 +131,7 @@ public class CellTabTest {
         test.textViewTools.navigateToLine(2);
 
         test.openMenuItem(TopMenu.EDIT, CellTab.MENU_NAME);
-        dialogBot = test.bot.activeShell().bot();
+        dialogBot = test.activeShell().bot();
 
         SWTBotText tabValueText = dialogBot.text(0);
         Assert.assertEquals(tabValueText.getText(), "6");
@@ -163,7 +163,7 @@ public class CellTabTest {
         test.textViewTools.navigateToEndOfLine();
 
         test.openMenuItem(TopMenu.EDIT, CellTab.MENU_NAME);
-        SWTBot dialogBot = test.bot.activeShell().bot();
+        SWTBot dialogBot = test.activeShell().bot();
         dialogBot.text(0).setText("6");
         ViewTestRunner.doPendingSWTWork();
         dialogBot.button(0).click();
