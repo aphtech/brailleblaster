@@ -45,7 +45,7 @@ public class MetadataHelperTest {
         return doc;
     }
 
-    @Test(enabled = false)
+    @Test
     public void addMetaTest() {
         Document doc = nodeBuilder();
         MetadataHelper.INSTANCE.changeBraillePageNumber(doc, "#a", "#b", null, false, true);
@@ -59,7 +59,7 @@ public class MetadataHelperTest {
         }
     }
 
-    @Test(enabled = false)
+    @Test
     public void testFindPageChange() {
         Document doc = nodeBuilder();
         assertNull(MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1"));
@@ -80,7 +80,7 @@ public class MetadataHelperTest {
         }
     }
 
-    @Test(enabled = false)
+    @Test
     public void testAdaptPageChangeWithNew() {
         Document doc = nodeBuilder();
         assertNull(MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1"));
@@ -95,7 +95,7 @@ public class MetadataHelperTest {
         }
     }
 
-    @Test(enabled = false)
+    @Test
     public void testAdaptPageChangeWithBlank() {
         Document doc = nodeBuilder();
         assertNull(MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1"));
@@ -110,7 +110,7 @@ public class MetadataHelperTest {
         }
     }
 
-    @Test(enabled = false)
+    @Test
     public void testAdaptPageChangeWithPageTypeNewAndCL() {
         Document doc = nodeBuilder();
         assertNull(MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1"));
@@ -127,7 +127,7 @@ public class MetadataHelperTest {
         }
     }
 
-    @Test(enabled = false)
+    @Test
     public void testAdaptPageChangeWithBraillePage() {
         Document doc = nodeBuilder();
         assertNull(MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1"));
@@ -142,7 +142,7 @@ public class MetadataHelperTest {
         }
     }
 
-    @Test(enabled = false)
+    @Test
     public void testAdaptPageChangeWithBraillePageRunningHead() {
         Document doc = nodeBuilder();
         assertNull(MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1"));
@@ -158,7 +158,7 @@ public class MetadataHelperTest {
         }
     }
 
-    @Test(enabled = false)
+    @Test
     public void testRunningHeadWithBraillePage() {
         Document doc = nodeBuilder();
         assertNull(MetadataHelper.INSTANCE.findPrintPageChange(doc.getDocument(), "1"));
