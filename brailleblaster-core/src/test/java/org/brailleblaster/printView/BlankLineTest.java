@@ -197,9 +197,7 @@ public class BlankLineTest {
         assertFalse(bbTest.textViewWidget.getLine(startLine + 1).isEmpty(), "Blank line deleted");
         assertTrue(getCurrentLine(bbTest) == startLine && atEndOfLine(bbTest), "Cursor remained in place");
     }
-
-    // Disabled: BoxLineSelectionTests.bbx is BBX format 1 and the .bbx load path (BBXArchiverLoader -> createImportedBBZ) never runs BookToBBXConverter.upgradeFormat, so it fails with 'Missing subtype SIDEBAR' (test_fix.md Phase 7b)
-    @Test(enabled = false)
+    @Test
     public void addBlankBeforeBox() {
         BBTestRunner bbTest = new BBTestRunner(BOX_FILE);
         final String targetParagraph = "Paragraph 2";
@@ -219,9 +217,7 @@ public class BlankLineTest {
         assertTrue(bbTest.textViewWidget.getLine(startLine + 4).isEmpty(), "Blank line follows box");
         assertTrue(getCurrentLine(bbTest) == startLine + 1 && atBeginningOfLine(bbTest), "Cursor moved to beginning of line");
     }
-
-    // Disabled: BoxLineSelectionTests.bbx is BBX format 1 and the .bbx load path (BBXArchiverLoader -> createImportedBBZ) never runs BookToBBXConverter.upgradeFormat, so it fails with 'Missing subtype SIDEBAR' (test_fix.md Phase 7b)
-    @Test(enabled = false)
+    @Test
     public void deleteBlankBeforeBox() {
         BBTestRunner bbTest = new BBTestRunner(BOX_FILE);
         final String targetParagraph = "Paragraph 2";
@@ -241,9 +237,7 @@ public class BlankLineTest {
         assertTrue(bbTest.textViewWidget.getLine(startLine + 2).isEmpty(), "Blank line kept after box");
         assertTrue(getCurrentLine(bbTest) == startLine - 1 && atBeginningOfLine(bbTest), "Cursor moved to beginning of previous line");
     }
-
-    // Disabled: BoxLineSelectionTests.bbx is BBX format 1 and the .bbx load path (BBXArchiverLoader -> createImportedBBZ) never runs BookToBBXConverter.upgradeFormat, so it fails with 'Missing subtype SIDEBAR' (test_fix.md Phase 7b)
-    @Test(enabled = false)
+    @Test
     public void addBlankAfterBox() {
         BBTestRunner bbTest = new BBTestRunner(BOX_FILE);
         final String targetParagraph = "Paragraph 2";
@@ -265,9 +259,7 @@ public class BlankLineTest {
         assertFalse(bbTest.textViewWidget.getLine(startLine + 3).isEmpty(), "Text remained after blank lines");
         assertEquals(startLine + 1, getCurrentLine(bbTest), "Cursor moved down");
     }
-
-    // Disabled: BoxLineSelectionTests.bbx is BBX format 1 and the .bbx load path (BBXArchiverLoader -> createImportedBBZ) never runs BookToBBXConverter.upgradeFormat, so it fails with 'Missing subtype SIDEBAR' (test_fix.md Phase 7b)
-    @Test(enabled = false)
+    @Test
     public void deleteBlankAfterBox() {
         BBTestRunner bbTest = new BBTestRunner(BOX_FILE);
         final String targetParagraph = "Paragraph 2";
@@ -287,9 +279,7 @@ public class BlankLineTest {
         assertFalse(bbTest.textViewWidget.getLine(startLine + 1).isEmpty(), "Blank line after box deleted");
         assertTrue(getCurrentLine(bbTest) == startLine && atEndOfLine(bbTest), "Cursor unmoved");
     }
-
-    // Disabled: BoxLineSelectionTests.bbx is BBX format 1 and the .bbx load path (BBXArchiverLoader -> createImportedBBZ) never runs BookToBBXConverter.upgradeFormat, so it fails with 'Missing subtype SIDEBAR' (test_fix.md Phase 7b)
-    @Test(enabled = false)
+    @Test
     public void addBlankAfterTopBoxLine() {
         BBTestRunner bbTest = new BBTestRunner(BOX_FILE);
         final String targetParagraph = "Paragraph 2";
@@ -309,9 +299,7 @@ public class BlankLineTest {
         assertTrue(bbTest.textViewWidget.getLine(startLine + 4).isEmpty(), "Blank line after box unaffected");
         assertEquals(startLine + 1, getCurrentLine(bbTest), "Cursor moved to next line");
     }
-
-    // Disabled: BoxLineSelectionTests.bbx is BBX format 1 and the .bbx load path (BBXArchiverLoader -> createImportedBBZ) never runs BookToBBXConverter.upgradeFormat, so it fails with 'Missing subtype SIDEBAR' (test_fix.md Phase 7b)
-    @Test(enabled = false)
+    @Test
     public void addBlankBeforeBottomBoxLine() {
         BBTestRunner bbTest = new BBTestRunner(BOX_FILE);
         final String targetParagraph = "Paragraph 2";
