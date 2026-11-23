@@ -19,6 +19,8 @@ import org.brailleblaster.GuiTest
 import nu.xom.Element
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.testrunners.BBTestRunner
+import org.brailleblaster.testrunners.moveCaret
+import org.brailleblaster.testrunners.blocks
 import org.brailleblaster.testrunners.ViewTestRunner
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.properties.EmphasisType
@@ -107,17 +109,5 @@ class PasteAfterDirectTranslationTest {
         ViewTestRunner.doPendingSWTWork()
         assertEquals(textViewWidget.selectionText, copiedText)
         copy()
-    }
-
-    private fun BBTestRunner.blocks(): List<Element> = FastXPath.descendant(doc.rootElement)
-        .filterIsInstance<Element>()
-        .filter { BBX.BLOCK.isA(it) }
-        .toList()
-
-    /** Keyboard navigation through SWTBot is unreliable on local Windows runs, so move the caret directly */
-    private fun BBTestRunner.moveCaret(offset: Int) {
-        manager.text.setCurrentElement(offset)
-        ViewTestRunner.doPendingSWTWork()
-        assertEquals(textViewWidget.caretOffset, offset, "Caret not at requested offset")
     }
 }

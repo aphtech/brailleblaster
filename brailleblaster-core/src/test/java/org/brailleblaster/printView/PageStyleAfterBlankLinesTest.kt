@@ -23,6 +23,10 @@ import org.brailleblaster.bbx.findBlockOrNull
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
 import org.brailleblaster.testrunners.BBTestRunner
+import org.brailleblaster.testrunners.moveCaret
+import org.brailleblaster.testrunners.selectText
+import org.brailleblaster.testrunners.pressEnter
+import org.brailleblaster.testrunners.type
 import org.brailleblaster.testrunners.ViewTestRunner
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.properties.UTDElements
@@ -44,45 +48,7 @@ import org.testng.annotations.Test
  */
 @GuiTest
 class PageStyleAfterBlankLinesTest {
-    // ---- driving the editor, see EnterAtEndOfDocumentTest for why the listeners are called directly
-
-    private fun BBTestRunner.verifyKey(character: Char): Boolean {
-        val event = Event().apply {
-            this.character = character
-            keyCode = character.code
-            doit = true
-        }
-        textViewWidget.notifyListeners(ST.VerifyKey, event)
-        ViewTestRunner.doPendingSWTWork()
-        return event.doit
-    }
-
-    private fun BBTestRunner.pressEnter() {
-        assertFalse(verifyKey(SWT.CR), "Enter is always handled by the editor")
-    }
-
-    private fun BBTestRunner.type(text: String) {
-        text.forEach { c ->
-            assertTrue(verifyKey(c), "Key '$c' was blocked at offset ${textViewWidget.caretOffset}")
-            val offset = textViewWidget.caretOffset
-            textViewWidget.replaceTextRange(offset, 0, c.toString())
-            textViewWidget.caretOffset = offset + 1
-        }
-        manager.text.update(false)
-        ViewTestRunner.doPendingSWTWork()
-    }
-
-    private fun BBTestRunner.moveCaret(offset: Int) {
-        manager.text.setCurrentElement(offset)
-        ViewTestRunner.doPendingSWTWork()
-    }
-
-    private fun BBTestRunner.selectText(text: String) {
-        val start = textViewWidget.text.indexOf(text)
-        assertTrue(start >= 0, "'$text' not in text view")
-        manager.text.highlight(start, start + text.length)
-        ViewTestRunner.doPendingSWTWork()
-    }
+    // ---- driving the editor, see testrunners/DirectInput.kt for why the listeners are called directly
 
     /** The real menu item, which runs StylesMenuModule.wrapSelectedPage and reformats the document */
     private fun BBTestRunner.applyPageStyle() = openMenuItem(TopMenu.STYLES, "Miscellaneous", "Page")
@@ -157,7 +123,7 @@ class PageStyleAfterBlankLinesTest {
 
         // Editing continues on the line below the indicator, nothing before it is disturbed
         val belowIndicator = bbTest.textViewWidget.getOffsetAtLine(blankLines + 1)
-        bbTest.moveCaret(belowIndicator)
+        bbTest.moveCaret(belowIndicator, assertLanded = false)
         bbTest.type("Next")
         val after = bbTest.sectionSnapshot()
         assertEquals(after.dropLast(1), blankLinesKept + "PAGE_NUM:12", "Blocks: $after")

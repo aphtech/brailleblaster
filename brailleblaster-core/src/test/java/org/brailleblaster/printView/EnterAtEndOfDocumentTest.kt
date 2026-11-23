@@ -22,6 +22,11 @@ import org.brailleblaster.bbx.BBX
 import org.brailleblaster.bbx.findBlockOrNull
 import org.brailleblaster.perspectives.braille.mapping.elements.BoxLineTextMapElement
 import org.brailleblaster.testrunners.BBTestRunner
+import org.brailleblaster.testrunners.moveCaret
+import org.brailleblaster.testrunners.moveToEndOfDocument
+import org.brailleblaster.testrunners.pressEnter
+import org.brailleblaster.testrunners.type
+import org.brailleblaster.testrunners.undo
 import org.brailleblaster.testrunners.BBXDocFactory
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.properties.UTDElements
@@ -75,54 +80,6 @@ class EnterAtEndOfDocumentTest {
                     .joinToString("") { it.value }
             }
             .toList()
-
-    /*
-     * SWTBot keystrokes do not reliably reach the text view (most keyboard-driven tests in this
-     * module are disabled for that reason), so drive the real listeners directly: place the caret
-     * through TextView like a caret move does, then deliver a VerifyKey event to the StyledText,
-     * which runs TextVerifyKeyListener.verifyKey -> checkEnter -> checkLineBreak.
-     */
-    private fun BBTestRunner.moveCaret(offset: Int) {
-        manager.text.setCurrentElement(offset)
-        ViewTestRunner.doPendingSWTWork()
-        assertEquals(textViewWidget.caretOffset, offset, "Caret not at requested offset")
-    }
-
-    private fun BBTestRunner.moveToEndOfDocument() = moveCaret(textViewWidget.charCount)
-
-    /** Returns whether the key was left for StyledText to apply (VerifyEvent.doit) */
-    private fun BBTestRunner.verifyKey(character: Char): Boolean {
-        val event = Event().apply {
-            this.character = character
-            keyCode = character.code
-            doit = true
-        }
-        textViewWidget.notifyListeners(ST.VerifyKey, event)
-        ViewTestRunner.doPendingSWTWork()
-        return event.doit
-    }
-
-    private fun BBTestRunner.pressEnter() {
-        assertFalse(verifyKey(SWT.CR), "Enter is always handled by the editor")
-    }
-
-    /** Type text the way StyledText does after the verify listener allows the key */
-    private fun BBTestRunner.type(text: String) {
-        text.forEach { c ->
-            assertTrue(verifyKey(c), "Key '$c' was blocked at offset ${textViewWidget.caretOffset}")
-            val offset = textViewWidget.caretOffset
-            textViewWidget.replaceTextRange(offset, 0, c.toString())
-            textViewWidget.caretOffset = offset + 1
-        }
-        manager.text.update(false)
-        ViewTestRunner.doPendingSWTWork()
-    }
-
-    private fun BBTestRunner.undo() {
-        manager.simpleManager.getModule(UndoRedoModule::class.java)!!
-            .undo(BBSelectionData(textViewWidget, wpManager))
-        ViewTestRunner.doPendingSWTWork()
-    }
 
     /** The last non-whitespace TME, which Enter on trailing whitespace is redirected to */
     private fun BBTestRunner.lastContentTME() =

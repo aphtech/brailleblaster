@@ -95,7 +95,7 @@ class PasteIntoNewDocumentTest {
         return newDoc
     }
 
-    /** Deliver Enter to the text view's key listener, see EnterAtEndOfDocumentTest for why */
+    /** Deliver Enter to the text view's key listener, see testrunners/DirectInput.kt for why */
     private fun Manager.pressEnter() {
         val event = Event().apply {
             character = SWT.CR
