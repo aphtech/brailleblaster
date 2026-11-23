@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -29,6 +30,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class BlankLineTest {
 
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/printView/WhitespaceTests.xml");

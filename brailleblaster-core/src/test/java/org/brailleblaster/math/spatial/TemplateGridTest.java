@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.math.spatial;
 
+import org.brailleblaster.GuiTest;
 import java.io.File;
 
 import org.brailleblaster.math.mathml.MathModuleUtils;
@@ -31,6 +32,7 @@ import org.testng.annotations.Test;
 
 import nu.xom.Document;
 
+@GuiTest
 public class TemplateGridTest {
     private final Document twoParagraphs = TestXMLUtils.generateBookDoc("", "<p>Para1</p><p>Para2</p>");
     private final File OLD_TEMPLATE_FORMAT = (new File(

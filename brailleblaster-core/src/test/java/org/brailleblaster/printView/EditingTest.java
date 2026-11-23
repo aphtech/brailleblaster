@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
@@ -52,6 +53,7 @@ import org.testng.annotations.Test;
 import nu.xom.Attribute;
 import nu.xom.Element;
 
+@GuiTest
 public class EditingTest {
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/printView/EditingTests.xml");
 

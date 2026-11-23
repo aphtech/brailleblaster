@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView
 
+import org.brailleblaster.GuiTest
 import nu.xom.Element
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
@@ -44,6 +45,7 @@ import java.io.File
  * document's tab was then clicked again: focusing the style pane moved the braille view's caret to a line the braille
  * view did not have yet, the exception stopped the tab switch, and Paste went to the source document instead.
  */
+@GuiTest
 class PasteIntoNewDocumentTest {
     private val heading = "GED TEST TIP"
     private val tip = "Read every answer choice."

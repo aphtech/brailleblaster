@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.mathml;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.*;
 import org.brailleblaster.BBIni;
 import org.brailleblaster.TestFiles;
@@ -42,6 +43,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
+@GuiTest
 public class MathMLASCIIEditTest {
 
     private static final Logger log = LoggerFactory.getLogger(MathMLASCIIEditTest.class);

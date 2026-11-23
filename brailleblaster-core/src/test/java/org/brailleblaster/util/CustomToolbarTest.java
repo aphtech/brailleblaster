@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.util;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertTrue;
 
 import org.brailleblaster.perspectives.mvc.menu.TopMenu;
@@ -24,6 +25,7 @@ import org.testng.annotations.Test;
 
 import nu.xom.Document;
 
+@GuiTest
 public class CustomToolbarTest {
     private final Document basicFile = TestXMLUtils.generateBookDoc("", "<p>test</p>");
 

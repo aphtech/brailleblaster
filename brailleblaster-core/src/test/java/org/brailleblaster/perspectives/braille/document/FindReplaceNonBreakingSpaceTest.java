@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.Document;
 import org.brailleblaster.TestUtils;
 import org.brailleblaster.testrunners.BBTestRunner;
@@ -28,6 +29,7 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertNotEquals;
 
 
+@GuiTest
 public class FindReplaceNonBreakingSpaceTest {
     private static final Logger log = LoggerFactory.getLogger(FindReplaceNonBreakingSpaceTest.class);
     private final String regularSpace = "Unit 1";

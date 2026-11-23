@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView
 
+import org.brailleblaster.GuiTest
 import nu.xom.Element
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
@@ -41,6 +42,7 @@ import org.testng.annotations.Test
  * indicator. With nothing else in the document the views then had nothing but blank lines, and caret
  * restoration crashed looking for a text element.
  */
+@GuiTest
 class PageStyleAfterBlankLinesTest {
     // ---- driving the editor, see EnterAtEndOfDocumentTest for why the listeners are called directly
 

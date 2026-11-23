@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.settings.ui;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.BBIni;
 import org.brailleblaster.perspectives.mvc.menu.TopMenu;
 import org.brailleblaster.settings.TableExceptions;
@@ -32,6 +33,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class SettingsChangeTest {
     @Test(enabled = false)
     public void changeTranslationTest() {

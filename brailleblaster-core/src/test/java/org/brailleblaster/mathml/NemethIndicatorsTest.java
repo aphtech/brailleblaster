@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.mathml;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.TestFiles;
 import org.brailleblaster.math.mathml.NemethIndicators;
 import org.brailleblaster.testrunners.BBTestRunner;
@@ -26,6 +27,7 @@ import org.testng.annotations.Test;
 
 import nu.xom.Document;
 
+@GuiTest
 public class NemethIndicatorsTest {
     private static final Logger log = LoggerFactory.getLogger(NemethIndicatorsTest.class);
     final String wizard1 = "We're off to see the wizard.";

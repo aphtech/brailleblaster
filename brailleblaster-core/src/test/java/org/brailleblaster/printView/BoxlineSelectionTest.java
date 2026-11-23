@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -31,6 +32,7 @@ import org.eclipse.swt.SWT;
 //import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class BoxlineSelectionTest {
     private final String BOXLINE_TEXT = "----------------------------------------";
     private final String FULL_BOX = "========================================";

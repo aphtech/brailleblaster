@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.utd;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.Element;
 import org.brailleblaster.TestGroups;
 import org.brailleblaster.testrunners.BBTestRunner;
@@ -31,6 +32,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.startsWith;
 import static org.testng.Assert.assertEquals;
 
+@GuiTest
 public class BBTest {
 
     @Test(enabled = false)

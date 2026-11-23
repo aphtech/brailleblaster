@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import java.io.File;
 
 import org.brailleblaster.frontmatter.TOCBuilderBBX;
@@ -23,6 +24,7 @@ import org.brailleblaster.testrunners.BBTestRunner;
 import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class DeleteTest {
     @Test(enabled = false)
     public void deleteToc_issue6438() {

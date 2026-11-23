@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.*;
 
 import org.brailleblaster.perspectives.mvc.menu.TopMenu;
@@ -26,6 +27,7 @@ import org.testng.annotations.Test;
  * Tests whether after a selection is made and a style is changed that the selection is clear and
  * events after occur correctly
  */
+@GuiTest
 public class ClearSelectionTest {
 
     @Test(enabled = false)

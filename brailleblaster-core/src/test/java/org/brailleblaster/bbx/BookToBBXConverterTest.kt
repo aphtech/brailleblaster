@@ -20,7 +20,6 @@ import nu.xom.Document
 import nu.xom.Element
 import nu.xom.Text
 import org.brailleblaster.settings.DefaultNimasMaps
-import org.brailleblaster.testrunners.BBTestRunner
 import org.brailleblaster.testrunners.TestXMLUtils
 import org.brailleblaster.testrunners.XMLElementAssert
 import org.brailleblaster.utd.IStyleMap
@@ -2196,37 +2195,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
-    fun tableNonWithEmptyRow_issue6163() {
-        /*
-        make sure when LiveFixer cleans up empty cells and containers it gets
-        stripped of being a table
-        */
-        val test = BBTestRunner(
-            "",
-            "<table>"
-                + "<tr>"
-                + "<td>Historical</td>"
-                + "<td>Mythical</td>"
-                + "</tr>"
-                + "<tr>"
-                + "<td></td>"
-                + "<td></td>"
-                + "</tr>"
-                + "</table>"
-        )
-
-        test.assertRootSection_NoBrlCopy()
-            .nextChildIs { block ->
-                block
-                    .onlyChildIsText("Historical")
-                    .isBlock(BBX.BLOCK.DEFAULT)
-            }.nextChildIs { block ->
-                block
-                    .onlyChildIsText("Mythical")
-                    .isBlock(BBX.BLOCK.DEFAULT)
-            }.noNextChild()
-    }
+    // tableNonWithEmptyRow_issue6163 opens a BBTestRunner, see BookToBBXConverterGuiTest
 
     //---------------------- Poem ----------------------
     @Test

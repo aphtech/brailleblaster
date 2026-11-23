@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView
 
+import org.brailleblaster.GuiTest
 import nu.xom.Element
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.testrunners.BBTestRunner
@@ -35,6 +36,7 @@ import java.io.File
  * Enter in a new, blank document. A new document only holds an empty placeholder block, so Enter on it adds
  * nothing to the document and the blank line exists only in the view until text typed after it is committed.
  */
+@GuiTest
 class EnterOnNewDocumentTest {
     /** The template File > New opens, see Manager.DEFAULT_FILE */
     private val blankTemplate = File("src/main/dist/programData/xmlTemplates/blankTemplate.bbz")

@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import static org.brailleblaster.TestUtils.getFirstSectionChild;
 import static org.brailleblaster.TestUtils.getInnerSection;
 import static org.brailleblaster.testrunners.ViewTestRunner.doPendingSWTWork;
@@ -33,6 +34,7 @@ import org.testng.annotations.Test;
 import nu.xom.Document;
 
 @Test(enabled = false)
+@GuiTest
 public class EmphasisTest {
     private final String lorem = "lorem ipsum";
     private final String dolor = "dolor sit amet";

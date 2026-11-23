@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -26,6 +27,7 @@ import org.eclipse.swt.SWT;
 import org.testng.annotations.Test;
 
 @Test(groups = TestGroups.BROKEN_TESTS, enabled = false)
+@GuiTest
 public class PageSelectionTest {
     //private final String XMLTREE = "XML";
 

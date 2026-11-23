@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import java.io.File;
 
 import org.brailleblaster.TestFiles;
@@ -30,6 +31,7 @@ import org.testng.annotations.Test;
 
 import nu.xom.Document;
 
+@GuiTest
 public class FindReplaceStylesTest {
     private static final Logger log = LoggerFactory.getLogger(FindReplaceStylesTest.class);
     private final String regP = "This is a regular paragraph.";

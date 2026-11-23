@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.util;
 
+import org.brailleblaster.GuiTest;
 import java.io.File;
 
 import org.brailleblaster.perspectives.mvc.menu.TopMenu;
@@ -29,6 +30,7 @@ import org.testng.Assert;
 
 import static org.testng.Assert.*;
 
+@GuiTest
 public class ProseTest {
     private static final File shortProse = new File("src/test/resources/org/brailleblaster/utd/Prose.xml");
     private static final File proseWithLines = new File("src/test/resources/org/brailleblaster/utd/ProseWithLineNumbers.bbx");

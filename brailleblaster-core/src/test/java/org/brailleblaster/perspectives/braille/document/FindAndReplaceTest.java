@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.Document;
 import org.brailleblaster.TestUtils;
 import org.brailleblaster.search.SearchConstants;
@@ -32,6 +33,7 @@ import org.testng.Assert;
 
 import static org.testng.Assert.assertEquals;
 
+@GuiTest
 public class FindAndReplaceTest {
     private static final Logger log = LoggerFactory.getLogger(FindAndReplaceTest.class);
     private final Document oddSpacing = TestXMLUtils.generateBookDoc("",

@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -25,6 +26,7 @@ import org.brailleblaster.perspectives.mvc.menu.TopMenu;
 import org.brailleblaster.testrunners.BBTestRunner;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class TransNoteEmphasisTest {
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/printView/TransNoteEmphasisTest.bbx");
 

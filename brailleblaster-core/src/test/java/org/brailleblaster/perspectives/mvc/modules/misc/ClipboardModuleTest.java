@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.mvc.modules.misc;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -31,6 +32,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Display;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class ClipboardModuleTest {
     final String textBefore = "sqrt x";
     final String brailleBefore = "  >x}";

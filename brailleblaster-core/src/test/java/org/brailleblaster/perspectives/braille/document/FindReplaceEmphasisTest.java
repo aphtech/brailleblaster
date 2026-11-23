@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.TestUtils;
 import org.brailleblaster.bbx.BBX;
 import org.brailleblaster.testrunners.BBTestRunner;
@@ -27,6 +28,7 @@ import org.testng.annotations.Test;
 
 import nu.xom.Document;
 
+@GuiTest
 public class FindReplaceEmphasisTest {
     private static final Logger log = LoggerFactory.getLogger(FindReplaceEmphasisTest.class);
     private final String bold = "bold";

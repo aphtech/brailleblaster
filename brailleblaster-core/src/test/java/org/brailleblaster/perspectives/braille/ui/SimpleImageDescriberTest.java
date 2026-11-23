@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.ui;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.Element;
 import nu.xom.Node;
 import org.brailleblaster.TestUtils;
@@ -47,6 +48,7 @@ import static org.brailleblaster.testrunners.ViewTestRunner.doPendingSWTWork;
 import static org.testng.Assert.*;
 
 @Test(enabled = false)
+@GuiTest
 public class SimpleImageDescriberTest {
 
     private static final Logger log = LoggerFactory.getLogger(SimpleImageDescriberTest.class);

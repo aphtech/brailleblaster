@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.TestUtils;
 import org.brailleblaster.testrunners.BBTestRunner;
 import org.brailleblaster.testrunners.TestXMLUtils;
@@ -28,6 +29,7 @@ import org.testng.annotations.Test;
 
 import nu.xom.Document;
 
+@GuiTest
 public class FindReplaceStyleEmphasisTextTest {
     private static final Logger log = LoggerFactory.getLogger(FindReplaceStyleEmphasisTextTest.class);
     private final String cHead = "Bold Centered Heading";

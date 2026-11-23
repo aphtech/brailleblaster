@@ -89,6 +89,22 @@ mvnw package
 ```
 Once the build finishes you will find the application in brailleblaster-app/target/dist.
 
+## Running tests
+
+By default the build runs only headless tests. Tests that open BrailleBlaster windows are marked `@GuiTest` and are put in the `gui` group, which runs only when you ask for it.
+
+| Want | Command |
+|---|---|
+| Headless only (default) | `mvnw test` |
+| Everything | `mvnw test -Dgui` |
+| GUI only | `mvnw test -pl brailleblaster-core -Pgui-only` |
+| One GUI class | `mvnw test -pl brailleblaster-core -Dgui "-Dtest=EditAfterPageBreakTest"` |
+| Include broken groups | add `-Dbb.excludedTests=none` |
+
+GUI tests take over the desktop. On Windows, keep the desktop unlocked and don't touch the mouse or keyboard while they run.
+
+New test classes that create a `BBTestRunner`, `SWTBot`, or an SWT `Shell` must be marked `@GuiTest`.
+
 ## Running a development build
 
 To run a development build of BrailleBlaster, either one you built yourself or from the continuous release, you will need Java25 or higher installed. On Windows or Linux issue the following command from the root of your build:

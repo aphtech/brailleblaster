@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.ui;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.TestUtils;
 import org.brailleblaster.settings.TableExceptions;
 import org.brailleblaster.testrunners.BBTestRunner;
@@ -30,6 +31,7 @@ import org.testng.annotations.Test;
 import nu.xom.Document;
 
 @Test(enabled = false)
+@GuiTest
 public class CorrectTranslationTest {
 
     private final String dollarSign = "\u0024";

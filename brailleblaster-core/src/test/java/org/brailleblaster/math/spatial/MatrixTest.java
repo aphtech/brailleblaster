@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.math.spatial;
 
+import org.brailleblaster.GuiTest;
 import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +34,7 @@ import org.testng.annotations.Test;
 
 import nu.xom.Document;
 
+@GuiTest
 public class MatrixTest {
 
     private final Document twoParagraphs = TestXMLUtils.generateBookDoc("", "<p>Para1</p><p>Para2</p>");

@@ -15,11 +15,13 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.bbx.BBX;
 import org.brailleblaster.testrunners.BBTestRunner;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class SelectionTest {
     @Test(enabled = false)
     public void selectEntireList() {

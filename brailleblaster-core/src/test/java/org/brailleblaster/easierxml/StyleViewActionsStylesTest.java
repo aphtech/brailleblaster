@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.easierxml;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertFalse;
 
 import java.io.File;
@@ -26,6 +27,7 @@ import org.testng.annotations.Test;
 /**
  * StyleView selection and applying styles and actions
  */
+@GuiTest
 public class StyleViewActionsStylesTest {
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/easierxml/nimas-test.xml");
 

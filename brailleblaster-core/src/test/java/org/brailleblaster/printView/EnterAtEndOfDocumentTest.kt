@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView
 
+import org.brailleblaster.GuiTest
 import nu.xom.Element
 import nu.xom.Text
 import org.brailleblaster.bbx.BBX
@@ -45,6 +46,7 @@ import java.io.File
  * the caret sits on the bottom box line, whose node is the box container rather than
  * anything inside a block.
  */
+@GuiTest
 class EnterAtEndOfDocumentTest {
     private fun bodyText(text: String): Element = BBX.BLOCK.STYLE.create("Body Text").apply { appendChild(text) }
 

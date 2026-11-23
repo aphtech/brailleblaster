@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView
 
+import org.brailleblaster.GuiTest
 import nu.xom.Element
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.perspectives.braille.document.BrailleDocument
@@ -36,6 +37,7 @@ import java.io.File
  * Issue 70995: holding Backspace in a new document after typing a sentence on line 2 (or 5) and pressing Enter
  * crashed once the sentence was erased and the caret reached the start of its line.
  */
+@GuiTest
 class BackspaceToStartOfLineTest {
     /** The template File > New opens, see Manager.DEFAULT_FILE */
     private val blankTemplate = File("src/main/dist/programData/xmlTemplates/blankTemplate.bbz")

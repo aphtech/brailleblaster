@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.ui;
 
+import org.brailleblaster.GuiTest;
 import java.util.function.Consumer;
 
 import org.brailleblaster.TestUtils;
@@ -31,6 +32,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Test(enabled = false)
+@GuiTest
 public class CellTabTest {
     @Test(enabled = false)
     public void multipleTabs_start_issue5417() {

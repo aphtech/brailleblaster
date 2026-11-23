@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.undoRedo;
 
+import org.brailleblaster.GuiTest;
 import java.io.File;
 
 import org.brailleblaster.TestGroups;
@@ -24,6 +25,7 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
+@GuiTest
 public class UndoSelectionTest {
 
 

@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.undoRedo;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -27,6 +28,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.testng.annotations.Test;
 
 @Test(groups = TestGroups.BROKEN_TESTS)
+@GuiTest
 public class UndoStylesTest {
     private final static String BLANK_LINE = "";
 

@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.undoRedo;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -23,6 +24,7 @@ import org.brailleblaster.testrunners.BBTestRunner;
 import org.eclipse.swt.SWT;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class UndoRedoMathTest {
 
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/undoRedo/UndoRedoMath.xml");

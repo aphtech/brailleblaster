@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.mvc.modules.misc;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.perspectives.braille.messages.AdjustLocalStyleMessage;
 import org.brailleblaster.testrunners.BBTestRunner;
 import org.brailleblaster.testrunners.BBTestRunner.ViewTools;
@@ -38,6 +39,7 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.ParentNode;
 
+@GuiTest
 public class SplitElementModuleTest {
     private final String TEST_TEXT = "Testing text";
     private final String DUMMY_TEXT = "Dummy";

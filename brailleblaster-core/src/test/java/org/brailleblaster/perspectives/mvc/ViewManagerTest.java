@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.mvc;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.perspectives.mvc.menu.TopMenu;
 import org.brailleblaster.perspectives.mvc.modules.misc.ToggleViewsModule;
 import org.brailleblaster.testrunners.BBTestRunner;
@@ -22,6 +23,7 @@ import org.brailleblaster.testrunners.ViewTestRunner;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class ViewManagerTest {
 
     @Test(enabled = false)

@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.math.spatial;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.math.mathml.MathModuleUtils;
 import org.brailleblaster.math.spatial.SpatialMathEnum.Passage;
 import org.brailleblaster.math.template.TemplateConstants;
@@ -27,6 +28,7 @@ import org.testng.annotations.Test;
 
 import nu.xom.Document;
 
+@GuiTest
 public class TemplateTest {
     private final Document twoParagraphs = TestXMLUtils.generateBookDoc("", "<p>Para1</p><p>Para2</p>");
 

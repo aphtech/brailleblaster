@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView
 
+import org.brailleblaster.GuiTest
 import nu.xom.Attribute
 import nu.xom.Element
 import nu.xom.Text
@@ -47,6 +48,7 @@ import java.io.File
  * still mapped the dropped newLines as real lines, corrupting caret offsets (undeletable heading, crash on
  * Enter after deleting across the page break).
  */
+@GuiTest
 class EditAfterPageBreakTest {
     private val reportedFile = File("src/test/resources/org/brailleblaster/printView/headingAfterPageBreak_issue70359.bbz")
 

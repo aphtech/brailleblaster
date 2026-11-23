@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.frontmatter;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
@@ -40,6 +41,7 @@ import org.testng.annotations.Test;
 import static org.brailleblaster.testrunners.ViewTestRunner.doPendingSWTWork;
 import static org.testng.Assert.assertEquals;
 
+@GuiTest
 public class TOCBuilderTest {
 
 	public static void openTocTools(BBTestRunner test) {

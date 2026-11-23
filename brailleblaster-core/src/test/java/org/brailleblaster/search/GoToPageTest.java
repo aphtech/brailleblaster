@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.search;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.Element;
 import org.brailleblaster.TestFiles;
 import org.brailleblaster.TestGroups;
@@ -39,6 +40,7 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.util.List;
 
+@GuiTest
 public class GoToPageTest {
     private static final Logger log = LoggerFactory.getLogger(GoToPageTest.class);
 

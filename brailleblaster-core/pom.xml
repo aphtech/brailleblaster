@@ -19,11 +19,12 @@
         <!-- For exec:java, put here so mainClass can be overridden with -Dexec.mainClass -->
         <exec.mainClass>org.brailleblaster.Main</exec.mainClass>
         <!-- Default run all non-ui tests, see surefire's <excludedGroups> for
-            more information -->
+            more information. GUI tests (classes marked @GuiTest) run only with
+            -Dgui or -Pgui-only, see the gui-tests / gui-only profiles below. -->
         <skipTests>false</skipTests>
         <alt.build.dir>target</alt.build.dir>
         <moreExcludedTests/>
-        <bb.excludedTests>brokenTests,todoFixLater,${moreExcludedTests}</bb.excludedTests>
+        <bb.excludedTests>brokenTests,todoFixLater,gui,${moreExcludedTests}</bb.excludedTests>
         <!-- millisecond delay for tests, use 500 if doing bulk testing using multiple
             cores -->
         <swtbot.delay>0</swtbot.delay>
@@ -393,10 +394,11 @@
                         <org.eclipse.swtbot.keyboard.layout>org.eclipse.swtbot.swt.finder.keyboard.EN_US</org.eclipse.swtbot.keyboard.layout>
                     </systemPropertyVariables>
                     <properties>
-                        <!-- Initialize BB before unit tests, see class for details -->
+                        <!-- Initialize BB before unit tests, see class for details.
+                            GuiGroupTransformer adds the gui group to @GuiTest classes. -->
                         <property>
                             <name>listener</name>
-                            <value>org.brailleblaster.BBTestInit</value>
+                            <value>org.brailleblaster.BBTestInit,org.brailleblaster.GuiGroupTransformer</value>
                         </property>
                     </properties>
                     <excludedGroups>${bb.excludedTests}</excludedGroups>
@@ -407,6 +409,26 @@
     </build>
 
     <profiles>
+        <!-- Run headless + GUI tests:  mvnw test -Dgui   (or -Pgui-tests) -->
+        <profile>
+            <id>gui-tests</id>
+            <activation>
+                <property>
+                    <name>gui</name>
+                </property>
+            </activation>
+            <properties>
+                <bb.excludedTests>brokenTests,todoFixLater,${moreExcludedTests}</bb.excludedTests>
+            </properties>
+        </profile>
+        <!-- Run only GUI tests:  mvnw test -pl brailleblaster-core -Pgui-only -->
+        <profile>
+            <id>gui-only</id>
+            <properties>
+                <bb.excludedTests>brokenTests,todoFixLater,${moreExcludedTests}</bb.excludedTests>
+                <groups>gui</groups>
+            </properties>
+        </profile>
         <profile>
             <id>ci_build</id>
             <properties>

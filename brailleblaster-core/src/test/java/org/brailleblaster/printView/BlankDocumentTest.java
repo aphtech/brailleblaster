@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.brailleblaster.TestUtils.getInnerSection;
 import static org.testng.Assert.assertEquals;
 
@@ -33,6 +34,7 @@ import org.brailleblaster.TestUtils;
 import org.brailleblaster.frontmatter.VolumeTest;
 import org.brailleblaster.util.Notify;
 
+@GuiTest
 public class BlankDocumentTest {
     private final Document blankDoc = TestXMLUtils.generateBookDoc("", "<p></p>");
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/printView/blankTemplate.bbx");

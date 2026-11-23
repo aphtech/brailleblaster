@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.undoRedo;
 
+import org.brailleblaster.GuiTest;
 import java.io.File;
 
 import org.brailleblaster.TestGroups;
@@ -26,6 +27,7 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
+@GuiTest
 public class UndoEditTest {
     private final static String BLANK_LINE = "";
 

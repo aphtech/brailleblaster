@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -23,6 +24,7 @@ import org.brailleblaster.testrunners.BBTestRunner;
 //import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class BoxlineTest {
     private final String BLANK_LINE = "";
     private final String BOXLINE_TEXT = "----------------------------------------";

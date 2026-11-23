@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
@@ -56,6 +57,7 @@ import static org.testng.Assert.*;
 
 
 @Test(enabled = false)
+@GuiTest
 public class TableTest {
     private static final String TEST_TEXT = "Test";
     private static final String TEST_HEADING = "Heading";

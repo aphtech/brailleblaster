@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.mvc.modules.misc;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.utils.localization.LocaleHandler;
 import org.brailleblaster.perspectives.mvc.menu.TopMenu;
 import org.brailleblaster.testrunners.BBTestRunner;
@@ -26,6 +27,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class ImagePlaceholderTest {
     private static LocaleHandler localeHandler;
 

@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -37,6 +38,7 @@ import nu.xom.Document;
 import nu.xom.Element;
 
 @Test(groups = TestGroups.SLOW_TESTS, enabled = false)
+@GuiTest
 public class FindReplaceReplaceAllTest {
     private static final Logger log = LoggerFactory.getLogger(FindReplaceReplaceAllTest.class);
     private final Document multiples = TestXMLUtils.generateBookDoc("", "<p>" + "word " + "word " + "word " + "word"

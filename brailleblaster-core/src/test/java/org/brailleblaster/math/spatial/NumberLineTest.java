@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.math.spatial;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.TestUtils;
 import org.brailleblaster.math.mathml.MathModuleUtils;
 import org.brailleblaster.math.numberLine.*;
@@ -36,6 +37,7 @@ import nu.xom.Document;
 
 import java.util.ArrayList;
 
+@GuiTest
 public class NumberLineTest {
 
     private final Document twoParagraphs =

@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView
 
+import org.brailleblaster.GuiTest
 import nu.xom.Element
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.testrunners.BBTestRunner
@@ -30,6 +31,7 @@ import java.io.File
  * Copying the second line of the document and pasting it right after the direct translated `;;` on the first line
  * crashed BrailleBlaster.
  */
+@GuiTest
 class PasteAfterDirectTranslationTest {
     private val file = File("src/test/resources/org/brailleblaster/printView/pasteAfterDirectTranslation.bbz")
     private val directText = ";;"

@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.perspectives.braille.views.wp.tableEditor.TableEditor;
 import org.brailleblaster.perspectives.mvc.menu.TopMenu;
 import org.brailleblaster.testrunners.BBTestRunner;
@@ -32,6 +33,7 @@ import org.testng.annotations.Test;
 import static org.brailleblaster.testrunners.ViewTestRunner.doPendingSWTWork;
 import static org.testng.Assert.assertEquals;
 
+@GuiTest
 public class TableEditorSixKeyTest {
     private static final String TABLE = "<table>"
             + "<tr><td>Cell</td><td>Cell</td><td>Cell</td></tr>"

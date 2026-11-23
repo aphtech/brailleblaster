@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.brailleblaster.testrunners.ViewTestRunner.doPendingSWTWork;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.testng.Assert.assertEquals;
@@ -49,6 +50,7 @@ import org.testng.annotations.Test;
 
 import nu.xom.Element;
 
+@GuiTest
 public class StyleChangeTest {
     private static final Logger log = LoggerFactory.getLogger(StyleChangeTest.class);
     private final String BLANK_LINE = "";

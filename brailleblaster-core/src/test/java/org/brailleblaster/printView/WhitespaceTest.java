@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -24,6 +25,7 @@ import org.eclipse.swt.SWT;
 //import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class WhitespaceTest {
     //	private final String XMLTREE = "XML";
     private static final String BLANK_LINE = "";

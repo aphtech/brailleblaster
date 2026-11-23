@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.*;
 
 import java.io.File;
@@ -33,6 +34,7 @@ import org.eclipse.swt.SWT;
 import org.testng.annotations.Test;
 
 @Test(groups = TestGroups.BROKEN_TESTS, enabled = false)
+@GuiTest
 public class CursorAndOffsetTest {
     //private final String XMLTREE = "XML";
 

@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.frontmatter;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -62,6 +63,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.iterableWithSize;
 import static org.testng.Assert.assertEquals;
 
+@GuiTest
 public class VolumeTest {
 	private static final Logger log = LoggerFactory.getLogger(VolumeTest.class);
 

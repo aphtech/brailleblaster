@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -30,6 +31,7 @@ import org.testng.annotations.Test;
 
 import nu.xom.Document;
 
+@GuiTest
 public class FindReplaceSpansTest {
     private static final Logger log = LoggerFactory.getLogger(FindReplaceSpansTest.class);
     private final Document TEST_FILE = TestXMLUtils.generateBookDoc("",
