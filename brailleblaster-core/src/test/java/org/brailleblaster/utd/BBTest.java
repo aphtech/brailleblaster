@@ -101,10 +101,10 @@ public class BBTest {
     public void issue3712() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>test</p>");
 
-        bbTest.bot.menu("Close").click();
+        bbTest.findMenu("Close", true).click();
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.bot.menu("Open").click();
+        bbTest.findMenu("Open", true).click();
         ViewTestRunner.doPendingSWTWork();
     }
 

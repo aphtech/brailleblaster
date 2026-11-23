@@ -37,7 +37,7 @@ public class PageBreakModuleTest {
             "<p>" + para1 + "</p>" +
                     "<p>" + para2 + "</p>");
 
-    @Test(enabled = false)
+    @Test
     public void pageBreakBeginningOfBlock() {
         BBTestRunner test = new BBTestRunner(doc);
         test.textViewTools.navigateToText(para2);
@@ -50,12 +50,12 @@ public class PageBreakModuleTest {
                         .nextChildIsText(para2));
     }
 
-    @Test(enabled = false)
+    @Test
     public void pageBreakEndOfBlock() {
 
     }
 
-    @Test(enabled = false)
+    @Test
     public void pageBreakMiddleOfBlock() {
 
     }

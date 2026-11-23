@@ -39,7 +39,7 @@ public class StyleViewActionsStylesTest {
         bbTest.navigateTextView(10);
 
         bbTest.styleViewTools.navigateToText("ting 2");
-        assertFalse(bbTest.bot.menu("Edit Table at Cursor").isEnabled());
+        assertFalse(bbTest.findMenu("Edit Table at Cursor", true).isEnabled());
     }
 
 

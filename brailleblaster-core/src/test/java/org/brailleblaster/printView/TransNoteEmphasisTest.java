@@ -30,6 +30,7 @@ import org.testng.annotations.Test;
 public class TransNoteEmphasisTest {
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/printView/TransNoteEmphasisTest.bbx");
 
+    // Disabled: transcriber note emphasis: next paragraph runs onto the same braille line and the indent is gone (R11) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void partialElement() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -42,6 +43,7 @@ public class TransNoteEmphasisTest {
         assertEquals(bbTest.brailleViewBot.getTextOnLine(2), expectedBraille);
     }
 
+    // Disabled: transcriber note emphasis: next paragraph runs onto the same braille line and the indent is gone (R11) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void wholeElement() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -54,6 +56,7 @@ public class TransNoteEmphasisTest {
         assertEquals(bbTest.brailleViewBot.getTextOnLine(2), expectedBraille);
     }
 
+    // Disabled: transcriber note emphasis: next paragraph runs onto the same braille line and the indent is gone (R11) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void multipleElements() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -68,6 +71,7 @@ public class TransNoteEmphasisTest {
         assertEquals(bbTest.brailleViewBot.getTextOnLine(3), expectedBraille2);
     }
 
+    // Disabled: transcriber note emphasis: next paragraph runs onto the same braille line and the indent is gone (R11) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void multipleSplitElements() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);

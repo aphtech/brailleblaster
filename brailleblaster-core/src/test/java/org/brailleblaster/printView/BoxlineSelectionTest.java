@@ -3689,7 +3689,7 @@ public class BoxlineSelectionTest {
                         "<p>" + "two" + "</p>" +
                         "<p>" + "three" + "</p>"));
         bb.textViewTools.navigateToLine(1);
-        bb.bot.menu("Styles").menu("Miscellaneous").menu("Boxes").menu("Color Box").click();
+        bb.findMenu("Styles", true).menu("Miscellaneous").menu("Boxes").menu("Color Box").click();
         bb.activeShell().bot().comboBox(0).setText("blue");
         bb.activeShell().bot().button("OK").click();
         String s1 = bb.textViewBot.getTextOnLine(2);

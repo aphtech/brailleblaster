@@ -57,6 +57,7 @@ public class StyleChangeTest {
 
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/printView/StyleChangeTest.xml");
 
+    // Disabled: page indicator line expected after the heading is blank (R9) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Changes first element in view into centered sub heading
     public void heading1FirstElement() {
@@ -78,6 +79,7 @@ public class StyleChangeTest {
         assertEquals(BLANK_LINE, brailleResult);
     }
 
+    // Disabled: text view shows a stray + at an inline boundary ('First paragr+aph') (I7) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Sets inline element in first block element in view and changes it to centered sub heading
     public void heading1InlineElement() {
@@ -99,7 +101,7 @@ public class StyleChangeTest {
         assertEquals(BLANK_LINE, brailleResult);
     }
 
-    @Test(enabled = false)
+    @Test
     //changes a block element inside the document to a centered sub heading
     public void heading1Middle() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -125,6 +127,7 @@ public class StyleChangeTest {
         assertEquals(BLANK_LINE, brailleResult);
     }
 
+    // Disabled: page indicator line expected after the heading is blank (R9) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
     //turns last element before page to a centered sub heading
     public void heading1End() {
@@ -160,7 +163,7 @@ public class StyleChangeTest {
         assertEquals(pageAfterBrl, brailleResult);
     }
 
-    @Test(enabled = false)
+    @Test
     public void boldTestSimple() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>This is <span class='smallcaps'>a test</span></p>");
 
@@ -168,7 +171,7 @@ public class StyleChangeTest {
         bbTest.textViewTools.selectRight(3);
         assertEquals(bbTest.textViewWidget.getSelectionText(), "Thi");
 
-        bbTest.bot.menu(EmphasisItem.BOLD.longName).click();
+        bbTest.findMenu(EmphasisItem.BOLD.longName, true).click();
 
         bbTest.assertRootSectionFirst_NoBrlCopy()
                 .isBlockDefaultStyle("Body Text")
@@ -185,7 +188,7 @@ public class StyleChangeTest {
     /**
      * This was a style view bug but is useful to test in the text view as well
      */
-    @Test(enabled = false)
+    @Test
     public void boldTestTextToSpan() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>This is <span class='smallcaps'>a test</span></p>");
 
@@ -210,7 +213,7 @@ public class StyleChangeTest {
     /**
      * This was a style view bug but is useful to test in the text view as well
      */
-    @Test(enabled = false)
+    @Test
     public void boldTestTextSomeAndSpan() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>This is <span class='smallcaps'>a test</span></p>");
 
@@ -238,7 +241,7 @@ public class StyleChangeTest {
     /**
      * This was a style view bug but is useful to test in the text view as well
      */
-    @Test(enabled = false)
+    @Test
     public void boldTestTextAllAndSpan() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>This is <span class='smallcaps'>a test</span></p>");
 
@@ -262,6 +265,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
+    // Disabled: heading LINES_AFTER style option is now 2, test expects 3 (R10) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
 
     public void applyStyleOverBBStyleTest() {
@@ -301,7 +305,7 @@ public class StyleChangeTest {
                         .hasText("Test")
                 );
 
-        bbTest.bot.menu("Cell 5 Heading").click();
+        bbTest.findMenu("Cell 5 Heading", true).click();
         doPendingSWTWork();
 
         bbTest.assertRootSection_NoBrlCopy()
@@ -320,7 +324,7 @@ public class StyleChangeTest {
     /**
      * This was a style view bug but is useful to test in the text view as well
      */
-    @Test(enabled = false)
+    @Test
     public void applyBoxStyleTest_RT3671() {
         BBTestRunner bbTest = new BBTestRunner("",
                 "<p>This is a test</p><list><li><p>Testing 123</p></li></list>");
@@ -328,7 +332,7 @@ public class StyleChangeTest {
         bbTest.textViewTools.navigateToText("Testing 123");
         bbTest.textViewTools.selectRight("Testing 123".length());
 
-        bbTest.bot.menu("Box").click();
+        bbTest.findMenu("Box", true).click();
         doPendingSWTWork();
 
         bbTest.assertRootSection_NoBrlCopy()
@@ -351,7 +355,7 @@ public class StyleChangeTest {
     /**
      * This was a style view bug but is useful to test in the text view as well
      */
-    @Test(enabled = false)
+    @Test
 
     public void styleOptions_KeepWithNextTest() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>paragraph 1</p><p>paragraph 2</p>");
@@ -369,7 +373,7 @@ public class StyleChangeTest {
                 Matchers.containsString("paragraph 2")
         );
 
-        bbTest.bot.menu("Keep With Next").menu("Yes").click();
+        bbTest.findMenu("Keep With Next", true).menu("Yes").click();
         doPendingSWTWork();
 
         bbTest.assertRootSection_NoBrlCopy()
@@ -383,7 +387,7 @@ public class StyleChangeTest {
                 );
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void nestedEmphasisFont_issue3931() {
         BBTestRunner bbTest = new BBTestRunner(new BBXDocFactory()
@@ -401,7 +405,7 @@ public class StyleChangeTest {
         assertNotNull(testRange.background);
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void applyStyleBlockInteriorSelect_issue3654() {
         BBTestRunner bbTest = new BBTestRunner("", "<p><span>Not</span> a paragraph</p>");
@@ -419,7 +423,7 @@ public class StyleChangeTest {
     }
 
 
-    @Test(enabled = false)
+    @Test
 
     public void tableNotEnabledOnSimpleTables_issue3702() {
         BBTestRunner bbTest = new BBTestRunner("", "<table><tr><td>Testing 1</td><td>testing 2</td></tr><tr><td>Testing 3</td><td>testing 4</td></tr></table>");
@@ -430,14 +434,14 @@ public class StyleChangeTest {
         assertTrue(bbTest.textViewBot.contextMenu("Edit Table").isEnabled(), "No table editor");
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void applyStyleBreadcrumbsWithPage_issue3806() {
         BBTestRunner bbTest = new BBTestRunner("", "<level1><p>paragraph 1</p><pagenum>5</pagenum><p>paragraph 2</p></level1>");
 
         bbTest.textViewTools.navigateToText("paragraph 1");
         bbTest.selectBreadcrumbsAncestor(1, BBX.SECTION::assertIsA);
-        bbTest.bot.menu("Caption").click();
+        bbTest.findMenu("Caption", true).click();
         doPendingSWTWork();
 
         bbTest.assertInnerSection_NoBrlCopy()
@@ -455,7 +459,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void applyStyleBlockInteriorSelect_all_issue3654() {
         BBTestRunner bbTest = new BBTestRunner(new BBXDocFactory()
@@ -482,7 +486,7 @@ public class StyleChangeTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void styleOptionsBreadcrumbs_DontSplitTest() {
         BBTestRunner bbTest = new BBTestRunner("", "<level1><p>paragraph 1</p><p>paragraph 2</p></level1>");
@@ -490,7 +494,7 @@ public class StyleChangeTest {
         bbTest.textViewTools.navigateToText("paragraph 1");
         bbTest.selectBreadcrumbsAncestor(1, BBX.SECTION::assertIsA);
 
-        bbTest.bot.menu("Options").menu("Don't Split").click();
+        bbTest.findMenu("Options", true).menu("Don't Split").click();
         doPendingSWTWork();
 
         bbTest.assertInnerSectionFirst_NoBrlCopy()
@@ -504,7 +508,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void styleOptionsBreadcrumbs_SkipNumberLines() {
         BBTestRunner bbTest = new BBTestRunner("", "<level1><p>paragraph 1</p><p>paragraph 2</p></level1>");
@@ -512,7 +516,7 @@ public class StyleChangeTest {
         bbTest.textViewTools.navigateToText("paragraph 1");
         bbTest.selectBreadcrumbsAncestor(1, BBX.SECTION::assertIsA);
 
-        bbTest.bot.menu("Skip Number Lines").menu("Top").click();
+        bbTest.findMenu("Skip Number Lines", true).menu("Top").click();
         doPendingSWTWork();
 
         bbTest.assertInnerSection_NoBrlCopy()
@@ -525,7 +529,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void styleOptions_MultipleAndChange() {
         BBTestRunner bbTest = new BBTestRunner("", "<level1><p>paragraph 1</p><p>paragraph 2</p></level1>");
@@ -533,13 +537,13 @@ public class StyleChangeTest {
         bbTest.textViewTools.navigateToText("paragraph 1");
         bbTest.selectBreadcrumbsAncestor(1, BBX.SECTION::assertIsA);
 
-        bbTest.bot.menu("Skip Number Lines").menu("Top").click();
+        bbTest.findMenu("Skip Number Lines", true).menu("Top").click();
         doPendingSWTWork();
 
         bbTest.textViewTools.navigateToText("paragraph 1");
         bbTest.selectBreadcrumbsAncestor(1, BBX.SECTION::assertIsA);
 
-        bbTest.bot.menu("Keep With Next").menu("Yes").click();
+        bbTest.findMenu("Keep With Next", true).menu("Yes").click();
         doPendingSWTWork();
 
         bbTest.assertInnerSection_NoBrlCopy()
@@ -566,7 +570,7 @@ public class StyleChangeTest {
         bbTest.textViewTools.navigateToText("paragraph 1");
         bbTest.selectBreadcrumbsAncestor(1, BBX.SECTION::assertIsA);
 
-        bbTest.bot.menu("Cell 5 Heading").click();
+        bbTest.findMenu("Cell 5 Heading", true).click();
         doPendingSWTWork();
 
         bbTest.assertInnerSection_NoBrlCopy()
@@ -593,7 +597,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void styleOptions_onMarginStyle() {
         BBTestRunner test = new BBTestRunner("",
@@ -632,7 +636,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void styleOptions_onListStyle() {
         BBTestRunner test = new BBTestRunner("",
@@ -674,7 +678,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void styleOptions_elementWithBBXStyle_issue6032() {
         BBTestRunner test = new BBTestRunner("",
@@ -708,6 +712,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
+    // Disabled: heading LINES_AFTER style option is now 2, test expects 3 (R10) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
 
     public void styleOptions_elementWithBBXStyle_changedToOtherStyle_issue6032() {
@@ -762,7 +767,8 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(expectedExceptions = Notify.DebugException.class, enabled = false)
+    // Disabled: invalid box cross-selection no longer raises the warning; text becomes 'paragraphlist1l' (D11) (test_fix.md Phase 7d, bb_issues_from_tests.md)
+    @Test(enabled = false, expectedExceptions = Notify.DebugException.class)
     public void crossSelection_Box_Invalid() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>paragraph</p>"
                 + "<list>"
@@ -781,6 +787,7 @@ public class StyleChangeTest {
         doPendingSWTWork();
     }
 
+    // Disabled: NodeException 'failed' on a list item when boxing a cross-selection (I8) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
 
     public void crossSelection_Box() {
@@ -813,7 +820,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void crossSelection_DontSplit_List() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>paragraph</p>"
@@ -849,7 +856,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void crossSelection_DontSplit_TableAtEnd() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>paragraph 1</p>"
@@ -886,6 +893,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
+    // Disabled: NodeException 'Index 2 is larger than childCount 2' applying Don't Split to a selection starting with a table (I8) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
 
     public void crossSelection_DontSplit_TableAtStart() {
@@ -919,6 +927,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
+    // Disabled: List Tag / Poetic Stanza are no longer on the Styles menu (D10) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
 
     public void crossSelection_ListAtEnd() {
@@ -957,6 +966,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
+    // Disabled: List Tag / Poetic Stanza are no longer on the Styles menu (D10) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
 
     public void crossSelection_ListAtStart() {
@@ -995,7 +1005,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void autoListContainer_Paragraphs() {
         BBTestRunner test = new BBTestRunner("", "<p>paragraph 1</p>"
@@ -1071,7 +1081,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void autoListContainer_NestedList() {
         BBTestRunner test = new BBTestRunner("",
@@ -1100,7 +1110,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void autoRemoveListItemFromContainer_issue5354() {
         BBTestRunner test = new BBTestRunner("",
@@ -1128,7 +1138,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void autoRemoveListItemFromContainer_Middle_issue5354() {
         BBTestRunner test = new BBTestRunner("",
@@ -1160,7 +1170,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void autoRemoveListItemFromContainer_End_issue5354() {
         BBTestRunner test = new BBTestRunner("",
@@ -1189,7 +1199,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void autoRemoveListItemFromContainer_Box_issue5354() {
         BBTestRunner test = new BBTestRunner("",
@@ -1221,7 +1231,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void autoRunoverListItem_DecreaseListItemRunover_Start_issue5889() {
         BBTestRunner test = new BBTestRunner("",
@@ -1257,7 +1267,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void autoRunoverListItem_DecreaseListItemRunover_Start_Outside_issue5889() {
         BBTestRunner test = new BBTestRunner("",
@@ -1293,7 +1303,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void autoRunoverListItem_DecreaseListItemRunover_Middle_issue5889() {
         BBTestRunner test = new BBTestRunner("",
@@ -1332,7 +1342,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void autoRunoverListItem_DecreaseListItemRunover_End_issue5889() {
         BBTestRunner test = new BBTestRunner("",
@@ -1368,7 +1378,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void autoRunoverListItem_DecreaseListItemRunover_End_Outside_issue5889() {
         BBTestRunner test = new BBTestRunner("",
@@ -1404,7 +1414,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(description = "give same list styles to an entire nested list", enabled = false)
+    @Test(description = "give same list styles to an entire nested list")
     public void autoRunoverListItem_WholeList_Reapply() {
         BBTestRunner test = new BBTestRunner("",
                 "<list>"
@@ -1431,7 +1441,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void autoRunoverListItem_DecreaseListItemRunover_WholeList_Nested() {
         BBTestRunner test = new BBTestRunner("",
@@ -1468,7 +1478,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void poemIndentChange_issue5577() {
         BBTestRunner test = new BBTestRunner("", "<poem><linegroup><line>test1</line><line>test2</line></linegroup></poem>");
@@ -1489,9 +1499,14 @@ public class StyleChangeTest {
                 );
     }
 
+    // Disabled: List Tag / Poetic Stanza are no longer on the Styles menu (D10) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
+    public void poetry_fromParagraphs_issue5994() {
+        poetryFromParagraphs();
+    }
 
-    public BBTestRunner poetry_fromParagraphs_issue5994() {
+    /** Shared setup: two paragraphs made into a P1-3 poem. Was a @Test returning the runner, which TestNG ignores. */
+    private BBTestRunner poetryFromParagraphs() {
         BBTestRunner test = new BBTestRunner("",
                 "<p>para1</p>"
                         + "<p>para2</p>"
@@ -1518,10 +1533,11 @@ public class StyleChangeTest {
         return test;
     }
 
+    // Disabled: List Tag / Poetic Stanza are no longer on the Styles menu (D10) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
 
     public void poetry_changeListItemToNonPoetry_issue5994() {
-        BBTestRunner test = poetry_fromParagraphs_issue5994();
+        BBTestRunner test = poetryFromParagraphs();
 
         test.textViewTools.selectFromTo("para2", "para2");
         test.openMenuItem(TopMenu.STYLES, "Glossary", "Glossary 1 Level", "G1-3");
@@ -1544,10 +1560,11 @@ public class StyleChangeTest {
                 );
     }
 
+    // Disabled: List Tag / Poetic Stanza are no longer on the Styles menu (D10) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
 
     public void poetry_reapply_issue5994() {
-        BBTestRunner test = poetry_fromParagraphs_issue5994();
+        BBTestRunner test = poetryFromParagraphs();
 
         test.textViewTools.selectFromTo("para2", "para2");
         test.openMenuItem(TopMenu.STYLES, "Poetry", "Poetic Stanza");
@@ -1582,7 +1599,7 @@ public class StyleChangeTest {
         run.run();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void pageMakesBlock_dedicated_issue5975() {
         BBTestRunner test = new BBTestRunner("", "<p>test1</p><p>test2</p>");
@@ -1607,7 +1624,7 @@ public class StyleChangeTest {
                 ).noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
 
     public void pageMakesBlock_inBlock_issue5975() {
         BBTestRunner test = new BBTestRunner("", "<p>test1</p><p>test2</p>");

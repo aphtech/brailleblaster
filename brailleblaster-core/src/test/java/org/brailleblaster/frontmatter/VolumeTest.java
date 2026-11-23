@@ -642,7 +642,7 @@ public class VolumeTest {
 //
 //		bbTest.navigateTextViewToText("Paragraph 2");
 //
-//		bbTest.bot.menu("Insert Volume before Cursor").click();
+//		bbTest.findMenu("Insert Volume before Cursor", true).click();
 //		doPendingSWTWork();
 //
 //		//Make testing easier
@@ -697,7 +697,7 @@ public class VolumeTest {
 //				+ "<p>Paragraph 3</p>");
 //
 //		bbTest.navigateTextViewToText("Paragraph 2");
-//		bbTest.bot.menu("Insert Preliminary Volume").click();
+//		bbTest.findMenu("Insert Preliminary Volume", true).click();
 //		doPendingSWTWork();
 //		ImmutableList<Element> volumes = EasierFrontmatter.getVolumeElementsFatal(bbTest.manager.getDoc());
 //		assertEquals(volumes.size(), 2);
@@ -727,7 +727,7 @@ public class VolumeTest {
 //		assertEquals(bbTest.bot.labelWithId("volumeInfo").getText(), "Preliminary 1");
 //
 //		bbTest.navigateTextViewToText("Paragraph 3");
-//		bbTest.bot.menu("Insert Volume before Cursor").click();
+//		bbTest.findMenu("Insert Volume before Cursor", true).click();
 //		doPendingSWTWork();
 //		volumes = EasierFrontmatter.getVolumeElementsFatal(bbTest.manager.getDoc());
 //		assertEquals(volumes.size(), 3);

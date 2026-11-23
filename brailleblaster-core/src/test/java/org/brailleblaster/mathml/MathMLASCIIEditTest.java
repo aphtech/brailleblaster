@@ -279,7 +279,7 @@ public class MathMLASCIIEditTest {
 
         bb.textViewTools.navigate(0);
         bb.textViewTools.selectToEndOfLine();
-        bb.bot.menu("Tools").menu("Change Translation").menu("Direct").click();
+        bb.findMenu("Tools", true).menu("Change Translation").menu("Direct").click();
 
         bb.textViewTools.navigate(0);
         bb.textViewTools.selectToEndOfLine();
