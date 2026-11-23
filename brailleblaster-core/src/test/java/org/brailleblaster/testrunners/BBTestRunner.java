@@ -214,7 +214,17 @@ public class BBTestRunner {
      * when the window doesn't have OS focus ("The widget was null").
      */
     public SWTBotMenu findMenu(String text, boolean recursive) {
-        return new org.eclipse.swtbot.swt.finder.widgets.SWTBotShell(wpManager.getShell()).menu().menu(text, recursive, 0);
+        org.eclipse.swtbot.swt.finder.widgets.SWTBotRootMenu menuBar = new SWTBotShell(wpManager.getShell()).menu();
+        try {
+            return menuBar.menu(text, recursive, 0);
+        } catch (WidgetNotFoundException e) {
+            // Styles show BANA display labels (bana-styles.properties), e.g. a style name maps to a friendlier label
+            String label = org.brailleblaster.utils.localization.LocaleHandler.Companion.getBanaStyles(java.util.Locale.getDefault()).get(text);
+            if (label.equals(text)) {
+                throw e;
+            }
+            return menuBar.menu(label, recursive, 0);
+        }
     }
 
     /**
@@ -234,15 +244,15 @@ public class BBTestRunner {
     }
 
     public void cut() {
-        findMenu("&Cut", true).click();
+        findMenu("&Cut", true).click(); doPendingSWTWork();
     }
 
     public void copy() {
-        findMenu("&Copy", true).click();
+        findMenu("&Copy", true).click(); doPendingSWTWork();
     }
 
     public void paste() {
-        findMenu("&Paste", true).click();
+        findMenu("&Paste", true).click(); doPendingSWTWork();
     }
 
     public void navigateBrailleView(int offset) {
