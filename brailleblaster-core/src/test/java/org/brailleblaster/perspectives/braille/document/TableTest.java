@@ -151,7 +151,7 @@ public class TableTest {
         BBTestRunner test = new BBTestRunner(simpleTableBetweenBlocks);
 
         for (int i = 0; i <= 4 + DEFAULT_ROWS; i++) {
-            test.textViewBot.pressShortcut(Keystrokes.SHIFT, Keystrokes.DOWN);
+            test.textViewTools.pressShortcut(Keystrokes.SHIFT, Keystrokes.DOWN);
             doPendingSWTWork();
         }
         test.textViewTools.pressKey(Keystrokes.SPACE.getNaturalKey(), 1);

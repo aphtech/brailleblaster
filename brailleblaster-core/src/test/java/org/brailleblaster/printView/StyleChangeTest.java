@@ -361,7 +361,7 @@ public class StyleChangeTest {
         BBTestRunner bbTest = new BBTestRunner("", "<p>paragraph 1</p><p>paragraph 2</p>");
 
         bbTest.textViewTools.navigateToText("paragraph 1");
-        bbTest.textViewBot.pressShortcut(SWT.SHIFT, SWT.ARROW_DOWN, '\0');
+        bbTest.textViewTools.pressShortcut(SWT.SHIFT, SWT.ARROW_DOWN, '\0');
         doPendingSWTWork();
         bbTest.textViewTools.selectRight("paragraph 2".length());
         assertThat(

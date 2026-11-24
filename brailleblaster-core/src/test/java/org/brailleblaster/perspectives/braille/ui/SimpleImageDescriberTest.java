@@ -121,7 +121,8 @@ public class SimpleImageDescriberTest {
         bbTest.openMenuItem(TopMenu.TOOLS, SimpleImageDescriberModule.MENU_ITEM_NAME);
         SWTBot describerBot = bbTest.activeShell().bot();
         if (!sixkey) {
-            describerBot.menu("Styled Text").click();
+            // The dialog's own menu bar; SWTBot's menu() goes through the OS-focused shell
+            bbTest.activeShell().menu().menu("Styled Text", true, 0).click();
         }
     }
 

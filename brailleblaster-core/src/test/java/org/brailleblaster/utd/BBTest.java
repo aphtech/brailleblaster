@@ -60,33 +60,33 @@ public class BBTest {
         ViewTestRunner.doPendingSWTWork();
 
         //Note: Don't use Keystrokes.LF/CR due to linux/windows compatability
-        bbTest.textViewBot.typeText(System.lineSeparator());
+        bbTest.textViewTools.typeText(System.lineSeparator());
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.textViewBot.pressShortcut(SWT.CTRL, 'z');
+        bbTest.textViewTools.pressShortcut(SWT.CTRL, 'z');
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.textViewBot.typeText(System.lineSeparator());
+        bbTest.textViewTools.typeText(System.lineSeparator());
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.textViewBot.pressShortcut(SWT.CTRL, 'z');
+        bbTest.textViewTools.pressShortcut(SWT.CTRL, 'z');
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.textViewBot.pressShortcut(SWT.CTRL, 'y');
+        bbTest.textViewTools.pressShortcut(SWT.CTRL, 'y');
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.textViewBot.typeText(System.lineSeparator());
+        bbTest.textViewTools.typeText(System.lineSeparator());
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.textViewBot.typeText("test");
+        bbTest.textViewTools.typeText("test");
 
-        bbTest.textViewBot.typeText(System.lineSeparator());
+        bbTest.textViewTools.typeText(System.lineSeparator());
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.textViewBot.pressShortcut(SWT.CTRL, 'z');
+        bbTest.textViewTools.pressShortcut(SWT.CTRL, 'z');
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.textViewBot.typeText(System.lineSeparator());
+        bbTest.textViewTools.typeText(System.lineSeparator());
         ViewTestRunner.doPendingSWTWork();
     }
 
