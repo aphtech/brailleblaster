@@ -1,6 +1,6 @@
-# junk
+# not_working_tests
 
-Tests that can never run, kept for reference. The folders mirror module paths so `git log --follow` still finds each file's history. `junk/` is not a Maven module, so nothing here compiles or runs.
+Tests that can never run, kept for reference. The folders mirror module paths so `git log --follow` still finds each file's history. `not_working_tests/` is not a Maven module, so nothing here compiles or runs.
 
 See test_fix.md, Phase 2.
 
