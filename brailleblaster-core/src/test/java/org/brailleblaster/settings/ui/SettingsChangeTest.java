@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.settings.ui;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.BBIni;
 import org.brailleblaster.perspectives.mvc.menu.TopMenu;
 import org.brailleblaster.settings.TableExceptions;
@@ -32,6 +33,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class SettingsChangeTest {
     @Test(enabled = false)
     public void changeTranslationTest() {
@@ -95,7 +97,7 @@ public class SettingsChangeTest {
         Page expected = Page.STANDARD_PAGES.get(pageIndex);
 
         test.openMenuItem(TopMenu.SETTINGS, "Page Properties");
-        SWTBot settingsBot = test.bot.activeShell().bot();
+        SWTBot settingsBot = test.activeShell().bot();
         settingsBot.comboBoxWithLabel("Page Size").setSelection(pageIndex);
         settingsBot.comboBoxWithLabel("Interpoint").setSelection("Yes");
         ViewTestRunner.doPendingSWTWork();
@@ -116,7 +118,7 @@ public class SettingsChangeTest {
         ViewTestRunner.doPendingSWTWork();
 
         test.openMenuItem(TopMenu.SETTINGS, "Page Numbers");
-        settingsBot = test.bot.activeShell().bot();
+        settingsBot = test.activeShell().bot();
         settingsBot.comboBoxWithLabel("Even Print Page Number").setSelection(PageNumberPosition.TOP_LEFT.name());
         settingsBot.comboBoxWithLabel("Lettered Continuation Pages").setSelection("No");
         settingsBot.comboBoxWithLabel("Continue Braille Pages Across Volumes").setSelection("Yes");
@@ -142,7 +144,7 @@ public class SettingsChangeTest {
     private static void changeBrailleStandard(BBTestRunner test, String currentStd, String newStd, String swtbotButton) {
         test.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
 
-        SWTBot settingsBot = test.bot.activeShell().bot();
+        SWTBot settingsBot = test.activeShell().bot();
         SWTBotCombo standardCombo = settingsBot.comboBoxWithId(TranslationSettingsTab.SWTBOT_STANDARD_COMBO);
         Assert.assertEquals(standardCombo.getText(), currentStd);
         standardCombo.setSelection(newStd);

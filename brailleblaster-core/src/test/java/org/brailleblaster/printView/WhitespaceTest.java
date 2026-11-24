@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -24,6 +25,7 @@ import org.eclipse.swt.SWT;
 //import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class WhitespaceTest {
     //	private final String XMLTREE = "XML";
     private static final String BLANK_LINE = "";
@@ -35,6 +37,7 @@ public class WhitespaceTest {
     //Corey: Commenting this test out because we don't really want this behavior anyway.
     //The most likely situation is that the user wanted to add an additional paragraph
     //before the heading, in which case removing the blank line would not be ideal.
+    // Disabled: text typed on the blank line after a heading now becomes its own heading-styled block (te/ indented, blank lines around), not body text; product decision (test_fix.md Phase 7b)
     @Test(enabled = false)
     //inserts text after a heading, no blank should exist after reformat
     public void whitespace_after_heading() {
@@ -62,7 +65,7 @@ public class WhitespaceTest {
         assertEquals(brailleAfter, bbTest.brailleViewBot.getTextOnLine(2));
     }
 
-    @Test(enabled = false)
+    @Test
     //presses delete after heading, no blank line should exist after reformat
     public void whitespace_deleteBlank_after_heading() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -83,7 +86,7 @@ public class WhitespaceTest {
         assertEquals(brailleAfter, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
-    @Test(enabled = false)
+    @Test
     //presses delete after heading, no blank line should exist after reformat
     public void whitespace_deleteBlank_backspace_after_heading() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -104,7 +107,7 @@ public class WhitespaceTest {
         assertEquals(brailleAfter, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
-    @Test(enabled = false)
+    @Test
     public void enter_after_heading() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -130,7 +133,7 @@ public class WhitespaceTest {
         assertEquals(brailleAfter, bbTest.brailleViewBot.getTextOnLine(3));
     }
 
-    @Test(enabled = false)
+    @Test
     public void enter_after_paragraph() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 2";
@@ -139,7 +142,7 @@ public class WhitespaceTest {
         String textAfter = "Paragraph 3";
         String brailleAfter = "  ,p>agraph #c";
 
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(3) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(2));
         bbTest.textViewTools.pressKey(SWT.LF, 1);
         bbTest.updateTextView();
 
@@ -153,11 +156,11 @@ public class WhitespaceTest {
         assertEquals(brailleAfter, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void add_line_after_then_backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
 
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(3) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(2));
         bbTest.textViewTools.pressKey(SWT.LF, 1);
         bbTest.updateTextView();
         bbTest.textViewTools.pressKey(SWT.BS, 1);
@@ -167,7 +170,7 @@ public class WhitespaceTest {
         assertEquals("Paragraph 3", bbTest.textViewBot.getTextOnLine(3));
     }
 
-    @Test(enabled = false)
+    @Test
     public void add_line_before_then_backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
 
@@ -181,7 +184,7 @@ public class WhitespaceTest {
         assertEquals("Paragraph 3", bbTest.textViewBot.getTextOnLine(3));
     }
 
-    @Test(enabled = false)
+    @Test
     public void add_line_atDocumentEnd() {
         BBTestRunner test = new BBTestRunner(TEST_FILE);
 

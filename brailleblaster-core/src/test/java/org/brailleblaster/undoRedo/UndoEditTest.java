@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.undoRedo;
 
+import org.brailleblaster.GuiTest;
 import java.io.File;
 
 import org.brailleblaster.TestGroups;
@@ -26,12 +27,13 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
+@GuiTest
 public class UndoEditTest {
     private final static String BLANK_LINE = "";
 
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/undoRedo/UndoEditTests.xml");
 
-    @Test(enabled = false)
+    @Test
     public void basicEditsTest() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -55,7 +57,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(enabled = false)
+    @Test
     public void basicDeleteTest() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -79,7 +81,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(enabled = false)
+    @Test
     public void basicBackspaceTest() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -103,7 +105,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(enabled = false)
+    @Test
     public void basicCutTest() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -128,7 +130,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(enabled = false)
+    @Test
     public void basicCutShortcutTest() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -153,7 +155,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(enabled = false)
+    @Test
     public void multipleCharReplaceTest() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -178,7 +180,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void multipleCharPasteTest() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -209,7 +211,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void multipleCharPasteShortcutTest() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -240,7 +242,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(enabled = false)
+    @Test
     public void multipleCharBackspaceTest() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -265,7 +267,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(enabled = false)
+    @Test
     public void multipleCharDeleteTest() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -290,7 +292,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(enabled = false)
+    @Test
     public void fullReplace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -315,7 +317,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void fullPaste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -346,7 +348,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void fullPasteShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -377,7 +379,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(enabled = false)
+    @Test
     public void fullDelete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -401,7 +403,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(enabled = false)
+    @Test
     public void fullBackspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -425,7 +427,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(groups = TestGroups.TODO_FIX_LATER, enabled = false) // Cut removes entire line instead of leaving blank
+    @Test(groups = TestGroups.TODO_FIX_LATER) // Cut removes entire line instead of leaving blank
     public void fullCut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -449,7 +451,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(groups = TestGroups.TODO_FIX_LATER, enabled = false) // Cut removes entire line instead of leaving blank
+    @Test(groups = TestGroups.TODO_FIX_LATER) // Cut removes entire line instead of leaving blank
     public void fullCutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -473,7 +475,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(enabled = false)
+    @Test
     public void multiLineReplace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 5 contains a long string of text that \ncovers multiples lines in the document";
@@ -498,7 +500,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine() + "\n" + bbTest.brailleViewBot.getTextOnLine(5));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void multiLinePaste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 5 contains a long string of text that \ncovers multiples lines in the document";
@@ -530,7 +532,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine() + "\n" + bbTest.brailleViewBot.getTextOnLine(5));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void multiLinePasteShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 5 contains a long string of text that \ncovers multiples lines in the document";
@@ -562,7 +564,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine() + "\n" + bbTest.brailleViewBot.getTextOnLine(5));
     }
 
-    @Test(enabled = false)
+    @Test
     public void multiLineDelete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 5 contains a long string of text that \ncovers multiples lines in the document";
@@ -587,7 +589,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine() + "\n" + bbTest.brailleViewBot.getTextOnLine(5));
     }
 
-    @Test(enabled = false)
+    @Test
     public void multiLineBackspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 5 contains a long string of text that \ncovers multiples lines in the document";
@@ -612,7 +614,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine() + "\n" + bbTest.brailleViewBot.getTextOnLine(5));
     }
 
-    @Test(enabled = false)
+    @Test
     public void multiLineCut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 5 contains a long string of text that \ncovers multiples lines in the document";
@@ -637,7 +639,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine() + "\n" + bbTest.brailleViewBot.getTextOnLine(5));
     }
 
-    @Test(enabled = false)
+    @Test
     public void multiLineCutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 5 contains a long string of text that \ncovers multiples lines in the document";
@@ -662,7 +664,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine() + "\n" + bbTest.brailleViewBot.getTextOnLine(5));
     }
 
-    @Test(enabled = false)
+    @Test
     public void addspace_undo_redo() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -686,7 +688,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(enabled = false)
+    @Test
     public void addword_end_undo_redo() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -710,7 +712,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(enabled = false)
+    @Test
     public void addword_beginning_undo_redo() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -734,7 +736,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test(enabled = false)
+    @Test
     public void edit_plus_multiple_words_undo_redo() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -760,7 +762,7 @@ public class UndoEditTest {
 
     //TODO: inspect undo delete
 	/*
-	@Test(enabled = false)
+	@Test
 	public void delete_multiple_words(){
 		BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
 		String textBefore = "Paragraph 5 contains a long string of text that \ncovers multiples lines in the document";
@@ -779,7 +781,7 @@ public class UndoEditTest {
 	}
 	*/
 
-    @Test(enabled = false)
+    @Test
     public void delete_selection_multiple_words() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 5 contains a long string of text that \ncovers multiples lines in the document";
@@ -804,7 +806,7 @@ public class UndoEditTest {
         assertEquals(brailleBefore, bbTest.brailleViewBot.getTextOnCurrentLine() + "\n" + bbTest.brailleViewBot.getTextOnLine(5));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void paste_atEnd() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -831,7 +833,7 @@ public class UndoEditTest {
         assertEquals(textBefore, bbTest.textViewBot.getTextOnCurrentLine());
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void paste_atStart() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -859,7 +861,7 @@ public class UndoEditTest {
         assertEquals(textBefore, bbTest.textViewBot.getTextOnCurrentLine());
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void paste_Middle() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String textBefore = "Paragraph 1";
@@ -887,6 +889,7 @@ public class UndoEditTest {
     }
 
     //cuts a word then types a new word checks that a blank occurs when hitting undo, then old word when hitting undo again
+    // Disabled: undo right after typing reverts the earlier cut and drops the typed text; menu actions don't commit pending text (I6) (test_fix.md Phase 7c, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void blank_between_edits() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -917,6 +920,7 @@ public class UndoEditTest {
         assertEquals(text, bbTest.textViewBot.getTextOnCurrentLine());
     }
 
+    // Disabled: EditingException 'An error occurred while adding a page before a table' (B6) (test_fix.md Phase 7c, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void rt6245_undoTablePageBreak() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>Test</p><table><tr><td>Head 1</td><td>Head 2</td></tr><tr><td>Cell 1</td><td>Cell 2</td></tr></table>");

@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.utd.actions;
 
+import org.testng.annotations.Test;
 import nu.xom.Element;
 import org.brailleblaster.utd.UTDTranslationEngine;
 
@@ -39,7 +40,8 @@ public class DDActionTest {
 		assertEquals(dd.toXML(), result);
 	}
 	
-//	@Test
+	// Disabled: DDTagAction now adds spaced=true and moves the trailing space; product decision (test_fix.md Phase 6)
+	@Test(enabled = false)
 	public void processNodeWithSpaceBeforeTest() {
 		Element dl = new Element("dl");
 		Element dt = new Element("dt");
@@ -59,7 +61,8 @@ public class DDActionTest {
 		assertEquals(dd.toXML(), original);
 	}
 	
-//	@Test
+	// Disabled: DDTagAction now adds spaced=true and moves the trailing space; product decision (test_fix.md Phase 6)
+	@Test(enabled = false)
 	public void processNodeWithSpaceInChildTest() {
 		Element dl = new Element("dl");
 		Element dt = new Element("dt");
@@ -78,7 +81,8 @@ public class DDActionTest {
 		assertEquals(dd.toXML(), original);
 	}
 	
-//	@Test
+	// Disabled: DDTagAction now adds spaced=true and moves the trailing space; product decision (test_fix.md Phase 6)
+	@Test(enabled = false)
 	public void processMultiNodeTest() {
 		Element dl = new Element("dl");
 		Element dt = new Element("dt");

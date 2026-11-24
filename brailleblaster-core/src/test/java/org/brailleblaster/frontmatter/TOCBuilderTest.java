@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.frontmatter;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
@@ -40,6 +41,7 @@ import org.testng.annotations.Test;
 import static org.brailleblaster.testrunners.ViewTestRunner.doPendingSWTWork;
 import static org.testng.Assert.assertEquals;
 
+@GuiTest
 public class TOCBuilderTest {
 
 	public static void openTocTools(BBTestRunner test) {
@@ -820,107 +822,6 @@ public class TOCBuilderTest {
 				).noNextChild();
 	}
 
-	/*
-	Port to TOCBuilderBBX and modules... eventually
-
-	@Test(groups = TestGroups.BROKEN_TESTS) //depends on selection and more complicated TOCBuilderBookTest
-	public void headerWithNestedPage() throws IOException {
-		TOCViewTestRunner tocTest = new TOCViewTestRunner("", "<li><p>A header with page</p><p>14</p></li><li>unrelated</li>");
-
-		TOCBuilderBookTest.tocGauntlet_next(tocTest,
-				"Next", "[L1-3][Span]A header with page[/Span][Span]14[/Span][/L1-3]",
-				"Centered Heading", "[TOC Centered Heading][Span]A header with page[/Span][TOC Page]14[/TOC Page][/TOC Centered Heading]");
-
-		new BRFTestRunner().compareGeneratedXMLtoBraille(tocTest.getDoc(),
-				"\n"
-				+ "              ,a h1d} ) page \"\"\"\"\"\"\" #ad\n"
-				+ "\n"
-				+ "unrelat$",
-				BRFTestRunner.OPTS_STRIP_ENDING_PAGE);
-
-		assertEquals(stripNewlines(tocTest.textViewBot.getSelection()), "[L1-3]unrelated[/L1-3]", "Invalid next selection after apply");
-	}
-
-	@Test(groups = TestGroups.BROKEN_TESTS) //depends on selection and more complicated TOCBuilderBookTest
-	public void titleWithNestedPage() throws IOException {
-		TOCViewTestRunner tocTest = new TOCViewTestRunner("", "<li><p>The Test TOC</p><p>14</p></li><li>unrelated</li>");
-
-		TOCBuilderBookTest.tocGauntlet_next(tocTest,
-				"Next", "[L1-3][Span]The Test TOC[/Span][Span]14[/Span][/L1-3]",
-				"List Entry/Title", "[T1-3][...]The Test TOC[/...][TOC Page]14[/TOC Page][/T1-3]");
-
-		new BRFTestRunner().compareGeneratedXMLtoBraille(tocTest.getDoc(),
-				"\n"
-				+ ",! ,te/ ,,toc \"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\" #ad\n"
-				+ "\n"
-				+ "unrelat$",
-				BRFTestRunner.OPTS_STRIP_ENDING_PAGE);
-
-		assertEquals(stripNewlines(tocTest.textViewBot.getSelection()), "[L1-3]unrelated[/L1-3]", "Invalid next selection after apply");
-	}
-
-	@Test(groups = TestGroups.BROKEN_TESTS) //depends on selection and more complicated TOCBuilderBookTest
-	public void titleNoPage() throws IOException {
-		TOCViewTestRunner tocTest = new TOCViewTestRunner("", "<li><p>The Test TOC</p></li><li>unrelated</li>");
-
-		TOCBuilderBookTest.tocGauntlet_next(tocTest,
-				"Next", "[L1-3][Span]The Test TOC[/Span][/L1-3]",
-				"List Entry/Title", "[T1-3][...]The Test TOC[/...][/T1-3]");
-
-		new BRFTestRunner().compareGeneratedXMLtoBraille(tocTest.getDoc(),
-				"\n"
-				+ ",! ,te/ ,,toc\n"
-				+ "\n"
-				+ "unrelat$",
-				BRFTestRunner.OPTS_STRIP_ENDING_PAGE);
-
-		assertEquals(stripNewlines(tocTest.textViewBot.getSelection()), "[L1-3]unrelated[/L1-3]", "Invalid next selection after apply");
-	}
-
-	@Test(groups = TestGroups.BROKEN_TESTS) //depends on selection and more complicated TOCBuilderBookTest
-	public void titleWithPageNoEmphasis() throws IOException {
-		TOCViewTestRunner tocTest = new TOCViewTestRunner("", "<li><p>The Test TOC 20</p></li><li>unrelated</li>");
-
-		TOCBuilderBookTest.tocGauntlet_next(tocTest,
-				"Next", "[L1-3][Span]The Test TOC 20[/Span][/L1-3]",
-				"List Entry/Title", "[T1-3][...]The Test TOC[TOC Page]20[/TOC Page][/...][/T1-3]");
-
-		new BRFTestRunner().compareGeneratedXMLtoBraille(tocTest.getDoc(),
-				"\n"
-				+ ",! ,te/ ,,toc \"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\" #bj\n"
-				+ "\n"
-				+ "unrelat$",
-				BRFTestRunner.OPTS_STRIP_ENDING_PAGE);
-
-		assertEquals(stripNewlines(tocTest.textViewBot.getSelection()), "[L1-3]unrelated[/L1-3]", "Invalid next selection after apply");
-	}
-
-	@Test(groups = TestGroups.BROKEN_TESTS) //depends on selection and more complicated TOCBuilderBookTest
-	public void titleWithPageNoEmphasisNestedList() throws IOException {
-		TOCViewTestRunner tocTest = new TOCViewTestRunner(
-				"",
-				"<li><p>The Test TOC 20<list><li><p>next item 25</p></li><li>unrelated</li></list></p></li>"
-		);
-
-		TOCBuilderBookTest.tocGauntlet_next(tocTest,
-				"Next", "The Test TOC 20",
-				"List Entry/Title", "[T1-3]The Test TOC[TOC Page]20[/TOC Page][/T1-3]");
-
-		TOCBuilderBookTest.tocGauntlet_next(tocTest,
-				null, "[L1-3][Span]next item 25[/Span][/L1-3]",
-				"List Entry/Title", "[T1-3][...]next item[TOC Page]25[/TOC Page][/...][/T1-3]");
-
-		new BRFTestRunner().compareGeneratedXMLtoBraille(tocTest.getDoc(),
-				"\n"
-				+ ",! ,te/ ,,toc \"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\" #bj\n"
-				+ "\n"
-				+ "next item \"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\" #be\n"
-				+ "\n"
-				+ "unrelat$",
-				BRFTestRunner.OPTS_STRIP_ENDING_PAGE);
-		assertEquals(stripNewlines(tocTest.textViewBot.getSelection()), "[L1-3]unrelated[/L1-3]", "Invalid next selection after apply");
-	}
-	 */
 	@Test(enabled = false)
 	public void applyTOC_Multiple_Entry() {
 		BBTestRunner test = new BBTestRunner("", "<p>Stuff 1</p><p>Things 2</p>");

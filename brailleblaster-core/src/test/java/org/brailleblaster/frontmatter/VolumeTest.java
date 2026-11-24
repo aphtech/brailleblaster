@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.frontmatter;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -62,6 +63,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.iterableWithSize;
 import static org.testng.Assert.assertEquals;
 
+@GuiTest
 public class VolumeTest {
 	private static final Logger log = LoggerFactory.getLogger(VolumeTest.class);
 
@@ -148,136 +150,6 @@ public class VolumeTest {
 	}
 
 	@Test(enabled = false)
-	public void insertManyVolumes() {
-		// While the literature book is in the repo, might as well use it as its much bigger
-//		BBTestRunner bbTest = new BBTestRunner(new File("src/tests/resources/nimasbaseline/NIMASXMLGtDepJan2009_valid3.xml"));
-//		int NUM_VOLUMES = 10;
-		BBTestRunner bbTest = new BBTestRunner(new File("/media/brailleblaster/nimas-books/9780133268195NIMAS_revised.xml"));
-		int NUM_VOLUMES = 20;
-
-		int textNodeCount = (int) StreamSupport.stream(((Iterable<Node>)FastXPath.descendant(BBX.getRoot(bbTest.getDoc()))::iterator).spliterator(), false)
-				.filter(curNode -> curNode instanceof Text)
-				.count();
-		int textNodesPerVolume = textNodeCount / NUM_VOLUMES;
-		log.trace("{} textNodes / {} Volumes = {} nodes per volume",
-				NUM_VOLUMES,
-				textNodeCount,
-				textNodesPerVolume
-		);
-
-		List<Node> volumizedNodes = new LinkedList<>(); //Keeps track of insertions in case test fails
-		Element startNode = BBX.getRoot(bbTest.getDoc());
-		startNode.addAttribute(new Attribute("insertManyVolumes", "mee"));
-		Outer:
-		for (int i = 0; i < NUM_VOLUMES - 1; i++) {
-			ViewTestRunner.doPendingSWTWork();
-			bbTest.manager.waitForFormatting(true);
-			ViewTestRunner.doPendingSWTWork();
-			//find usable text node to scroll to
-			log.debug("startNode doc " + startNode.getDocument());
-			Element startNodeProcessing = StreamSupport.stream(FastXPath.descendantAndFollowing(bbTest.getDoc()).spliterator(), false)
-					.filter(curNode -> curNode instanceof Element && ((Element) curNode).getAttribute("insertManyVolumes") != null)
-					.findFirst()
-					.map(curNode -> (Element) curNode)
-					.orElseThrow(() -> new NodeException("failed to find insertManyVolumes", bbTest.getDoc()));
-			startNodeProcessing.removeAttribute(startNodeProcessing.getAttribute("insertManyVolumes"));
-			int endOffset = -1;
-			Text nodeToVolumize = null;
-			do {
-				endOffset++;
-				nodeToVolumize = (Text) StreamSupport.stream(FastXPath.descendantAndFollowing(startNodeProcessing).spliterator(), false)
-                        .filter(curNode -> curNode instanceof Text)
-                        .skip(textNodesPerVolume + endOffset)
-                        .filter(curNode -> !BBXUtils.INSTANCE.isPageNumAncestor(curNode))
-                        .findFirst().orElse(null);
-				if (nodeToVolumize == null) {
-					//end of document
-					break Outer;
-				}
-			} while (XMLHandler.Companion.ancestorVisitor(
-					nodeToVolumize,
-					curNode -> BBX.CONTAINER.TABLE.isA(curNode)
-					|| BBX.CONTAINER.VOLUME.isA(curNode)
-					|| UTDElements.BRL.isA(curNode)
-					//workaround for lambda final variable nonsense
-					|| (curNode instanceof Text && curNode.getValue().isEmpty())
-			) != null);
-			Element parent = (Element) nodeToVolumize.getParent();
-			parent.addAttribute(new Attribute("insertManyVolumes", "mee"));
-			startNode = parent;
-
-			log.debug("Search #{} for {} in {}",
-					i,
-					nodeToVolumize,
-					nodeToVolumize.getParent().toXML()
-			);
-
-			ViewTestRunner.doPendingSWTWork();
-			volumizedNodes.add(nodeToVolumize);
-
-			try{
-				/*
-				TODO #4713: Ideally this should not be needed. But without it there's 
-				a significant number of thread racing and deadlocks, more than there
-				was before when this was commented out
-				*/
-				bbTest.manager.waitForFormatting(true);
-				ViewTestRunner.doPendingSWTWork();
-				bbTest.manager.getSimpleManager().dispatchEvent(new XMLCaretEvent(Sender.SIMPLEMANAGER, new XMLTextCaret(nodeToVolumize, 0)));
-				ViewTestRunner.doPendingSWTWork();
-				bbTest.manager.waitForFormatting(true);
-				ViewTestRunner.doPendingSWTWork();
-				
-				//sanity check
-				String firstWord = nodeToVolumize.getValue();
-				if (firstWord.contains(" ")) {
-					firstWord = firstWord.substring(0, firstWord.indexOf(' '));
-				}
-				ViewTestRunner.doPendingSWTWork();
-				assertThat(bbTest.textViewBot.getTextOnCurrentLine(), containsString(firstWord));
-				if (true) {
-	//				bbTest.manager.waitForFormatting(true);
-				}
-				openInsertVolume(bbTest, BBX.VolumeType.VOLUME);
-				ViewTestRunner.doPendingSWTWork();
-			} catch (Exception e){
-				StringBuilder sb = new StringBuilder();
-				for(int nodeNum = 0; nodeNum < volumizedNodes.size(); nodeNum++){
-					sb.append(nodeNum).append(": ").append(volumizedNodes.get(nodeNum).toXML()).append(nodeNum == volumizedNodes.size() - 1 ? "" : System.lineSeparator());
-				}
-				throw new RuntimeException("Exception after inserting following volumes:" + System.lineSeparator() + sb, e);
-			}
-			//bbTestRunner reset?
-			bbTest.textViewBot.setFocus();
-			ViewTestRunner.doPendingSWTWork();
-
-			bbTest.textViewBot.navigateTo(0, 0);
-			ViewTestRunner.doPendingSWTWork();
-		}
-	}
-	
-	@Test(enabled = false )
-	public void insertManyVolumes_byPage() {
-		BBTestRunner test = new BBTestRunner(new File("/media/brailleblaster/nimas-books/9780133268195NIMAS_revised.xml"));
-		int PRINT_PAGE_COUNTER = 100;
-		
-		for (int i = 1; i <= 9; i++) {
-			int curPrintPage = i * PRINT_PAGE_COUNTER;
-			
-			test.openMenuItem(TopMenu.NAVIGATE, "Go To Page");
-			
-			SWTBot goToBot = test.bot.activeShell().bot();
-			goToBot.text(0).setText("" + curPrintPage);
-			ViewTestRunner.doPendingSWTWork();
-			goToBot.radio(GoToPageDialog.PageType.PRINT.ordinal()).click();
-			ViewTestRunner.doPendingSWTWork();
-			goToBot.button(0).click();
-			
-			test.openMenuItem(TopMenu.TOOLS, "Volume Manager", "Insert", "Normal");
-		}
-	}
-	
-	@Test(enabled = false)
 	public void deleteVolume() {
 		StringBuilder outputXML = new StringBuilder();
 		for (int i = 0; i < 100; i++) {
@@ -347,7 +219,7 @@ public class VolumeTest {
 			ViewTestRunner.forceActiveShellHack();
 			bbTest.openMenuItem(TopMenu.FILE, "Save BRF");
 
-			SWTBot saveBot = bbTest.bot.activeShell().bot();
+			SWTBot saveBot = bbTest.activeShell().bot();
 			SWTBotTable table = saveBot.table(0);
 			assertEquals(table.rowCount(), 2, "Unexpected number of volumes");
 
@@ -402,7 +274,7 @@ public class VolumeTest {
 
 		bbTest.openMenuItem(TopMenu.FILE, "Save BRF");
 
-		SWTBot saveBot = bbTest.bot.activeShell().bot();
+		SWTBot saveBot = bbTest.activeShell().bot();
 		SWTBotTable table = saveBot.table(0);
 		assertEquals(table.rowCount(), 2, "Unexpected number of volumes");
 
@@ -503,7 +375,7 @@ public class VolumeTest {
 		);
 
 		bbTest.openMenuItem(TopMenu.FILE, "Save BRF");
-		SWTBot saveBot = bbTest.bot.activeShell().bot();
+		SWTBot saveBot = bbTest.activeShell().bot();
 		if (false) {
 			SWTBotTable volumesTable = saveBot.table(0);
 			assertEquals(volumesTable.rowCount(), 10);
@@ -637,7 +509,7 @@ public class VolumeTest {
 		bbTest.textViewBot.setFocus();
 		bbTest.textViewTools.pressShortcut(SWT.CTRL, 'g');
 
-		SWTBot goToBot = bbTest.bot.activeShell().bot();
+		SWTBot goToBot = bbTest.activeShell().bot();
 		SWTBotCombo goToCombo = goToBot.comboBox(0);
 
 		assertEquals(goToCombo.itemCount(), 3);
@@ -660,7 +532,7 @@ public class VolumeTest {
 		bbTest.textViewBot.setFocus();
 		bbTest.textViewTools.pressShortcut(SWT.CTRL, 'g');
 
-		goToBot = bbTest.bot.activeShell().bot();
+		goToBot = bbTest.activeShell().bot();
 		goToCombo = goToBot.comboBox(0);
 
 		goToCombo.setSelection(2);
@@ -694,7 +566,7 @@ public class VolumeTest {
 		bbTest.textViewBot.setFocus();
 		bbTest.textViewTools.pressShortcut(SWT.CTRL, 'g');
 
-		SWTBot goToBot = bbTest.bot.activeShell().bot();
+		SWTBot goToBot = bbTest.activeShell().bot();
 		SWTBotCombo goToCombo = goToBot.comboBox(0);
 
 		assertEquals(goToCombo.itemCount(), 3);
@@ -721,7 +593,7 @@ public class VolumeTest {
 		bbTest.textViewBot.setFocus();
 		bbTest.textViewTools.pressShortcut(SWT.CTRL, 'g');
 
-		goToBot = bbTest.bot.activeShell().bot();
+		goToBot = bbTest.activeShell().bot();
 		goToCombo = goToBot.comboBox(0);
 
 		goToCombo.setSelection(2);
@@ -770,7 +642,7 @@ public class VolumeTest {
 //
 //		bbTest.navigateTextViewToText("Paragraph 2");
 //
-//		bbTest.bot.menu("Insert Volume before Cursor").click();
+//		bbTest.findMenu("Insert Volume before Cursor", true).click();
 //		doPendingSWTWork();
 //
 //		//Make testing easier
@@ -825,7 +697,7 @@ public class VolumeTest {
 //				+ "<p>Paragraph 3</p>");
 //
 //		bbTest.navigateTextViewToText("Paragraph 2");
-//		bbTest.bot.menu("Insert Preliminary Volume").click();
+//		bbTest.findMenu("Insert Preliminary Volume", true).click();
 //		doPendingSWTWork();
 //		ImmutableList<Element> volumes = EasierFrontmatter.getVolumeElementsFatal(bbTest.manager.getDoc());
 //		assertEquals(volumes.size(), 2);
@@ -855,7 +727,7 @@ public class VolumeTest {
 //		assertEquals(bbTest.bot.labelWithId("volumeInfo").getText(), "Preliminary 1");
 //
 //		bbTest.navigateTextViewToText("Paragraph 3");
-//		bbTest.bot.menu("Insert Volume before Cursor").click();
+//		bbTest.findMenu("Insert Volume before Cursor", true).click();
 //		doPendingSWTWork();
 //		volumes = EasierFrontmatter.getVolumeElementsFatal(bbTest.manager.getDoc());
 //		assertEquals(volumes.size(), 3);
@@ -879,38 +751,5 @@ public class VolumeTest {
 //		doPendingSWTWork();
 //		assertEquals(bbTest.bot.textWithId("pageCurrent").getText(), "3");
 //		assertEquals(bbTest.bot.labelWithId("volumeInfo").getText(), "Volume 2");
-//	}
-//	@DataProvider
-//	public Iterator<Object[]> slowInsertVolumeEverywhereTestDataProvider() {
-//		List<Object[]> params = new ArrayList<>();
-//
-//		WPManager startBB = startBB(TOC_RAW_FILE);
-//		Manager m = getManager(startBB);
-//		for (int i = 0; i < m.getTextView().getCharCount(); i++) {
-//			params.add(new Object[]{i});
-//		}
-//		log.debug("testSize " + params.size());
-//
-//		return params.iterator();
-//	}
-//
-//	//WARNING: THIS IS EXTREMELY SLOW, CAN RUN OVER 1 HOUR
-//	@Test(dataProvider = "slowInsertVolumeEverywhereTestDataProvider", enabled = false)
-//	public void slowInsertVolumeEverywhereTest(int offset) {
-//		WPManager startBB = startBB(TOC_RAW_FILE);
-//		Manager manager = getManager(startBB);
-//
-//		textViewBot.setFocus();
-//		doPendingSWTWork();
-//		StyledText textView = manager.getTextView();
-//
-//		textViewBot.navigateTo(0, 0);
-//		for (int i = 0; i < offset; i++) {
-//			textViewBot.pressShortcut(KeyStroke.getInstance(SWT.ARROW_RIGHT));
-//		}
-//		doPendingSWTWork();
-//
-//		bot.menu("Insert Volume before Cursor").click();
-//		doPendingSWTWork();
 //	}
 }

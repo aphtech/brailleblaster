@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.mvc.modules.misc;
 
+import org.brailleblaster.GuiTest;
 import static org.brailleblaster.TestUtils.getInnerSection;
 
 import org.brailleblaster.testrunners.BBTestRunner;
@@ -27,6 +28,7 @@ import org.testng.annotations.Test;
 import nu.xom.Document;
 import org.brailleblaster.bbx.utd.BBXDynamicOptionStyleMap;
 
+@GuiTest
 public class PageBreakModuleTest {
     private static final Logger log = LoggerFactory.getLogger(PageBreakModuleTest.class);
     private final String para1 = "First Paragraph";
@@ -35,7 +37,7 @@ public class PageBreakModuleTest {
             "<p>" + para1 + "</p>" +
                     "<p>" + para2 + "</p>");
 
-    @Test(enabled = false)
+    @Test
     public void pageBreakBeginningOfBlock() {
         BBTestRunner test = new BBTestRunner(doc);
         test.textViewTools.navigateToText(para2);
@@ -48,12 +50,12 @@ public class PageBreakModuleTest {
                         .nextChildIsText(para2));
     }
 
-    @Test(enabled = false)
+    @Test
     public void pageBreakEndOfBlock() {
 
     }
 
-    @Test(enabled = false)
+    @Test
     public void pageBreakMiddleOfBlock() {
 
     }

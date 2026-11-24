@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.wordprocessor
 
+import org.brailleblaster.GuiTest
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.perspectives.braille.Manager
 import org.brailleblaster.perspectives.mvc.menu.TopMenu
@@ -37,6 +38,7 @@ import java.io.File
  * Issue 71009: Window > Next Document (F6) and Previous Document (Shift+F6) switch documents through the same
  * tab folder selection path as a tab click, wrapping at both ends.
  */
+@GuiTest
 class DocumentSwitchTest {
     private val next = LocaleHandler.getDefault()["&NextDocument"]
     private val previous = LocaleHandler.getDefault()["&PreviousDocument"]

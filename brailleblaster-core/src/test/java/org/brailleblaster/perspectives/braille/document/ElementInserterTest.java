@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.*;
 import static org.brailleblaster.testrunners.ViewTestRunner.*;
 
@@ -25,6 +26,7 @@ import org.eclipse.swt.SWT;
 import org.testng.annotations.Test;
 
 @Test(groups = TestGroups.BROKEN_TESTS)
+@GuiTest
 public class ElementInserterTest {
 	static final Consumer<BBViewTestRunner> MAKE_BOLD = (BBViewTestRunner bbTest) -> {
 		// bot.menu("Bold Toggle").click();

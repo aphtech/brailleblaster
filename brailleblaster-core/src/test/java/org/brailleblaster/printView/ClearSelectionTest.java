@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.*;
 
 import org.brailleblaster.perspectives.mvc.menu.TopMenu;
@@ -26,9 +27,10 @@ import org.testng.annotations.Test;
  * Tests whether after a selection is made and a style is changed that the selection is clear and
  * events after occur correctly
  */
+@GuiTest
 public class ClearSelectionTest {
 
-    @Test(enabled = false)
+    @Test
     public void editAfterStyleChange() {
         BBTestRunner bbTest = new BBTestRunner("", "<h1>Heading</h1><p>Line 1</p><p>Line 2</p><p>Line 3</p>");
         String text = "test Line 1";
@@ -44,7 +46,7 @@ public class ClearSelectionTest {
         assertEquals(braille, bbTest.brailleViewBot.getTextOnLine(2));
     }
 
-    @Test(enabled = false)
+    @Test
     public void deleteAfterLineChange() {
         BBTestRunner bbTest = new BBTestRunner("", "<h1>Heading</h1><p>Line 1</p><p>Line 2</p><p>Line 3</p>");
         String text = "ine 1";
@@ -60,7 +62,7 @@ public class ClearSelectionTest {
         assertEquals(braille, bbTest.brailleViewBot.getTextOnLine(2));
     }
 
-    @Test(enabled = false)
+    @Test
     public void backspaceAfterLineChange() {
         BBTestRunner bbTest = new BBTestRunner("", "<h1>Heading</h1><p>Line 1</p><p>Line 2</p><p>Line 3</p>");
         String text = "Line 1";

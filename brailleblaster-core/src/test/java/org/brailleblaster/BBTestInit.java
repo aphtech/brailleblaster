@@ -19,6 +19,7 @@ import org.apache.commons.io.FileUtils;
 import org.brailleblaster.utils.PropertyFileManager;
 import org.brailleblaster.utils.BBData;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
@@ -31,6 +32,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * This class is called very early in TestNG's init
@@ -72,13 +74,14 @@ public class BBTestInit extends TestListenerAdapter {
 	public void onTestSkipped(ITestResult tr) {
 		//We should never have skipped tests as they can hide real problems (eg broken DataProviders)
 		//since TestNG doesn't give us any exception
+		// Report it as a failure and keep going; exiting the JVM here used to hide every later result
 		tr.setStatus(ITestResult.FAILURE);
+		if (tr.getThrowable() == null) {
+			tr.setThrowable(new AssertionError("Test was skipped (broken DataProvider or failed configuration method?)"));
+		}
 		super.onTestFailure(tr);
-		log.error("============== Test skipped (dataprovider?), crashing as TestNG ignores Failure on skipped tests", tr.getThrowable());
+		log.error("============== Test skipped, reported as a failure: {}", tr.getName(), tr.getThrowable());
 		cleanupBB();
-
-		// crash as TestNG no longer reports failures?
-		System.exit(2);
 	}
 
 	@Override
@@ -90,53 +93,21 @@ public class BBTestInit extends TestListenerAdapter {
 	@Override
 	public void onTestFailure(ITestResult tr) {
 		super.onTestFailure(tr);
-        /*
-                                                  // IDK what we are doing with this class, but commenting this out bc getting
-    // a null pointer for the shells is causing the test suite to not run the rest of the tests
-
-		String shells = Utils.join(
-				Display.getCurrent().getShells(), 
-				Shell::getText, 
-				" | "
-		);
-		
-		boolean isSwtActive = Display.getCurrent() != null && !Display.getCurrent().isDisposed();
-
-		String bbShellStatus = "disposed";
-		if (isSwtActive
-				&& WPManager.INSTANCE != null
-				&& WPManager.INSTANCE.getShell() != null
-				&& !WPManager.INSTANCE.getShell().isDisposed()) {
-			Shell shell = WPManager.INSTANCE.getShell();
-			SWTBot bot = new SWTBot();
-			bbShellStatus = "isFocusControl=" + shell.isFocusControl()
-					+ " isVisible=" + shell.isVisible()
-					+ " isActive-Display=" + (shell == Display.getCurrent().getActiveShell())
-					+ " isActive-SwtBot=" + (shell == bot.activeShell().widget);
-		}
-
-		String bbTextStatus = "disposed";
-		if (isSwtActive
-				&& WPManager.INSTANCE != null
-				&& WPManager.INSTANCE.getCurrentManager() != null
-				&& !WPManager.INSTANCE.getCurrentManager().getTextView().isDisposed()) {
-			StyledText textView = WPManager.INSTANCE.getCurrentManager().getTextView();
-			bbTextStatus = "isFocusControl=" + textView.isFocusControl()
-					+ " isVisible=" + textView.isVisible();
-		}
-
-		tr.setThrowable(new RuntimeException(
-				"Environment debug info, see cause for actual exception"
-				+ System.lineSeparator() + "Shells: " + shells
-				+ System.lineSeparator() + "Active Shell: " + Display.getCurrent().getActiveShell().getText()
-				+ System.lineSeparator() + "BB Main Shell: " + bbShellStatus
-				+ System.lineSeparator() + "Text view: " + bbTextStatus,
-				 tr.getThrowable()
-		));
-
-		log.error("============== Test failed ", tr.getThrowable());
+		log.error("============== Test failed {} (open shells: {})", tr.getName(), openShellTitles(), tr.getThrowable());
+		// Without this a failed GUI test leaves its Display and dialogs behind, and every
+		// later GUI test fails with "Invalid thread access"
 		cleanupBB();
-        */
+	}
+
+	/** Titles of the shells still open on the current display, for failure logs */
+	private static String openShellTitles() {
+		Display display = Display.getCurrent();
+		if (display == null || display.isDisposed()) {
+			return "none";
+		}
+		return Arrays.stream(display.getShells())
+				.map(shell -> shell.isDisposed() ? "<disposed>" : "'" + shell.getText() + "'")
+				.collect(Collectors.joining(", "));
 	}
 
 	@Override
@@ -171,6 +142,16 @@ public class BBTestInit extends TestListenerAdapter {
 	public static void cleanupBB() {
 		Display display = Display.getCurrent();
 		if (display != null && !display.isDisposed()) {
+			// Close leftover dialogs and windows first so their dispose listeners run while the display is still alive
+			for (Shell shell : display.getShells()) {
+				try {
+					if (!shell.isDisposed()) {
+						shell.dispose();
+					}
+				} catch (RuntimeException e) {
+					log.warn("Failed to dispose shell during cleanup", e);
+				}
+			}
 			log.info("Disposing display");
 			display.dispose();
 		} else {

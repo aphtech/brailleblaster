@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.Document;
 import org.brailleblaster.TestUtils;
 import org.brailleblaster.testrunners.BBTestRunner;
@@ -28,6 +29,7 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertNotEquals;
 
 
+@GuiTest
 public class FindReplaceNonBreakingSpaceTest {
     private static final Logger log = LoggerFactory.getLogger(FindReplaceNonBreakingSpaceTest.class);
     private final String regularSpace = "Unit 1";
@@ -51,7 +53,7 @@ public class FindReplaceNonBreakingSpaceTest {
     public void breakToNonOneWord() {
         BBTestRunner bb = new BBTestRunner(rs);
         bb.textViewTools.pressShortcut(SWT.CTRL, 'f');
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         /*
          * Test non breaking to regular
@@ -73,7 +75,7 @@ public class FindReplaceNonBreakingSpaceTest {
     public void nonToBreakOneWord() {
         BBTestRunner bb = new BBTestRunner(nbs);
         bb.textViewTools.pressShortcut(SWT.CTRL, 'f');
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         /*
          * Test regular to non breaking
@@ -93,7 +95,7 @@ public class FindReplaceNonBreakingSpaceTest {
     public void nonToBreakPhrase() {
         BBTestRunner bb = new BBTestRunner(mlnbs);
         bb.textViewTools.pressShortcut(SWT.CTRL, 'f');
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         /*
          * Test regular to non breaking
@@ -112,7 +114,7 @@ public class FindReplaceNonBreakingSpaceTest {
     public void breakToNonPhrase() {
         BBTestRunner bb = new BBTestRunner(mlrs);
         bb.textViewTools.pressShortcut(SWT.CTRL, 'f');
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         /*
          * Test non breaking to regular

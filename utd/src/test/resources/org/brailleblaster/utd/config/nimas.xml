@@ -15,6 +15,7 @@
 			<mainTranslationTable>This is not the table your looking for</mainTranslationTable>
 			<mathBrailleCode>Nemeth</mathBrailleCode>
 			<mathExpressionTable>nemeth.ctb</mathExpressionTable>
+			<mathIndicators end="" start=""/>
 			<mathTextTable>en-us-g2.ctb</mathTextTable>
 			<uncontractedTable>en-ueb-g1.ctb</uncontractedTable>
 			<useAsciiBraille>false</useAsciiBraille>

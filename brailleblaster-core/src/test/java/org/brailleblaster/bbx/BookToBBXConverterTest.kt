@@ -20,7 +20,6 @@ import nu.xom.Document
 import nu.xom.Element
 import nu.xom.Text
 import org.brailleblaster.settings.DefaultNimasMaps
-import org.brailleblaster.testrunners.BBTestRunner
 import org.brailleblaster.testrunners.TestXMLUtils
 import org.brailleblaster.testrunners.XMLElementAssert
 import org.brailleblaster.utd.IStyleMap
@@ -1137,7 +1136,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun lineBreakTableCell() {
         convertAndAssertFirst(
             "<table>"
@@ -1684,7 +1683,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun imageBlock() {
         convertAndAssert(
             "<p><img src='evil1.jpg'/></p>"
@@ -1793,7 +1792,7 @@ class BookToBBXConverterTest {
     }
 
     //----------------------- Tables -------------------------
-    @Test(enabled = false)
+    @Test
     fun tableGroupTest() {
         convertAndAssertFirst(
             "<table>"
@@ -1861,7 +1860,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableTest() {
         convertAndAssertFirst(
             "<table>"
@@ -1898,7 +1897,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableTextWrapTest() {
         convertAndAssertFirst(
             "<table>"
@@ -1935,7 +1934,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableInsideList() {
         convertAndAssert(
             "<list><li>first</li><li>some text<table>"
@@ -1995,7 +1994,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableWithSidebarAndList() {
         convertAndAssertFirst(
             "<table><tr>"
@@ -2039,7 +2038,7 @@ class BookToBBXConverterTest {
             }
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableWithSidebarAndListAndText() {
         convertAndAssertFirst(
             "<table><tr>"
@@ -2083,7 +2082,7 @@ class BookToBBXConverterTest {
             }
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableWithImage() {
         convertAndAssertFirst(
             "<table>"
@@ -2116,7 +2115,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableWithImage_OnlyImageInCell_issue5817() {
         convertAndAssertFirst(
             "<table>"
@@ -2153,7 +2152,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableNonWithListAndText() {
         convertAndAssert(
             "<table><tr>"
@@ -2176,7 +2175,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
+    @Test
     fun tableNonWithEmptyTableCell() {
         convertAndAssert(
             "<table><tbody><tr>"
@@ -2196,37 +2195,7 @@ class BookToBBXConverterTest {
             }.noNextChild()
     }
 
-    @Test(enabled = false)
-    fun tableNonWithEmptyRow_issue6163() {
-        /*
-        make sure when LiveFixer cleans up empty cells and containers it gets
-        stripped of being a table
-        */
-        val test = BBTestRunner(
-            "",
-            "<table>"
-                + "<tr>"
-                + "<td>Historical</td>"
-                + "<td>Mythical</td>"
-                + "</tr>"
-                + "<tr>"
-                + "<td></td>"
-                + "<td></td>"
-                + "</tr>"
-                + "</table>"
-        )
-
-        test.assertRootSection_NoBrlCopy()
-            .nextChildIs { block ->
-                block
-                    .onlyChildIsText("Historical")
-                    .isBlock(BBX.BLOCK.DEFAULT)
-            }.nextChildIs { block ->
-                block
-                    .onlyChildIsText("Mythical")
-                    .isBlock(BBX.BLOCK.DEFAULT)
-            }.noNextChild()
-    }
+    // tableNonWithEmptyRow_issue6163 opens a BBTestRunner, see BookToBBXConverterGuiTest
 
     //---------------------- Poem ----------------------
     @Test

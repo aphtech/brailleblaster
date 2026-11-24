@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView
 
+import org.brailleblaster.GuiTest
 import nu.xom.Attribute
 import nu.xom.Element
 import nu.xom.Text
@@ -23,6 +24,13 @@ import org.brailleblaster.bbx.utd.BBXDynamicOptionStyleMap.Companion.OPTION_ATTR
 import org.brailleblaster.perspectives.mvc.menu.BBSelectionData
 import org.brailleblaster.perspectives.mvc.modules.misc.UndoRedoModule
 import org.brailleblaster.testrunners.BBTestRunner
+import org.brailleblaster.testrunners.moveCaret
+import org.brailleblaster.testrunners.verifyKey
+import org.brailleblaster.testrunners.pressEnter
+import org.brailleblaster.testrunners.typeOver
+import org.brailleblaster.testrunners.deleteRange
+import org.brailleblaster.testrunners.undo
+import org.brailleblaster.testrunners.assertMapListConsistent
 import org.brailleblaster.testrunners.BBXDocFactory
 import org.brailleblaster.testrunners.ViewTestRunner
 import org.brailleblaster.utd.internal.xml.FastXPath
@@ -47,60 +55,11 @@ import java.io.File
  * still mapped the dropped newLines as real lines, corrupting caret offsets (undeletable heading, crash on
  * Enter after deleting across the page break).
  */
+@GuiTest
 class EditAfterPageBreakTest {
     private val reportedFile = File("src/test/resources/org/brailleblaster/printView/headingAfterPageBreak_issue70359.bbz")
 
-    // ---- driving the editor, see EnterAtEndOfDocumentTest for why the listeners are called directly
-
-    private fun BBTestRunner.moveCaret(offset: Int) {
-        manager.text.setCurrentElement(offset)
-        ViewTestRunner.doPendingSWTWork()
-        assertEquals(textViewWidget.caretOffset, offset, "Caret not at requested offset")
-    }
-
-    private fun BBTestRunner.verifyKey(character: Char): Boolean {
-        val event = Event().apply {
-            this.character = character
-            keyCode = character.code
-            doit = true
-        }
-        textViewWidget.notifyListeners(ST.VerifyKey, event)
-        ViewTestRunner.doPendingSWTWork()
-        return event.doit
-    }
-
-    private fun BBTestRunner.pressEnter() {
-        assertFalse(verifyKey(SWT.CR), "Enter is always handled by the editor")
-    }
-
-    /** Replace the selection [start, end) with text, typed key by key like StyledText does */
-    private fun BBTestRunner.typeOver(start: Int, end: Int = start, text: String) {
-        if (end > start) manager.text.highlight(start, end) else moveCaret(start)
-        text.forEachIndexed { i, c ->
-            assertTrue(verifyKey(c), "Key '$c' was blocked at offset ${textViewWidget.caretOffset}")
-            // Typing into whitespace re-renders the view, so continue from wherever the caret ended up
-            val offset = if (i == 0) start else textViewWidget.caretOffset
-            textViewWidget.replaceTextRange(offset, if (i == 0) end - start else 0, c.toString())
-            textViewWidget.caretOffset = offset + 1
-            ViewTestRunner.doPendingSWTWork()
-        }
-        manager.text.update(false)
-        ViewTestRunner.doPendingSWTWork()
-    }
-
-    private fun BBTestRunner.deleteRange(start: Int, end: Int) {
-        manager.text.highlight(start, end)
-        ViewTestRunner.doPendingSWTWork()
-        assertTrue(verifyKey(SWT.BS), "Backspace over [$start, $end) was blocked")
-        textViewWidget.replaceTextRange(start, end - start, "")
-        ViewTestRunner.doPendingSWTWork()
-    }
-
-    private fun BBTestRunner.undo() {
-        manager.simpleManager.getModule(UndoRedoModule::class.java)!!
-            .undo(BBSelectionData(textViewWidget, wpManager))
-        ViewTestRunner.doPendingSWTWork()
-    }
+    // ---- driving the editor, see testrunners/DirectInput.kt for why the listeners are called directly
 
     // ---- inspecting the result
 
@@ -136,18 +95,6 @@ class EditAfterPageBreakTest {
     }
 
     private fun Element.newPagesAfter() = getAttributeValue(OPTION_ATTRIB_PREFIX + "newPagesAfter", BB_NS)
-
-    /** Every map element starts at or after the previous one, and the caret on each text maps back to it */
-    private fun BBTestRunner.assertMapListConsistent() {
-        val list = manager.mapList
-        list.zipWithNext().forEach { (a, b) ->
-            assertTrue(
-                b.getStart(list) >= a.getStart(list),
-                "Map list out of order: ${a.javaClass.simpleName} [${a.getStart(list)}] before " +
-                        "${b.javaClass.simpleName} [${b.getStart(list)}]"
-            )
-        }
-    }
 
     private fun BBTestRunner.bulletEnd(): Int =
         text.indexOf("sentence.", text.indexOf(LAST_BULLET)) + "sentence.".length

@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.utd.actions;
 
+import org.testng.annotations.Test;
 import nu.xom.Element;
 import org.brailleblaster.utd.UTDTranslationEngine;
 
@@ -24,7 +25,7 @@ public class InsertUncontractedTest {
 	/*
 	 *  !!!THIS ACTION IS NOT BEING USED AT THIS MOMENT. POSSIBLE DELETION.!!!
 	 */
-//	@Test
+@Test
 	public void processNodeTest() {
 		Element dl = new Element("dl");
 		Element dt = new Element("dt");

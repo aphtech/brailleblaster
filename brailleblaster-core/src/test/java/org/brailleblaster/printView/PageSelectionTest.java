@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -25,7 +26,7 @@ import org.eclipse.swt.SWT;
 //import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.testng.annotations.Test;
 
-@Test(groups = TestGroups.BROKEN_TESTS, enabled = false)
+@GuiTest
 public class PageSelectionTest {
     //private final String XMLTREE = "XML";
 
@@ -34,7 +35,7 @@ public class PageSelectionTest {
     private final String[] punctuation = {"!", "#", "$", "%", "^", ",", ".", "/", "\\", "&", "*"};
     //protected SWTBotTree treeBot;
 
-    @Test(enabled = false)
+    @Test
     public void alphanumeric_atStart_noChange() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedPage = "--------------------------------------1";
@@ -49,7 +50,7 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
-    @Test(enabled = false)
+    @Test
     public void punctuation_atStart_noChange() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedPage = "--------------------------------------1";
@@ -64,7 +65,7 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
-    @Test(enabled = false)
+    @Test
     public void alphanumeric_inside_noChange() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedPage = "--------------------------------------1";
@@ -79,7 +80,7 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
-    @Test(enabled = false)
+    @Test
     public void punctuation_inside_noChange() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedPage = "--------------------------------------1";
@@ -94,13 +95,13 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
-    @Test(enabled = false)
+    @Test
     public void alphanumeric_atEnd_noChange() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedPage = "--------------------------------------1";
         String expectedBraillePage = "--------------------------------------#a";
 
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(2) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(1));
         bbTest.textViewTools.typeText("a");
         bbTest.textViewTools.typeText("1");
         bbTest.updateTextView();
@@ -109,13 +110,13 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
-    @Test(enabled = false)
+    @Test
     public void punctuation_atEnd_noChange() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedPage = "--------------------------------------1";
         String expectedBraillePage = "--------------------------------------#a";
 
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(2) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(1));
         for (String s : punctuation) bbTest.textViewTools.typeText(s);
 
         bbTest.updateTextView();
@@ -124,6 +125,7 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //selects from the start pos of element before page to page start
     public void start_Selection_Delete_ToNextPageStart() {
@@ -154,6 +156,7 @@ public class PageSelectionTest {
         //	assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //selects from the start pos of element before page to page start
     public void start_Selection_Backspace_ToNextPageStart() {
@@ -184,6 +187,7 @@ public class PageSelectionTest {
         //	assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //selects from the start pos of element before page to page start
     public void start_Selection_Cut_ToNextPageStart() {
@@ -214,6 +218,7 @@ public class PageSelectionTest {
         //assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //selects from the start pos of element before page to page start
     public void start_Selection_CutShortcut_ToNextPageStart() {
@@ -244,6 +249,7 @@ public class PageSelectionTest {
         //	assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //selects from the start pos of element before page to page start
     public void start_Selection_Insert_ToNextPageStart() {
@@ -274,6 +280,7 @@ public class PageSelectionTest {
         //assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //selects from the start pos of element before page to page start
     public void start_Selection_Paste_ToNextPageStart() {
@@ -310,6 +317,7 @@ public class PageSelectionTest {
         //	assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //selects from the start pos of element before page to page start
     public void start_Selection_Paste_ToNextPageStartShortcut() {
@@ -346,6 +354,7 @@ public class PageSelectionTest {
         //	assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from start of the element to start of range of the element on the next page and deletes
     //first line should have a char, other line should be blank, leaving page between unchanged
@@ -377,6 +386,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);	
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from start of the element to start of range of the element on the next page and deletes
     //first line should have a char, other line should be blank, leaving page between unchanged
@@ -408,6 +418,7 @@ public class PageSelectionTest {
         //	assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from start of the element to start of range of the element on the next page and deletes
     //first line should have a char, other line should be blank, leaving page between unchanged
@@ -439,6 +450,7 @@ public class PageSelectionTest {
         //	assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from start of the element to start of range of the element on the next page and deletes
     //first line should have a char, other line should be blank, leaving page between unchanged
@@ -470,6 +482,7 @@ public class PageSelectionTest {
         //	assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from start of the element to start of range of the element on the next page and inserts a char
     //first line should have a char, other line should be blank, leaving page between unchanged
@@ -501,6 +514,7 @@ public class PageSelectionTest {
         //	assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from start of the element to start of range of the element on the next page and inserts a char
     //first line should have a char, other line should be blank, leaving page between unchanged
@@ -538,6 +552,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from start of the element to start of range of the element on the next page and inserts a char
     //first line should have a char, other line should be blank, leaving page between unchanged
@@ -575,6 +590,7 @@ public class PageSelectionTest {
         //	assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from start of the element to end of range of the element on the next page and deletes
     public void start_Selection_delete_toNextPageEnd() {
@@ -617,6 +633,7 @@ public class PageSelectionTest {
         //	assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from start of the element to end of range of the element on the next page and deletes
     public void start_Selection_backspace_toNextPageEnd() {
@@ -659,6 +676,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);		
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from start of the element to end of range of the element on the next page and deletes using cut
     public void start_Selection_Cut_toNextPageEnd() {
@@ -701,6 +719,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);		
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from start of the element to end of range of the element on the next page and deletes using cut shortcut
     public void start_Selection_CutShortcut_toNextPageEnd() {
@@ -743,6 +762,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);		
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from start of the element to end of range of the element on the next page and inserts a char
     //first line should have achar, second should be blank, page remains unchanged
@@ -786,6 +806,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from start of the element to end of range of the element on the next page and pastes a char
     public void start_Selection_Paste_ToNextPageEnd() {
@@ -834,6 +855,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from start of the element to end of range of the element on the next page and pastes a char using shortcut
     public void start_Selection_PasteShortcut_ToNextPageEnd() {
@@ -882,6 +904,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from insdie the element to the start of the element on the next page and deletes
     public void insideWord_Selection_Delete_NextPageStart() {
@@ -925,6 +948,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItemAfter, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from insdie the element to the start of the element on the next page and deletes
     public void insideWord_Selection_Backspace_NextPageStart() {
@@ -968,6 +992,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItemAfter, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from insdie the element to the start of the element on the next page and deletes
     public void insideWord_Selection_Cut_NextPageStart() {
@@ -1011,6 +1036,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItemAfter, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from insdie the element to the start of the element on the next page and deletes
     public void insideWord_Selection_CutShortcut_NextPageStart() {
@@ -1054,6 +1080,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItemAfter, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from inside the element to the start of the element on the next page and inserts a char
     public void insideWord_Selection_Inside_NextPageStart() {
@@ -1097,6 +1124,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from inside the element to the start of the element on the next page and inserts a char
     public void insideWord_Selection_Paste_NextPageStart() {
@@ -1146,6 +1174,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from inside the element to the start of the element on the next page and inserts a char
     public void insideWord_Selection_PasteShortcut_NextPageStart() {
@@ -1195,6 +1224,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from inside the element to the end of the element on the next page and deletes
     //Should edit the first line, leave the page entact, and delete the second element leaving a blank line
@@ -1239,6 +1269,7 @@ public class PageSelectionTest {
         //	assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from inside the element to the end of the element on the next page and deletes
     //Should edit the first line, leave the page entact, and delete the second element leaving a blank line
@@ -1283,6 +1314,7 @@ public class PageSelectionTest {
         //	assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from inside the element to the end of the element on the next page and deletes
     //Should edit the first line, leave the page entact, and delete the second element leaving a blank line
@@ -1327,6 +1359,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from inside the element to the end of the element on the next page and deletes
     //Should edit the first line, leave the page entact, and delete the second element leaving a blank line
@@ -1371,6 +1404,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from inside the element to the end of the element on the next page and inserts a char
     //Should edit the first line, leave the page intact, and delete the second element leaving a blank line
@@ -1415,6 +1449,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from inside the element to the end of the element on the next page and pastes a char
     //Should edit the first line, leave the page entact, and delete the second element leaving a blank line
@@ -1465,6 +1500,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from inside the element to the end of the element on the next page and pastes a char
     //Should edit the first line, leave the page intact, and delete the second element leaving a blank line
@@ -1515,6 +1551,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from the end ot the current element to the start of the element on the next page and deletes
     //Should leave both lines intact since currently you cannot move elements from one print page to another since it would drastically alter markup
@@ -1529,7 +1566,7 @@ public class PageSelectionTest {
         String expectedBrailleAfterPage = "  ,a p>agraph on page #c";
 
         //	treeBot = bbTest.bot.tree(0);
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
         bbTest.textViewTools.selectRight(41);
         bbTest.textViewTools.pressKey(SWT.DEL, 1);
         bbTest.updateTextView();
@@ -1559,6 +1596,7 @@ public class PageSelectionTest {
         //	assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from the end ot the current element to the start of the element on the next page and deletes using backspace
     //Should leave both lines entac since currently you cannot move elements from one print page to another since it would drastically alter markup
@@ -1573,7 +1611,7 @@ public class PageSelectionTest {
         String expectedBrailleAfterPage = "  ,a p>agraph on page #c";
 
         //	treeBot = bbTest.bot.tree(0);
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
         bbTest.textViewTools.selectRight(41);
         bbTest.textViewTools.pressKey(SWT.BS, 1);
         bbTest.updateTextView();
@@ -1603,6 +1641,7 @@ public class PageSelectionTest {
         //	assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from the end to the current element to the start of the element on the next page and deletes using cut
     //Should leave both lines intact since currently you cannot move elements from one print page to another since it would drastically alter markup
@@ -1617,7 +1656,7 @@ public class PageSelectionTest {
         String expectedBrailleAfterPage = "  ,a p>agraph on page #c";
 
         //	treeBot = bbTest.bot.tree(0);
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
         bbTest.textViewTools.selectRight(41);
         bbTest.cut();
         bbTest.updateTextView();
@@ -1647,6 +1686,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from the end ot the current element to the start of the element on the next page and deletes using cut shortcut
     //Should leave both lines entact since currently you cannot move elements from one print page to another since it would drastically alter markup
@@ -1661,7 +1701,7 @@ public class PageSelectionTest {
         String expectedBrailleAfterPage = "  ,a p>agraph on page #c";
 
         //	treeBot = bbTest.bot.tree(0);
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
         bbTest.textViewTools.selectRight(41);
         bbTest.textViewTools.cutShortCut();
         bbTest.updateTextView();
@@ -1691,6 +1731,7 @@ public class PageSelectionTest {
         //	assertEquals(expectedTreeItem, resultTreeItem);
     }
 
+    // Disabled: inserting at the end of a page's last paragraph leaves the page number appended ('Page 21'); page indicator handling (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from the end ot the current element to the start of the element on the next page and inserts a char at the end of the first
     //second element should remain unchanged
@@ -1705,7 +1746,7 @@ public class PageSelectionTest {
         String expectedBrailleAfterPage = "  ,a p>agraph on page #c";
 
         //	treeBot = bbTest.bot.tree(0);
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
         bbTest.textViewTools.selectRight(41);
         bbTest.textViewTools.typeText("1");
         bbTest.updateTextView();
@@ -1735,6 +1776,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from the end ot the current element to the start of the element on the next page and pastes a char at the end of the first
     //second element should remain unchanged
@@ -1755,7 +1797,7 @@ public class PageSelectionTest {
         bbTest.copy();
 
         //paste
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
         bbTest.textViewTools.selectRight(41);
         bbTest.paste();
         bbTest.updateTextView();
@@ -1785,6 +1827,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from the end ot the current element to the start of the element on the next page and pastes a char at the end of the first using the shortcut
     //second element should remain unchanged
@@ -1805,7 +1848,7 @@ public class PageSelectionTest {
         bbTest.copy();
 
         //paste
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
         bbTest.textViewTools.selectRight(41);
         bbTest.textViewTools.pasteShortcut();
         bbTest.updateTextView();
@@ -1836,7 +1879,7 @@ public class PageSelectionTest {
     }
     //TODO: test fail do to UTD, fix later
 	/*
-	@Test(enabled = false)
+	@Test
 	//Selects area from the end ot the current element to inside the element on the next page and deletes the first char of the 2nd element
 	//since the selection starts at the end o the element at the end of the page, the element and page are unaltered, only the 2nd element changes
 	public void end_Selection_Delete_pastFirstChar(){
@@ -1850,7 +1893,7 @@ public class PageSelectionTest {
 		String expectedBrailleAfterPage= "   p>agraph on page #c";
 		
 		treeBot = bbTest.bot.tree(0);
-		bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+		bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
 		bbTest.textViewTools.selectRight(43);
 		bbTest.pressKey(bbTest.textViewBot, SWT.DEL, 1);
 		bbTest.updateTextView();
@@ -1880,7 +1923,7 @@ public class PageSelectionTest {
 		assertEquals(expectedTreeItem, resultTreeItem);			
 	}
 	
-	@Test(enabled = false)
+	@Test
 	//Selects area from the end ot the current element to inside the element on the next page and deletes the first char of the 2nd element using backspace
 	//since the selection starts at the end o the element at the end of the page, the element and page are unaltered, only the 2nd element changes
 	public void end_Selection_Backspace_pastFirstChar(){
@@ -1894,7 +1937,7 @@ public class PageSelectionTest {
 		String expectedBrailleAfterPage= "   p>agraph on page #c";
 		
 		treeBot = bbTest.bot.tree(0);
-		bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+		bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
 		bbTest.textViewTools.selectRight(43);
 		bbTest.pressKey(bbTest.textViewBot, SWT.BS, 1);
 		bbTest.updateTextView();
@@ -1924,7 +1967,7 @@ public class PageSelectionTest {
 		assertEquals(expectedTreeItem, resultTreeItem);			
 	}
 	
-	@Test(enabled = false)
+	@Test
 	//Selects area from the end ot the current element to inside the element on the next page and deletes the first char of the 2nd element using cut
 	//since the selection starts at the end o the element at the end of the page, the element and page are unaltered, only the 2nd element changes
 	public void end_Selection_Cut_pastFirstChar(){
@@ -1938,7 +1981,7 @@ public class PageSelectionTest {
 		String expectedBrailleAfterPage= "   p>agraph on page #c";
 		
 		treeBot = bbTest.bot.tree(0);
-		bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+		bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
 		bbTest.textViewTools.selectRight(43);
 		bbTest.cut();
 		bbTest.updateTextView();
@@ -1968,7 +2011,7 @@ public class PageSelectionTest {
 		assertEquals(expectedTreeItem, resultTreeItem);			
 	}
 	
-	@Test(enabled = false)
+	@Test
 	//Selects area from the end ot the current element to inside the element on the next page and deletes the first char of the 2nd element using cut shortcut
 	//since the selection starts at the end o the element at the end of the page, the element and page are unaltered, only the 2nd element changes
 	public void end_Selection_CutShortcut_pastFirstChar(){
@@ -1982,7 +2025,7 @@ public class PageSelectionTest {
 		String expectedBrailleAfterPage= "   p>agraph on page #c";
 		
 		treeBot = bbTest.bot.tree(0);
-		bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+		bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
 		bbTest.textViewTools.selectRight(43);
 		bbTest.textViewTools.cutShortCut();
 		bbTest.updateTextView();
@@ -2012,7 +2055,7 @@ public class PageSelectionTest {
 		assertEquals(expectedTreeItem, resultTreeItem);			
 	}
 	
-	@Test(enabled = false)
+	@Test
 	//Selects area from the end ot the current element to inside the element on the next page and inserts a char
 	//since the selection starts at the end o the element at the end of the page, the first and second element are editied, the page is unaltered
 	public void end_Selection_Insert_PastFirstChar(){
@@ -2026,7 +2069,7 @@ public class PageSelectionTest {
 		String expectedBrailleAfterPage= "   p>agraph on page #c";
 		
 		treeBot = bbTest.bot.tree(0);
-		bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+		bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
 		bbTest.textViewTools.selectRight(43);
 		bbTest.typeText(bbTest.textViewBot, "1");
 		bbTest.updateTextView();
@@ -2056,7 +2099,7 @@ public class PageSelectionTest {
 		assertEquals(expectedTreeItem, resultTreeItem);			
 	}
 	
-	@Test(enabled = false)
+	@Test
 	//Selects area from the end ot the current element to inside the element on the next page and pastes a char
 	//since the selection starts at the end o the element at the end of the page, the first and second element are editied, the page is unaltered
 	public void end_Selection_Paste_PastFirstChar(){
@@ -2076,7 +2119,7 @@ public class PageSelectionTest {
 		bbTest.copy();
 				
 		//paste		
-		bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+		bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
 		bbTest.textViewTools.selectRight(43);
 		bbTest.paste();
 		bbTest.updateTextView();
@@ -2106,7 +2149,7 @@ public class PageSelectionTest {
 		assertEquals(expectedTreeItem, resultTreeItem);			
 	}
 	
-	@Test(enabled = false)
+	@Test
 	//Selects area from the end ot the current element to inside the element on the next page and pastes a char
 	//since the selection starts at the end o the element at the end of the page, the first and second element are editied, the page is unaltered
 	public void end_Selection_PasteShortcut_PastFirstChar(){
@@ -2126,7 +2169,7 @@ public class PageSelectionTest {
 		bbTest.copy();
 				
 		//paste		
-		bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+		bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
 		bbTest.textViewTools.selectRight(43);
 		bbTest.textViewTools.pasteShortcut();
 		bbTest.updateTextView();
@@ -2157,6 +2200,7 @@ public class PageSelectionTest {
 	}
 	*/
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from the end of the current element to the end of the element on the next page and deletes
     //second element should be a blank line
@@ -2171,7 +2215,7 @@ public class PageSelectionTest {
         String expectedBrailleAfterPage = "--------------------------------------#c";
 
 //		treeBot = bbTest.bot.tree(0);
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
         bbTest.textViewTools.selectRight(63);
         bbTest.textViewTools.pressKey(SWT.DEL, 1);
         bbTest.updateTextView();
@@ -2200,6 +2244,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from the end of the current element to the end of the element on the next page and deletes
     //second element should be a blank line
@@ -2214,7 +2259,7 @@ public class PageSelectionTest {
         String expectedBrailleAfterPage = "--------------------------------------#c";
 
 //		treeBot = bbTest.bot.tree(0);
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
         bbTest.textViewTools.selectRight(63);
         bbTest.textViewTools.pressKey(SWT.BS, 1);
         bbTest.updateTextView();
@@ -2243,6 +2288,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from the end of the current element to the end of the element on the next page and deletes using cut
     //second element should be a blank line
@@ -2257,7 +2303,7 @@ public class PageSelectionTest {
         String expectedBrailleAfterPage = "--------------------------------------#c";
 
 //		treeBot = bbTest.bot.tree(0);
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
         bbTest.textViewTools.selectRight(63);
         bbTest.cut();
         bbTest.updateTextView();
@@ -2286,6 +2332,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from the end of the current element to the end of the element on the next page and deletes using cut
     //second element should be a blank line
@@ -2300,7 +2347,7 @@ public class PageSelectionTest {
         String expectedBrailleAfterPage = "--------------------------------------#c";
 
 //		treeBot = bbTest.bot.tree(0);
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
         bbTest.textViewTools.selectRight(63);
         bbTest.textViewTools.cutShortCut();
         bbTest.updateTextView();
@@ -2329,6 +2376,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: inserting at the end of a page's last paragraph leaves the page number appended ('Page 21'); page indicator handling (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from the end of the current element to the end of the element on the next page and inserts a char
     //char occurs at end of first element, page is unchanged, second element is now a blank line
@@ -2343,7 +2391,7 @@ public class PageSelectionTest {
         String expectedBrailleAfterPage = "--------------------------------------#c";
 
 //		treeBot = bbTest.bot.tree(0);
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
         bbTest.textViewTools.selectRight(63);
         bbTest.textViewTools.typeText("1");
         bbTest.updateTextView();
@@ -2372,6 +2420,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from the end of the current element to the end of the element on the next page and pastes a char
     //char occurs at end of first element, page is unchanged, second element is now a blank line
@@ -2392,7 +2441,7 @@ public class PageSelectionTest {
         bbTest.copy();
 
         //paste
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
         bbTest.textViewTools.selectRight(63);
         bbTest.paste();
         bbTest.updateTextView();
@@ -2421,6 +2470,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects area from the end of the current element to the end of the element on the next page and pastes a char using keyboard shortcuts
     //char occurs at end of first element, page is unchanged, second element is now a blank line
@@ -2441,7 +2491,7 @@ public class PageSelectionTest {
         bbTest.copy();
 
         //paste
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(4) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(3));
         bbTest.textViewTools.selectRight(63);
         bbTest.textViewTools.pasteShortcut();
         bbTest.updateTextView();
@@ -2470,7 +2520,7 @@ public class PageSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);			
     }
 
-    @Test(enabled = false)
+    @Test
     //Selects a line containing a page indicator from start to end and presses a letter key, no change should occur
     public void completePageSelection_Edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2490,7 +2540,7 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
-    @Test(enabled = false)
+    @Test
     //Selects a line containing a page indicator from start to end and presses a letter key, no change should occur
     public void completePageSelection_Paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2516,7 +2566,7 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
-    @Test(enabled = false)
+    @Test
     //Selects a line containing a page indicator from start to end and presses a letter key, no change should occur
     public void completePageSelection_PasteShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2542,6 +2592,7 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects a line containing a page indicator from start to end and presses delete, no change should occur
     public void completePageSelection_Delete() {
@@ -2562,6 +2613,7 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //Selects a line containing a page indicator from start to end and presses delete, no change should occur
     public void completePageSelection_Backspace() {
@@ -2582,7 +2634,8 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects a line containing a page indicator from start to end and presses delete, no change should occur
     public void completePageSelection_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2602,7 +2655,8 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects a line containing a page indicator from start to end and presses delete, no change should occur
     public void completePageSelection_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2694,7 +2748,8 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects a line containing a page indicator from point after start to end and presses delete, no change should occur
     public void partialPageSelection_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2714,7 +2769,8 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects a line containing a page indicator from point after start to end and presses delete, no change should occur
     public void partialPageSelection_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2734,7 +2790,8 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects a line containing a page indicator from point after start to end and presses delete, no change should occur
     public void partialPageSelection_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2754,7 +2811,8 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects a line containing a page indicator from point after start to end and presses delete, no change should occur
     public void partialPageSelection_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2774,7 +2832,8 @@ public class PageSelectionTest {
         assertEquals(expectedBraillePage, bbTest.brailleViewBot.getTextOnLine(1));
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     public void FromStartOfElement_completePageSelection_Edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedBeforePage = "F";
@@ -2812,7 +2871,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     public void FromStartOfElement_completePageSelection_Paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedBeforePage = "F";
@@ -2856,7 +2916,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     public void FromStartOfElement_completePageSelection_PasteShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedBeforePage = "F";
@@ -2900,7 +2961,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     public void FromStartOfElement_completePageSelection_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedBeforePage = "Page 2 paragraph";
@@ -2938,7 +3000,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     public void FromStartOfElement_completePageSelection_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedBeforePage = "Page 2 paragraph";
@@ -2976,7 +3039,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     public void FromStartOfElement_completePageSelection_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedBeforePage = "Page 2 paragraph";
@@ -3014,7 +3078,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     public void FromStartOfElement_completePageSelection_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedBeforePage = "Page 2 paragraph";
@@ -3052,7 +3117,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     public void FromStartOfElement_partialPageSelection_Edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedBeforePage = "F";
@@ -3090,7 +3156,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     public void FromStartOfElement_partialPageSelection_Paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedBeforePage = "F";
@@ -3134,7 +3201,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     public void FromStartOfElement_partialPageSelection_PasteShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedBeforePage = "F";
@@ -3178,7 +3246,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     public void FromStartOfElement_partialPageSelection_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedBeforePage = "Page 2 paragraph";
@@ -3216,7 +3285,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     public void FromStartOfElement_partialPageSelection_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedBeforePage = "Page 2 paragraph";
@@ -3254,7 +3324,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     public void FromStartOfElement_partialPageSelection_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedBeforePage = "Page 2 paragraph";
@@ -3292,7 +3363,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     public void FromStartOfElement_partialPageSelection_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedBeforePage = "Page 2 paragraph";
@@ -3330,7 +3402,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects an element before a line with page indicator, selects from point after start to end and presses a letter key, no change should occur to indicator
     public void FromInsideOfElement_completePageSelection_Edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3369,7 +3442,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects an element before a line with page indicator, selects from point after start to end and presses a letter key, no change should occur to indicator
     public void FromInsideOfElement_completePageSelection_Paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3413,7 +3487,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects an element before a line with page indicator, selects from point after start to end and presses a letter key, no change should occur to indicator
     public void FromInsideOfElement_completePageSelection_PasteShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3457,7 +3532,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects an element before a line with page indicator, selects from point after start to end and presses delete, no change should occur to indicator
     public void FromInsideOfElement_completePageSelection_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3497,7 +3573,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects an element before a line with page indicator, selects from point after start to end and presses delete, no change should occur to indicator
     public void FromInsideOfElement_completePageSelection_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3536,7 +3613,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects an element before a line with page indicator, selects from point after start to end and presses delete, no change should occur to indicator
     public void FromInsideOfElement_completePageSelection_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3575,7 +3653,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects an element before a line with page indicator, selects from point after start to end and presses delete, no change should occur to indicator
     public void FromInsideOfElement_completePageSelection_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3614,7 +3693,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects an element before a line with page indicator, selects from point after start to end and presses delete, no change should occur to indicator
     public void FromInsideOfElement_partialPageSelection_Edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3653,7 +3733,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects an element before a line with page indicator, selects from point after start to end and presses delete, no change should occur to indicator
     public void FromInsideOfElement_partialPageSelection_Paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3698,7 +3779,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects an element before a line with page indicator, selects from point after start to end and presses delete, no change should occur to indicator
     public void FromInsideOfElement_partialPageSelection_PasteShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3743,7 +3825,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects an element before a line with page indicator, selects from point after start to end and presses delete, no change should occur to indicator
     public void FromInsideOfElement_partialPageSelection_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3782,7 +3865,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects an element before a line with page indicator, selects from point after start to end and presses delete, no change should occur to indicator
     public void FromInsideOfElement_partialPageSelection_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3821,7 +3905,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects an element before a line with page indicator, selects from point after start to end and presses delete, no change should occur to indicator
     public void FromInsideOfElement_partialPageSelection_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3860,7 +3945,8 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
-    @Test
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false)
     //Selects an element before a line with page indicator, selects from point after start to end and presses delete, no change should occur to indicator
     public void FromInsideOfElement_partialPageSelection_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3899,6 +3985,7 @@ public class PageSelectionTest {
         assertEquals(expectedBrailleAfterPage, bbTest.brailleViewBot.getTextOnCurrentLine());
     }
 
+    // Disabled: edits on a selection that includes a print page indicator now delete the indicator; tests expect it kept (D13) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //test corresponds to bug fix in changeset 5467
     public void firstLine_partialPageSelection_Delete() {

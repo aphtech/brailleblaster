@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.Document;
 import org.brailleblaster.TestUtils;
 import org.brailleblaster.search.SearchConstants;
@@ -29,6 +30,7 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
 
+@GuiTest
 public class FindReplaceCaseSensitiveTest {
     private static final Logger log = LoggerFactory.getLogger(FindReplaceCaseSensitiveTest.class);
     private final String phraseInitial = "Test a whole phrase";
@@ -183,7 +185,7 @@ public class FindReplaceCaseSensitiveTest {
     private BBTestRunner setUp(Document TEST_FILE) {
         BBTestRunner bb = new BBTestRunner(TEST_FILE);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         SWTBotCheckBox matchCase = bot.checkBox(SearchConstants.CASE_SENSITIVE);
         if (!matchCase.isChecked()) {
@@ -191,7 +193,7 @@ public class FindReplaceCaseSensitiveTest {
         }
         assertTrue(matchCase.isChecked());
 
-        bot = bb.bot.activeShell().bot();
+        bot = bb.activeShell().bot();
         matchCase = bot.checkBox(SearchConstants.MATCH_CASE);
         if (!matchCase.isChecked()) {
             matchCase.click();

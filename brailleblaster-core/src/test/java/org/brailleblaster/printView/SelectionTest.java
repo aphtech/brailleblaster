@@ -15,13 +15,15 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.bbx.BBX;
 import org.brailleblaster.testrunners.BBTestRunner;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class SelectionTest {
-    @Test(enabled = false)
+    @Test
     public void selectEntireList() {
         BBTestRunner test = new BBTestRunner("", "<list><li>first</li><li>second</li></list>");
         test.textViewTools.navigateToText("first");

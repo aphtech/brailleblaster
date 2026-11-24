@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import java.io.File;
 
 import org.brailleblaster.TestFiles;
@@ -30,6 +31,7 @@ import org.testng.annotations.Test;
 
 import nu.xom.Document;
 
+@GuiTest
 public class FindReplaceStylesTest {
     private static final Logger log = LoggerFactory.getLogger(FindReplaceStylesTest.class);
     private final String regP = "This is a regular paragraph.";
@@ -39,34 +41,11 @@ public class FindReplaceStylesTest {
             "<h1>" + regP + "</h1>" + "<h1>" + regP + "</h1>");
 
     @Test(enabled = false)
-    public void rt6100_replace_split_text_node_and_make_style() {
-
-        BBTestRunner bb = new BBTestRunner(new File(TestFiles.litBook));
-        FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
-        FindReplaceBotHelper.clickFormatting(bb);
-        bot = TestUtils.refreshReturnActiveBot(bb);
-        bot.list(0).select("Centered Text");
-        FindReplaceBotHelper.modifyReplace(bb);
-        FindReplaceBotHelper.done(bb);
-        bot = TestUtils.refreshReturnActiveBot(bb);
-        bot.comboBox(0).setText("States");
-        bot.comboBox(1).setText("steak");
-        FindReplaceBotHelper.clickFind(bb);
-        FindReplaceBotHelper.clickReplace(bb);
-        String afterXml = TestXMLUtils.toXMLnoNS(bb.getDoc().getRootElement());
-        log.debug("Log Replaced Text " + afterXml);
-        String textNode = bb.getDoc().getChild(0).getChild(1).getChild(0).getChild(3).getChild(3).getChild(3).getValue();
-        TestUtils.getInnerSection(bb, true).child(0).child(3).child(3).hasOverrideStyle("Centered Text");
-        Assert.assertTrue(textNode.contains("steak"));
-    }
-
-    @Test(enabled = false)
     public void makeHeading() {
 
         BBTestRunner bb = new BBTestRunner(TEST_FILE);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
 
@@ -92,7 +71,7 @@ public class FindReplaceStylesTest {
     public void makeList() {
         BBTestRunner bb = new BBTestRunner(TEST_FILE);
         bb.textViewTools.pressShortcut(SWT.CTRL, 'f');
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
         bot = TestUtils.refreshReturnActiveBot(bb);
@@ -116,7 +95,7 @@ public class FindReplaceStylesTest {
     public void makeBox() {
         BBTestRunner bb = new BBTestRunner(TEST_FILE);
         bb.textViewTools.pressShortcut(SWT.CTRL, 'f');
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
         bot = TestUtils.refreshReturnActiveBot(bb);
@@ -140,7 +119,7 @@ public class FindReplaceStylesTest {
 
         BBTestRunner bb = new BBTestRunner(alreadyHeading);
         bb.textViewTools.pressShortcut(SWT.CTRL, 'f');
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
         bot = TestUtils.refreshReturnActiveBot(bb);

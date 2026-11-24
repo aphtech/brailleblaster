@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.ui;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.TestUtils;
 import org.brailleblaster.settings.TableExceptions;
 import org.brailleblaster.testrunners.BBTestRunner;
@@ -29,7 +30,8 @@ import org.testng.annotations.Test;
 
 import nu.xom.Document;
 
-@Test(enabled = false)
+@Test
+@GuiTest
 public class CorrectTranslationTest {
 
     private final String dollarSign = "\u0024";
@@ -41,25 +43,26 @@ public class CorrectTranslationTest {
 
     private final Document undefined = TestXMLUtils.generateBookDoc("", "<p>" + blackTriangle + "</p>");
 
-    @Test(enabled = false)
+    @Test
     public void correctWordInLiblouisAscii() {
         setup();
         BBTestRunner bb = new BBTestRunner(defined);
         openCorrectTranslation(bb);
-        bb.bot.activeShell().bot().text(0).setText(dollarSign);
-        bb.bot.activeShell().bot().text(1).setText(equalsSign);
-        bb.bot.activeShell().bot().button("Save Translation Locally").click();
+        bb.activeShell().bot().text(0).setText(dollarSign);
+        bb.activeShell().bot().text(1).setText(equalsSign);
+        bb.activeShell().bot().button("Save Translation Locally").click();
         bb.manager.refresh();
         Assert.assertEquals(getBraille(bb), equalsSign);
         breakDown();
     }
 
+    // Disabled: Correct Braille Translation define/correct dialogs: result is ;_$#c and no Success dialog (D16) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void correctWordNotInLiblouisAscii() {
         setup();
         BBTestRunner bb = new BBTestRunner(undefined);
         openCorrectTranslation(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot.text(0).setText(blackTriangle);
         bot.text(1).setText(equalsSign);
         bot.button("Save Translation Locally").click();
@@ -75,12 +78,13 @@ public class CorrectTranslationTest {
         breakDown();
     }
 
+    // Disabled: Correct Braille Translation define/correct dialogs: result is ;_$#c and no Success dialog (D16) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void defineCharacterAscii() {
         setup();
         BBTestRunner bb = new BBTestRunner(undefined);
         openCorrectTranslation(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot.radio("Define New Character").click();
         bot = TestUtils.refreshReturnActiveBot(bb);
         bot.text(0).setText(blackTriangle);
@@ -90,12 +94,13 @@ public class CorrectTranslationTest {
         breakDown();
     }
 
+    // Disabled: Correct Braille Translation define/correct dialogs: result is ;_$#c and no Success dialog (D16) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void correctDefinedCharacterAscii() {
         setup();
         BBTestRunner bb = new BBTestRunner(undefined);
         openCorrectTranslation(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot.text(0).setText(blackTriangle);
         bot.text(1).setText(equalsSign);
         bot.radio("Define New Character").click();
@@ -114,12 +119,12 @@ public class CorrectTranslationTest {
         breakDown();
     }
 
-    @Test(enabled = false)
+    @Test
     public void correctWordInLiblouisSixKey() {
         setup();
         BBTestRunner bb = new BBTestRunner(defined);
         openCorrectTranslation(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot.radio("Six Key").click();
         bot = TestUtils.refreshReturnActiveBot(bb);
         bot.text(0).setText(dollarSign);
@@ -129,12 +134,13 @@ public class CorrectTranslationTest {
         breakDown();
     }
 
+    // Disabled: Correct Braille Translation define/correct dialogs: result is ;_$#c and no Success dialog (D16) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void correctWordNotInLiblouisSixKey() {
         setup();
         BBTestRunner bb = new BBTestRunner(undefined);
         openCorrectTranslation(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot.radio("Six Key").click();
         bot = TestUtils.refreshReturnActiveBot(bb);
         bot.text(0).setText(blackTriangle);
@@ -154,12 +160,13 @@ public class CorrectTranslationTest {
         breakDown();
     }
 
+    // Disabled: Correct Braille Translation define/correct dialogs: result is ;_$#c and no Success dialog (D16) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void defineCharacterSixKey() {
         setup();
         BBTestRunner bb = new BBTestRunner(undefined);
         openCorrectTranslation(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot.radio("Six Key").click();
         bot = TestUtils.refreshReturnActiveBot(bb);
         bot.radio("Define New Character").click();
@@ -171,12 +178,12 @@ public class CorrectTranslationTest {
         breakDown();
     }
 
-    @Test(enabled = false)
+    @Test
     public void correctDefinedCharacterSixKey() {
         setup();
         BBTestRunner bb = new BBTestRunner(defined);
         openCorrectTranslation(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot.radio("Define New Character").click();
         bot = TestUtils.refreshReturnActiveBot(bb);
         bot.radio("Six Key").click();

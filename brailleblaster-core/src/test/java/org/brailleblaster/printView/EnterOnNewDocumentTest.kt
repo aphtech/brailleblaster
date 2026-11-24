@@ -15,9 +15,13 @@
  */
 package org.brailleblaster.printView
 
+import org.brailleblaster.GuiTest
 import nu.xom.Element
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.testrunners.BBTestRunner
+import org.brailleblaster.testrunners.moveCaret
+import org.brailleblaster.testrunners.pressEnter
+import org.brailleblaster.testrunners.typeKeys
 import org.brailleblaster.testrunners.ViewTestRunner
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.properties.UTDElements
@@ -35,44 +39,13 @@ import java.io.File
  * Enter in a new, blank document. A new document only holds an empty placeholder block, so Enter on it adds
  * nothing to the document and the blank line exists only in the view until text typed after it is committed.
  */
+@GuiTest
 class EnterOnNewDocumentTest {
     /** The template File > New opens, see Manager.DEFAULT_FILE */
     private val blankTemplate = File("src/main/dist/programData/xmlTemplates/blankTemplate.bbz")
     private val sentence = "This is a test sentence."
 
-    // ---- driving the editor, see EnterAtEndOfDocumentTest for why the listeners are called directly
-
-    private fun BBTestRunner.moveCaret(offset: Int) {
-        manager.text.setCurrentElement(offset)
-        ViewTestRunner.doPendingSWTWork()
-        assertEquals(textViewWidget.caretOffset, offset, "Caret not at requested offset")
-    }
-
-    private fun BBTestRunner.verifyKey(character: Char): Boolean {
-        val event = Event().apply {
-            this.character = character
-            keyCode = character.code
-            doit = true
-        }
-        textViewWidget.notifyListeners(ST.VerifyKey, event)
-        ViewTestRunner.doPendingSWTWork()
-        return event.doit
-    }
-
-    private fun BBTestRunner.pressEnter() {
-        assertFalse(verifyKey(SWT.CR), "Enter is always handled by the editor")
-    }
-
-    /** Type text the way StyledText does after the verify listener allows the key, leaving it uncommitted */
-    private fun BBTestRunner.type(text: String) {
-        text.forEach { c ->
-            assertTrue(verifyKey(c), "Key '$c' was blocked at offset ${textViewWidget.caretOffset}")
-            val offset = textViewWidget.caretOffset
-            textViewWidget.replaceTextRange(offset, 0, c.toString())
-            textViewWidget.caretOffset = offset + 1
-            ViewTestRunner.doPendingSWTWork()
-        }
-    }
+    // ---- driving the editor, see testrunners/DirectInput.kt for why the listeners are called directly
 
     // ---- inspecting the result
 
@@ -118,7 +91,7 @@ class EnterOnNewDocumentTest {
         bbTest.pressEnter()
         bbTest.assertCaretAtStartOfLine(1)
 
-        bbTest.type(sentence)
+        bbTest.typeKeys(sentence)
         bbTest.pressEnter()
 
         bbTest.assertSentenceOnLine(1)
@@ -130,7 +103,7 @@ class EnterOnNewDocumentTest {
         val bbTest = BBTestRunner(blankTemplate)
         bbTest.moveCaret(0)
 
-        bbTest.type(sentence)
+        bbTest.typeKeys(sentence)
         bbTest.pressEnter()
 
         bbTest.assertSentenceOnLine(0)
@@ -146,7 +119,7 @@ class EnterOnNewDocumentTest {
         bbTest.pressEnter()
         bbTest.assertCaretAtStartOfLine(2)
 
-        bbTest.type(sentence)
+        bbTest.typeKeys(sentence)
         bbTest.pressEnter()
 
         bbTest.assertSentenceOnLine(2)

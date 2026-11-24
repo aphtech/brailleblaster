@@ -26,7 +26,7 @@ private val TEST_STYLE_FILE = File(TEST_FOLDER, "test.styleMap.xml")
 private val TEST_STYLEDEFS_FILE = File(TEST_FOLDER, "styleDefs.xml")
 
 class File2UTDTest {
-    @Test(enabled = false)
+    @Test
     @Throws(Exception::class)
     fun parseBasicDTBook() {
         LoggerFactory.getLogger(javaClass).debug("Path: " + System.getProperty("jlouis.data.path"))

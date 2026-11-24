@@ -108,10 +108,13 @@ public class NodeNameMatcherTest {
         assertFalse(matcher.isMatch(node, namespaceMap));
     }
 
-    // Disabled as it requires final fields
-    @Test(enabled = false)
+    // Fields aren't final because JAXB sets them; nodeNameParts is a cache derived from nodeName
+    @Test
     public void equalsContract() {
-        EqualsVerifier.forClass(NodeNameMatcher.class).suppress(Warning.STRICT_INHERITANCE).verify();
+        EqualsVerifier.forClass(NodeNameMatcher.class)
+                .suppress(Warning.STRICT_INHERITANCE, Warning.NONFINAL_FIELDS)
+                .withIgnoredFields("nodeNameParts")
+                .verify();
     }
 
     @Test(dataProvider = "nodeNamesProvider")

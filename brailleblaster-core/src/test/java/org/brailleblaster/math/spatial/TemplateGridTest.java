@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.math.spatial;
 
+import org.brailleblaster.GuiTest;
 import java.io.File;
 
 import org.brailleblaster.math.mathml.MathModuleUtils;
@@ -31,89 +32,90 @@ import org.testng.annotations.Test;
 
 import nu.xom.Document;
 
+@GuiTest
 public class TemplateGridTest {
     private final Document twoParagraphs = TestXMLUtils.generateBookDoc("", "<p>Para1</p><p>Para2</p>");
     private final File OLD_TEMPLATE_FORMAT = (new File(
             "src/test/resources/org/brailleblaster/math/templateOldBBX.bbx"));
 
     private void addIdentifier(BBTestRunner bb, String identifier) {
-        bb.bot.activeShell().bot().textInGroup(TemplateConstants.IDENTIFIER_GROUP).setText(identifier);
+        bb.activeShell().bot().textInGroup(TemplateConstants.IDENTIFIER_GROUP).setText(identifier);
     }
 
     private void pressOk(BBTestRunner bb) {
-        bb.bot.activeShell().bot().button(SpatialMathUtils.OK_LABEL).click();
+        bb.activeShell().bot().button(SpatialMathUtils.OK_LABEL).click();
     }
 
     private void setOperator(BBTestRunner bb, SpatialMathEnum.OPERATOR operatorEnum) {
-        bb.bot.activeShell().bot().menu(TemplateConstants.OPERATOR_LABEL).menu(operatorEnum.prettyName).click();
+        bb.activeShell().bot().menu(TemplateConstants.OPERATOR_LABEL).menu(operatorEnum.prettyName).click();
     }
 
     private void setType(BBTestRunner bb, SpatialMathEnum.TemplateType type) {
-        bb.bot.activeShell().bot().menu(TemplateConstants.TEMPLATE_TYPE_LABEL).menu(type.prettyName).click();
+        bb.activeShell().bot().menu(TemplateConstants.TEMPLATE_TYPE_LABEL).menu(type.prettyName).click();
     }
 
     private void setDivisor(int i, BBTestRunner bb) {
-        bb.bot.activeShell().bot().textInGroup(TemplateConstants.OPERAND_GROUP).setText(String.valueOf(i));
+        bb.activeShell().bot().textInGroup(TemplateConstants.OPERAND_GROUP).setText(String.valueOf(i));
     }
 
     private void setDividend(int i, BBTestRunner bb) {
-        bb.bot.activeShell().bot().textInGroup(TemplateConstants.OPERAND_GROUP, 1).setText(String.valueOf(i));
+        bb.activeShell().bot().textInGroup(TemplateConstants.OPERAND_GROUP, 1).setText(String.valueOf(i));
     }
 
     private void setQuotient(int i, BBTestRunner bb) {
-        bb.bot.activeShell().bot().menu(TemplateConstants.SOLUTION_GROUP).menu(TemplateConstants.TRUE).click();
-        bb.bot.activeShell().bot().textInGroup(TemplateConstants.SOLUTION_GROUP).setText(String.valueOf(i));
+        bb.activeShell().bot().menu(TemplateConstants.SOLUTION_GROUP).menu(TemplateConstants.TRUE).click();
+        bb.activeShell().bot().textInGroup(TemplateConstants.SOLUTION_GROUP).setText(String.valueOf(i));
     }
 
     private void setOperand2(int i, BBTestRunner bb) {
-        bb.bot.activeShell().bot().textInGroup(TemplateConstants.OPERAND_GROUP, 1).setText(String.valueOf(i));
+        bb.activeShell().bot().textInGroup(TemplateConstants.OPERAND_GROUP, 1).setText(String.valueOf(i));
     }
 
     private void setOperand1(int i, BBTestRunner bb) {
-        bb.bot.activeShell().bot().textInGroup(TemplateConstants.OPERAND_GROUP).setText(String.valueOf(i));
+        bb.activeShell().bot().textInGroup(TemplateConstants.OPERAND_GROUP).setText(String.valueOf(i));
     }
 
     private void setOperands(int[] operands, BBTestRunner bb) {
         for (int i = 0; i < operands.length; i++) {
-            bb.bot.activeShell().bot().textInGroup(TemplateConstants.OPERAND_GROUP, i)
+            bb.activeShell().bot().textInGroup(TemplateConstants.OPERAND_GROUP, i)
                     .setText(String.valueOf(operands[i]));
         }
     }
 
     private void openTemplateDialog(BBTestRunner bb) {
         bb.openMenuItem(TopMenu.MATH, MathModuleUtils.SPATIAL_COMBO);
-        bb.bot.activeShell().bot().menu(GridEditor.CONTAINER_TYPE_LABEL)
+        bb.activeShell().bot().menu(GridEditor.CONTAINER_TYPE_LABEL)
                 .menu(SpatialMathEnum.SpatialMathContainers.TEMPLATE.prettyName).click();
     }
 
     private void setNotUebPassage(BBTestRunner bb) {
-        bb.bot.activeShell().bot().menu(TemplateConstants.SETTINGS).menu(GridConstants.PASSAGE_TYPE).menu(Passage.NONE.getPrettyName())
+        bb.activeShell().bot().menu(TemplateConstants.SETTINGS).menu(GridConstants.PASSAGE_TYPE).menu(Passage.NONE.getPrettyName())
                 .click();
     }
 
     private void setNemethPassage(BBTestRunner bb) {
-        if (!bb.bot.activeShell().bot().menu(TemplateConstants.SETTINGS).menu(Passage.NEMETH.getPrettyName())
+        if (!bb.activeShell().bot().menu(TemplateConstants.SETTINGS).menu(Passage.NEMETH.getPrettyName())
                 .isChecked()) {
-            bb.bot.activeShell().bot().menu(TemplateConstants.SETTINGS).menu(Passage.NEMETH.getPrettyName()).click();
+            bb.activeShell().bot().menu(TemplateConstants.SETTINGS).menu(Passage.NEMETH.getPrettyName()).click();
         }
     }
 
     private void setNumericPassage(BBTestRunner bb) {
-        bb.bot.activeShell().bot().menu(TemplateConstants.SETTINGS).menu(GridConstants.PASSAGE_TYPE).menu(Passage.NUMERIC.getPrettyName()).click();
+        bb.activeShell().bot().menu(TemplateConstants.SETTINGS).menu(GridConstants.PASSAGE_TYPE).menu(Passage.NUMERIC.getPrettyName()).click();
     }
 
     private void clickNextRow(BBTestRunner bb) {
-        bb.bot.activeShell().bot().toggleButtonInGroup(SpatialMathUtils.NEXT_LABEL, SpatialMathUtils.ROW_GROUP).click();
+        bb.activeShell().bot().toggleButtonInGroup(SpatialMathUtils.NEXT_LABEL, SpatialMathUtils.ROW_GROUP).click();
     }
 
     private void clickNextCol(BBTestRunner bb) {
-        bb.bot.activeShell().bot().toggleButtonInGroup(SpatialMathUtils.NEXT_LABEL, SpatialMathUtils.COL_LABEL).click();
+        bb.activeShell().bot().toggleButtonInGroup(SpatialMathUtils.NEXT_LABEL, SpatialMathUtils.COL_LABEL).click();
     }
 
     private void addFractionTemplate(BBTestRunner bb, SpatialMathEnum.OPERATOR op, String identifier, String row,
                                      String col) {
-        bb.bot.activeShell().bot().toggleButtonInGroup(col, SpatialMathUtils.COL_LABEL).click();
-        bb.bot.activeShell().bot().toggleButtonInGroup(row, SpatialMathUtils.ROW_GROUP).click();
+        bb.activeShell().bot().toggleButtonInGroup(col, SpatialMathUtils.COL_LABEL).click();
+        bb.activeShell().bot().toggleButtonInGroup(row, SpatialMathUtils.ROW_GROUP).click();
         setType(bb, SpatialMathEnum.TemplateType.FRACTION_ENUM);
         int[] array = {1, 1, 1, 2, 2, 2};
         setOperands(array, bb);
@@ -123,8 +125,8 @@ public class TemplateGridTest {
 
     private void addWholeTemplate(BBTestRunner bb, SpatialMathEnum.OPERATOR op, String identifier, String row,
                                   String col) {
-        bb.bot.activeShell().bot().toggleButtonInGroup(col, SpatialMathUtils.COL_LABEL).click();
-        bb.bot.activeShell().bot().toggleButtonInGroup(row, SpatialMathUtils.ROW_GROUP).click();
+        bb.activeShell().bot().toggleButtonInGroup(col, SpatialMathUtils.COL_LABEL).click();
+        bb.activeShell().bot().toggleButtonInGroup(row, SpatialMathUtils.ROW_GROUP).click();
         setOperand1(122, bb);
         setOperand2(24, bb);
         setOperator(bb, op);
@@ -132,8 +134,8 @@ public class TemplateGridTest {
     }
 
     private void addRadicalTemplate(BBTestRunner bb, String identifier, String row, String col) {
-        bb.bot.activeShell().bot().toggleButtonInGroup(col, SpatialMathUtils.COL_LABEL).click();
-        bb.bot.activeShell().bot().toggleButtonInGroup(row, SpatialMathUtils.ROW_GROUP).click();
+        bb.activeShell().bot().toggleButtonInGroup(col, SpatialMathUtils.COL_LABEL).click();
+        bb.activeShell().bot().toggleButtonInGroup(row, SpatialMathUtils.ROW_GROUP).click();
         setType(bb, SpatialMathEnum.TemplateType.RADICAL_ENUM);
         setDivisor(5, bb);
         setDividend(465, bb);
@@ -169,8 +171,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -196,8 +198,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -223,8 +225,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -251,8 +253,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -280,8 +282,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -307,8 +309,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -336,8 +338,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -366,8 +368,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -396,8 +398,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -424,8 +426,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -455,8 +457,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -482,7 +484,7 @@ public class TemplateGridTest {
     }
 
     private void setIdentifiersAsMath(BBTestRunner bb) {
-        bb.bot.activeShell().bot().menu(TemplateConstants.SETTINGS).menu(TemplateConstants.IDENTIFIER_TRANSLATION)
+        bb.activeShell().bot().menu(TemplateConstants.SETTINGS).menu(TemplateConstants.IDENTIFIER_TRANSLATION)
                 .menu(TemplateConstants.MATH_TRANSLATION).click();
     }
 
@@ -491,8 +493,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -519,8 +521,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -550,8 +552,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -578,8 +580,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -607,8 +609,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -638,8 +640,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -670,8 +672,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -699,8 +701,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -731,8 +733,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -757,8 +759,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -787,8 +789,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -818,8 +820,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -847,8 +849,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -878,8 +880,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -907,8 +909,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -937,8 +939,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();
@@ -965,8 +967,8 @@ public class TemplateGridTest {
         BBTestRunner bb = new BBTestRunner(twoParagraphs);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         bb.textViewTools.navigateToEndOfLine();

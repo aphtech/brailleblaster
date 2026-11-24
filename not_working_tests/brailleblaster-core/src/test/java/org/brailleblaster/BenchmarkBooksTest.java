@@ -27,6 +27,7 @@ import org.testng.annotations.Test;
 /**
  * Benchmark books from users that exposed exceptions
  */
+@GuiTest
 public class BenchmarkBooksTest {
     @Test(groups = TestGroups.SLOW_TESTS, enabled = false)
     public void goToVolumeAtPageNumber() {

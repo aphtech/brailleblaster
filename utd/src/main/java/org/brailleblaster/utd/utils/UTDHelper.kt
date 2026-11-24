@@ -226,7 +226,7 @@ fun getFirstTextDescendant(brlElement: Element): Text {
 
 fun Document?.getDocumentHead(): Element? = this?.rootElement?.findHead()
 
-private fun Element.findHead(): Element? = childElements.firstOrNull()?.let { when(localName) {
+private fun Element.findHead(): Element? = childElements.firstOrNull()?.let { when(it.localName) {
     "head" -> it
     "book" -> null
     else -> it.findHead()

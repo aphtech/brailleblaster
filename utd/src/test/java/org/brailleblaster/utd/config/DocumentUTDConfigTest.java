@@ -87,7 +87,6 @@ public class DocumentUTDConfigTest {
 			() -> settingsLoadTest(pageSettings, docConfig::loadPageSettings),
 			() -> settingsLoadTest(brailleSettings, docConfig::loadBrailleSettings),
 			() -> settingsLoadTest(styleMap, (Document doc) -> docConfig.loadStyle(doc, styleDefs)),
-//			() -> settingsLoadTest(actionMap, NimasUTDConfig::loadActions),
 			//
 			() -> settingsLoadMissingTest(PageSettings.class, docConfig::loadPageSettings),
 			() -> settingsLoadMissingTest(BrailleSettings.class, docConfig::loadBrailleSettings),
@@ -100,8 +99,7 @@ public class DocumentUTDConfigTest {
 			() -> settingsSaveTest(actionMap, ActionMap.class, docConfig::saveActions),
 			//
 			() -> settingsSaveOverwriteTest(pageSettings, PageSettings.class, docConfig::savePageSettings),
-			// TODO Phase 1a: restore after removing LLAPH fields from nimas.xml
-			// () -> settingsSaveOverwriteTest(brailleSettings, BrailleSettings.class, docConfig::saveBrailleSettings),
+			() -> settingsSaveOverwriteTest(brailleSettings, BrailleSettings.class, docConfig::saveBrailleSettings),
 			() -> settingsSaveOverwriteTest(styleMap, StyleMap.class, docConfig::saveStyle),
 			() -> settingsSaveOverwriteTest(actionMap, ActionMap.class, docConfig::saveActions),
 		};
@@ -141,11 +139,13 @@ public class DocumentUTDConfigTest {
 		Element configElem = getConfigElement(doc, type);
 		configElem.detach();
 
+		//Reference doc with origional element where JAXB would put it. Copy before saving:
+		//doc.getDocument() is the same object, which made this compare the doc with itself
+		Document docOrig = doc.copy();
+
 		//Run JAXB
 		saveConfig.accept(doc, expected);
 
-		//Reference doc with origional element where JAXB would put it
-		Document docOrig = doc.getDocument();
 		docOrig.getRootElement()
 				.getChildElements("head", docOrig.getRootElement().getNamespaceURI())
 				.get(0)

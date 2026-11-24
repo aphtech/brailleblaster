@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import java.io.File;
 
 import org.brailleblaster.frontmatter.TOCBuilderBBX;
@@ -23,7 +24,9 @@ import org.brailleblaster.testrunners.BBTestRunner;
 import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class DeleteTest {
+    // Disabled: NPE in TOCBuilderBBX.isEnabled, module not registered (Phase 8 TOC) (test_fix.md Phase 7a)
     @Test(enabled = false)
     public void deleteToc_issue6438() {
         BBTestRunner test = new BBTestRunner("", "<p>test 1</p><p>other 2</p>");
@@ -35,6 +38,7 @@ public class DeleteTest {
         test.textViewTools.pressShortcut(Keystrokes.DELETE);
     }
 
+    // Disabled: fixture printView/RT6497.bbx was never committed to this repo; needs a new document (test_fix.md Phase 7a)
     @Test(enabled = false)
     public void deleteSection_rt6497() {
         BBTestRunner test = new BBTestRunner(new File("src/test/resources/org/brailleblaster/printView/RT6497.bbx"));

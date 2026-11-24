@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.mvc;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.perspectives.mvc.menu.TopMenu;
 import org.brailleblaster.perspectives.mvc.modules.misc.ToggleViewsModule;
 import org.brailleblaster.testrunners.BBTestRunner;
@@ -22,9 +23,10 @@ import org.brailleblaster.testrunners.ViewTestRunner;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class ViewManagerTest {
 
-    @Test(enabled = false)
+    @Test
     public void visibleViewHideShowWindow() {
         BBTestRunner test = new BBTestRunner("", "<p>test</p>");
 
@@ -42,7 +44,7 @@ public class ViewManagerTest {
         assertWindowedViewClosed(test);
     }
 
-    @Test(enabled = false)
+    @Test
     public void visibleViewShowHideWindow() {
         BBTestRunner test = new BBTestRunner("", "<p>test</p>", () -> ViewManager.setWindowedView(ToggleViewsModule.Views.PRINT));
 
@@ -59,7 +61,7 @@ public class ViewManagerTest {
         assertWindowedViewOpen(test);
     }
 
-    @Test(enabled = false)
+    @Test
     public void invisibleViewShowHideWindow() {
         BBTestRunner test = new BBTestRunner("", "<p>test</p>");
         focusMainShell(test);
@@ -67,7 +69,7 @@ public class ViewManagerTest {
         _doInvisible(test);
     }
 
-    @Test(enabled = false)
+    @Test
     public void invisibleViewHideShowWindow() {
         BBTestRunner test = new BBTestRunner("", "<p>test</p>", () -> ViewManager.setWindowedView(ToggleViewsModule.Views.PRINT));
         focusMainShell(test);
@@ -89,7 +91,7 @@ public class ViewManagerTest {
         assertWindowedViewClosed(test);
     }
 
-    @Test(enabled = false)
+    @Test
     public void showWindowInvisibleVisible() {
         BBTestRunner test = new BBTestRunner("", "<p>test</p>");
 
@@ -109,7 +111,7 @@ public class ViewManagerTest {
         assertWindowedViewClosed(test);
     }
 
-    @Test(enabled = false)
+    @Test
     public void showWindowSwitchToInvisible() {
         BBTestRunner test = new BBTestRunner("", "<p>test</p>");
 
@@ -125,7 +127,7 @@ public class ViewManagerTest {
         assertWindowedViewClosed(test);
     }
 
-    @Test(enabled = false)
+    @Test
     public void invisibleHideWindowSwitchToVisible() {
         BBTestRunner test = new BBTestRunner("", "<p>test</p>");
 

@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -24,10 +25,11 @@ import org.brailleblaster.testrunners.BBTestRunner;
 import org.eclipse.swt.SWT;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class InlineEditTest {
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/printView/InlineEditTests.xml");
 
-    @Test(enabled = false)
+    @Test
     public void inlineDelete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "First pargraph on page 1";
@@ -41,7 +43,7 @@ public class InlineEditTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(0));
     }
 
-    @Test(enabled = false)
+    @Test
     public void inlineDelete_before_end() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Secondaragraph on Page 2";
@@ -55,7 +57,7 @@ public class InlineEditTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(3));
     }
 
-    @Test(enabled = false)
+    @Test
     public void inlineBackspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "SecondParagraph on Page 2";
@@ -69,7 +71,7 @@ public class InlineEditTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(3));
     }
 
-    @Test(enabled = false)
+    @Test
     public void inlineBackspace_before_start() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Secondaragraph on Page 2";
@@ -83,7 +85,7 @@ public class InlineEditTest {
         assertEquals(expectedBraille, bbTest.brailleViewBot.getTextOnLine(3));
     }
 
-    @Test(enabled = false)
+    @Test
     public void fullElementDelete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "3rd paragraph on Page 2";

@@ -23,7 +23,7 @@ import org.testng.annotations.Test;
 
 public class ArchiverRecoveryThreadTest {
 	
-	@Test(enabled = false)
+	@Test
 	public void garbageRecoveryFile_rt6844() throws IOException {
 		FileUtils.write(BBIni.getRecentSaves().toFile(), "\0\0\0\0", StandardCharsets.UTF_8, true);
 		

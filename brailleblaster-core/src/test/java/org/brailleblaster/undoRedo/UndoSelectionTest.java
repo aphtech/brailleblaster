@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.undoRedo;
 
+import org.brailleblaster.GuiTest;
 import java.io.File;
 
 import org.brailleblaster.TestGroups;
@@ -24,6 +25,7 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
+@GuiTest
 public class UndoSelectionTest {
 
 
@@ -53,7 +55,7 @@ public class UndoSelectionTest {
     String braille_line10 = "  ,p>agraph _.#aj";
     String braille_line11 = "  _.,p>agraph #aa";
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_beginning_to_beginning_edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "t";
@@ -85,7 +87,7 @@ public class UndoSelectionTest {
         assertEquals(braille_line5, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void two_elements_beginning_to_beginning_paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "P";
@@ -122,7 +124,7 @@ public class UndoSelectionTest {
         assertEquals(braille_line5, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void two_elements_beginning_to_beginning_pasteShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "P";
@@ -159,7 +161,7 @@ public class UndoSelectionTest {
         assertEquals(braille_line5, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_beginning_to_beginning_delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Paragraph 5";
@@ -184,7 +186,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter, bbTest.brailleViewBot.getTextOnLine(3));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_beginning_to_beginning_backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Paragraph 5";
@@ -209,7 +211,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter, bbTest.brailleViewBot.getTextOnLine(3));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_beginning_to_beginning_cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Paragraph 5";
@@ -234,7 +236,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter, bbTest.brailleViewBot.getTextOnLine(3));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_beginning_to_beginning_cutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Paragraph 5";
@@ -259,7 +261,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter, bbTest.brailleViewBot.getTextOnLine(3));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_beginning_to_middle_edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "t";
@@ -293,7 +295,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void two_elements_beginning_to_middle_paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "P";
@@ -333,7 +335,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void two_elements_beginning_to_middle_pasteShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "P";
@@ -373,7 +375,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_beginning_to_middle_delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "graph 5";
@@ -397,7 +399,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter, bbTest.brailleViewBot.getTextOnLine(3));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_beginning_to_middle_backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "graph 5";
@@ -421,7 +423,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter, bbTest.brailleViewBot.getTextOnLine(3));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_beginning_to_middle_cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "graph 5";
@@ -445,7 +447,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter, bbTest.brailleViewBot.getTextOnLine(3));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_beginning_to_middle_cutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "graph 5";
@@ -469,7 +471,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter, bbTest.brailleViewBot.getTextOnLine(3));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_beginning_to_end_edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "t";
@@ -500,7 +502,7 @@ public class UndoSelectionTest {
         assertEquals(braille_line6, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void two_elements_beginning_to_end_paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "P";
@@ -537,7 +539,7 @@ public class UndoSelectionTest {
     }
 
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void two_elements_beginning_to_end_pasteShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "P";
@@ -573,7 +575,7 @@ public class UndoSelectionTest {
         assertEquals(braille_line6, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_beginning_to_end_delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
 
@@ -602,7 +604,7 @@ public class UndoSelectionTest {
         assertEquals(braille_line7, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_beginning_to_end_backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
 
@@ -631,7 +633,7 @@ public class UndoSelectionTest {
         assertEquals(braille_line7, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_beginning_to_end_cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
 
@@ -660,7 +662,7 @@ public class UndoSelectionTest {
         assertEquals(braille_line7, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_beginning_to_end_cutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
 
@@ -689,7 +691,7 @@ public class UndoSelectionTest {
         assertEquals(braille_line7, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_middle_to_start_edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Parat";
@@ -723,7 +725,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void two_elements_middle_to_start_paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "ParaP";
@@ -763,7 +765,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void two_elements_middle_to_start_pasteShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "ParaP";
@@ -803,7 +805,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_middle_to_start_delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Para";
@@ -837,7 +839,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_middle_to_start_backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Para";
@@ -871,7 +873,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_middle_to_start_cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Para";
@@ -905,7 +907,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_elements_middle_to_start_cutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Para";
@@ -939,7 +941,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_paragraphs_middle_to_middle_edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Parat";
@@ -973,7 +975,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void two_paragraphs_middle_to_middle_paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "ParaP";
@@ -1013,7 +1015,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void two_paragraphs_middle_to_middle_pasteShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "ParaP";
@@ -1053,7 +1055,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_paragraphs_middle_to_middle_delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Para";
@@ -1087,7 +1089,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_paragraphs_middle_to_middle_backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Para";
@@ -1121,7 +1123,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_paragraphs_middle_to_middle_cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Para";
@@ -1155,7 +1157,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_paragraphs_middle_to_middle_cut_shortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Para";
@@ -1189,7 +1191,7 @@ public class UndoSelectionTest {
         assertEquals(brailleAfter2, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_paragraphs_middle_toEnd_edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Parat";
@@ -1220,7 +1222,7 @@ public class UndoSelectionTest {
         assertEquals(braille_line6, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void two_paragraphs_middle_toEnd_paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "ParaP";
@@ -1257,7 +1259,7 @@ public class UndoSelectionTest {
         assertEquals(braille_line6, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void two_paragraphs_middle_toEnd_pasteShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "ParaP";
@@ -1294,7 +1296,7 @@ public class UndoSelectionTest {
         assertEquals(braille_line6, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_paragraphs_middle_toEnd_delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Para";
@@ -1325,7 +1327,7 @@ public class UndoSelectionTest {
         assertEquals(braille_line6, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_paragraphs_middle_toEnd_backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Para";
@@ -1356,7 +1358,7 @@ public class UndoSelectionTest {
         assertEquals(braille_line6, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_paragraphs_middle_toEnd_cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Para";
@@ -1387,7 +1389,7 @@ public class UndoSelectionTest {
         assertEquals(braille_line6, bbTest.brailleViewBot.getTextOnLine(4));
     }
 
-    @Test(enabled = false)
+    @Test
     public void two_paragraphs_middle_toEnd_cutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String after = "Para";

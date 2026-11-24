@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.TestUtils;
 import org.brailleblaster.bbx.BBX;
 import org.brailleblaster.testrunners.BBTestRunner;
@@ -27,6 +28,7 @@ import org.testng.annotations.Test;
 
 import nu.xom.Document;
 
+@GuiTest
 public class FindReplaceEmphasisTest {
     private static final Logger log = LoggerFactory.getLogger(FindReplaceEmphasisTest.class);
     private final String bold = "bold";
@@ -41,7 +43,7 @@ public class FindReplaceEmphasisTest {
     public void makeBold() {
         BBTestRunner bb = new BBTestRunner(boldMe);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
 
@@ -72,7 +74,7 @@ public class FindReplaceEmphasisTest {
     public void makeUnbold() {
         BBTestRunner bb = new BBTestRunner(unboldMe);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
 
@@ -110,7 +112,7 @@ public class FindReplaceEmphasisTest {
     public void boldEmptyTextCombo() {
         BBTestRunner bb = new BBTestRunner(boldMe);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
 
@@ -142,7 +144,7 @@ public class FindReplaceEmphasisTest {
 
         BBTestRunner bb = new BBTestRunner(alreadyBold);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
 
@@ -180,7 +182,7 @@ public class FindReplaceEmphasisTest {
     public void makeBoldIntoBoldAndItalics() {
         BBTestRunner bb = new BBTestRunner(alreadyBold);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
 
@@ -211,7 +213,7 @@ public class FindReplaceEmphasisTest {
     public void RT5279makeBoldIntoItalicsAndRemoveBold() {
         BBTestRunner bb = new BBTestRunner(alreadyBold);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
 
@@ -260,7 +262,7 @@ public class FindReplaceEmphasisTest {
     public void RT5280makeBoldIntoItalicsAndRemoveBoldInBlock() {
         BBTestRunner bb = new BBTestRunner(mixedBoldUnbold);
         FindReplaceBotHelper.openDialog(bb);
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         FindReplaceBotHelper.clickFormatting(bb);
 

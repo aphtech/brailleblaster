@@ -19,6 +19,12 @@ import java.io.IOException;
 import org.brailleblaster.TestGroups;
 import org.testng.annotations.Test;
 
+/**
+ * Broken: written for the pre-BBX DTBook pipeline. BRFTestRunner now converts to BBX first, and the output
+ * differs in braille: changeTable spans are no longer computer braille (issue3615), utd:toc-* attributes no
+ * longer make TOC entries, and head style maps aren't read. Needs a braille/product decision, see test_fix.md
+ * Phase 6.
+ */
 @Test(groups = TestGroups.BROKEN_TESTS)
 public class BRFTest {
 	@Test

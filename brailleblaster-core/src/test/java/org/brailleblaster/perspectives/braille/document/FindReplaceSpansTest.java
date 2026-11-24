@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -30,6 +31,7 @@ import org.testng.annotations.Test;
 
 import nu.xom.Document;
 
+@GuiTest
 public class FindReplaceSpansTest {
     private static final Logger log = LoggerFactory.getLogger(FindReplaceSpansTest.class);
     private final Document TEST_FILE = TestXMLUtils.generateBookDoc("",
@@ -44,7 +46,7 @@ public class FindReplaceSpansTest {
     public void findSmallCaps() {
         BBTestRunner bb = new BBTestRunner(TEST_FILE);
         bb.textViewTools.pressShortcut(SWT.CTRL, 'f');
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         String toFind = "Mr. Frank";
         bot.comboBox(0).setText(toFind);
@@ -63,7 +65,7 @@ public class FindReplaceSpansTest {
     public void findMathSpans() {
         BBTestRunner bb = new BBTestRunner(MATH_SPANS);
         bb.textViewTools.pressShortcut(SWT.CTRL, 'f');
-        SWTBot bot = bb.bot.activeShell().bot();
+        SWTBot bot = bb.activeShell().bot();
         bot = FindAndReplaceTest.cleanSettings(bot, bb);
         String before = "?___";
         String after = "? ___";

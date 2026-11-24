@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.easierxml;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertFalse;
 
 import java.io.File;
@@ -26,6 +27,7 @@ import org.testng.annotations.Test;
 /**
  * StyleView selection and applying styles and actions
  */
+@GuiTest
 public class StyleViewActionsStylesTest {
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/easierxml/nimas-test.xml");
 
@@ -37,7 +39,7 @@ public class StyleViewActionsStylesTest {
         bbTest.navigateTextView(10);
 
         bbTest.styleViewTools.navigateToText("ting 2");
-        assertFalse(bbTest.bot.menu("Edit Table at Cursor").isEnabled());
+        assertFalse(bbTest.findMenu("Edit Table at Cursor", true).isEnabled());
     }
 
 

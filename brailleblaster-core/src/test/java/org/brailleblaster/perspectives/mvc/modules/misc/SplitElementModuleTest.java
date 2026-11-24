@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.mvc.modules.misc;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.perspectives.braille.messages.AdjustLocalStyleMessage;
 import org.brailleblaster.testrunners.BBTestRunner;
 import org.brailleblaster.testrunners.BBTestRunner.ViewTools;
@@ -38,6 +39,7 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.ParentNode;
 
+@GuiTest
 public class SplitElementModuleTest {
     private final String TEST_TEXT = "Testing text";
     private final String DUMMY_TEXT = "Dummy";
@@ -48,7 +50,7 @@ public class SplitElementModuleTest {
             "<p>" + DUMMY_TEXT + "<a>" + DUMMY_TEXT + "<a>" + TEST_TEXT + "</a>" + DUMMY_TEXT + "</a>" + DUMMY_TEXT + "</p>");
     private final String P_STYLE = "Body Text";
 
-    @Test(enabled = false)
+    @Test
     public void textViewBasicSplit() {
         BBTestRunner test = new BBTestRunner(basicBlock);
         testBasicSplit(test, test.textViewTools);
@@ -65,7 +67,7 @@ public class SplitElementModuleTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
     public void textViewBoldSplit() {
         BBTestRunner test = new BBTestRunner(boldedBlock);
         testBoldSplit(test, test.textViewTools);
@@ -84,7 +86,7 @@ public class SplitElementModuleTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
     public void textViewComplexSplit() {
         BBTestRunner test = new BBTestRunner(complexBlock);
 
@@ -112,6 +114,7 @@ public class SplitElementModuleTest {
                 .noNextChild();
     }
 
+    // Disabled: split element's first child gets DEFAULT style, not one derived from Body Text (D12) (test_fix.md Phase 7d, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void textViewSplitDoesNotCopyStyleOptions() {
         BBTestRunner test = new BBTestRunner(basicBlock);
@@ -139,7 +142,7 @@ public class SplitElementModuleTest {
         SplitElementModule.splitElement(test.manager.getSimpleManager());
     }
 
-    @Test(enabled = false)
+    @Test
     public void splitNextToSpan_issue6508() {
         BBTestRunner test = new BBTestRunner("", "<p><span>special</span>text</p>");
 

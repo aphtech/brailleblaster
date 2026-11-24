@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -31,6 +32,7 @@ import org.eclipse.swt.SWT;
 //import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class BoxlineSelectionTest {
     private final String BOXLINE_TEXT = "----------------------------------------";
     private final String FULL_BOX = "========================================";
@@ -41,7 +43,7 @@ public class BoxlineSelectionTest {
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/printView/BoxLineSelectionTests.bbx");
 
     //positions cursor at the beginning of a boxline, press a letter key, no change should occur
-    @Test(enabled = false)
+    @Test
     public void BoxlineStart_Keypress() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Paragraph 1";
@@ -79,7 +81,7 @@ public class BoxlineSelectionTest {
     }
 
     //positions cursor at the beginning of a boxline, attempts to paste text, no change should occur
-    @Test(enabled = false)
+    @Test
     public void BoxlineStart_Paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Paragraph 1";
@@ -123,7 +125,7 @@ public class BoxlineSelectionTest {
         assertEquals(BOTTOM_BOXLINE, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor at the start of a boxline, attempts to delete text, no change should occur
     public void BoxlineStart_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -161,7 +163,7 @@ public class BoxlineSelectionTest {
         assertEquals(BOTTOM_BOXLINE, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor at the sart of a boxline, attempts to delete textusing backspace, boxlines linesBefore should be removed
     public void BoxlineStart_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -208,7 +210,7 @@ public class BoxlineSelectionTest {
         assertEquals(afterEndBoxBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor at the middle of a boxline, press a letter key, no change should occur
     public void BoxlineMiddle_Keypress() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -248,7 +250,7 @@ public class BoxlineSelectionTest {
         assertEquals(BOTTOM_BOXLINE, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor at the middle of a boxline, attempts to paste text, no change should occur
     public void BoxlineMiddle_Paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -295,7 +297,7 @@ public class BoxlineSelectionTest {
         assertEquals(BOTTOM_BOXLINE, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor at the middle of a boxline, attempts to paste text, no change should occur
     public void BoxlineMiddle_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -335,7 +337,7 @@ public class BoxlineSelectionTest {
         assertEquals(BOTTOM_BOXLINE, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor at the middle of a boxline, attempts to delete text using backspace, no change should occur
     public void BoxlineMiddle_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -374,7 +376,7 @@ public class BoxlineSelectionTest {
         assertEquals(BOTTOM_BOXLINE, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor at the end of a boxline, press a letter key, no change should occur
     public void BoxlineEnd_Keypress() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -383,7 +385,7 @@ public class BoxlineSelectionTest {
         String textAfterBoxline = "Paragraph 2";
         String brailleAfterBoxline = "  ,p>agraph #b";
 
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(3) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(2));
         bbTest.textViewTools.typeText("F");
         bbTest.updateTextView();
 
@@ -411,7 +413,7 @@ public class BoxlineSelectionTest {
         assertEquals(BOTTOM_BOXLINE, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor at the end of a boxline, attempts to paste text, no change should occur
     public void BoxlineEnd_Paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -426,7 +428,7 @@ public class BoxlineSelectionTest {
         bbTest.copy();
 
         //paste
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(3) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(2));
         bbTest.paste();
         bbTest.updateTextView();
 
@@ -463,7 +465,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor at the end of a boxline, presses delete, linesAfter reduced by 1
     public void BoxlineEnd_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -474,7 +476,7 @@ public class BoxlineSelectionTest {
         String afterEndBox = "Paragraph 3";
         String afterEndBoxBraille = "  ,p>agraph #c";
 
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(5) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(4));
         bbTest.textViewTools.pressKey(SWT.DEL, 1);
         bbTest.updateTextView();
 
@@ -507,7 +509,7 @@ public class BoxlineSelectionTest {
         assertEquals(afterEndBoxBraille, resultBraille);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor at the end of a boxline, attempts to delete text using backspace, no change should occur
     public void BoxlineEnd_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -520,7 +522,7 @@ public class BoxlineSelectionTest {
         String afterEndBoxBraille = "  ,p>agraph #c";
 
 //		treeBot = bbTest.bot.tree(0);
-        bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(3) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(2));
         bbTest.textViewTools.pressKey(SWT.BS, 1);
         bbTest.updateTextView();
 
@@ -571,7 +573,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //selects a boxline, attempts to delete text using delete, no change should occur
     public void Boxline_CompleteSelection_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -636,7 +638,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //selects a boxline, attempts to delete text using delete, no change should occur
     public void Boxline_CompleteSelection_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -701,7 +703,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //selects a boxline, attempts to delete text using cut, no change should occur
     public void Boxline_CompleteSelection_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -766,7 +768,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //selects a boxline, attempts to delete text using cut shortcut, no change should occur
     public void Boxline_CompleteSelection_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -830,7 +832,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor before a boxline, attempts to delete text using delete, line is removed
     public void BeforeBoxline_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -893,7 +895,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor before a boxline, attempts to delete text using backspace, no change should occur
     public void AfterBoxline_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -957,7 +959,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //selects from element starty to boxline end, boxline should remain unchanged
     public void StartofElement_Boxline_Edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1011,7 +1013,8 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(groups = {TestGroups.CLIPBOARD_TESTS, TestGroups.TODO_FIX_LATER}, enabled = false)
+    // Disabled: pasting at the start of an element after a boxline puts the text before the boxline (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
+    @Test(enabled = false, groups = {TestGroups.CLIPBOARD_TESTS, TestGroups.TODO_FIX_LATER})
     // overwriting start boxline issue
     //selects from element start to boxline end, pastes text, boxline should remain unchanged
     public void StartofElement_Boxline_Paste() {
@@ -1072,7 +1075,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //deletes first element, top boxline should be unchanged, current formatting has it shorter
     public void StartofElement_Boxline_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1120,7 +1123,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //deletes first element, top boxline should be unchanged, current formatting has it shorter
     public void StartofElement_Boxline_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1168,7 +1171,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //deletes first element, top boxline should be unchanged, current formatting has it shorter
     public void StartofElement_Boxline_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1216,7 +1219,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     public void StartofElement_Boxline_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String SHORT_BOXLINE_TEXT = "----------------------------------------";
@@ -1263,7 +1266,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //selects from inside first element to middle of boxline, boxline should not change
     public void InsideofElement_Boxline_Edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1317,7 +1320,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     //selects from inside first element to middle of boxline, boxline should not change
     public void InsideofElement_Boxline_Paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1377,7 +1380,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //selects from first element to end of boxline and deletes text, boxline should not change
     public void InsideofElement_Boxline_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1431,7 +1434,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //selects from first element to middle of boxline and deletes text, boxline should not change
     public void InsideofElement_Boxline_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1485,7 +1488,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor before a boxline, attempts to delete text using cut, no change should occur
     public void InsideofElement_Boxline_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1539,7 +1542,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor before a boxline, attempts to delete text using cut shortcut, no change should occur
     public void InsideofElement_Boxline_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1593,7 +1596,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);	
     }
 
-    @Test(enabled = false)
+    @Test
     public void EndofElement_Boxline_Edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Paragraph 1P";
@@ -1646,7 +1649,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(groups = {TestGroups.CLIPBOARD_TESTS, TestGroups.TODO_FIX_LATER}, enabled = false)
+    @Test(groups = {TestGroups.CLIPBOARD_TESTS, TestGroups.TODO_FIX_LATER})
     // paste at end of line before a boxline doesn't work
     //positions cursor before a boxline, attempts to delete text using backspace, no change should occur
     public void EndofElement_Boxline_Paste() {
@@ -1707,7 +1710,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor before a boxline, attempts to delete text using backspace, no change should occur
     public void EndofElement_Boxline_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1761,7 +1764,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor before a boxline, attempts to delete text using backspace, no change should occur
     public void EndofElement_Boxline_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1815,7 +1818,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor before a boxline, attempts to delete text using backspace, no change should occur
     public void EndofElement_Boxline_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1869,7 +1872,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //positions cursor before a boxline, attempts to delete text using backspace, no change should occur
     public void EndofElement_Boxline_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1923,7 +1926,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void ELementStart_DoubleBoxline_Edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1936,7 +1939,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6));
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - bbTest.textViewWidget.getOffsetAtLine(6);
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.typeText("P");
         bbTest.updateTextView();
 
@@ -1977,7 +1980,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void ELementStart_DoubleBoxline_Paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -1996,7 +1999,7 @@ public class BoxlineSelectionTest {
         //paste
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6));
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - bbTest.textViewWidget.getOffsetAtLine(6);
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.paste();
         bbTest.updateTextView();
 
@@ -2037,7 +2040,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void ELementStart_DoubleBoxline_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2048,7 +2051,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6));
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - bbTest.textViewWidget.getOffsetAtLine(6);
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.pressKey(SWT.DEL, 1);
         bbTest.updateTextView();
 
@@ -2080,7 +2083,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void ELementStart_DoubleBoxline_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2091,7 +2094,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6));
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - bbTest.textViewWidget.getOffsetAtLine(6);
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.pressKey(SWT.BS, 1);
         bbTest.updateTextView();
 
@@ -2123,7 +2126,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void ELementStart_DoubleBoxline_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2134,7 +2137,7 @@ public class BoxlineSelectionTest {
         //	treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6));
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - bbTest.textViewWidget.getOffsetAtLine(6);
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.cut();
         bbTest.updateTextView();
 
@@ -2166,7 +2169,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void ELementStart_DoubleBoxline_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2177,7 +2180,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6));
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - bbTest.textViewWidget.getOffsetAtLine(6);
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.cutShortCut();
         bbTest.updateTextView();
 
@@ -2209,7 +2212,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void InsideElement_DoubleBoxline_Edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2222,7 +2225,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6) + 4);
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - (bbTest.textViewWidget.getOffsetAtLine(6) + 4);
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.typeText("P");
         bbTest.updateTextView();
 
@@ -2263,7 +2266,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void InsideELement_DoubleBoxline_Paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2282,7 +2285,7 @@ public class BoxlineSelectionTest {
         //paste
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6) + 4);
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - (bbTest.textViewWidget.getOffsetAtLine(6) + 4);
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.paste();
         bbTest.updateTextView();
 
@@ -2323,7 +2326,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void InsideElement_DoubleBoxline_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2336,7 +2339,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6) + 4);
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - (bbTest.textViewWidget.getOffsetAtLine(6) + 4);
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.pressKey(SWT.DEL, 1);
         bbTest.updateTextView();
 
@@ -2377,7 +2380,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void InsideElement_DoubleBoxline_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2390,7 +2393,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6) + 4);
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - (bbTest.textViewWidget.getOffsetAtLine(6) + 4);
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.pressKey(SWT.BS, 1);
         bbTest.updateTextView();
 
@@ -2431,7 +2434,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void InsideElement_DoubleBoxline_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2444,7 +2447,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6) + 4);
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - (bbTest.textViewWidget.getOffsetAtLine(6) + 4);
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.cut();
         bbTest.updateTextView();
 
@@ -2485,7 +2488,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void InsideElement_DoubleBoxline_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2498,7 +2501,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6) + 4);
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - (bbTest.textViewWidget.getOffsetAtLine(6) + 4);
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.cutShortCut();
         bbTest.updateTextView();
 
@@ -2539,7 +2542,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void ElementEnd_DoubleBoxline_Edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2552,7 +2555,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6) + bbTest.textViewBot.getTextOnLine(6).length());
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - (bbTest.textViewWidget.getOffsetAtLine(6) + bbTest.textViewBot.getTextOnLine(6).length());
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.typeText("P");
         bbTest.updateTextView();
 
@@ -2593,7 +2596,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void ELementEnd_DoubleBoxline_Paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2612,7 +2615,7 @@ public class BoxlineSelectionTest {
         //paste
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6) + bbTest.textViewBot.getTextOnLine(6).length());
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - (bbTest.textViewWidget.getOffsetAtLine(6) + bbTest.textViewBot.getTextOnLine(6).length());
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.paste();
         bbTest.updateTextView();
 
@@ -2653,7 +2656,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void ElementEnd_DoubleBoxline_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2666,7 +2669,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6) + bbTest.textViewBot.getTextOnLine(6).length());
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - (bbTest.textViewWidget.getOffsetAtLine(6) + bbTest.textViewBot.getTextOnLine(6).length());
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.pressKey(SWT.DEL, 1);
         bbTest.updateTextView();
 
@@ -2707,7 +2710,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void ELementEnd_DoubleBoxline_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2720,7 +2723,7 @@ public class BoxlineSelectionTest {
         //	treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6) + bbTest.textViewBot.getTextOnLine(6).length());
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - (bbTest.textViewWidget.getOffsetAtLine(6) + bbTest.textViewBot.getTextOnLine(6).length());
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.pressKey(SWT.BS, 1);
         bbTest.updateTextView();
 
@@ -2761,7 +2764,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void ELementEnd_DoubleBoxline_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2774,7 +2777,7 @@ public class BoxlineSelectionTest {
         //	treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6) + bbTest.textViewBot.getTextOnLine(6).length());
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - (bbTest.textViewWidget.getOffsetAtLine(6) + bbTest.textViewBot.getTextOnLine(6).length());
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.cut();
         bbTest.updateTextView();
 
@@ -2815,7 +2818,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void ELementEnd_DoubleBoxline_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2828,7 +2831,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(6) + bbTest.textViewBot.getTextOnLine(6).length());
         int length = (bbTest.textViewWidget.getOffsetAtLine(10) + 4) - (bbTest.textViewWidget.getOffsetAtLine(6) + bbTest.textViewBot.getTextOnLine(6).length());
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.cutShortCut();
         bbTest.updateTextView();
 
@@ -2869,7 +2872,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void BoxlineStart__Selection_Edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2882,7 +2885,7 @@ public class BoxlineSelectionTest {
         //	treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(2));
         int length = (bbTest.textViewWidget.getOffsetAtLine(3) - bbTest.textViewWidget.getOffsetAtLine(2));
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.typeText("P");
         bbTest.updateTextView();
 
@@ -2914,7 +2917,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void BoxlineStart_Selection_Paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2933,7 +2936,7 @@ public class BoxlineSelectionTest {
         //paste
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(2));
         int length = (bbTest.textViewWidget.getOffsetAtLine(3) - bbTest.textViewWidget.getOffsetAtLine(2));
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.paste();
         bbTest.updateTextView();
 
@@ -2965,7 +2968,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void BoxlineStart_Selection_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -2978,7 +2981,7 @@ public class BoxlineSelectionTest {
         //	treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(2));
         int length = (bbTest.textViewWidget.getOffsetAtLine(3) - bbTest.textViewWidget.getOffsetAtLine(2));
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.pressKey(SWT.DEL, 1);
         bbTest.updateTextView();
 
@@ -3010,7 +3013,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     public void BoxlineStart_Selection_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Paragraph 1";
@@ -3022,7 +3025,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(2));
         int length = (bbTest.textViewWidget.getOffsetAtLine(3) - bbTest.textViewWidget.getOffsetAtLine(2));
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.pressKey(SWT.BS, 1);
         bbTest.updateTextView();
 
@@ -3054,7 +3057,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     public void BoxlineStart_Selection_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Paragraph 1";
@@ -3066,7 +3069,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(2));
         int length = (bbTest.textViewWidget.getOffsetAtLine(3) - bbTest.textViewWidget.getOffsetAtLine(2));
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.cut();
         bbTest.updateTextView();
 
@@ -3098,7 +3101,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     public void BoxlineStart_Selection_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Paragraph 1";
@@ -3110,7 +3113,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(2));
         int length = (bbTest.textViewWidget.getOffsetAtLine(3) - bbTest.textViewWidget.getOffsetAtLine(2));
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.cutShortCut();
         bbTest.updateTextView();
 
@@ -3142,7 +3145,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     public void InsideBoxline__Selection_Edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Paragraph 1";
@@ -3154,7 +3157,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(2) + (bbTest.textViewBot.getTextOnLine(2).length() / 2));
         int length = (bbTest.textViewWidget.getOffsetAtLine(3) - (bbTest.textViewWidget.getOffsetAtLine(2) + bbTest.textViewBot.getTextOnLine(2).length() / 2));
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.typeText("P");
         bbTest.updateTextView();
 
@@ -3186,7 +3189,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(groups = TestGroups.CLIPBOARD_TESTS, enabled = false)
+    @Test(groups = TestGroups.CLIPBOARD_TESTS)
     public void InsideBoxline_Selection_Paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Paragraph 1";
@@ -3204,7 +3207,7 @@ public class BoxlineSelectionTest {
         //paste
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(2) + (bbTest.textViewBot.getTextOnLine(2).length() / 2));
         int length = (bbTest.textViewWidget.getOffsetAtLine(3) - (bbTest.textViewWidget.getOffsetAtLine(2) + bbTest.textViewBot.getTextOnLine(2).length() / 2));
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.paste();
         bbTest.updateTextView();
 
@@ -3236,7 +3239,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     public void InsideBoxline_Selection_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Paragraph 1";
@@ -3248,7 +3251,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(2) + (bbTest.textViewBot.getTextOnLine(2).length() / 2));
         int length = (bbTest.textViewWidget.getOffsetAtLine(3) - (bbTest.textViewWidget.getOffsetAtLine(2) + bbTest.textViewBot.getTextOnLine(2).length() / 2));
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.pressKey(SWT.DEL, 1);
         bbTest.updateTextView();
 
@@ -3280,7 +3283,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     public void InsideBoxline_Selection_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Paragraph 1";
@@ -3292,7 +3295,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(2) + (bbTest.textViewBot.getTextOnLine(2).length() / 2));
         int length = (bbTest.textViewWidget.getOffsetAtLine(3) - (bbTest.textViewWidget.getOffsetAtLine(2) + bbTest.textViewBot.getTextOnLine(2).length() / 2));
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.pressKey(SWT.BS, 1);
         bbTest.updateTextView();
 
@@ -3324,7 +3327,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     public void InsideBoxline_Selection_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Paragraph 1";
@@ -3336,7 +3339,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(2) + (bbTest.textViewBot.getTextOnLine(2).length() / 2));
         int length = (bbTest.textViewWidget.getOffsetAtLine(3) - (bbTest.textViewWidget.getOffsetAtLine(2) + bbTest.textViewBot.getTextOnLine(2).length() / 2));
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.cut();
         bbTest.updateTextView();
 
@@ -3368,7 +3371,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void InsideBoxline_Selection_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3381,7 +3384,7 @@ public class BoxlineSelectionTest {
 //		treeBot = bbTest.bot.tree(0);
         bbTest.navigateTextView(bbTest.textViewWidget.getOffsetAtLine(2) + (bbTest.textViewBot.getTextOnLine(2).length() / 2));
         int length = (bbTest.textViewWidget.getOffsetAtLine(3) - (bbTest.textViewWidget.getOffsetAtLine(2) + bbTest.textViewBot.getTextOnLine(2).length() / 2));
-        bbTest.textViewTools.selectRight(length);
+        bbTest.textViewTools.selectTo(bbTest.textViewWidget.getCaretOffset() + length); // length is in widget offsets (\r\n = 2)
         bbTest.textViewTools.cutShortCut();
         bbTest.updateTextView();
 
@@ -3413,7 +3416,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void BoxlineEnd__Selection_Edit() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3457,7 +3460,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void BoxlineEnd_Selection_Paste() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3507,7 +3510,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     public void BoxlineEnd_Selection_Delete() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Paragraph 1";
@@ -3550,7 +3553,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     public void BoxlineEnd_Selection_Backspace() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Paragraph 1";
@@ -3593,7 +3596,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     public void BoxlineEnd_Selection_Cut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Paragraph 1";
@@ -3636,7 +3639,7 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     //begins in a paragraph and tests that consecutive boxlines are not altered
     public void BoxlineEnd_Selection_CutShortcut() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -3680,16 +3683,16 @@ public class BoxlineSelectionTest {
 //		assertEquals(expectedTreeItem, resultTreeItem);
     }
 
-    @Test(enabled = false)
+    @Test
     public void color_box() {
         BBTestRunner bb = new BBTestRunner(TestXMLUtils.generateBookDoc("",
                 "<p>" + "one" + "</p>" +
                         "<p>" + "two" + "</p>" +
                         "<p>" + "three" + "</p>"));
         bb.textViewTools.navigateToLine(1);
-        bb.bot.menu("Styles").menu("Miscellaneous").menu("Boxes").menu("Color Box").click();
-        bb.bot.activeShell().bot().comboBox(0).setText("blue");
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.findMenu("Styles", true).menu("Miscellaneous").menu("Boxes").menu("Color Box").click();
+        bb.activeShell().bot().comboBox(0).setText("blue");
+        bb.activeShell().bot().button("OK").click();
         String s1 = bb.textViewBot.getTextOnLine(2);
         String s2 = bb.textViewBot.getTextOnLine(3);
         String s3 = bb.textViewBot.getTextOnLine(4);
@@ -3698,7 +3701,7 @@ public class BoxlineSelectionTest {
         assertEquals(s3, StringUtils.repeat('-', BOTTOM_BOXLINE.length()));
     }
 
-    @Test(enabled = false)
+    @Test
     public void deleteBox() {
         BBTestRunner bbTest = new BBTestRunner(TestXMLUtils.generateBookDoc("", "<p>Box here</p>"));
 
@@ -3713,6 +3716,7 @@ public class BoxlineSelectionTest {
         assertTrue(bbTest.textViewWidget.getText().isEmpty());
     }
 
+    // Disabled: NodeException index error boxing text and a table together (I8) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void rt6553_applyToTextAndTable() {
         BBTestRunner bbTest = new BBTestRunner("", TABLE_DOC);
@@ -3730,6 +3734,7 @@ public class BoxlineSelectionTest {
                 .noNextChild();
     }
 
+    // Disabled: NodeException index error boxing text and a table together (I8) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void rt6553_applyToTableAndText() {
         BBTestRunner bbTest = new BBTestRunner("", TABLE_DOC);
@@ -3748,7 +3753,7 @@ public class BoxlineSelectionTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
     public void rt6553_applyToTextAndTableAndText() {
         BBTestRunner bbTest = new BBTestRunner("", TABLE_DOC);
 

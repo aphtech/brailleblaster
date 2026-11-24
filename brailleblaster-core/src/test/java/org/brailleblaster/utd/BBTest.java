@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.utd;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.Element;
 import org.brailleblaster.TestGroups;
 import org.brailleblaster.testrunners.BBTestRunner;
@@ -31,6 +32,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.startsWith;
 import static org.testng.Assert.assertEquals;
 
+@GuiTest
 public class BBTest {
 
     @Test(enabled = false)
@@ -58,43 +60,33 @@ public class BBTest {
         ViewTestRunner.doPendingSWTWork();
 
         //Note: Don't use Keystrokes.LF/CR due to linux/windows compatability
-        bbTest.textViewBot.typeText(System.lineSeparator());
+        bbTest.textViewTools.typeText(System.lineSeparator());
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.textViewBot.pressShortcut(SWT.CTRL, 'z');
+        bbTest.textViewTools.pressShortcut(SWT.CTRL, 'z');
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.textViewBot.typeText(System.lineSeparator());
+        bbTest.textViewTools.typeText(System.lineSeparator());
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.textViewBot.pressShortcut(SWT.CTRL, 'z');
+        bbTest.textViewTools.pressShortcut(SWT.CTRL, 'z');
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.textViewBot.pressShortcut(SWT.CTRL, 'y');
+        bbTest.textViewTools.pressShortcut(SWT.CTRL, 'y');
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.textViewBot.typeText(System.lineSeparator());
+        bbTest.textViewTools.typeText(System.lineSeparator());
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.textViewBot.typeText("test");
+        bbTest.textViewTools.typeText("test");
 
-        bbTest.textViewBot.typeText(System.lineSeparator());
+        bbTest.textViewTools.typeText(System.lineSeparator());
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.textViewBot.pressShortcut(SWT.CTRL, 'z');
+        bbTest.textViewTools.pressShortcut(SWT.CTRL, 'z');
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.textViewBot.typeText(System.lineSeparator());
-        ViewTestRunner.doPendingSWTWork();
-    }
-
-    @Test(groups = TestGroups.BROKEN_TESTS) //No idea what this is testing, hg blame mentiones cdata
-    //but it's splitting <h1><p>Overly nested elements</p></h1> ?
-    public void splitHeadingTest() {
-        BBTestRunner bbTest = new BBTestRunner(new File("src/test/resources/org/brailleblaster/easierxml/nimas-test.xml"));
-
-        bbTest.textViewTools.navigateToText("nested");
-        bbTest.textViewBot.typeText(System.lineSeparator());
+        bbTest.textViewTools.typeText(System.lineSeparator());
         ViewTestRunner.doPendingSWTWork();
     }
 
@@ -109,10 +101,10 @@ public class BBTest {
     public void issue3712() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>test</p>");
 
-        bbTest.bot.menu("Close").click();
+        bbTest.findMenu("Close", true).click();
         ViewTestRunner.doPendingSWTWork();
 
-        bbTest.bot.menu("Open").click();
+        bbTest.findMenu("Open", true).click();
         ViewTestRunner.doPendingSWTWork();
     }
 

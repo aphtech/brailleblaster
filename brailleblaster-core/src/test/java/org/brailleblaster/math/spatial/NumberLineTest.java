@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.math.spatial;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.TestUtils;
 import org.brailleblaster.math.mathml.MathModuleUtils;
 import org.brailleblaster.math.numberLine.*;
@@ -36,6 +37,7 @@ import nu.xom.Document;
 
 import java.util.ArrayList;
 
+@GuiTest
 public class NumberLineTest {
 
     private final Document twoParagraphs =
@@ -208,13 +210,13 @@ public class NumberLineTest {
     }
 
     public void setSegment(String start, String end, BBTestRunner bb) {
-        bb.bot.activeShell().bot().text(startSegment).setText(String.valueOf(start));
-        bb.bot.activeShell().bot().text(endSegment).setText(String.valueOf(end));
+        bb.activeShell().bot().text(startSegment).setText(String.valueOf(start));
+        bb.activeShell().bot().text(endSegment).setText(String.valueOf(end));
     }
 
     public void setLine(String start, String end, BBTestRunner bb) {
-        bb.bot.activeShell().bot().text(startLine).setText(String.valueOf(start));
-        bb.bot.activeShell().bot().text(endLine).setText(String.valueOf(end));
+        bb.activeShell().bot().text(startLine).setText(String.valueOf(start));
+        bb.activeShell().bot().text(endLine).setText(String.valueOf(end));
     }
 
     public void setNotReduced(BBTestRunner bb) {
@@ -227,11 +229,11 @@ public class NumberLineTest {
     }
 
     public void setInterval(BBTestRunner bb, String interval) {
-        bb.bot.activeShell().bot().text(0).setText(String.valueOf(interval));
+        bb.activeShell().bot().text(0).setText(String.valueOf(interval));
     }
 
     public void pressOk(BBTestRunner bb) {
-        bb.bot.activeShell().bot().button(SpatialMathUtils.OK_LABEL).click();
+        bb.activeShell().bot().button(SpatialMathUtils.OK_LABEL).click();
     }
 
     public void addArrowsToLine(BBTestRunner bb) {
@@ -298,11 +300,11 @@ public class NumberLineTest {
     }
 
     private void setRadioButton(BBTestRunner bb, int i, BlankOptions type) {
-        bb.bot.activeShell().bot().radio(type.getPrettyName(), i).click();
+        bb.activeShell().bot().radio(type.getPrettyName(), i).click();
     }
 
     private void setBlankView(BBTestRunner bb) {
-        bb.bot.activeShell().bot().button(NumberLineOptions.BLANKS.getPrettyName()).click();
+        bb.activeShell().bot().button(NumberLineOptions.BLANKS.getPrettyName()).click();
     }
 
     private void setView(BBTestRunner bb, NumberLineViews blanks) {
@@ -353,7 +355,7 @@ public class NumberLineTest {
     }
 
     private void setUserText(BBTestRunner bb, String string, int i) {
-        bb.bot.activeShell().bot().text(i).setText(string);
+        bb.activeShell().bot().text(i).setText(string);
     }
 
     @DataProvider(name = "userEnteredData")
@@ -465,7 +467,7 @@ public class NumberLineTest {
     }
 
     private void addPoint(int index, BBTestRunner bb) {
-        bb.bot.activeShell().bot().comboBox(index).setSelection(index);
+        bb.activeShell().bot().comboBox(index).setSelection(index);
     }
 
     @DataProvider(name = "decimalSinglePoint")
@@ -1231,12 +1233,12 @@ public class NumberLineTest {
     }
 
     private void setLabelOption(BBTestRunner bb) {
-        bb.bot.activeShell().bot().button(NumberLineOptions.LABELS.getPrettyName()).click();
+        bb.activeShell().bot().button(NumberLineOptions.LABELS.getPrettyName()).click();
     }
 
     private void addLabels(BBTestRunner bb, String[] labels) {
         for (int i = 0; i < labels.length; i++) {
-            bb.bot.activeShell().bot().text(i).setText(labels[i]);
+            bb.activeShell().bot().text(i).setText(labels[i]);
         }
     }
 

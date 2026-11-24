@@ -36,6 +36,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -62,7 +64,7 @@ import static org.testng.Assert.*;
 public class BBTestRunner {
     public static final File BB_PATH = BBData.INSTANCE.getBrailleblasterPath();
     public static final File BB_USER_PATH = BBData.INSTANCE.getUserDataPath();
-    public static final File TEST_DIR = Paths.get("dist", "programData", "testFiles").toFile();
+    public static final File TEST_DIR = BBViewTestRunner.TEST_DIR;
 
     public final WPManager wpManager;
     public final Manager manager;
@@ -182,8 +184,10 @@ public class BBTestRunner {
         }
 
         textViewTools = new ViewTools();
+        textViewTools.setManager(manager);
         brailleViewTools = new ViewTools();
         updateViewReferences();
+        textViewTools.settle();
 
         //TODO: no longer needed in BBX?
 //		bot.menu("&Open").click();
@@ -205,16 +209,50 @@ public class BBTestRunner {
         return manager.getDoc();
     }
 
+    /**
+     * Menu lookup in BrailleBlaster's own shell. bot.menu() goes through SWTBot's active shell, which is null
+     * when the window doesn't have OS focus ("The widget was null").
+     */
+    public SWTBotMenu findMenu(String text, boolean recursive) {
+        org.eclipse.swtbot.swt.finder.widgets.SWTBotRootMenu menuBar = new SWTBotShell(wpManager.getShell()).menu();
+        try {
+            return menuBar.menu(text, recursive, 0);
+        } catch (WidgetNotFoundException e) {
+            // Styles show BANA display labels (bana-styles.properties), e.g. a style name maps to a friendlier label
+            String label = org.brailleblaster.utils.localization.LocaleHandler.Companion.getBanaStyles(java.util.Locale.getDefault()).get(text);
+            if (label.equals(text)) {
+                throw e;
+            }
+            return menuBar.menu(label, recursive, 0);
+        }
+    }
+
+    /**
+     * The newest visible window of this BrailleBlaster, normally the dialog a test just opened. Use instead of
+     * bot.activeShell(), which asks the OS for the focused window and is null when BrailleBlaster isn't focused.
+     */
+    public SWTBotShell activeShell() {
+        Shell main = wpManager.getShell();
+        Shell[] shells = Display.getCurrent().getShells();
+        for (int i = shells.length - 1; i >= 0; i--) {
+            Shell shell = shells[i];
+            if (!shell.isDisposed() && shell.isVisible() && shell != main) {
+                return new SWTBotShell(shell);
+            }
+        }
+        return new SWTBotShell(main);
+    }
+
     public void cut() {
-        bot.menu("&Cut").click();
+        findMenu("&Cut", true).click(); doPendingSWTWork();
     }
 
     public void copy() {
-        bot.menu("&Copy").click();
+        findMenu("&Copy", true).click(); doPendingSWTWork();
     }
 
     public void paste() {
-        bot.menu("&Paste").click();
+        findMenu("&Paste", true).click(); doPendingSWTWork();
     }
 
     public void navigateBrailleView(int offset) {
@@ -226,13 +264,22 @@ public class BBTestRunner {
     }
 
     public void selectTree(SWTBot bot, String menu) {
-        SWTBotMenu menuBot = bot.menu("Tree");
+        SWTBotMenu menuBot = findMenu("Tree", true);
         menuBot.menu(menu).click();
     }
 
+    /**
+     * Commits a pending text view edit. The old way moved focus away and back so TextView's focusLost listener ran,
+     * but focus events don't fire reliably without OS focus, so by default do what that listener does.
+     */
     public void updateTextView() {
-        brailleViewBot.setFocus();
-        textViewBot.setFocus();
+        if (ViewTools.REAL_KEYS) {
+            brailleViewBot.setFocus();
+            textViewBot.setFocus();
+        } else if (manager.getText().textChanged) {
+            manager.getText().update(false);
+            manager.getText().setCurrent(textViewWidget.getCaretOffset());
+        }
         doPendingSWTWork();
     }
 
@@ -264,7 +311,7 @@ public class BBTestRunner {
     }
 
     public void selectToolbarOption(String menuItem) {
-        bot.menu(menuItem).click();
+        findMenu(menuItem, true).click();
         doPendingSWTWork();
     }
 
@@ -275,20 +322,36 @@ public class BBTestRunner {
 
         SWTBotMenu selectedMenu;
         try {
-            selectedMenu = bot.menu(StringUtils.capitalize(topLevelMenu.name().toLowerCase()), false);
+            selectedMenu = findMenu(StringUtils.capitalize(topLevelMenu.name().toLowerCase()), false);
         } catch (WidgetNotFoundException e) {
             throw new RuntimeException("TopMenu " + topLevelMenu + " not found?", e);
         }
 
-        for (String curMenuItem : menuItem) {
-            selectedMenu = _doClickMenu(selectedMenu, curMenuItem, false);
+        try {
+            for (String curMenuItem : menuItem) {
+                selectedMenu = _doClickMenu(selectedMenu, curMenuItem, false);
+            }
+        } catch (RuntimeException notUnderTopMenu) {
+            // Menu items move between top menus (e.g. Window > Toggle Views is now under View, several Tools
+            // items are on the Debug menu); find the first item anywhere in the menu bar and follow the rest
+            if (menuItem.length == 0) {
+                throw notUnderTopMenu;
+            }
+            try {
+                selectedMenu = findMenu(menuItem[0], true);
+            } catch (WidgetNotFoundException e) {
+                throw notUnderTopMenu;
+            }
+            for (int i = 1; i < menuItem.length; i++) {
+                selectedMenu = _doClickMenu(selectedMenu, menuItem[i], false);
+            }
         }
         selectedMenu.click();
         doPendingSWTWork();
     }
 
     public void clickStyleMenuItem(String category, String menuItem) {
-        SWTBotMenu selectedMenu = bot.menu(StringUtils.capitalize(TopMenu.STYLES.name().toLowerCase()));
+        SWTBotMenu selectedMenu = findMenu(StringUtils.capitalize(TopMenu.STYLES.name().toLowerCase()), false);
         selectedMenu = _doClickMenu(selectedMenu, category, false);
         selectedMenu = _doClickMenu(selectedMenu, menuItem, true);
         selectedMenu.click();
@@ -299,6 +362,16 @@ public class BBTestRunner {
         try {
             return selectedMenu.menu(curMenuItem, recursive, 0);
         } catch (WidgetNotFoundException e) {
+            // The Styles menu shows BANA display labels (bana-styles.properties, e.g. L1-3 -> "List 1"),
+            // while tests name styles by their styleDefs name
+            String label = org.brailleblaster.utils.localization.LocaleHandler.Companion.getBanaStyles(java.util.Locale.getDefault()).get(curMenuItem);
+            if (!label.equals(curMenuItem)) {
+                try {
+                    return selectedMenu.menu(label, recursive, 0);
+                } catch (WidgetNotFoundException ignored) {
+                    // report the original name below
+                }
+            }
             StringBuilder sb = new StringBuilder();
 
             MenuItem curParent = selectedMenu.widget;
@@ -483,9 +556,20 @@ public class BBTestRunner {
         brailleViewTools.setBot(brailleViewBot);
     }
 
+    /**
+     * Keyboard and caret helpers for one view.
+     * <p>
+     * By default keys are delivered straight to the widget ({@link DirectKeys}), which doesn't need OS focus and so
+     * works on local Windows runs. {@code -Dbb.test.realKeys=true} goes back to OS-level SWTBot keystrokes, e.g. to
+     * debug real keyboard handling on Linux/Xvfb. See test_fix.md Phase 4c.
+     */
     public static class ViewTools {
+        public static final boolean REAL_KEYS = Boolean.getBoolean("bb.test.realKeys");
+
         public StyledText widget;
         public SWTBotStyledText bot;
+        /** Set for the text view, whose caret can be placed through TextView like the Kotlin tests do */
+        private Manager manager;
 
         public ViewTools() {
         }
@@ -499,38 +583,55 @@ public class BBTestRunner {
             this.widget = bot.widget;
         }
 
+        /** Enables placing the caret through {@code manager.getText()} instead of arrow keys */
+        public void setManager(Manager manager) {
+            this.manager = manager;
+        }
+
         public void pressKey(int keyCode, int times) {
             for (int i = 0; i < times; i++) {
-                bot.pressShortcut(KeyStroke.getInstance(keyCode));
+                if (REAL_KEYS) {
+                    bot.pressShortcut(KeyStroke.getInstance(keyCode));
+                } else {
+                    DirectKeys.press(widget, 0, keyCode, DirectKeys.characterFor(keyCode));
+                }
             }
 
             doPendingSWTWork();
         }
 
         public void cutShortCut() {
-            pressShortcut(bot, SWT.CTRL, 'x');
+            pressShortcut(SWT.CTRL, 'x');
         }
 
         public void pasteShortcut() {
-            pressShortcut(bot, SWT.CTRL, 'v');
+            pressShortcut(SWT.CTRL, 'v');
         }
 
-        public void pressShortcut(int keyCode, char c) {
-            pressShortcut(bot, keyCode, c);
-        }
-
-        public void pressShortcut(int modificationKeys, int keyCode, char c) {
-            bot.pressShortcut(modificationKeys, keyCode, c);
+        public void pressShortcut(int modificationKeys, char c) {
+            if (REAL_KEYS) {
+                bot.pressShortcut(modificationKeys, c);
+            } else {
+                DirectKeys.press(widget, modificationKeys, Character.toLowerCase(c), DirectKeys.characterFor(modificationKeys, c));
+            }
             doPendingSWTWork();
         }
 
-        private void pressShortcut(SWTBotStyledText textBot, int keyCode, char c) {
-            textBot.pressShortcut(keyCode, c);
+        public void pressShortcut(int modificationKeys, int keyCode, char c) {
+            if (REAL_KEYS) {
+                bot.pressShortcut(modificationKeys, keyCode, c);
+            } else {
+                DirectKeys.press(widget, modificationKeys, keyCode, c);
+            }
             doPendingSWTWork();
         }
 
         public void pressShortcut(KeyStroke... keys) {
-            bot.pressShortcut(keys);
+            if (REAL_KEYS) {
+                bot.pressShortcut(keys);
+            } else {
+                DirectKeys.press(widget, keys);
+            }
             doPendingSWTWork();
         }
 
@@ -540,11 +641,63 @@ public class BBTestRunner {
          * @param offset
          */
         public void navigate(int offset) {
-            navigate(bot, offset);
+            if (REAL_KEYS) {
+                navigate(bot, offset);
+            } else if (manager != null) {
+                settle();
+                // Commit a pending edit first, as the arrow keys leaving the element would
+                manager.getText().update(false);
+                manager.getText().setCurrentElement(offset);
+                doPendingSWTWork();
+                assertEquals(widget.getCaretOffset(), offset, "View is not on given offset");
+            } else {
+                arrowTo(offset);
+            }
+        }
+
+        /**
+         * Lets the background Reformatter finish so the view text is final. Instant caret moves and offsets computed
+         * from the text otherwise race it: edits are lost, or the caret lands where the text used to be.
+         */
+        public void settle() {
+            if (!REAL_KEYS && manager != null) {
+                manager.waitForFormatting(true);
+                doPendingSWTWork();
+            }
+        }
+
+        /** Moves the caret with emulated arrow keys, for views without a TextView to place it through */
+        private void arrowTo(int offset) {
+            int lastOffset = -1;
+            int sameCount = 0;
+            int curOffset;
+            // The caret can bounce around a position it can't stop on; give up instead of looping forever
+            int maxSteps = Math.abs(widget.getCaretOffset() - offset) * 3 + 50;
+            int steps = 0;
+            while ((curOffset = widget.getCaretOffset()) != offset) {
+                if (++steps > maxSteps) {
+                    throw new RuntimeException("Arrow keys didn't reach offset " + offset + " (at " + curOffset + " after " + maxSteps + " keys)");
+                }
+                DirectKeys.press(widget, 0, curOffset < offset ? SWT.ARROW_RIGHT : SWT.ARROW_LEFT, '\0');
+                doPendingSWTWork();
+                sameCount = curOffset == lastOffset ? sameCount + 1 : 0;
+                lastOffset = curOffset;
+                if (sameCount > 20) {
+                    throw new RuntimeException("Same offset " + curOffset + " for 20 arrow keys, wanted " + offset);
+                }
+            }
         }
 
         public void navigateToLine(int line) {
-            navigate(bot, widget.getOffsetAtLine(line));
+            navigate(widget.getOffsetAtLine(line));
+        }
+
+        /**
+         * Offset just after the last character of {@code line}. Old tests wrote this as
+         * {@code getOffsetAtLine(line + 1) - 1}, which only works with one-character line breaks.
+         */
+        public int endOfLine(int line) {
+            return widget.getOffsetAtLine(line) + widget.getLine(line).length();
         }
 
         public static void navigate(SWTBotStyledText textBot, int offset) {
@@ -585,6 +738,12 @@ public class BBTestRunner {
 
         public void navigateRelative(int offset) {
             doPendingSWTWork();
+            if (!REAL_KEYS) {
+                // Relative navigation exists to exercise the arrow-key path, so keep using arrow keys
+                arrowTo(offset);
+                assertEquals(widget.getCaretOffset(), offset, "View is not on given offset");
+                return;
+            }
             int curOffset;
             while ((curOffset = bot.widget.getCaretOffset()) != offset) {
 //				log.trace("pressing right, viewBot {}, index '{}'", curOffset, textBot.widget.getText().substring(curOffset, curOffset));
@@ -609,11 +768,13 @@ public class BBTestRunner {
             if (skip < 0) {
                 throw new IllegalArgumentException("skip must be positive");
             }
-            int index = bot.getText().indexOf(text);
-            assertNotEquals(index, -1, "Cannot find string '" + text + "' in text: " + bot.getText());
+            settle();
+            // widget, not bot: SWTBot's getText() turns \r\n into \n, so its offsets are wrong on Windows
+            int index = widget.getText().indexOf(text);
+            assertNotEquals(index, -1, "Cannot find string '" + text + "' in text: " + widget.getText());
             for (int i = 0; i < skip; i++) {
-                index = bot.getText().indexOf(text, index + text.length());
-                assertNotEquals(index, -1, "Cannot find string '" + text + "' at skip " + i + " in text: " + bot.getText());
+                index = widget.getText().indexOf(text, index + text.length());
+                assertNotEquals(index, -1, "Cannot find string '" + text + "' at skip " + i + " in text: " + widget.getText());
             }
             navigate(index);
         }
@@ -626,27 +787,26 @@ public class BBTestRunner {
             if (skip < 0) {
                 throw new IllegalArgumentException("skip must be positive");
             }
-            int index = bot.getText().indexOf(text);
+            settle();
+            int index = widget.getText().indexOf(text);
             for (int i = 0; i < skip; i++) {
-                index = bot.getText().indexOf(text, index + text.length());
+                index = widget.getText().indexOf(text, index + text.length());
             }
-            assertNotEquals(index, -1, "Cannot find string '" + text + "' in text: " + bot.getText());
+            assertNotEquals(index, -1, "Cannot find string '" + text + "' in text: " + widget.getText());
             navigateRelative(index);
         }
 
         public void navigateToEndOfLine() {
             int curLinePos = bot.cursorPosition().column;
             for (int i = 0; i < bot.getTextOnCurrentLine().length() - curLinePos; i++) {
-                bot.pressShortcut(Keystrokes.RIGHT);
-                doPendingSWTWork();
+                pressKey(SWT.ARROW_RIGHT, 1);
             }
         }
 
         public void selectLeft(int chars) {
 //			updateSelection(chars, 0);
             for (int i = 0; i < chars; i++) {
-                bot.pressShortcut(SWT.SHIFT, SWT.ARROW_LEFT, '\0');
-                doPendingSWTWork();
+                pressShortcut(SWT.SHIFT, SWT.ARROW_LEFT, '\0');
             }
         }
 
@@ -656,11 +816,32 @@ public class BBTestRunner {
 
         public void selectRight(int chars, boolean skipNewlines) {
             for (int i = 0; i < chars; i++) {
-                bot.pressShortcut(SWT.SHIFT, SWT.ARROW_RIGHT, '\0');
-                doPendingSWTWork();
+                pressShortcut(SWT.SHIFT, SWT.ARROW_RIGHT, '\0');
 
-                if (skipNewlines && bot.getSelection().endsWith(System.lineSeparator()) && widget.getCaretOffset() != bot.getText().length() - 1) {
+                if (skipNewlines && bot.getSelection().endsWith(System.lineSeparator()) && widget.getCaretOffset() != widget.getText().length() - 1) {
                     i--;
+                }
+            }
+        }
+
+        /**
+         * Extends the selection with Shift+arrow until the caret is at {@code target}. selectRight/selectLeft count
+         * key presses, where a line break is one press (one character in the Linux-era tests); use this when the
+         * end comes from widget offsets, where a Windows \r\n is two.
+         */
+        public void selectTo(int target) {
+            shiftArrowTo(target, target >= widget.getCaretOffset() ? SWT.ARROW_RIGHT : SWT.ARROW_LEFT);
+        }
+
+        private void shiftArrowTo(int target, int arrow) {
+            target = Math.max(0, Math.min(target, widget.getCharCount()));
+            int steps = 0;
+            int max = Math.abs(widget.getCaretOffset() - target) + 50;
+            while (arrow == SWT.ARROW_RIGHT ? widget.getCaretOffset() < target : widget.getCaretOffset() > target) {
+                int before = widget.getCaretOffset();
+                pressShortcut(SWT.SHIFT, arrow, '\0');
+                if (widget.getCaretOffset() == before || ++steps > max) {
+                    break;
                 }
             }
         }
@@ -733,7 +914,12 @@ public class BBTestRunner {
         }
 
         public void typeText(String text) {
-            bot.typeText(text);
+            settle();
+            if (REAL_KEYS) {
+                bot.typeText(text);
+            } else {
+                DirectKeys.type(widget, text);
+            }
             doPendingSWTWork();
         }
 
@@ -750,7 +936,7 @@ public class BBTestRunner {
         }
 
         public String getTextStripped(int offset) {
-            return stripNewlines(bot.getText().substring(offset).trim());
+            return stripNewlines(widget.getText().substring(offset).trim());
         }
 
         public void clickContextMenu(String menuItem) {

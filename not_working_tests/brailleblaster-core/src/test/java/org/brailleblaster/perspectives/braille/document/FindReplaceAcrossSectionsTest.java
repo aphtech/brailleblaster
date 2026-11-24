@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -29,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 //@Test(groups = TestGroups.SLOW_TESTS)
+@GuiTest
 public class FindReplaceAcrossSectionsTest {
 
     private final static Logger log = LoggerFactory.getLogger(FindReplaceAcrossSectionsTest.class);

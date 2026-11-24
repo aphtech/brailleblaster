@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
 public class TextToBBXTest {
 	static final DefaultNimasMaps maps = new DefaultNimasMaps();
 
-	@Test(enabled = false)
+	@Test
 	public void formFeedCharacter_issue4372() throws IOException {
 		importText("this" + TextArchiveLoader.FORM_FEED + "text\n" + TextArchiveLoader.FORM_FEED + "\nis good")
 				.nextChildIs(childAssert -> childAssert

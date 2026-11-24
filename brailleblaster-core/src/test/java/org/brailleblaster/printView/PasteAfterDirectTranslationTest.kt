@@ -15,9 +15,12 @@
  */
 package org.brailleblaster.printView
 
+import org.brailleblaster.GuiTest
 import nu.xom.Element
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.testrunners.BBTestRunner
+import org.brailleblaster.testrunners.moveCaret
+import org.brailleblaster.testrunners.blocks
 import org.brailleblaster.testrunners.ViewTestRunner
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.properties.EmphasisType
@@ -30,6 +33,7 @@ import java.io.File
  * Copying the second line of the document and pasting it right after the direct translated `;;` on the first line
  * crashed BrailleBlaster.
  */
+@GuiTest
 class PasteAfterDirectTranslationTest {
     private val file = File("src/test/resources/org/brailleblaster/printView/pasteAfterDirectTranslation.bbz")
     private val directText = ";;"
@@ -105,17 +109,5 @@ class PasteAfterDirectTranslationTest {
         ViewTestRunner.doPendingSWTWork()
         assertEquals(textViewWidget.selectionText, copiedText)
         copy()
-    }
-
-    private fun BBTestRunner.blocks(): List<Element> = FastXPath.descendant(doc.rootElement)
-        .filterIsInstance<Element>()
-        .filter { BBX.BLOCK.isA(it) }
-        .toList()
-
-    /** Keyboard navigation through SWTBot is unreliable on local Windows runs, so move the caret directly */
-    private fun BBTestRunner.moveCaret(offset: Int) {
-        manager.text.setCurrentElement(offset)
-        ViewTestRunner.doPendingSWTWork()
-        assertEquals(textViewWidget.caretOffset, offset, "Caret not at requested offset")
     }
 }

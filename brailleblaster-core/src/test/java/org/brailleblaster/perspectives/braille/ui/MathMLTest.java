@@ -15,9 +15,11 @@
  */
 package org.brailleblaster.perspectives.braille.ui;
 
+import org.brailleblaster.GuiTest;
 import org.brailleblaster.testrunners.BBTestRunner;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class MathMLTest {
     /**
      * This was a style view bug but should be tested in the text view

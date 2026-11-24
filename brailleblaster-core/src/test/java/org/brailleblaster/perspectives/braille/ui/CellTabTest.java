@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.ui;
 
+import org.brailleblaster.GuiTest;
 import java.util.function.Consumer;
 
 import org.brailleblaster.TestUtils;
@@ -30,16 +31,17 @@ import org.hamcrest.Matchers;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(enabled = false)
+@Test
+@GuiTest
 public class CellTabTest {
-    @Test(enabled = false)
+    @Test
     public void multipleTabs_start_issue5417() {
         BBTestRunner test = new BBTestRunner("", "<p>An empty paragraph</p>"
                 + "<p>Make me run off the screen</p>");
         test.textViewTools.navigateToText("Make");
 
         test.openMenuItem(TopMenu.EDIT, CellTab.MENU_NAME);
-        SWTBot dialogBot = test.bot.activeShell().bot();
+        SWTBot dialogBot = test.activeShell().bot();
         dialogBot.text(0).setText("15");
         ViewTestRunner.doPendingSWTWork();
         dialogBot.button(0).click();
@@ -59,7 +61,7 @@ public class CellTabTest {
 
         TestUtils.forceShellByName("BrailleBlaster");
         test.openMenuItem(TopMenu.EDIT, CellTab.MENU_NAME);
-        dialogBot = test.bot.activeShell().bot();
+        dialogBot = test.activeShell().bot();
 
         SWTBotText tabValueText = dialogBot.text(0);
         Assert.assertEquals(tabValueText.getText(), "15");
@@ -82,6 +84,7 @@ public class CellTabTest {
                 ).noNextChild();
     }
 
+    // Disabled: cell tab insert fails with 'Cannot apply to end of line' (I10) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void middleTabs_middle_before_issue5417() {
         multipleTabs_middle(test -> {
@@ -90,6 +93,7 @@ public class CellTabTest {
         });
     }
 
+    // Disabled: cell tab insert fails with 'Cannot apply to end of line' (I10) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void middleTabs_middle_after_issue5417() {
         multipleTabs_middle(test -> test.textViewTools.navigateToLine(2));
@@ -101,7 +105,7 @@ public class CellTabTest {
         test.textViewTools.navigateToText("off");
 
         test.openMenuItem(TopMenu.EDIT, CellTab.MENU_NAME);
-        SWTBot dialogBot = test.bot.activeShell().bot();
+        SWTBot dialogBot = test.activeShell().bot();
         dialogBot.text(0).setText("6");
         ViewTestRunner.doPendingSWTWork();
         dialogBot.button(0).click();
@@ -129,7 +133,7 @@ public class CellTabTest {
         test.textViewTools.navigateToLine(2);
 
         test.openMenuItem(TopMenu.EDIT, CellTab.MENU_NAME);
-        dialogBot = test.bot.activeShell().bot();
+        dialogBot = test.activeShell().bot();
 
         SWTBotText tabValueText = dialogBot.text(0);
         Assert.assertEquals(tabValueText.getText(), "6");
@@ -153,7 +157,7 @@ public class CellTabTest {
                 ).noNextChild();
     }
 
-    @Test(expectedExceptions = BBNotifyException.class, enabled = false)
+    @Test(expectedExceptions = BBNotifyException.class)
     public void multipleTabs_end_issue5417() {
         BBTestRunner test = new BBTestRunner("", "<p>An empty paragraph</p>"
                 + "<p>Make me run off the screen</p>");
@@ -161,7 +165,7 @@ public class CellTabTest {
         test.textViewTools.navigateToEndOfLine();
 
         test.openMenuItem(TopMenu.EDIT, CellTab.MENU_NAME);
-        SWTBot dialogBot = test.bot.activeShell().bot();
+        SWTBot dialogBot = test.activeShell().bot();
         dialogBot.text(0).setText("6");
         ViewTestRunner.doPendingSWTWork();
         dialogBot.button(0).click();

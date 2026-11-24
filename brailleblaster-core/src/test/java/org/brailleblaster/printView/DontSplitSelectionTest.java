@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import java.io.File;
 
 import org.brailleblaster.bbx.BBX;
@@ -25,10 +26,11 @@ import org.testng.annotations.Test;
 //Tests over bugs that resulted from style options which wrap in a container
 //and issues that arose from wrapping not occurring correctly
 
+@GuiTest
 public class DontSplitSelectionTest {
     private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/printView/dontSplitSelectionTest.bbx");
 
-    @Test(enabled = false)
+    @Test
     public void inlineElementSelection() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
 
@@ -40,7 +42,7 @@ public class DontSplitSelectionTest {
         bbTest.assertRootSection_NoBrlCopy().child(0).child(1).isContainer(BBX.CONTAINER.DONT_SPLIT);
     }
 
-    @Test(enabled = false)
+    @Test
     public void singleElement() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
 
@@ -51,7 +53,7 @@ public class DontSplitSelectionTest {
         bbTest.assertRootSection_NoBrlCopy().child(0).child(0).isContainer(BBX.CONTAINER.DONT_SPLIT);
     }
 
-    @Test(enabled = false)
+    @Test
     public void singleWithInlineElement() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
 

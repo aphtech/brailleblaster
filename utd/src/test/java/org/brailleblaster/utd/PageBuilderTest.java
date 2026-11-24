@@ -89,7 +89,8 @@ public class PageBuilderTest {
         }
     }
 
-    //	@Test
+    // Disabled: guide dots are now marked brlonly, not dots; braille formatting review (test_fix.md Phase 6)
+    @Test(enabled = false)
     public void addGuideDots() {
         PageBuilder pb = new PageBuilder(new UTDTranslationEngine(), new Cursor());
         pb.setFirstLineIndent(0);
@@ -223,7 +224,8 @@ public class PageBuilderTest {
         assertEquals(pb.findLastBlankLine(), 3);
     }
 
-    //	@Test
+    // Disabled: running head now on where this expects off; braille formatting review (test_fix.md Phase 6)
+    @Test(enabled = false)
     public void runningHeads() {
         UTDTranslationEngine engine = generateDefaultEngine();
         engine.getPageSettings().setRunningHead("Test");

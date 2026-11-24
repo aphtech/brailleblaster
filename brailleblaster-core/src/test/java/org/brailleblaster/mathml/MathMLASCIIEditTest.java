@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.mathml;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.*;
 import org.brailleblaster.BBIni;
 import org.brailleblaster.TestFiles;
@@ -42,6 +43,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
+@GuiTest
 public class MathMLASCIIEditTest {
 
     private static final Logger log = LoggerFactory.getLogger(MathMLASCIIEditTest.class);
@@ -111,8 +113,8 @@ public class MathMLASCIIEditTest {
         BBTestRunner bb = new BBTestRunner(two_lines);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);// ueb
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);// ueb
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
 
         bb.updateViewReferences();
@@ -122,16 +124,16 @@ public class MathMLASCIIEditTest {
         String s = bb.textViewTools.getTextStripped();
         Assert.assertEquals(s, "line_oneline_two");
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         s = bb.textViewTools.getTextStripped();
         Assert.assertEquals(s, "line_oneline_two");
 
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// nemeth
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
         bb.updateViewReferences();
         s = bb.textViewTools.getTextStripped();
@@ -262,7 +264,7 @@ public class MathMLASCIIEditTest {
         Notify.DEBUG_EXCEPTION = false;
         bb.textViewTools.pressKey(SWT.F4, 1);
         Notify.DEBUG_EXCEPTION = true;
-        String s = bb.bot.activeShell().bot().activeShell().getText();
+        String s = bb.activeShell().bot().activeShell().getText();
         Assert.assertEquals(s, "Error");
     }
 
@@ -277,7 +279,7 @@ public class MathMLASCIIEditTest {
 
         bb.textViewTools.navigate(0);
         bb.textViewTools.selectToEndOfLine();
-        bb.bot.menu("Tools").menu("Change Translation").menu("Direct").click();
+        bb.findMenu("Tools", true).menu("Change Translation").menu("Direct").click();
 
         bb.textViewTools.navigate(0);
         bb.textViewTools.selectToEndOfLine();
@@ -528,7 +530,7 @@ public class MathMLASCIIEditTest {
         clickOpenAsciiEditor(bb);
         setCategory(bb, CATEGORIES.GREEK);
         for (int i = 0; i < 3; i++) {
-            bb.bot.activeShell().bot().button(i).click();
+            bb.activeShell().bot().button(i).click();
         }
         clickInsert(bb);
         String s = bb.textViewBot.getTextOnCurrentLine();
@@ -542,7 +544,7 @@ public class MathMLASCIIEditTest {
         clickOpenAsciiEditor(bb);
         setCategory(bb, CATEGORIES.GREEK);
         for (int i = 0; i < 16; i++) {
-            bb.bot.activeShell().bot().button(i).click();
+            bb.activeShell().bot().button(i).click();
         }
 
         clickInsert(bb);
@@ -565,7 +567,7 @@ public class MathMLASCIIEditTest {
     }
 
     private void clickInsert(BBTestRunner bb) {
-        bb.bot.activeShell().bot().button(ASCIIMathEditorDialog.INSERT_MATH).click();
+        bb.activeShell().bot().button(ASCIIMathEditorDialog.INSERT_MATH).click();
     }
 
     @Test(enabled = false)
@@ -660,7 +662,7 @@ public class MathMLASCIIEditTest {
         bb.textViewTools.navigate(4);
         clickOpenAsciiEditor(bb);
         setCategory(bb, CATEGORIES.GREEK);
-        bb.bot.activeShell().bot().styledText(0).navigateTo(0, bb.bot.styledText(0).getTextOnLine(0).length());
+        bb.activeShell().bot().styledText(0).navigateTo(0, bb.bot.styledText(0).getTextOnLine(0).length());
         clickButtonWithTooltop(bb, "alpha");
         // Greek Letter alpha
         clickReplace(bb);
@@ -669,15 +671,15 @@ public class MathMLASCIIEditTest {
     }
 
     private void setCategory(BBTestRunner bb, CATEGORIES category) {
-        bb.bot.activeShell().bot().comboBox().setSelection(category.getPrettyName());
+        bb.activeShell().bot().comboBox().setSelection(category.getPrettyName());
     }
 
     private void clickButtonWithTooltop(BBTestRunner bb, String tooltip) {
-        bb.bot.activeShell().bot().buttonWithTooltip(tooltip).click();
+        bb.activeShell().bot().buttonWithTooltip(tooltip).click();
     }
 
     private void clickReplace(BBTestRunner bb) {
-        bb.bot.activeShell().bot().button(ASCIIMathEditorDialog.REPLACE_CURRENT_MATH).click();
+        bb.activeShell().bot().button(ASCIIMathEditorDialog.REPLACE_CURRENT_MATH).click();
     }
 
     @Test(enabled = false)
@@ -1010,10 +1012,10 @@ public class MathMLASCIIEditTest {
         BBTestRunner bb = new BBTestRunner(test);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);// ueb
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);// ueb
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
-        String braille = bb.bot.activeShell().bot().styledText(2).getTextOnCurrentLine().replaceAll(" ", "");
+        String braille = bb.activeShell().bot().styledText(2).getTextOnCurrentLine().replaceAll(" ", "");
         Assert.assertEquals(braille, s[1]);
         bb.manager.getDocument().getEngine().getBrailleSettings().setMainTranslationTable(oldTable);
     }
@@ -1024,10 +1026,10 @@ public class MathMLASCIIEditTest {
         BBTestRunner bb = new BBTestRunner(test);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);// ueb
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);// ueb
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
-        String braille = bb.bot.activeShell().bot().styledText(2).getTextOnCurrentLine().replaceAll(" ", "");
+        String braille = bb.activeShell().bot().styledText(2).getTextOnCurrentLine().replaceAll(" ", "");
         Assert.assertEquals(braille, s[1]);
         bb.manager.getDocument().getEngine().getBrailleSettings().setMainTranslationTable(oldTable);
     }
@@ -1038,10 +1040,10 @@ public class MathMLASCIIEditTest {
         BBTestRunner bb = new BBTestRunner(test);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);// ueb
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB);// ueb
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
-        String braille = bb.bot.activeShell().bot().styledText(2).getTextOnCurrentLine().replaceAll(" ", "");
+        String braille = bb.activeShell().bot().styledText(2).getTextOnCurrentLine().replaceAll(" ", "");
         Assert.assertEquals(braille, s[1]);
         bb.manager.getDocument().getEngine().getBrailleSettings().setMainTranslationTable(oldTable);
     }
@@ -1063,10 +1065,10 @@ public class MathMLASCIIEditTest {
         BBTestRunner bb = new BBTestRunner(test);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// Nemeth
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// Nemeth
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
-        String braille = bb.bot.activeShell().bot().styledText(2).getTextOnCurrentLine().replaceAll(" ", "");
+        String braille = bb.activeShell().bot().styledText(2).getTextOnCurrentLine().replaceAll(" ", "");
         Assert.assertEquals(braille, s[1]);
         bb.manager.getDocument().getEngine().getBrailleSettings().setMainTranslationTable(oldTable);
     }
@@ -1077,10 +1079,10 @@ public class MathMLASCIIEditTest {
         BBTestRunner bb = new BBTestRunner(test);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// Nemeth
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// Nemeth
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
-        String braille = bb.bot.activeShell().bot().styledText(2).getTextOnCurrentLine().replaceAll(" ", "");
+        String braille = bb.activeShell().bot().styledText(2).getTextOnCurrentLine().replaceAll(" ", "");
         Assert.assertEquals(braille, s[1]);
         bb.manager.getDocument().getEngine().getBrailleSettings().setMainTranslationTable(oldTable);
     }
@@ -1091,10 +1093,10 @@ public class MathMLASCIIEditTest {
         BBTestRunner bb = new BBTestRunner(test);
         String oldTable = bb.manager.getDocument().getEngine().getBrailleSettings().getMainTranslationTable();
         bb.openMenuItem(TopMenu.SETTINGS, "Translation Settings");
-        bb.bot.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// Nemeth
-        bb.bot.activeShell().bot().button("OK").click();
+        bb.activeShell().bot().comboBox(0).setSelection(TranslationSettingsTab.UEB_PLUS_NEMETH);// Nemeth
+        bb.activeShell().bot().button("OK").click();
         bb.manager.waitForFormatting(true);
-        String braille = bb.bot.activeShell().bot().styledText(2).getTextOnCurrentLine().replaceAll(" ", "");
+        String braille = bb.activeShell().bot().styledText(2).getTextOnCurrentLine().replaceAll(" ", "");
         Assert.assertEquals(braille, s[1]);
         bb.manager.getDocument().getEngine().getBrailleSettings().setMainTranslationTable(oldTable);
     }

@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.document;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
@@ -55,7 +56,8 @@ import static org.brailleblaster.testrunners.ViewTestRunner.doPendingSWTWork;
 import static org.testng.Assert.*;
 
 
-@Test(enabled = false)
+@Test
+@GuiTest
 public class TableTest {
     private static final String TEST_TEXT = "Test";
     private static final String TEST_HEADING = "Heading";
@@ -68,17 +70,17 @@ public class TableTest {
             + "</p>" + constructTable(DEFAULT_COLS, DEFAULT_ROWS) + "<p>" + TEST_TEXT + "</p>");
 
     /* TEST OPEN DIALOG */
-    @Test(enabled = false)
+    @Test
     public void openDialogAndCancel() {
         BBTestRunner test = new BBTestRunner(basicBlock);
 
         SWTBotShell dialog = openInsertDialog(test);
         clickCancel(dialog);
 
-        assertNotSame(test.bot.activeShell(), dialog);
+        assertNotSame(test.activeShell(), dialog);
     }
 
-    @Test(enabled = false)
+    @Test
     public void editTableThroughMenu() {
         BBTestRunner test = new BBTestRunner(basicSimpleTable);
 
@@ -89,17 +91,17 @@ public class TableTest {
         verifyDialog(dialog);
     }
 
-    @Test(enabled = false)
+    @Test
     public void editTableThroughContextMenu() {
         BBTestRunner test = new BBTestRunner(basicSimpleTable);
 
         test.textViewTools.navigateToText(TEST_COLUMN);
         test.textViewBot.contextMenu(ContextMenuModule.Items.EDIT_TABLE.getLabel()).click();
         doPendingSWTWork();
-        verifyDialog(test.bot.activeShell());
+        verifyDialog(test.activeShell());
     }
 
-    @Test(enabled = false)
+    @Test
     public void cancelInsertTableDoesNotAffectXML() {
         BBTestRunner test = new BBTestRunner(basicBlock);
 
@@ -111,7 +113,7 @@ public class TableTest {
 
     /* TEST TEXT VIEW EDIT BLOCKING*/
 
-    @Test(enabled = false)
+    @Test
     public void cannotEditInTextView() {
         BBTestRunner test = new BBTestRunner(basicSimpleTable);
 
@@ -121,7 +123,7 @@ public class TableTest {
         verifyBlockedEditMessage(test);
     }
 
-    @Test(enabled = false)
+    @Test
     public void cannotEmphasizeTable() {
         BBTestRunner test = new BBTestRunner(basicSimpleTable);
 
@@ -132,7 +134,7 @@ public class TableTest {
         verifyBlockedEditMessage(test);
     }
 
-    @Test(enabled = false)
+    @Test
     public void rt6249_tnSymbolsInTable() {
         BBTestRunner test = new BBTestRunner(basicSimpleTable);
 
@@ -143,12 +145,13 @@ public class TableTest {
         verifyBlockedEditMessage(test);
     }
 
+    // Disabled: no 'Table Warning' dialog when editing a table inside a selection (D15) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void cannotEditTableWithinSelection() {
         BBTestRunner test = new BBTestRunner(simpleTableBetweenBlocks);
 
         for (int i = 0; i <= 4 + DEFAULT_ROWS; i++) {
-            test.textViewBot.pressShortcut(Keystrokes.SHIFT, Keystrokes.DOWN);
+            test.textViewTools.pressShortcut(Keystrokes.SHIFT, Keystrokes.DOWN);
             doPendingSWTWork();
         }
         test.textViewTools.pressKey(Keystrokes.SPACE.getNaturalKey(), 1);
@@ -156,7 +159,7 @@ public class TableTest {
         verifyBlockedEditMessage(test);
     }
 
-    @Test(enabled = false)
+    @Test
     public void cannotInsertTableInsideTable() {
         BBTestRunner test = new BBTestRunner(basicSimpleTable);
 
@@ -164,10 +167,10 @@ public class TableTest {
 
         openInsertDialog(test);
 
-        assertEquals(test.bot.activeShell().getText(), TableEditor.ERROR_DIALOG_TITLE);
+        assertEquals(test.activeShell().getText(), TableEditor.ERROR_DIALOG_TITLE);
     }
 
-    @Test(enabled = false)
+    @Test
     public void cannotChangeStyle() {
         BBTestRunner test = new BBTestRunner(basicSimpleTable);
 
@@ -178,6 +181,7 @@ public class TableTest {
     }
 
     /* TEST STYLE VIEW EDIT BLOCKING */
+    // Disabled: breadcrumbs no longer show the ancestors the test selects (D4) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void cannotEditSelectedTableBreadcrumbs() {
         BBTestRunner test = new BBTestRunner(simpleTableBetweenBlocks);
@@ -189,6 +193,7 @@ public class TableTest {
         verifyBlockedEditMessage(test);
     }
 
+    // Disabled: breadcrumbs no longer show the ancestors the test selects (D4) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void cannotChangeStyleInBreadcrumbs() {
         BBTestRunner test = new BBTestRunner(basicSimpleTable);
@@ -201,7 +206,7 @@ public class TableTest {
         verifyBlockedEditMessage(test);
     }
 
-    @Test(enabled = false)
+    @Test
     public void tableEditBlocked() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>This here</p><table>"
                 + "<tr><td>First TD</td><td>cell 2</td></tr>"
@@ -220,7 +225,7 @@ public class TableTest {
 
     /* INSERT TABLE TESTS */
 
-    @Test(enabled = false)
+    @Test
     public void insertSimpleTable() {
         BBTestRunner test = new BBTestRunner(basicBlock);
 
@@ -234,7 +239,7 @@ public class TableTest {
 
     /* TABLE EDITING */
 
-    @Test(enabled = false)
+    @Test
     public void changeSimpleTable() {
         BBTestRunner test = new BBTestRunner(basicSimpleTable);
 
@@ -251,6 +256,7 @@ public class TableTest {
         getInnerSection(test).child(0).hasAttribute("format", "listed");
     }
 
+    // Disabled: NodeException 'More than one child' in a table cell with a nonbreaking space (I10) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void nonbreakingSpace_issue5744() {
         BBTestRunner test = new BBTestRunner(basicSimpleTable);
@@ -278,6 +284,7 @@ public class TableTest {
 
     /* DESTROY TABLE */
 
+    // Disabled: table editor has no 'Reformat Table' button any more (D15) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void destroyTableToList() {
         BBTestRunner test = new BBTestRunner(basicBlock);
@@ -290,7 +297,7 @@ public class TableTest {
         test.textViewTools.navigateToText(TEST_HEADING);
         test.textViewBot.contextMenu(ContextMenuModule.Items.EDIT_TABLE.getLabel()).click();
 
-        SWTBot tableEditorBot = test.bot.activeShell().bot();
+        SWTBot tableEditorBot = test.activeShell().bot();
         tableEditorBot.button(TableEditor.REFORMAT_BUTTON).click();
         doPendingSWTWork();
 
@@ -306,6 +313,7 @@ public class TableTest {
         }
     }
 
+    // Disabled: table editor dialog title is now 'Table Editor', test expects 'Select' (D15) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void destroyHeading() {
         BBTestRunner test = new BBTestRunner(basicSimpleTable);
@@ -316,7 +324,7 @@ public class TableTest {
         dialog.bot().button("X").click();
         doPendingSWTWork();
 
-        SWTBotShell placementDialog = test.bot.activeShell();
+        SWTBotShell placementDialog = test.activeShell();
         placementDialog.bot().button(TableEditor.OK_BUTTON).click();
         doPendingSWTWork();
 
@@ -336,6 +344,7 @@ public class TableTest {
         assertTrue(BBX.CONTAINER.TABLE.isA(rootSection.getChild(3)));
     }
 
+    // Disabled: table editor has no 'Reformat Table' button any more (D15) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void reformatTable() {
         BBTestRunner test = new BBTestRunner(basicSimpleTable);
@@ -356,7 +365,7 @@ public class TableTest {
         }
     }
 
-    @Test(enabled = false)
+    @Test
     public void table_actualTableTest() {
         Document doc = new BBTestRunner("", "<table testid='table'>"
                 + "<tr><td testid='first'>Testing 1</td><td>testing 2</td></tr>"
@@ -379,7 +388,7 @@ public class TableTest {
         );
     }
 
-    @Test(enabled = false)
+    @Test
     public void rt6131_tableTestWithEmptyCell() {
         BBTestRunner bbTest = new BBTestRunner("", "<table><tr><td>Head 1</td><td>Head 2</td></tr>"
                 + "<tr><td>Cell 1</td><td>Cell 2</td></tr></table>");
@@ -408,6 +417,7 @@ public class TableTest {
                                 .nextChildIs(row2cell2 -> row2cell2.hasText("Cell 2"))));
     }
 
+    // Disabled: EditingException 'An error occurred while adding a page before a table' (B6) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void rt5342_pageBreakOnLineBreakPrecedingTable() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>Test</p><table><tr><td>Head 1</td><td>Head 2</td></tr>"
@@ -429,7 +439,7 @@ public class TableTest {
     }
 
     /* TEST CONVERT TEXT TO TABLE */
-    @Test(enabled = false)
+    @Test
     public void convertTextToTable_basicTest() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>Head 1</p><p>Head 2</p><p>Cell 1</p><p>Cell 2</p>");
 
@@ -455,7 +465,7 @@ public class TableTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
     public void convertTextToTable_threeCols() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>Head 1</p><p>Head 2</p><p>Head 3</p><p>Cell 1</p><p>Cell 2</p><p>Cell 3</p>");
 
@@ -485,7 +495,7 @@ public class TableTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
     public void convertTextToTable_box() {
         BBTestRunner bbTest = new BBTestRunner(new File("src/test/resources/org/brailleblaster/printView/BoxLineSelectionTests.bbx"));
 
@@ -512,7 +522,7 @@ public class TableTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
     public void convertTextToTable_manyColumns() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>Head 1</p><p>Head 2</p><p>Head 3</p><p>Head 4</p><p>Cell 1</p>");
 
@@ -549,17 +559,17 @@ public class TableTest {
 
     private SWTBotShell openInsertDialog(BBTestRunner test) {
         test.openMenuItem(TopMenu.INSERT, TableEditor.INSERT_MENUITEM);
-        return test.bot.activeShell();
+        return test.activeShell();
     }
 
     private SWTBotShell openEditDialog(BBTestRunner test) {
         test.openMenuItem(TopMenu.TOOLS, TableEditor.EDIT_MENUITEM);
-        return test.bot.activeShell();
+        return test.activeShell();
     }
 
     private SWTBotShell openConvertDialog(BBTestRunner test) {
         test.openMenuItem(TopMenu.TOOLS, TableEditor.CONVERT_MENU_ITEM);
-        return test.bot.activeShell();
+        return test.activeShell();
     }
 
     private SWTBotShell convertToColumns(BBTestRunner test, int columns) {
@@ -569,7 +579,7 @@ public class TableTest {
         doPendingSWTWork();
         curShell.bot().button(TableEditor.OK_BUTTON).click();
         doPendingSWTWork();
-        return test.bot.activeShell();
+        return test.activeShell();
     }
 
     private void clickSave(SWTBotShell dialog) {
@@ -585,7 +595,7 @@ public class TableTest {
     }
 
     private void verifyBlockedEditMessage(BBTestRunner test) {
-        assertEquals(test.bot.activeShell().widget.getText(), TableSelectionModule.TABLE_WARNING_DIALOG_TITLE);
+        assertEquals(test.activeShell().widget.getText(), TableSelectionModule.TABLE_WARNING_DIALOG_TITLE);
     }
 
     private void verifyDialog(SWTBotShell dialog) {
@@ -610,7 +620,7 @@ public class TableTest {
     }
 
     private void handlePicker(BBTestRunner test, String styleName) {
-        SWTBotShell stylePicker = test.bot.activeShell();
+        SWTBotShell stylePicker = test.activeShell();
         assertEquals(stylePicker.widget.getText(), PickerDialog.SHELL_TITLE);
         stylePicker.bot().text(0).widget.forceFocus();
         doPendingSWTWork();

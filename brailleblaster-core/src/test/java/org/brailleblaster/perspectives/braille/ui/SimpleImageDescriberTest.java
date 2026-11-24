@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.perspectives.braille.ui;
 
+import org.brailleblaster.GuiTest;
 import nu.xom.Element;
 import nu.xom.Node;
 import org.brailleblaster.TestUtils;
@@ -46,7 +47,7 @@ import java.util.stream.StreamSupport;
 import static org.brailleblaster.testrunners.ViewTestRunner.doPendingSWTWork;
 import static org.testng.Assert.*;
 
-@Test(enabled = false)
+@GuiTest
 public class SimpleImageDescriberTest {
 
     private static final Logger log = LoggerFactory.getLogger(SimpleImageDescriberTest.class);
@@ -118,13 +119,14 @@ public class SimpleImageDescriberTest {
 
     public static void openImageDescriber(BBTestRunner bbTest, boolean sixkey) {
         bbTest.openMenuItem(TopMenu.TOOLS, SimpleImageDescriberModule.MENU_ITEM_NAME);
-        SWTBot describerBot = bbTest.bot.activeShell().bot();
+        SWTBot describerBot = bbTest.activeShell().bot();
         if (!sixkey) {
-            describerBot.menu("Styled Text").click();
+            // The dialog's own menu bar; SWTBot's menu() goes through the OS-focused shell
+            bbTest.activeShell().menu().menu("Styled Text", true, 0).click();
         }
     }
 
-    @Test(enabled = false)
+    @Test
     public void paragraphsSingleInline() {
         BBTestRunner bbTest = new BBTestRunner(
                 new BBXDocFactory().append(BBX.BLOCK.DEFAULT.create(),
@@ -143,7 +145,7 @@ public class SimpleImageDescriberTest {
         bbTest.textViewTools.navigateToText("before");
         openImageDescriber(bbTest, false);
         ViewTestRunner.forceActiveShellHack();
-        SWTBot describerBot = bbTest.bot.activeShell().bot();
+        SWTBot describerBot = bbTest.activeShell().bot();
         SWTBotStyledText describerTextBot = describerBot.styledText(0);
 
         describerTextBot.setText("This is a description");
@@ -166,7 +168,7 @@ public class SimpleImageDescriberTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
     public void group_MultipleBlocks() {
         BBTestRunner bbTest = new BBTestRunner(new BBXDocFactory().append(BBX.CONTAINER.IMAGE.create(),
                 groupFactory -> groupFactory.addAttribute(BBX.SPAN.IMAGE.ATTRIB_SOURCE, "test.jpg")
@@ -176,7 +178,7 @@ public class SimpleImageDescriberTest {
         bbTest.textViewTools.navigateToText("block");
         openImageDescriber(bbTest, false);
         ViewTestRunner.forceActiveShellHack();
-        SWTBot describerBot = bbTest.bot.activeShell().bot();
+        SWTBot describerBot = bbTest.activeShell().bot();
         SWTBotStyledText describerTextBot = describerBot.styledText(0);
         describerTextBot.setText("This is a description");
         doPendingSWTWork();
@@ -194,7 +196,7 @@ public class SimpleImageDescriberTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
     public void paragraphs_MultipleInstances() {
         BBTestRunner bbTest = new BBTestRunner(
                 new BBXDocFactory()
@@ -214,7 +216,7 @@ public class SimpleImageDescriberTest {
         bbTest.textViewTools.navigateToText("before");
         openImageDescriber(bbTest, false);
         ViewTestRunner.forceActiveShellHack();
-        SWTBot describerBot = bbTest.bot.activeShell().bot();
+        SWTBot describerBot = bbTest.activeShell().bot();
         SWTBotStyledText describerTextBot = describerBot.styledText(0);
 
         describerTextBot.setText("This is a description");
@@ -238,7 +240,7 @@ public class SimpleImageDescriberTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
     public void paragraphsAndGroups() {
         BBTestRunner bbTest = new BBTestRunner(
                 new BBXDocFactory()
@@ -266,7 +268,7 @@ public class SimpleImageDescriberTest {
                 break;
             }
         }
-        SWTBot describerBot = bbTest.bot.activeShell().bot();
+        SWTBot describerBot = bbTest.activeShell().bot();
         SWTBotStyledText describerTextBot = describerBot.styledText(0);
 
         describerTextBot.setText("This is a description");
@@ -287,6 +289,7 @@ public class SimpleImageDescriberTest {
                 .noNextChild();
     }
 
+    // Disabled: Simple Image Describer behaviour changed: instance counts, braille preview empty, NO_TRANSLATE instead of NO_CONTRACT (D17) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void addDot1SpanAndContainer() {
         BBTestRunner bbTest = new BBTestRunner(
@@ -331,6 +334,7 @@ public class SimpleImageDescriberTest {
                 .noNextChild();
     }
 
+    // Disabled: Simple Image Describer behaviour changed: instance counts, braille preview empty, NO_TRANSLATE instead of NO_CONTRACT (D17) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void addAllDotsToSixImages() {
         BBTestRunner bbTest = new BBTestRunner(
@@ -406,6 +410,7 @@ public class SimpleImageDescriberTest {
                 .noNextChild();
     }
 
+    // Disabled: Simple Image Describer behaviour changed: instance counts, braille preview empty, NO_TRANSLATE instead of NO_CONTRACT (D17) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void findPreviousBraille() {
         BBTestRunner bbTest = new BBTestRunner(new BBXDocFactory()
@@ -434,13 +439,14 @@ public class SimpleImageDescriberTest {
         doPendingSWTWork();
 
         TestUtils.forceShellByName(shellName);
-        describerBot = bbTest.bot.activeShell().bot();
+        describerBot = bbTest.activeShell().bot();
         describerTextBot = describerBot.styledText(0);
 
         s = describerTextBot.getText();
         Assert.assertEquals(s, dot1);
     }
 
+    // Disabled: Simple Image Describer behaviour changed: instance counts, braille preview empty, NO_TRANSLATE instead of NO_CONTRACT (D17) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void changePreviousBraille() {
         BBTestRunner bbTest = new BBTestRunner(new BBXDocFactory()
@@ -470,12 +476,12 @@ public class SimpleImageDescriberTest {
         doPendingSWTWork();
 
         TestUtils.forceShellByName(shellName);
-        describerBot = bbTest.bot.activeShell().bot();
+        describerBot = bbTest.activeShell().bot();
         describerBot.button("Next Image").click();
         doPendingSWTWork();
 
         TestUtils.forceShellByName(shellName);
-        describerBot = bbTest.bot.activeShell().bot();
+        describerBot = bbTest.activeShell().bot();
         describerTextBot = describerBot.styledText(0);
 
         s = describerTextBot.getText();
@@ -485,13 +491,14 @@ public class SimpleImageDescriberTest {
         doPendingSWTWork();
 
         TestUtils.forceShellByName(shellName);
-        describerBot = bbTest.bot.activeShell().bot();
+        describerBot = bbTest.activeShell().bot();
         describerTextBot = describerBot.styledText(0);
 
         s = describerTextBot.getText();
         Assert.assertEquals(s, dot1 + allDots + allDots);
     }
 
+    // Disabled: Simple Image Describer behaviour changed: instance counts, braille preview empty, NO_TRANSLATE instead of NO_CONTRACT (D17) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void imageDescriber_insideTableCopy_rt4566() {
         //format=listed
@@ -513,7 +520,7 @@ public class SimpleImageDescriberTest {
 //		bbTest.openMenuItem(MenuManager.TopMenu.TOOLS, SimpleImageDescriberModule.MENU_ITEM_NAME);
 
         ViewTestRunner.forceActiveShellHack();
-        SWTBot imgBot = bbTest.bot.activeShell().bot();
+        SWTBot imgBot = bbTest.activeShell().bot();
         imgBot.styledText(0).setText("oo");
         ViewTestRunner.doPendingSWTWork();
 
@@ -530,7 +537,7 @@ public class SimpleImageDescriberTest {
         bbTest.textViewTools.navigateToText("three");
     }
 
-    @Test(enabled = false)
+    @Test
     public void imageInEmptyBlock_issue4781() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>test</p><p><img src='test.jpg'/></p>");
 
@@ -540,7 +547,7 @@ public class SimpleImageDescriberTest {
         assertEquals(bbTest.textViewTools.getSelectionStripped(), "test");
     }
 
-    @Test(enabled = false)
+    @Test
     public void imageInBlock_issue4781() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>test<img src='test.jpg'/></p>");
 
@@ -550,6 +557,7 @@ public class SimpleImageDescriberTest {
         assertEquals(bbTest.textViewTools.getSelectionStripped(), "test");
     }
 
+    // Disabled: Simple Image Describer behaviour changed: instance counts, braille preview empty, NO_TRANSLATE instead of NO_CONTRACT (D17) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void imageInBlock_issue5406() {
         BBTestRunner bbTest = new BBTestRunner("",
@@ -569,7 +577,7 @@ public class SimpleImageDescriberTest {
 //		assertEquals(bbTest.textViewTools.getSelectionStripped(), "test");
 
         ViewTestRunner.forceActiveShellHack();
-        SWTBot imgBot = bbTest.bot.activeShell().bot();
+        SWTBot imgBot = bbTest.activeShell().bot();
         String testText = "oo";
         imgBot.styledText(0).setText(testText);
         ViewTestRunner.doPendingSWTWork();

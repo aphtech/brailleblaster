@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.undoRedo;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -26,7 +27,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.testng.annotations.Test;
 
-@Test(groups = TestGroups.BROKEN_TESTS)
+@GuiTest
 public class UndoStylesTest {
     private final static String BLANK_LINE = "";
 
@@ -80,7 +81,8 @@ public class UndoStylesTest {
         assertEquals(BLANK_LINE, bbTest.brailleViewBot.getTextOnLine(5));
     }
 
-    @Test
+    // Disabled: page indicator line differs after undo/redo of a heading after a page break; braille layout review (R8) (test_fix.md Phase 7c, bb_issues_from_tests.md)
+    @Test(enabled = false)
     public void undo_redo_heading_afterPage() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String page = "--------------------------------------2";

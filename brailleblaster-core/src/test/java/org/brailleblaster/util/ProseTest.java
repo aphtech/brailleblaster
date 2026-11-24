@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.util;
 
+import org.brailleblaster.GuiTest;
 import java.io.File;
 
 import org.brailleblaster.perspectives.mvc.menu.TopMenu;
@@ -29,6 +30,7 @@ import org.testng.Assert;
 
 import static org.testng.Assert.*;
 
+@GuiTest
 public class ProseTest {
     private static final File shortProse = new File("src/test/resources/org/brailleblaster/utd/Prose.xml");
     private static final File proseWithLines = new File("src/test/resources/org/brailleblaster/utd/ProseWithLineNumbers.bbx");
@@ -39,6 +41,7 @@ public class ProseTest {
         proseBuilder = new ProseBuilder();
     }
 
+    // Disabled: Tools > Line Number Tools no longer exists (only the i18n string is left) (D14) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void testOpenProseTools() {
         BBTestRunner bb = new BBTestRunner(shortProse);
@@ -52,6 +55,7 @@ public class ProseTest {
         assertTrue(bb.wpManager.getCurrentPerspective().getToolBar().getHeight() < origHeight);
     }
 
+    // Disabled: Tools > Line Number Tools no longer exists (only the i18n string is left) (D14) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void applyProseTagToBlock() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>testing</p>");
@@ -71,6 +75,7 @@ public class ProseTest {
         assertTrue(bbTest.wpManager.getCurrentPerspective().getToolBar().getHeight() < origHeight);
     }
 
+    // Disabled: Tools > Line Number Tools no longer exists (only the i18n string is left) (D14) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void testInsertLineNumberShortcut() {
         BBTestRunner bb = new BBTestRunner(shortProse);
@@ -88,6 +93,7 @@ public class ProseTest {
         assertTrue(bb.wpManager.getCurrentPerspective().getToolBar().getHeight() < origHeight);
     }
 
+    // Disabled: Tools > Line Number Tools no longer exists (only the i18n string is left) (D14) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void testInsertLineNumberButton() {
         BBTestRunner bb = new BBTestRunner(shortProse);
@@ -105,6 +111,7 @@ public class ProseTest {
         assertTrue(bb.wpManager.getCurrentPerspective().getToolBar().getHeight() < origHeight);
     }
 
+    // Disabled: Tools > Line Number Tools no longer exists (only the i18n string is left) (D14) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void testSpaceBetween() {
         BBTestRunner bb = new BBTestRunner(shortProse);

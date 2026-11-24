@@ -44,11 +44,14 @@ public class ArchiverManagerTest {
 	private static final Logger log = LoggerFactory.getLogger(ArchiverManagerTest.class);
 	private final ArchiverFactory archiverManager = ArchiverFactory.INSTANCE;
 
-	@Test(enabled = false)
+	@Test
 	public void nimasFileTest() throws IOException {
-		Archiver2 out = archiverManager.load(Paths.get("src/test/resources/fdr/fdr.xml"));
-		MatcherAssert.assertThat(out, instanceOf(BBXArchiver.class));
-		assertValidNimas(out, true);
+		// Imported DTBook files are converted into a new BBZ (NimasFileArchiverLoader -> BBZArchiver.createImportedBBZ)
+		try (Archiver2 out = archiverManager.load(Paths.get("src/test/resources/fdr/fdr.xml"))) {
+			MatcherAssert.assertThat(out, instanceOf(BBZArchiver.class));
+			// no OPF: only NIMAS zips carry one into the BBZ
+			assertValidNimas(out, false);
+		}
 	}
 	
 	private static Path createTempZip() throws IOException {
@@ -82,7 +85,7 @@ public class ArchiverManagerTest {
 		out.close();
 	}
 	
-	@Test(enabled = false)
+	@Test
 	public void nimasZipNoOPFTest() throws IOException {
 		Path tmpZipFile = Files.createTempFile("bb-test", "nimas.zip");
 		Files.delete(tmpZipFile);
@@ -171,7 +174,7 @@ public class ArchiverManagerTest {
 		}
 	}
 	
-	@Test(enabled = false)
+	@Test
 	public void open_close_sameDoc() throws IOException {
 		Path path = Paths.get("src/test/resources/fdr/fdr.xml");
 		Archiver2 out1 = archiverManager.load(path);
@@ -190,7 +193,7 @@ public class ArchiverManagerTest {
 		out1.close();
 	}
 	
-	@Test(enabled = false)
+	@Test
 	public void open_multipleInstances_sameDoc() throws IOException {
 		Path path = Paths.get("src/test/resources/fdr/fdr.xml");
 		Archiver2 out1 = archiverManager.load(path);
@@ -214,7 +217,7 @@ public class ArchiverManagerTest {
 		out2.close();
 	}
 	
-	@Test(enabled = false)
+	@Test
 	public void text_asciiControlCharacters_issue6128() throws Exception {
 		Path tmpFile = Files.createTempFile("bbTest", "text_asciiControlCharacters");
 		Files.write(tmpFile, List.of("this\u001a is\u0007 test"));
@@ -227,7 +230,7 @@ public class ArchiverManagerTest {
 		}
 	}
 	
-	@Test(enabled =false)
+	@Test
 	public void saveZipAgain_issue6359() throws IOException {
 		try (Archiver2 archive = archiverManager.load(createTempZip())) {
 			archive.save(archive.getPath(), archive.getBbxDocument(), new UTDTranslationEngine(), Set.of());
@@ -235,7 +238,7 @@ public class ArchiverManagerTest {
 		}
 	}
 	
-	@Test(enabled = false)
+	@Test
 	public void saveAsZipAgain_newFile_issue6359() throws IOException {
 		try (Archiver2 archive = archiverManager.load(createTempZip())) {
 			Path path = Files.createTempFile("archiverManager", ".bbz");
@@ -244,6 +247,8 @@ public class ArchiverManagerTest {
 		}
 	}
 	
+	// Disabled: after Save As, the archive still holds the original zip open, so saving back to it hits
+	// BBZArchiver.saveNew's "Cannot save over other open file" guard. Product decision for issue 6359, see test_fix.md Phase 6.
 	@Test(enabled = false)
 	public void saveAsZipAgain_newFile2_issue6359() throws IOException {
 		Path origZipFile = createTempZip();
@@ -258,6 +263,8 @@ public class ArchiverManagerTest {
 		}
 	}
 	
+	// Disabled: after Save As, the archive still holds the original zip open, so saving back to it hits
+	// BBZArchiver.saveNew's "Cannot save over other open file" guard. Product decision for issue 6359, see test_fix.md Phase 6.
 	@Test(enabled = false)
 	public void saveAsZipAgain_newFil3_issue6359() throws IOException {
 		Path origZipFile = createTempZip();
@@ -272,7 +279,7 @@ public class ArchiverManagerTest {
 		}
 	}
 	
-	@Test(enabled = false)
+	@Test
 	public void multipleFiles() throws Exception {
 		Path zip = createTempZip();
 		Archiver2 archive = archiverManager.load(zip);

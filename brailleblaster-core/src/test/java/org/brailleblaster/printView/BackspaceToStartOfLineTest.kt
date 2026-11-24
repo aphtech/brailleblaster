@@ -15,10 +15,16 @@
  */
 package org.brailleblaster.printView
 
+import org.brailleblaster.GuiTest
 import nu.xom.Element
 import org.brailleblaster.bbx.BBX
 import org.brailleblaster.perspectives.braille.document.BrailleDocument
 import org.brailleblaster.testrunners.BBTestRunner
+import org.brailleblaster.testrunners.moveCaret
+import org.brailleblaster.testrunners.pressEnter
+import org.brailleblaster.testrunners.pressBackspace
+import org.brailleblaster.testrunners.typeKeys
+import org.brailleblaster.testrunners.assertMapListConsistent
 import org.brailleblaster.testrunners.ViewTestRunner
 import org.brailleblaster.utd.internal.xml.FastXPath
 import org.brailleblaster.utd.properties.UTDElements
@@ -36,56 +42,13 @@ import java.io.File
  * Issue 70995: holding Backspace in a new document after typing a sentence on line 2 (or 5) and pressing Enter
  * crashed once the sentence was erased and the caret reached the start of its line.
  */
+@GuiTest
 class BackspaceToStartOfLineTest {
     /** The template File > New opens, see Manager.DEFAULT_FILE */
     private val blankTemplate = File("src/main/dist/programData/xmlTemplates/blankTemplate.bbz")
     private val sentence = "This is a test."
 
-    // ---- driving the editor, see EnterAtEndOfDocumentTest for why the listeners are called directly
-
-    private fun BBTestRunner.moveCaret(offset: Int) {
-        manager.text.setCurrentElement(offset)
-        ViewTestRunner.doPendingSWTWork()
-        assertEquals(textViewWidget.caretOffset, offset, "Caret not at requested offset")
-    }
-
-    private fun BBTestRunner.verifyKey(character: Char): Boolean {
-        val event = Event().apply {
-            this.character = character
-            keyCode = character.code
-            doit = true
-        }
-        textViewWidget.notifyListeners(ST.VerifyKey, event)
-        ViewTestRunner.doPendingSWTWork()
-        return event.doit
-    }
-
-    private fun BBTestRunner.pressEnter() {
-        assertFalse(verifyKey(SWT.CR), "Enter is always handled by the editor")
-    }
-
-    /** Type text the way StyledText does after the verify listener allows the key, leaving it uncommitted */
-    private fun BBTestRunner.type(text: String) {
-        text.forEach { c ->
-            assertTrue(verifyKey(c), "Key '$c' was blocked at offset ${textViewWidget.caretOffset}")
-            val offset = textViewWidget.caretOffset
-            textViewWidget.replaceTextRange(offset, 0, c.toString())
-            textViewWidget.caretOffset = offset + 1
-            ViewTestRunner.doPendingSWTWork()
-        }
-    }
-
-    /** One Backspace: if the editor does not handle it, StyledText deletes the character or line break before the caret */
-    private fun BBTestRunner.backspace() {
-        if (verifyKey(SWT.BS)) {
-            val offset = textViewWidget.caretOffset
-            if (offset == 0) return
-            val length = if (textViewWidget.text.substring(0, offset).endsWith(LINE_BREAK)) LINE_BREAK.length else 1
-            textViewWidget.replaceTextRange(offset - length, length, "")
-            textViewWidget.caretOffset = offset - length
-            ViewTestRunner.doPendingSWTWork()
-        }
-    }
+    // ---- driving the editor, see testrunners/DirectInput.kt for why the listeners are called directly
 
     // ---- inspecting the result
 
@@ -96,23 +59,12 @@ class BackspaceToStartOfLineTest {
         assertEquals(textViewWidget.caretOffset, textViewWidget.getOffsetAtLine(line), "Caret at start of line $line")
     }
 
-    private fun BBTestRunner.assertMapListConsistent() {
-        val list = manager.mapList
-        list.zipWithNext().forEach { (a, b) ->
-            assertTrue(
-                b.getStart(list) >= a.getStart(list),
-                "Map list out of order: ${a.javaClass.simpleName} [${a.getStart(list)}] before " +
-                        "${b.javaClass.simpleName} [${b.getStart(list)}]"
-            )
-        }
-    }
-
     /** Steps 1-3 of the report: Enter [blankLines] times, type the sentence and press Enter */
     private fun sentenceOnLine(blankLines: Int): BBTestRunner {
         val bbTest = BBTestRunner(blankTemplate)
         bbTest.moveCaret(0)
         repeat(blankLines) { bbTest.pressEnter() }
-        bbTest.type(sentence)
+        bbTest.typeKeys(sentence)
         bbTest.pressEnter()
         assertEquals(bbTest.textViewWidget.getLine(blankLines), sentence, "Sentence on line $blankLines")
         bbTest.assertCaretAtStartOfLine(blankLines + 1)
@@ -124,11 +76,11 @@ class BackspaceToStartOfLineTest {
 
     /** Step 4: hold Backspace through the line break and the sentence until the caret is at the start of its line */
     private fun BBTestRunner.eraseSentence(line: Int) {
-        backspace()
+        pressBackspace()
         assertEquals(caretLine, line, "Backspace joins the empty line to the sentence: ${describe()}")
         assertEquals(textViewWidget.getLine(line), sentence, "Sentence intact after removing the line break")
         sentence.indices.forEach { i ->
-            backspace()
+            pressBackspace()
             assertEquals(
                 textViewWidget.getLine(line), sentence.dropLast(i + 1),
                 "Line $line after ${i + 1} backspaces in the sentence: ${describe()}"
@@ -153,7 +105,7 @@ class BackspaceToStartOfLineTest {
 
     /** The editor still works after the document was erased: typing goes on line 1 */
     private fun BBTestRunner.assertCanTypeAgain() {
-        type(sentence)
+        typeKeys(sentence)
         pressEnter()
         assertEquals(textViewWidget.getLine(0), sentence, "Sentence typed again on line 1")
         assertCaretAtStartOfLine(1)
@@ -168,11 +120,11 @@ class BackspaceToStartOfLineTest {
         bbTest.eraseSentence(line)
 
         // The key event that crashed: Backspace at the start of the now empty line
-        bbTest.backspace()
+        bbTest.pressBackspace()
         bbTest.assertBlankDocument()
 
         // Keep holding Backspace at the top of the document
-        repeat(3) { bbTest.backspace() }
+        repeat(3) { bbTest.pressBackspace() }
         bbTest.assertBlankDocument()
         bbTest.assertCanTypeAgain()
     }
@@ -192,7 +144,7 @@ class BackspaceToStartOfLineTest {
         val bbTest = sentenceOnLine(0)
         bbTest.eraseSentence(0)
 
-        repeat(4) { bbTest.backspace() }
+        repeat(4) { bbTest.pressBackspace() }
         assertTrue(bbTest.textViewWidget.text.isBlank(), "Everything erased: ${bbTest.describe()}")
         bbTest.assertCaretAtStartOfLine(0)
         bbTest.assertMapListConsistent()
@@ -204,15 +156,15 @@ class BackspaceToStartOfLineTest {
     fun holdBackspaceAfterOtherText() {
         val bbTest = BBTestRunner(blankTemplate)
         bbTest.moveCaret(0)
-        bbTest.type("First.")
+        bbTest.typeKeys("First.")
         bbTest.pressEnter()
         bbTest.pressEnter()
-        bbTest.type(sentence)
+        bbTest.typeKeys(sentence)
         bbTest.pressEnter()
         assertEquals(bbTest.textViewWidget.getLine(2), sentence, "Sentence on line 3")
 
         bbTest.eraseSentence(2)
-        bbTest.backspace()
+        bbTest.pressBackspace()
 
         assertEquals(bbTest.textViewWidget.getLine(0), "First.", "First paragraph kept: ${bbTest.describe()}")
         assertTrue(bbTest.caretLine <= 1, "Caret moved up from the erased line: ${bbTest.describe()}")

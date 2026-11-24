@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.*;
 
 import java.io.File;
@@ -32,17 +33,17 @@ import org.eclipse.swt.SWT;
 //import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.testng.annotations.Test;
 
-@Test(groups = TestGroups.BROKEN_TESTS, enabled = false)
+@GuiTest
 public class CursorAndOffsetTest {
     //private final String XMLTREE = "XML";
 
-    private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/printView/ReadOnlyCursorTests.bbx");
+    private static final File TEST_FILE = new File("src/test/resources/org/brailleblaster/printView/ReadOnlyCursorTests.xml");
 
     //protected SWTBotTree treeBot;
 
 
     //Tests pressing down arrow into a pagenum element and correct update in xml tree
-    @Test(enabled = false)
+    @Test
     public void basicArrowDownTest() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         //	String expectedTreeItem = "pagenum";
@@ -58,6 +59,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void basicArrowDownTestBraille() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -75,6 +77,7 @@ public class CursorAndOffsetTest {
     }
 
     //tests pr4essing a right key at the end of a line into a pagenum element and correct update in xml tree
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void basicArrowRightTest() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -91,6 +94,7 @@ public class CursorAndOffsetTest {
         //assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void basicArrowRightTestBraille() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -108,6 +112,7 @@ public class CursorAndOffsetTest {
     }
 
     //tests pressing up arrow into a pagenum element and corect update in xml tree
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void basicArrowUpTest() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -126,6 +131,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void basicArrowUpTestBraille() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -143,7 +149,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
-    @Test(enabled = false)
+    @Test
     //tests pressing an arrow left into a pagenum element and correct update in xml tree
     public void basicArrowLeftTest() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -161,6 +167,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void basicArrowLeftTestBraille() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -178,6 +185,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void boxline_basicArrowDown_Test() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -195,6 +203,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void boxline_basicArrowDown_Braille() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -212,6 +221,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //test pressing arrow right into a sidebar and correct update im xml tree
     public void boxline_basicArrowRightTest() {
@@ -230,6 +240,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void boxline_basicArrowRightBraille() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -247,6 +258,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //test pressing arrow up into a sidebar and correct update im xml tree
     public void boxline_basicArrowUpTest() {
@@ -266,6 +278,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void boxline_basicArrowUpBraille() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -283,6 +296,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     //test pressing arrow left into a sidebar and correct update im xml tree
     public void boxline_basicArrowLeft() {
@@ -301,6 +315,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void boxline_basicArrowLeftBraille() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -318,6 +333,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void insideBoxline_basicArrowDown() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -337,6 +353,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void insideBoxline_basicArrowDownBraille() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -356,7 +373,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
-    @Test(enabled = false)
+    @Test
     public void insideBoxline_basicArrowRight() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         //	String expectedTreeItem = "p";
@@ -365,7 +382,7 @@ public class CursorAndOffsetTest {
         //	treeBot = bbTest.bot.tree(0);
         //	bbTest.selectTree(bbTest.bot, XMLTREE);
 
-        bbTest.navigateTextView(bbTest.textViewBot.widget.getOffsetAtLine(17) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(16));
         bbTest.textViewTools.pressKey(SWT.ARROW_RIGHT, 1);
 
         assertTrue(manager.getMapList().getCurrent() instanceof TextMapElement);
@@ -373,6 +390,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void insideBoxline_basicArrowRightBraille() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -382,7 +400,7 @@ public class CursorAndOffsetTest {
         //	treeBot = bbTest.bot.tree(0);
         //	bbTest.selectTree(bbTest.bot, XMLTREE);
 
-        bbTest.navigateBrailleView(bbTest.brailleViewBot.widget.getOffsetAtLine(17) - 1);
+        bbTest.navigateBrailleView(bbTest.brailleViewTools.endOfLine(16));
         //+3 to account for spaces before body text
         bbTest.brailleViewTools.pressKey(SWT.ARROW_RIGHT, 3);
 
@@ -391,6 +409,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void bottomBoxline_basicArrowRight() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -400,7 +419,7 @@ public class CursorAndOffsetTest {
         //	treeBot = bbTest.bot.tree(0);
         //	bbTest.selectTree(bbTest.bot, XMLTREE);
 
-        bbTest.navigateTextView(bbTest.textViewBot.widget.getOffsetAtLine(18) - 1);
+        bbTest.navigateTextView(bbTest.textViewTools.endOfLine(17));
         bbTest.textViewTools.pressKey(SWT.ARROW_RIGHT, 1);
 
         assertTrue(manager.getMapList().getCurrent() instanceof BoxLineTextMapElement);
@@ -408,6 +427,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void bottomBoxline_basicArrowRightBraille() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -417,7 +437,7 @@ public class CursorAndOffsetTest {
         //	treeBot = bbTest.bot.tree(0);
         //	bbTest.selectTree(bbTest.bot, XMLTREE);
 
-        bbTest.navigateBrailleView(bbTest.brailleViewBot.widget.getOffsetAtLine(18) - 1);
+        bbTest.navigateBrailleView(bbTest.brailleViewTools.endOfLine(17));
         bbTest.brailleViewTools.pressKey(SWT.ARROW_RIGHT, 1);
 
         assertTrue(manager.getMapList().getCurrent() instanceof BoxLineTextMapElement);
@@ -425,6 +445,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void bottomBoxline_basicArrowDown() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -443,6 +464,7 @@ public class CursorAndOffsetTest {
         //	assertEquals(expectedTreeItem, getTreeItem(treeBot));
     }
 
+    // Disabled: caret/arrow positions around boxlines differ (off by one, braille-view arrows can't reach some offsets); fixture is the .xml stand-in for the never-committed ReadOnlyCursorTests.bbx (I9) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void bottomBoxline_basicArrowBraille() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);

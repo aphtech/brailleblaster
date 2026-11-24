@@ -15,6 +15,7 @@
  */
 package org.brailleblaster.printView;
 
+import org.brailleblaster.GuiTest;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
@@ -23,6 +24,7 @@ import org.brailleblaster.testrunners.BBTestRunner;
 //import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.testng.annotations.Test;
 
+@GuiTest
 public class BoxlineTest {
     private final String BLANK_LINE = "";
     private final String BOXLINE_TEXT = "----------------------------------------";
@@ -35,7 +37,7 @@ public class BoxlineTest {
     /*
      * Tests adding a boxline to a single paragraph surround by two other paragraphs with Book Tree
      */
-    @Test(enabled = false)
+    @Test
     public void basicBoxline() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Second Paragraph on Page 2";
@@ -58,7 +60,7 @@ public class BoxlineTest {
     /*
      * Adds a simple boxline to the first element at the start of a document
      */
-    @Test(enabled = false)
+    @Test
     public void basicBoxline_startOfDocument() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String shortBox = "----------------------------------------";
@@ -81,7 +83,7 @@ public class BoxlineTest {
     /*
      * Adds a basic boxline to an element at the end of a document
      */
-    @Test(enabled = false)
+    @Test
     public void basicBoxline_endOfDocument() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "last element in view";
@@ -107,7 +109,7 @@ public class BoxlineTest {
      * Adds a boxline, then tests adding another boxline within the boxline
      */
 	/*
-	@Test(enabled = false)
+	@Test
 	public void boxlineInBoxline_BOOKTREE(){
 		BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
 		String expectedText = "Second Paragraph on Page 2";
@@ -139,7 +141,7 @@ public class BoxlineTest {
     /*
      * Selects three paragraphs, then adds a boxline around them as a group
      */
-    @Test(enabled = false)
+    @Test
     public void multipleSelectionBoxline() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Page 2 paragraph";
@@ -177,6 +179,7 @@ public class BoxlineTest {
      * Adds a boxline around a paragraph, then selects the paragraph before the boxline, the top boxline, and the paragraph inside the boxline.
      * This test checks that the second boxline is added.
      */
+    // Disabled: box line braille character is now 'g', test expects '7' (R12) (test_fix.md Phase 7e, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void invalidBoxLine() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
@@ -214,7 +217,7 @@ public class BoxlineTest {
     }
 
     //places the cursor in a boxline and attempts to remove it, top and bottom lines should be removed
-    @Test(enabled = false)
+    @Test
     public void boxLine_Remove_Selection() {
         BBTestRunner bbTest = new BBTestRunner(TEST_FILE);
         String expectedText = "Page 2 paragraph";
