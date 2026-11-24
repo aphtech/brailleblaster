@@ -327,8 +327,24 @@ public class BBTestRunner {
             throw new RuntimeException("TopMenu " + topLevelMenu + " not found?", e);
         }
 
-        for (String curMenuItem : menuItem) {
-            selectedMenu = _doClickMenu(selectedMenu, curMenuItem, false);
+        try {
+            for (String curMenuItem : menuItem) {
+                selectedMenu = _doClickMenu(selectedMenu, curMenuItem, false);
+            }
+        } catch (RuntimeException notUnderTopMenu) {
+            // Menu items move between top menus (e.g. Window > Toggle Views is now under View, several Tools
+            // items are on the Debug menu); find the first item anywhere in the menu bar and follow the rest
+            if (menuItem.length == 0) {
+                throw notUnderTopMenu;
+            }
+            try {
+                selectedMenu = findMenu(menuItem[0], true);
+            } catch (WidgetNotFoundException e) {
+                throw notUnderTopMenu;
+            }
+            for (int i = 1; i < menuItem.length; i++) {
+                selectedMenu = _doClickMenu(selectedMenu, menuItem[i], false);
+            }
         }
         selectedMenu.click();
         doPendingSWTWork();
