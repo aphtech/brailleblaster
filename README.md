@@ -126,13 +126,13 @@ BrailleBlaster has been developed with support from the following organizations:
 
 ### Contributions by commit
 
-Contributors are listed by their number of non-merge commits across both BrailleBlaster repositories, 17,996 in total:
+Contributors are listed by their number of non-merge commits across both BrailleBlaster repositories, 18,037 in total:
 This may not be the best way to track contributions.  If someone has a better method feel free to submit a PullRequest.
 
 
 
 - **The original repository (`bb-utd`):** 16,725 commits starting in November 2010. All but 3 were made before the split.
-- **The open-source repository on GitHub (`aphtech/brailleblaster`):** 1,271 commits on `main` since the split on January 16, 2025.
+- **The open-source repository on GitHub (`aphtech/brailleblaster`):** 1,312 commits on `main` since the split on January 16, 2025.
 
 Commits from pull requests and other branches merged into `main` are counted for the people who wrote them. Only the merge commits themselves are left out, because they record who merged a branch rather than who did the work. The two histories do not overlap, so no commit is counted twice. Commits made under different names or email addresses by the same person are combined. People who worked for more than one organization have one combined total, with each organization listed.
 
@@ -140,7 +140,7 @@ Commit count is only a rough measure. It does not show how large or difficult a 
 
 | Contributor | Affiliation | Commits |
 |---|---|---:|
-| Michael Whapples | ViewPlus Technologies, Inc.; APH | 4,808 |
+| Michael Whapples | ViewPlus Technologies, Inc.; APH | 4,812 |
 | Leon Blakey | APH | 3,002 |
 | Rebecca Luttmer | APH | 2,819 |
 | Corey Knapp | APH | 1,869 |
@@ -151,8 +151,8 @@ Commit count is only a rough measure. It does not show how large or difficult a 
 | Will Tribbey | APH | 291 |
 | Chuck Myers | APH | 262 |
 | Leyvis Valdes | APH | 196 |
+| Ken Perry | APH | 195 |
 | Matt Stewart | APH | 159 |
-| Ken Perry | APH | 158 |
 | Mike Gray | APH | 120 |
 | N. Rodriguez | | 99 |
 | Sahel Mastoureshgh | | 68 |
@@ -168,7 +168,7 @@ Commit count is only a rough measure. It does not show how large or difficult a 
 | Repository | Branch | Last commit counted | Date |
 |---|---|---|---|
 | `bb-utd` (original) | `main` | `38b42555f3d9fa36887e6f5697d81fb889a1af1f` | 2026-10-27 |
-| `aphtech/brailleblaster` (GitHub) | `main` | `db190b6ef78a98a9465c8d367c9a976dad7cfa3b` | 2026-11-14 |
+| `aphtech/brailleblaster` (GitHub) | `main` | `79928e6201c634af90a880891d8863260ef6bf4b` | 2026-11-24 |
 
 #### Updating these counts
 
