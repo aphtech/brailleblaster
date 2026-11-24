@@ -29,6 +29,7 @@ import nu.xom.Document;
 public class CustomToolbarTest {
     private final Document basicFile = TestXMLUtils.generateBookDoc("", "<p>test</p>");
 
+    // Disabled: Tools > Line Number Tools no longer exists (only the i18n string is left) (D14) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void addLineTools() {
         BBTestRunner bb = new BBTestRunner(basicFile);
@@ -37,7 +38,7 @@ public class CustomToolbarTest {
         assertTrue(bb.wpManager.getCurrentPerspective().getToolBar().getHeight() > origHeight);
     }
 
-    @Test(enabled = false)
+    @Test
     public void addTOCTools() {
         BBTestRunner bb = new BBTestRunner(basicFile);
         int origHeight = bb.wpManager.getCurrentPerspective().getToolBar().getHeight();
@@ -45,6 +46,7 @@ public class CustomToolbarTest {
         assertTrue(bb.wpManager.getCurrentPerspective().getToolBar().getHeight() > origHeight);
     }
 
+    // Disabled: Tools > Line Number Tools no longer exists (only the i18n string is left) (D14) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void addAndRemoveLineThenTOCTools() {
         BBTestRunner bb = new BBTestRunner(basicFile);
@@ -64,6 +66,7 @@ public class CustomToolbarTest {
         assertTrue(bb.wpManager.getCurrentPerspective().getToolBar().getHeight() < origHeight);
     }
 
+    // Disabled: Tools > Line Number Tools no longer exists (only the i18n string is left) (D14) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void addAndRemoveTOCThenLineTools() {
         BBTestRunner bb = new BBTestRunner(basicFile);

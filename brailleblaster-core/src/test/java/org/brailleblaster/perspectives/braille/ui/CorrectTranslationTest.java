@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
 
 import nu.xom.Document;
 
-@Test(enabled = false)
+@Test
 @GuiTest
 public class CorrectTranslationTest {
 
@@ -43,7 +43,7 @@ public class CorrectTranslationTest {
 
     private final Document undefined = TestXMLUtils.generateBookDoc("", "<p>" + blackTriangle + "</p>");
 
-    @Test(enabled = false)
+    @Test
     public void correctWordInLiblouisAscii() {
         setup();
         BBTestRunner bb = new BBTestRunner(defined);
@@ -56,6 +56,7 @@ public class CorrectTranslationTest {
         breakDown();
     }
 
+    // Disabled: Correct Braille Translation define/correct dialogs: result is ;_$#c and no Success dialog (D16) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void correctWordNotInLiblouisAscii() {
         setup();
@@ -77,6 +78,7 @@ public class CorrectTranslationTest {
         breakDown();
     }
 
+    // Disabled: Correct Braille Translation define/correct dialogs: result is ;_$#c and no Success dialog (D16) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void defineCharacterAscii() {
         setup();
@@ -92,6 +94,7 @@ public class CorrectTranslationTest {
         breakDown();
     }
 
+    // Disabled: Correct Braille Translation define/correct dialogs: result is ;_$#c and no Success dialog (D16) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void correctDefinedCharacterAscii() {
         setup();
@@ -116,7 +119,7 @@ public class CorrectTranslationTest {
         breakDown();
     }
 
-    @Test(enabled = false)
+    @Test
     public void correctWordInLiblouisSixKey() {
         setup();
         BBTestRunner bb = new BBTestRunner(defined);
@@ -131,6 +134,7 @@ public class CorrectTranslationTest {
         breakDown();
     }
 
+    // Disabled: Correct Braille Translation define/correct dialogs: result is ;_$#c and no Success dialog (D16) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void correctWordNotInLiblouisSixKey() {
         setup();
@@ -156,6 +160,7 @@ public class CorrectTranslationTest {
         breakDown();
     }
 
+    // Disabled: Correct Braille Translation define/correct dialogs: result is ;_$#c and no Success dialog (D16) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void defineCharacterSixKey() {
         setup();
@@ -173,7 +178,7 @@ public class CorrectTranslationTest {
         breakDown();
     }
 
-    @Test(enabled = false)
+    @Test
     public void correctDefinedCharacterSixKey() {
         setup();
         BBTestRunner bb = new BBTestRunner(defined);

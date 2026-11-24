@@ -47,7 +47,6 @@ import java.util.stream.StreamSupport;
 import static org.brailleblaster.testrunners.ViewTestRunner.doPendingSWTWork;
 import static org.testng.Assert.*;
 
-@Test(enabled = false)
 @GuiTest
 public class SimpleImageDescriberTest {
 
@@ -126,7 +125,7 @@ public class SimpleImageDescriberTest {
         }
     }
 
-    @Test(enabled = false)
+    @Test
     public void paragraphsSingleInline() {
         BBTestRunner bbTest = new BBTestRunner(
                 new BBXDocFactory().append(BBX.BLOCK.DEFAULT.create(),
@@ -168,7 +167,7 @@ public class SimpleImageDescriberTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
     public void group_MultipleBlocks() {
         BBTestRunner bbTest = new BBTestRunner(new BBXDocFactory().append(BBX.CONTAINER.IMAGE.create(),
                 groupFactory -> groupFactory.addAttribute(BBX.SPAN.IMAGE.ATTRIB_SOURCE, "test.jpg")
@@ -196,7 +195,7 @@ public class SimpleImageDescriberTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
     public void paragraphs_MultipleInstances() {
         BBTestRunner bbTest = new BBTestRunner(
                 new BBXDocFactory()
@@ -240,7 +239,7 @@ public class SimpleImageDescriberTest {
                 .noNextChild();
     }
 
-    @Test(enabled = false)
+    @Test
     public void paragraphsAndGroups() {
         BBTestRunner bbTest = new BBTestRunner(
                 new BBXDocFactory()
@@ -289,6 +288,7 @@ public class SimpleImageDescriberTest {
                 .noNextChild();
     }
 
+    // Disabled: Simple Image Describer behaviour changed: instance counts, braille preview empty, NO_TRANSLATE instead of NO_CONTRACT (D17) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void addDot1SpanAndContainer() {
         BBTestRunner bbTest = new BBTestRunner(
@@ -333,6 +333,7 @@ public class SimpleImageDescriberTest {
                 .noNextChild();
     }
 
+    // Disabled: Simple Image Describer behaviour changed: instance counts, braille preview empty, NO_TRANSLATE instead of NO_CONTRACT (D17) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void addAllDotsToSixImages() {
         BBTestRunner bbTest = new BBTestRunner(
@@ -408,6 +409,7 @@ public class SimpleImageDescriberTest {
                 .noNextChild();
     }
 
+    // Disabled: Simple Image Describer behaviour changed: instance counts, braille preview empty, NO_TRANSLATE instead of NO_CONTRACT (D17) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void findPreviousBraille() {
         BBTestRunner bbTest = new BBTestRunner(new BBXDocFactory()
@@ -443,6 +445,7 @@ public class SimpleImageDescriberTest {
         Assert.assertEquals(s, dot1);
     }
 
+    // Disabled: Simple Image Describer behaviour changed: instance counts, braille preview empty, NO_TRANSLATE instead of NO_CONTRACT (D17) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void changePreviousBraille() {
         BBTestRunner bbTest = new BBTestRunner(new BBXDocFactory()
@@ -494,6 +497,7 @@ public class SimpleImageDescriberTest {
         Assert.assertEquals(s, dot1 + allDots + allDots);
     }
 
+    // Disabled: Simple Image Describer behaviour changed: instance counts, braille preview empty, NO_TRANSLATE instead of NO_CONTRACT (D17) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void imageDescriber_insideTableCopy_rt4566() {
         //format=listed
@@ -532,7 +536,7 @@ public class SimpleImageDescriberTest {
         bbTest.textViewTools.navigateToText("three");
     }
 
-    @Test(enabled = false)
+    @Test
     public void imageInEmptyBlock_issue4781() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>test</p><p><img src='test.jpg'/></p>");
 
@@ -542,7 +546,7 @@ public class SimpleImageDescriberTest {
         assertEquals(bbTest.textViewTools.getSelectionStripped(), "test");
     }
 
-    @Test(enabled = false)
+    @Test
     public void imageInBlock_issue4781() {
         BBTestRunner bbTest = new BBTestRunner("", "<p>test<img src='test.jpg'/></p>");
 
@@ -552,6 +556,7 @@ public class SimpleImageDescriberTest {
         assertEquals(bbTest.textViewTools.getSelectionStripped(), "test");
     }
 
+    // Disabled: Simple Image Describer behaviour changed: instance counts, braille preview empty, NO_TRANSLATE instead of NO_CONTRACT (D17) (test_fix.md Phase 7f, bb_issues_from_tests.md)
     @Test(enabled = false)
     public void imageInBlock_issue5406() {
         BBTestRunner bbTest = new BBTestRunner("",
