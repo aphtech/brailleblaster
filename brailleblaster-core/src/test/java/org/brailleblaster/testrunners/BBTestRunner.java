@@ -655,7 +655,13 @@ public class BBTestRunner {
             int lastOffset = -1;
             int sameCount = 0;
             int curOffset;
+            // The caret can bounce around a position it can't stop on; give up instead of looping forever
+            int maxSteps = Math.abs(widget.getCaretOffset() - offset) * 3 + 50;
+            int steps = 0;
             while ((curOffset = widget.getCaretOffset()) != offset) {
+                if (++steps > maxSteps) {
+                    throw new RuntimeException("Arrow keys didn't reach offset " + offset + " (at " + curOffset + " after " + maxSteps + " keys)");
+                }
                 DirectKeys.press(widget, 0, curOffset < offset ? SWT.ARROW_RIGHT : SWT.ARROW_LEFT, '\0');
                 doPendingSWTWork();
                 sameCount = curOffset == lastOffset ? sameCount + 1 : 0;
@@ -798,6 +804,28 @@ public class BBTestRunner {
 
                 if (skipNewlines && bot.getSelection().endsWith(System.lineSeparator()) && widget.getCaretOffset() != widget.getText().length() - 1) {
                     i--;
+                }
+            }
+        }
+
+        /**
+         * Extends the selection with Shift+arrow until the caret is at {@code target}. selectRight/selectLeft count
+         * key presses, where a line break is one press (one character in the Linux-era tests); use this when the
+         * end comes from widget offsets, where a Windows \r\n is two.
+         */
+        public void selectTo(int target) {
+            shiftArrowTo(target, target >= widget.getCaretOffset() ? SWT.ARROW_RIGHT : SWT.ARROW_LEFT);
+        }
+
+        private void shiftArrowTo(int target, int arrow) {
+            target = Math.max(0, Math.min(target, widget.getCharCount()));
+            int steps = 0;
+            int max = Math.abs(widget.getCaretOffset() - target) + 50;
+            while (arrow == SWT.ARROW_RIGHT ? widget.getCaretOffset() < target : widget.getCaretOffset() > target) {
+                int before = widget.getCaretOffset();
+                pressShortcut(SWT.SHIFT, arrow, '\0');
+                if (widget.getCaretOffset() == before || ++steps > max) {
+                    break;
                 }
             }
         }
