@@ -52,7 +52,7 @@ jobs:
         path: brailleblaster-continuous.zip
       # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
-      if: github.ref == 'ref/heads/main' && github.event_name != 'pull_request'
+      if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
       uses: advanced-security/maven-dependency-submission-action@v5
       with:
         maven-args: -Drevision=${{ env.BB_VERSION }} -Dsha1=-${{ github.sha }} -Dchangelist=${{ env.BB_CHANGELIST }}
