@@ -140,7 +140,7 @@ Commit count is only a rough measure. It does not show how large or difficult a 
 
 | Contributor | Affiliation | Commits |
 |---|---|---:|
-| Michael Whapples | ViewPlus Technologies, Inc.; APH | 4,808 |
+| Michael Whapples | ViewPlus Technologies, Inc.; APH; Independent contributions | 4,808 |
 | Leon Blakey | APH | 3,002 |
 | Rebecca Luttmer | APH | 2,819 |
 | Corey Knapp | APH | 1,869 |
