@@ -30,6 +30,7 @@ import org.brailleblaster.perspectives.mvc.menu.TopMenu;
 import org.brailleblaster.perspectives.mvc.modules.misc.ContextMenuModule;
 import org.brailleblaster.perspectives.mvc.modules.misc.TableSelectionModule;
 import org.brailleblaster.testrunners.BBTestRunner;
+import org.brailleblaster.testrunners.DirectKeys;
 import org.brailleblaster.testrunners.TestXMLUtils;
 import org.brailleblaster.testrunners.ViewTestRunner;
 import org.brailleblaster.testrunners.XMLElementAssert;
@@ -401,7 +402,8 @@ public class TableTest {
 
         stBot.selectLine(0);
         ViewTestRunner.doPendingSWTWork();
-        stBot.pressShortcut(Keystrokes.BS);
+        // Widget key events, not the OS keyboard: works without window focus
+        DirectKeys.press(stBot.widget, Keystrokes.BS);
         ViewTestRunner.doPendingSWTWork();
 
         clickSave(dialog);
@@ -592,6 +594,8 @@ public class TableTest {
 
     private void clickButton(SWTBotShell dialog, String button) {
         new SWTBotButton(dialog.bot().button(button).widget).click();
+        // Let the editor apply the change before the test inspects the document
+        doPendingSWTWork();
     }
 
     private void verifyBlockedEditMessage(BBTestRunner test) {
@@ -614,7 +618,8 @@ public class TableTest {
     private void insertTextIntoDialog(SWTBotShell dialog) {
         for (int i = 0; i < 9; i++) {
             SWTBotStyledText text = dialog.bot().styledText(i);
-            text.typeText(i < 3 ? TEST_HEADING : TEST_COLUMN);
+            // Widget key events, not the OS keyboard: works without window focus
+            DirectKeys.type(text.widget, i < 3 ? TEST_HEADING : TEST_COLUMN);
             doPendingSWTWork();
         }
     }

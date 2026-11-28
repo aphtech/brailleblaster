@@ -393,14 +393,12 @@
                         <logback.configurationFile>${main.dist.directory}/programData/settingslogback.xml</logback.configurationFile>
                         <org.eclipse.swtbot.keyboard.layout>org.eclipse.swtbot.swt.finder.keyboard.EN_US</org.eclipse.swtbot.keyboard.layout>
                     </systemPropertyVariables>
-                    <properties>
-                        <!-- Initialize BB before unit tests, see class for details.
-                            GuiGroupTransformer adds the gui group to @GuiTest classes. -->
-                        <property>
-                            <name>listener</name>
-                            <value>org.brailleblaster.BBTestInit,org.brailleblaster.GuiGroupTransformer</value>
-                        </property>
-                    </properties>
+                    <!-- TestNG listeners (BBTestInit initializes BB before tests,
+                        GuiGroupTransformer adds the gui group to @GuiTest classes) are registered in
+                        src/test/resources/META-INF/services/org.testng.ITestNGListener.
+                        Surefire 3.6+ runs TestNG through the JUnit Platform testng-engine: the old
+                        "listener" provider property is ignored, and the engine's testng.listeners
+                        parameter is not applied during test discovery. -->
                     <excludedGroups>${bb.excludedTests}</excludedGroups>
                     <trimStackTrace>false</trimStackTrace>
                 </configuration>

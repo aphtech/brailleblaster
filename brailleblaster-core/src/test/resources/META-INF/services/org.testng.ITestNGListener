@@ -1,0 +1,5 @@
+# TestNG listeners for every test run in this module. TestNG loads this file in both
+# testng-engine phases (discovery and execution); surefire 3.6+'s testng.listeners
+# parameter only reaches the execution phase. See brailleblaster-core/pom.xml.
+org.brailleblaster.BBTestInit
+org.brailleblaster.GuiGroupTransformer
