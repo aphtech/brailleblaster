@@ -18,6 +18,7 @@ package org.brailleblaster.archiver2
 import nu.xom.Document
 import org.brailleblaster.bbx.legacy.LegacyBbxUpgrader
 import org.brailleblaster.bbx.legacy.LegacyFormat
+import org.brailleblaster.bbx.legacy.V2ToBBXConverter
 import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.utd.BRFWriter
 import org.brailleblaster.utd.UTDTranslationEngine
@@ -243,10 +244,14 @@ class BBZArchiver(
             val locationFile = loadLocationFile(file, zipFS)
             return if (locationFile == null) {
                 log.info("No BBX location file found")
-                null
+                // BrailleBlaster 2.0 looked for a *.bbx when bbx_location was missing
+                findV2Document(zipFS)?.let { (bbxPath, v2Document) -> convertV2(file, zipFS, bbxPath, v2Document) }
             } else {
                 log.debug("Loading " + locationFile.toUri())
                 val bbxDocument = XMLHandler().load(locationFile, "")
+                if (V2ToBBXConverter.isV2Document(bbxDocument)) {
+                    return convertV2(file, zipFS, locationFile, bbxDocument)
+                }
                 // Files from BrailleBlaster 1.x are upgraded; current files are loaded unchanged
                 val legacyVersion = LegacyFormat.legacyBbxVersion(bbxDocument)
                 BBZArchiver(
@@ -262,6 +267,24 @@ class BBZArchiver(
                 }
             }
         }
+
+        /** A BrailleBlaster 2.0 document converted into a new document; saving goes through Save As. */
+        private fun convertV2(file: Path, zipFS: FileSystem, bbxPath: Path, v2Document: Document): Archiver2 {
+            log.info("Detected BrailleBlaster 2.0 BBZ {}", file)
+            val (converted, report) = V2ToBBXConverter.convert(v2Document)
+            return BBZArchiver(file, zipFS, bbxPath, converted).also {
+                LegacyImports.markConverted(it, file, report)
+            }
+        }
+
+        private fun findV2Document(zipFS: FileSystem): Pair<Path, Document>? =
+            Files.walk(zipFS.getPath("/")).use { paths ->
+                paths.filter { Files.isRegularFile(it) && it.toString().lowercase().endsWith(".bbx") }.toList()
+            }.firstNotNullOfOrNull { bbxPath ->
+                runCatching { XMLHandler().load(bbxPath, "") }.getOrNull()
+                    ?.takeIf { V2ToBBXConverter.isV2Document(it) }
+                    ?.let { bbxPath to it }
+            }
 
         override val extensionsAndDescription: Map<String, String> = mapOf(
             "*.bbz" to "BB Archive (*.bbz)"

@@ -36,6 +36,19 @@ import kotlin.io.path.name
 object LegacyTestSupport {
     val LEGACY_ROOT: Path = Paths.get("src/test/resources/org/brailleblaster/legacy")
     val V1X: Path = LEGACY_ROOT.resolve("v1x")
+    val V2X: Path = LEGACY_ROOT.resolve("v2x")
+
+    /**
+     * Non-whitespace characters of [expected] missing (counting repeats) from [actual]. Used where
+     * a conversion may legitimately join or re-space text, e.g. 2.0 text runs becoming one block.
+     */
+    fun missingCharacters(expected: String, actual: String): String {
+        val remaining = actual.filterNot { it.isWhitespace() }.groupingBy { it }.eachCount().toMutableMap()
+        return expected.filterNot { it.isWhitespace() }.filter { c ->
+            val count = remaining[c] ?: 0
+            if (count > 0) { remaining[c] = count - 1; false } else true
+        }
+    }
 
     fun files(dir: Path, extension: String = "bbx"): List<Path> =
         Files.walk(dir).use { stream ->

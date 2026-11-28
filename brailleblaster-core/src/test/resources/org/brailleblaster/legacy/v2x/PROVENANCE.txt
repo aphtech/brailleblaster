@@ -1,0 +1,7 @@
+littleBitOMath.bbx <- 22ce721cf:brailleblaster/src/test/resources/org/brailleblaster/nimas/src-xml/littleBitOMath.bbx
+basicTestFile.bbx <- 22ce721cf:brailleblaster/src/test/resources/org/brailleblaster/nimas/src-xml/basicTestFile.bbx
+sample.bbx <- 2e54b7957:brailleblaster/src/test/resources/org/brailleblaster/sample.bbx
+list-table-list.bbx <- 22ce721cf:brailleblaster/src/test/resources/org/brailleblaster/nimas/src-xml/list-table-list.bbx
+Linear_Table.bbx <- 22ce721cf:brailleblaster/src/test/resources/org/brailleblaster/nimas/src-xml/Linear Table.bbx
+nimas-basic-pagenum.bbx <- 58a40dc03:brailleblaster/src/test/resources/org/brailleblaster/document/readers/nimas/nimas-basic-pagenum.bbx
+nimas-minimal.bbx <- 60e9b6408:brailleblaster/src/test/resources/org/brailleblaster/document/readers/nimas/nimas-minimal.bbx

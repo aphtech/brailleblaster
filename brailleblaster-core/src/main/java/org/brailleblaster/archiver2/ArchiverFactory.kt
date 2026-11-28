@@ -34,7 +34,8 @@ import java.util.*
 object ArchiverFactory {
     private val loaders: Map<Types, List<FileLoader>> = mapOf(
         Types.ZIP to listOf(BBZArchiver.Loader.INSTANCE, NimasZipArchiverLoader.INSTANCE),
-        Types.XML to listOf(BBXArchiverLoader.INSTANCE, NimasFileArchiverLoader),
+        // BBXV2ArchiverLoader only accepts BrailleBlaster 2.0 files, so it goes first
+        Types.XML to listOf(BBXV2ArchiverLoader, BBXArchiverLoader.INSTANCE, NimasFileArchiverLoader),
         Types.DOCX to listOf(PandocArchiverLoader),
         Types.EPUB to listOf(PandocArchiverLoader),Types.MD to listOf(PandocArchiverLoader),
         Types.MD to listOf(PandocArchiverLoader),
