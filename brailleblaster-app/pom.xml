@@ -14,7 +14,6 @@
     <properties>
         <build.dist.directory>${project.build.directory}/dist</build.dist.directory>
         <build.dist.native.directory>${build.dist.directory}/native</build.dist.native.directory>
-        <execmavenplugin.version>3.6.3</execmavenplugin.version>
         <mac.thread.arg/>
     </properties>
     <dependencies>
@@ -217,7 +216,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>${execmavenplugin.version}</version>
                 <executions>
                     <execution>
                         <goals><goal>exec</goal></goals>
