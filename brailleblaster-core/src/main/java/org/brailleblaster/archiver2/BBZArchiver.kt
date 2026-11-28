@@ -16,6 +16,8 @@
 package org.brailleblaster.archiver2
 
 import nu.xom.Document
+import org.brailleblaster.bbx.legacy.LegacyBbxUpgrader
+import org.brailleblaster.bbx.legacy.LegacyFormat
 import org.brailleblaster.exceptions.BBNotifyException
 import org.brailleblaster.utd.BRFWriter
 import org.brailleblaster.utd.UTDTranslationEngine
@@ -244,12 +246,20 @@ class BBZArchiver(
                 null
             } else {
                 log.debug("Loading " + locationFile.toUri())
+                val bbxDocument = XMLHandler().load(locationFile, "")
+                // Files from BrailleBlaster 1.x are upgraded; current files are loaded unchanged
+                val legacyVersion = LegacyFormat.legacyBbxVersion(bbxDocument)
                 BBZArchiver(
                     file,
                     zipFS,
                     locationFile,
-                    XMLHandler().load(locationFile, "")
-                )
+                    bbxDocument
+                ).also { archiver ->
+                    if (legacyVersion != null) {
+                        val report = LegacyBbxUpgrader.upgrade(bbxDocument, legacyVersion)
+                        LegacyImports.markConverted(archiver, file, report)
+                    }
+                }
             }
         }
 

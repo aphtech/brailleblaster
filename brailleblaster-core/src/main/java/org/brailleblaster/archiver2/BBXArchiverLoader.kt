@@ -16,6 +16,8 @@
 package org.brailleblaster.archiver2
 
 import org.brailleblaster.bbx.BBX
+import org.brailleblaster.bbx.legacy.LegacyBbxUpgrader
+import org.brailleblaster.bbx.legacy.LegacyFormat
 import org.slf4j.LoggerFactory
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -31,10 +33,17 @@ class BBXArchiverLoader : ArchiverFactory.FileLoader {
         val rootName = fileData.doc!!.rootElement.localName
         return if (rootName == BBX.DOCUMENT_ROOT_NAME) {
             log.debug("Detected BBX")
+            // Files from BrailleBlaster 1.x are upgraded; current files are loaded unchanged
+            val legacyReport = LegacyFormat.legacyBbxVersion(fileData.doc)
+                ?.let { LegacyBbxUpgrader.upgrade(fileData.doc, it) }
             val arch: Archiver2 = BBZArchiver.createImportedBBZ(
                 file,
                 fileData.doc
             )
+            if (legacyReport != null) {
+                LegacyImports.markConverted(arch, file, legacyReport)
+                return arch
+            }
             var fileStr = file.fileName.toString()
             if (fileStr.lowercase(Locale.getDefault()).endsWith(".bbx")) {
                 fileStr = fileStr.dropLast(4) + ".bbz"

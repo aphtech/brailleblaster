@@ -69,6 +69,7 @@ import org.brailleblaster.utd.properties.UTDElements;
 import org.brailleblaster.utd.utils.TableUtils;
 import org.brailleblaster.utd.utils.UTDHelper;
 import org.brailleblaster.util.*;
+import org.brailleblaster.util.ui.LegacyImportNotice;
 import org.brailleblaster.utils.swt.EasySWT;
 import org.brailleblaster.wordprocessor.BBStatusBar;
 import org.brailleblaster.wordprocessor.FontManager;
@@ -342,6 +343,8 @@ public class Manager extends Controller {
         String newName = Optional.ofNullable(archiver2.getNewPath()).orElse(file).getFileName().toString();
         setTabTitle(newName);
         lineUpViews();
+        // Only shows anything for files converted from an older BrailleBlaster release
+        LegacyImportNotice.showIfConverted(getWpManager().getShell(), archiver2);
     }
 
     private void initializeDocumentTab() {

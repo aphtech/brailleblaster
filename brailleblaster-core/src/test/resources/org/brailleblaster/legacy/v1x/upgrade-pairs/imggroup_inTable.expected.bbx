@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bbdoc xmlns="http://brailleblaster.org/ns/bb" xmlns:bb="http://brailleblaster.org/ns/bb" xmlns:utd="http://brailleblaster.org/ns/utd" xmlns:m="http://www.w3.org/1998/Math/MathML">
+	<head bb:origElement="head">
+		<version>3</version>
+		<utd:isNormalised>true</utd:isNormalised>
+	</head>
+	<SECTION bb:type="ROOT" bbtestroot="true" testid="testroot" bb:origElement="book">
+		<CONTAINER bb:groupId="0" bb:type="IMAGE" bb:source="sigh.jpg" bb:origElement="img">
+			<CONTAINER bb:type="CAPTION" class="label" bb:origElement="caption">
+				<BLOCK bb:type="DEFAULT">
+					<INLINE bb:type="EMPHASIS" bb:emphasis="BOLD" bb:origElement="strong">strongBefore</INLINE>
+				</BLOCK>
+				<BLOCK bb:type="DEFAULT">middle </BLOCK>
+				<BLOCK bb:type="DEFAULT">after</BLOCK>
+			</CONTAINER>
+		</CONTAINER>
+		<BLOCK bb:type="DEFAULT">thing
+			<SPAN bb:type="IMAGE" bb:source="stuff.jpg" bb:origElement="img"/>
+		</BLOCK>
+		<BLOCK bb:type="DEFAULT">otherThing
+			<SPAN bb:type="IMAGE" bb:source="stuff.jpg" bb:origElement="img"/>
+		</BLOCK>
+	</SECTION>
+</bbdoc>
