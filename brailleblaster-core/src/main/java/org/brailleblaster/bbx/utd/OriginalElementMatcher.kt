@@ -24,7 +24,9 @@ import org.brailleblaster.utd.matchers.INodeMatcher
 
 @Suppress("UNUSED")
 class OriginalElementMatcher : INodeMatcher {
-    @XmlAttribute
+    // On the setter only: annotating the Kotlin property puts it on the backing field too,
+    // which JAXB rejects as two properties named origElementName
+    @set:XmlAttribute
     var origElementName: String? = null
     override fun isMatch(node: Node, namespaces: NamespaceMap): Boolean {
         return (node is Element
